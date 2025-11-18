@@ -3,15 +3,20 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Services\AuthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 
 class RegisterController extends Controller
 {
+    protected $authService;
+
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
+
     /**
      * Show the registration form.
      */
@@ -43,22 +48,18 @@ class RegisterController extends Controller
             'terms.accepted' => 'You must accept the terms and conditions.',
         ]);
 
-        // Create new user
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'] ?? null,
-            'password' => Hash::make($validated['password']),
-            'status' => 'active',
-            'language_pref' => 'en',
-            'email_verified_at' => now(), // Auto verify for now
-        ]);
+        try {
+            // Create new user using service
+            $user = $this->authService->register($validated);
 
-        // Log the user in
-        Auth::login($user);
+            // Log the user in
+            Auth::login($user);
 
-        return redirect()->route('dashboard')
-            ->with('success', 'Welcome to Ebook Traveling, ' . $user->name . '! Your account has been created successfully.');
+            return redirect()->route('dashboard')
+                ->with('success', 'Welcome to Ebook Traveling, ' . $user->name . '! Your account has been created successfully.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Registration failed. Please try again.');
+        }
     }
 
     /**
@@ -98,26 +99,20 @@ class RegisterController extends Controller
 
         $googleUser = session('google_user');
 
-        // Create new user with Google data
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $googleUser['email'],
-            'google_id' => $googleUser['google_id'],
-            'avatar' => $googleUser['avatar'],
-            'phone' => $validated['phone'] ?? null,
-            'password' => Hash::make(Str::random(32)), // Random password for Google users
-            'status' => 'active',
-            'language_pref' => $validated['language_pref'],
-            'email_verified_at' => now(), // Google accounts are pre-verified
-        ]);
+        try {
+            // Create new user with Google using service
+            $user = $this->authService->registerWithGoogle($validated, $googleUser);
 
-        // Clear Google user session
-        session()->forget('google_user');
+            // Clear Google user session
+            session()->forget('google_user');
 
-        // Log the user in
-        Auth::login($user, true);
+            // Log the user in
+            Auth::login($user, true);
 
-        return redirect()->route('dashboard')
-            ->with('success', 'Welcome to Ebook Traveling, ' . $user->name . '! Your account has been created successfully.');
+            return redirect()->route('dashboard')
+                ->with('success', 'Welcome to Ebook Traveling, ' . $user->name . '! Your account has been created successfully.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Registration failed. Please try again.');
+        }
     }
 }

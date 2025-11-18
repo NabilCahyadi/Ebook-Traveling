@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Admin\AdminDashboardController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -29,7 +30,40 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
-// Dashboard (protected route example)
+// User Dashboard (protected route)
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware('auth')->name('dashboard');
+
+// User Routes - Ebook Reader
+Route::middleware('auth')->group(function () {
+    Route::get('/read/{slug}', [\App\Http\Controllers\User\EbookReaderController::class, 'read'])->name('ebook.read');
+    
+    // Text content
+    Route::post('/api/set-reader-token', function(\Illuminate\Http\Request $request) {
+        session(['reader_token_' . $request->ebook_id => $request->token]);
+        return response()->json(['success' => true]);
+    });
+    Route::get('/api/ebook/{id}/content', [\App\Http\Controllers\User\EbookReaderController::class, 'getContent'])->name('ebook.content');
+    
+    // PDF handling
+    Route::post('/api/set-pdf-token', [\App\Http\Controllers\User\EbookReaderController::class, 'setPdfToken']);
+    Route::get('/api/ebook/{id}/pdf', [\App\Http\Controllers\User\EbookReaderController::class, 'servePdf'])->name('ebook.pdf');
+});
+
+// Admin Routes
+Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+    // User Management Routes
+    Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+
+    // Ebook Routes
+    Route::resource('ebooks', \App\Http\Controllers\Admin\EbookController::class);
+
+    // Category Routes
+    Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
+
+    // City Routes
+    Route::resource('cities', \App\Http\Controllers\Admin\CityController::class);
+});
