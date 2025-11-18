@@ -13,7 +13,7 @@ Route::get('/', function () {
 Route::middleware('guest')->group(function () {
     // Login Routes
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [LoginController::class, 'login']);
+    Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 
     // Register Routes
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
@@ -32,8 +32,8 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->midd
 
 // User Dashboard (protected route)
 Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware('auth')->name('dashboard');
+    return view('user.dashboard');
+})->middleware('auth')->name('user.dashboard');
 
 // User Routes - Ebook Reader
 Route::middleware('auth')->group(function () {

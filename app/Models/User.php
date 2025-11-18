@@ -21,6 +21,14 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone',
+        'user_type',
+        'avatar',
+        'status',
+        'preferred_language',
+        'google_id',
+        'last_login_at',
+        'last_login_ip',
     ];
 
     /**
@@ -43,6 +51,39 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'last_login_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Get the profile for the user.
+     */
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
+
+    /**
+     * Get the roles for the user.
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'user_roles');
+    }
+
+    /**
+     * Check if user is admin.
+     */
+    public function isAdmin()
+    {
+        return in_array($this->user_type, ['admin', 'superadmin']);
+    }
+
+    /**
+     * Check if user is customer.
+     */
+    public function isCustomer()
+    {
+        return $this->user_type === 'customer';
     }
 }

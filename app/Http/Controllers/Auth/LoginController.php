@@ -43,13 +43,45 @@ class LoginController extends Controller
         if ($this->authService->login($email, $password, $remember)) {
             $request->session()->regenerate();
 
-            return redirect()->intended(route('dashboard'))
-                ->with('success', 'Welcome back, ' . Auth::user()->name . '!');
+            $user = Auth::user();
+            
+            // Redirect based on user type/role
+            $redirectRoute = $this->getRedirectRoute($user);
+
+            return redirect()->intended(route($redirectRoute))
+                ->with('success', 'Welcome back, ' . $user->name . '!');
         }
 
         throw ValidationException::withMessages([
             'email' => __('The provided credentials do not match our records.'),
         ]);
+    }
+
+    /**
+     * Get redirect route based on user type/role.
+     */
+    protected function getRedirectRoute($user)
+    {
+        // Check user_type field (if exists in User model)
+        if (isset($user->user_type)) {
+            switch ($user->user_type) {
+                case 'admin':
+                case 'superadmin':
+                    return 'admin.dashboard';
+                case 'customer':
+                case 'user':
+                default:
+                    return 'user.dashboard';
+            }
+        }
+
+        // Fallback: Check email domain or other criteria
+        if (str_contains($user->email, '@admin.')) {
+            return 'admin.dashboard';
+        }
+
+        // Default to user dashboard
+        return 'user.dashboard';
     }
 
     /**
