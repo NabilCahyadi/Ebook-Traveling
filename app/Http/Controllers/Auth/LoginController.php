@@ -3,15 +3,21 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Services\AuthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Laravel\Socialite\Facades\Socialite;
-use App\Models\User;
-use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
+    protected $authService;
+
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
+
     /**
      * Show the login form.
      */
@@ -30,10 +36,11 @@ class LoginController extends Controller
             'password' => 'required|string',
         ]);
 
-        $credentials = $request->only('email', 'password');
+        $email = $request->input('email');
+        $password = $request->input('password');
         $remember = $request->boolean('remember');
 
-        if (Auth::attempt($credentials, $remember)) {
+        if ($this->authService->login($email, $password, $remember)) {
             $request->session()->regenerate();
 
             return redirect()->intended(route('dashboard'))
@@ -50,7 +57,7 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
-        Auth::logout();
+        $this->authService->logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -75,32 +82,16 @@ class LoginController extends Controller
         try {
             $googleUser = Socialite::driver('google')->user();
 
-            // Find user by email
-            $user = User::where('email', $googleUser->getEmail())->first();
+            $result = $this->authService->handleGoogleCallback($googleUser);
 
-            if ($user) {
-                // Update Google ID if not set
-                if (!$user->google_id) {
-                    $user->update([
-                        'google_id' => $googleUser->getId(),
-                        'avatar' => $googleUser->getAvatar(),
-                    ]);
-                }
-
-                Auth::login($user, true);
+            if ($result['exists']) {
+                Auth::login($result['user'], true);
 
                 return redirect()->route('dashboard')
-                    ->with('success', 'Welcome back, ' . $user->name . '!');
+                    ->with('success', 'Welcome back, ' . $result['user']->name . '!');
             } else {
                 // Store Google user data in session for registration
-                session([
-                    'google_user' => [
-                        'name' => $googleUser->getName(),
-                        'email' => $googleUser->getEmail(),
-                        'google_id' => $googleUser->getId(),
-                        'avatar' => $googleUser->getAvatar(),
-                    ]
-                ]);
+                session(['google_user' => $result['google_data']]);
 
                 // Redirect to registration page with Google data
                 return redirect()->route('register.google')
@@ -109,7 +100,7 @@ class LoginController extends Controller
 
         } catch (\Exception $e) {
             return redirect()->route('login')
-                ->with('error', 'Unable to login with Google. Please try again. Error: ' . $e->getMessage());
+                ->with('error', 'Unable to login with Google. Please try again.');
         }
     }
 }
