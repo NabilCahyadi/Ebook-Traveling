@@ -32,15 +32,18 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            'email' => 'required|string',
             'password' => 'required|string',
         ]);
 
-        $email = $request->input('email');
+        $loginField = $request->input('email');
         $password = $request->input('password');
         $remember = $request->boolean('remember');
 
-        if ($this->authService->login($email, $password, $remember)) {
+        // Determine if login field is email or phone
+        $fieldType = filter_var($loginField, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+
+        if (Auth::attempt([$fieldType => $loginField, 'password' => $password], $remember)) {
             $request->session()->regenerate();
 
             $user = Auth::user();
@@ -131,8 +134,9 @@ class LoginController extends Controller
             }
 
         } catch (\Exception $e) {
+            \Log::error('Google OAuth Error: ' . $e->getMessage());
             return redirect()->route('login')
-                ->with('error', 'Unable to login with Google. Please try again.');
+                ->with('error', 'Unable to login with Google: ' . $e->getMessage());
         }
     }
 }

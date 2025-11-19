@@ -1,177 +1,130 @@
-<!DOCTYPE html>
-<html class="no-js" lang="en">
+@extends('layouts.auth')
 
-<head>
-    <meta charset="utf-8" />
-    <title>Login - Ebook Traveling</title>
-    <meta http-equiv="x-ua-compatible" content="ie=edge" />
-    <meta name="description" content="" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('front/nest-frontend/assets/imgs/theme/favicon.svg') }}" />
-    <!-- Template CSS -->
-    <link rel="stylesheet" href="{{ asset('front/nest-frontend/assets/css/main.css?v=5.6') }}" />
-</head>
+@section('title', 'Login')
 
-<body>
-    <main class="main pages">
-        <div class="page-header breadcrumb-wrap">
-            <div class="container">
-                <div class="breadcrumb">
-                    <a href="{{ url('/') }}" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
-                    <span></span> Login
+@section('content')
+<div class="container" id="container">
+    <!-- Sign Up Form -->
+    <div class="form-container sign-up-container">
+        <form method="POST" action="{{ route('register') }}">
+            @csrf
+            <h1>Create Account</h1>
+            <div class="social-container">
+                <a href="{{ route('login.google') }}" class="social"><i class="fab fa-google"></i></a>
+                <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+            </div>
+            <span>or use your email for registration</span>
+            <input type="text" name="name" placeholder="Name" value="{{ old('name') }}" required />
+            <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" required />
+            <input type="password" name="password" placeholder="Password" required />
+            <input type="password" name="password_confirmation" placeholder="Confirm Password" required />
+            <button type="submit">Sign Up</button>
+        </form>
+    </div>
+
+    <!-- Sign In Form -->
+    <div class="form-container sign-in-container">
+        <form method="POST" action="{{ route('login.post') }}">
+            @csrf
+            <h1>Sign in</h1>
+            <div class="social-container">
+                <a href="{{ route('login.google') }}" class="social"><i class="fab fa-google"></i></a>
+                <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+            </div>
+            <span>or use your account</span>
+
+            @if (session('success'))
+                <div class="alert-message success">
+                    {{ session('success') }}
                 </div>
+            @endif
+
+            @if (session('error'))
+                <div class="alert-message error">
+                    {{ session('error') }}
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="alert-message error">
+                    @foreach ($errors->all() as $error)
+                        <div>{{ $error }}</div>
+                    @endforeach
+                </div>
+            @endif
+
+            <input type="text" name="email" placeholder="Email or Phone Number" value="{{ old('email') }}" required />
+            <input type="password" name="password" placeholder="Password" required />
+            
+            <div class="remember-forgot">
+                <label>
+                    <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> Remember me
+                </label>
+                @if (Route::has('password.request'))
+                    <a href="{{ route('password.request') }}">Forgot password?</a>
+                @endif
+            </div>
+            
+            <button type="submit">Sign In</button>
+        </form>
+    </div>
+
+    <!-- Overlay Panels -->
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-panel overlay-left">
+                <h1>Welcome Back!</h1>
+                <p>To keep connected with us please login with your personal info</p>
+                <button class="ghost" id="signIn">Sign In</button>
+            </div>
+            <div class="overlay-panel overlay-right">
+                <h1>Hello, Friend!</h1>
+                <p>Enter your personal details and start journey with us</p>
+                <button class="ghost" id="signUp">Sign Up</button>
             </div>
         </div>
-        <div class="page-content pt-150 pb-150">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-8 col-lg-10 col-md-12 m-auto">
-                        <div class="row">
-                            <div class="col-lg-6 pr-30 d-none d-lg-block">
-                                <img class="border-radius-15" src="{{ asset('front/nest-frontend/assets/imgs/page/login-1.png') }}" alt="Login" />
-                            </div>
-                            <div class="col-lg-6 col-md-8">
-                                <div class="login_wrap widget-taber-content background-white">
-                                    <div class="padding_eight_all bg-white">
-                                        <div class="heading_s1">
-                                            <h1 class="mb-5">Login</h1>
-                                            <p class="mb-30">Don't have an account? <a href="{{ route('register') }}">Create here</a></p>
-                                        </div>
+    </div>
+</div>
 
-                                        @if (session('success'))
-                                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                                {{ session('success') }}
-                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                            </div>
-                                        @endif
-
-                                        @if (session('error'))
-                                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                                {{ session('error') }}
-                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                            </div>
-                                        @endif
-
-                                        @if ($errors->any())
-                                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                                <ul class="mb-0">
-                                                    @foreach ($errors->all() as $error)
-                                                        <li>{{ $message }}</li>
-                                                    @endforeach
-                                                </ul>
-                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                            </div>
-                                        @endif
-
-                                        <form method="POST" action="{{ route('login.post') }}">
-                                            @csrf
-                                            <div class="form-group">
-                                                <input type="email" required name="email" placeholder="Email *" 
-                                                       value="{{ old('email') }}" class="@error('email') is-invalid @enderror" />
-                                                @error('email')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                            <div class="form-group">
-                                                <input required type="password" name="password" placeholder="Your password *" 
-                                                       class="@error('password') is-invalid @enderror" />
-                                                @error('password')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                            <div class="login_footer form-group mb-50">
-                                                <div class="chek-form">
-                                                    <div class="custome-checkbox">
-                                                        <input class="form-check-input" type="checkbox" name="remember" id="exampleCheckbox1" {{ old('remember') ? 'checked' : '' }} />
-                                                        <label class="form-check-label" for="exampleCheckbox1"><span>Remember me</span></label>
-                                                    </div>
-                                                </div>
-                                                @if (Route::has('password.request'))
-                                                    <a class="text-muted" href="{{ route('password.request') }}">Forgot password?</a>
-                                                @endif
-                                            </div>
-                                            <div class="form-group">
-                                                <button type="submit" class="btn btn-heading btn-block hover-up" name="login">Log in</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-    <!-- Vendor JS-->
-    <script src="{{ asset('front/nest-frontend/assets/js/vendor/modernizr-3.6.0.min.js') }}"></script>
-    <script src="{{ asset('front/nest-frontend/assets/js/vendor/jquery-3.6.0.min.js') }}"></script>
-    <script src="{{ asset('front/nest-frontend/assets/js/vendor/jquery-migrate-3.3.0.min.js') }}"></script>
-    <script src="{{ asset('front/nest-frontend/assets/js/vendor/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('front/nest-frontend/assets/js/plugins/slick.js') }}"></script>
-    <script src="{{ asset('front/nest-frontend/assets/js/plugins/jquery.syotimer.min.js') }}"></script>
-    <script src="{{ asset('front/nest-frontend/assets/js/plugins/waypoints.js') }}"></script>
-    <script src="{{ asset('front/nest-frontend/assets/js/plugins/wow.js') }}"></script>
-    <script src="{{ asset('front/nest-frontend/assets/js/plugins/perfect-scrollbar.js') }}"></script>
-    <script src="{{ asset('front/nest-frontend/assets/js/plugins/magnific-popup.js') }}"></script>
-    <script src="{{ asset('front/nest-frontend/assets/js/plugins/select2.min.js') }}"></script>
-    <script src="{{ asset('front/nest-frontend/assets/js/plugins/counterup.js') }}"></script>
-    <script src="{{ asset('front/nest-frontend/assets/js/plugins/jquery.countdown.min.js') }}"></script>
-    <script src="{{ asset('front/nest-frontend/assets/js/plugins/images-loaded.js') }}"></script>
-    <script src="{{ asset('front/nest-frontend/assets/js/plugins/isotope.js') }}"></script>
-    <script src="{{ asset('front/nest-frontend/assets/js/plugins/scrollup.js') }}"></script>
-    <script src="{{ asset('front/nest-frontend/assets/js/plugins/jquery.vticker-min.js') }}"></script>
-    <script src="{{ asset('front/nest-frontend/assets/js/plugins/jquery.theia.sticky.js') }}"></script>
-    <script src="{{ asset('front/nest-frontend/assets/js/plugins/jquery.elevatezoom.js') }}"></script>
-    <!-- Template  JS -->
-    <script src="{{ asset('front/nest-frontend/assets/js/main.js?v=5.6') }}"></script>
-    <script src="{{ asset('front/nest-frontend/assets/js/shop.js?v=5.6') }}"></script>
-</body>
-
-</html>
-
-    <!-- Core JS -->
-    <script src="{{ asset('assets/vendor/libs/jquery/jquery.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/popper/popper.js') }}"></script>
-    <script src="{{ asset('assets/vendor/js/bootstrap.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/node-waves/node-waves.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/hammer/hammer.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/i18n/i18n.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/typeahead-js/typeahead.js') }}"></script>
-    <script src="{{ asset('assets/vendor/js/menu.js') }}"></script>
-
-    <!-- Vendors JS -->
-    <script src="{{ asset('assets/vendor/libs/@form-validation/popular.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/@form-validation/bootstrap5.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/@form-validation/auto-focus.js') }}"></script>
-
-    <!-- Main JS -->
-    <script src="{{ asset('assets/js/main.js') }}"></script>
-
-    <!-- Page JS -->
-    <script src="{{ asset('assets/js/pages-auth.js') }}"></script>
-
-    <!-- Toggle Password Visibility -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const togglePassword = document.querySelector('.form-password-toggle .input-group-text');
-            const password = document.querySelector('#password');
-
-            if (togglePassword) {
-                togglePassword.addEventListener('click', function() {
-                    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-                    password.setAttribute('type', type);
-
-                    const icon = this.querySelector('i');
-                    icon.classList.toggle('ti-eye-off');
-                    icon.classList.toggle('ti-eye');
-                });
-            }
-        });
-    </script>
-</body>
-
-</html>
+@push('styles')
+<style>
+    .alert-message {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+    .alert-message.success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    .alert-message.error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+    .remember-forgot {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
+        margin: 10px 0;
+    }
+    .remember-forgot label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .remember-forgot a {
+        color: #FF4B2B;
+        text-decoration: none;
+    }
+    .remember-forgot a:hover {
+        text-decoration: underline;
+    }
+</style>
+@endpush
+@endsection

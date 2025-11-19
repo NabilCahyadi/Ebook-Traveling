@@ -1,227 +1,241 @@
-<!DOCTYPE html>
-<html lang="en" class="light-style layout-wide customizer-hide" dir="ltr" data-theme="theme-default"
-    data-assets-path="{{ asset('assets/') }}" data-template="vertical-menu-template">
+@extends('layouts.auth')
 
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>Complete Registration - Ebook Traveling</title>
-    <meta name="description" content="Complete your registration with Google" />
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+@section('title', 'Complete Registration')
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon/favicon.ico') }}" />
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-        rel="stylesheet" />
-
-    <!-- Icons -->
-    <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/tabler-icons.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/fontawesome.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/flag-icons.css') }}" />
-
-    <!-- Core CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/core.css') }}" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/theme-default.css') }}"
-        class="template-customizer-theme-css" />
-    <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
-
-    <!-- Vendors CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/node-waves/node-waves.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/typeahead-js/typeahead.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/@form-validation/umd/styles/index.min.css') }}" />
-
-    <!-- Page CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/vendor/css/pages/page-auth.css') }}" />
-
-    <!-- Helpers -->
-    <script src="{{ asset('assets/vendor/js/helpers.js') }}"></script>
-    <script src="{{ asset('assets/js/config.js') }}"></script>
-</head>
-
-<body>
-    <!-- Content -->
-    <div class="authentication-wrapper authentication-cover authentication-bg">
-        <div class="authentication-inner row">
-            <!-- Register -->
-            <div class="d-none d-lg-flex col-lg-7 p-0">
-                <div class="auth-cover-bg auth-cover-bg-color d-flex justify-content-center align-items-center">
-                    <img src="{{ asset('assets/img/illustrations/auth-register-illustration-light.png') }}"
-                        alt="auth-register-cover" class="img-fluid my-5 auth-illustration"
-                        data-app-light-img="illustrations/auth-register-illustration-light.png"
-                        data-app-dark-img="illustrations/auth-register-illustration-dark.png" />
-                    <img src="{{ asset('assets/img/illustrations/bg-shape-image-light.png') }}"
-                        alt="auth-register-cover" class="platform-bg"
-                        data-app-light-img="illustrations/bg-shape-image-light.png"
-                        data-app-dark-img="illustrations/bg-shape-image-dark.png" />
+@section('content')
+<div class="container" id="container">
+    <!-- Registration Form -->
+    <div class="form-container sign-in-container">
+        <form method="POST" action="{{ route('register.google.complete') }}">
+            @csrf
+            <h1>Complete Registration</h1>
+            
+            @if (!session('google_user'))
+                <div class="alert-message error">
+                    Session expired. <a href="{{ route('login.google') }}" style="color: #FF416C;">Login with Google again</a>
                 </div>
-            </div>
-            <!-- /Register -->
-
-            <!-- Register -->
-            <div class="d-flex col-12 col-lg-5 align-items-center p-sm-5 p-4">
-                <div class="w-px-400 mx-auto">
-                    <!-- Logo -->
-                    <div class="app-brand mb-4">
-                        <a href="/" class="app-brand-link gap-2">
-                            <span class="app-brand-logo demo">
-                                <i class="ti ti-book-2 ti-lg text-primary"></i>
-                            </span>
-                            <span class="app-brand-text demo text-body fw-bold ms-1">Ebook Traveling</span>
-                        </a>
+            @else
+                @if (session('info'))
+                    <div class="alert-message info">
+                        {{ session('info') }}
                     </div>
-                    <!-- /Logo -->
+                @endif
 
-                    <h3 class="mb-1">Complete Your Registration 🎉</h3>
-                    <p class="mb-4">You're almost there! Just a few more details.</p>
+                @if (session('error'))
+                    <div class="alert-message error">
+                        {{ session('error') }}
+                    </div>
+                @endif
 
-                    <!-- Info Message -->
-                    @if (session('info'))
-                        <div class="alert alert-info alert-dismissible fade show" role="alert">
-                            <i class="ti ti-info-circle me-2"></i>{{ session('info') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                aria-label="Close"></button>
-                        </div>
-                    @endif
+                @if ($errors->any())
+                    <div class="alert-message error">
+                        @foreach ($errors->all() as $error)
+                            <div>{{ $error }}</div>
+                        @endforeach
+                    </div>
+                @endif
 
-                    <!-- Error Message -->
-                    @if (session('error'))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            {{ session('error') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                aria-label="Close"></button>
-                        </div>
-                    @endif
+                <input type="text" name="name" placeholder="Full Name" 
+                       value="{{ old('name', session('google_user.name')) }}" required />
 
-                    @if (!session('google_user'))
-                        <div class="alert alert-warning" role="alert">
-                            <i class="ti ti-alert-triangle me-2"></i>Session expired. Please <a
-                                href="{{ route('login.google') }}" class="alert-link">login with Google again</a>.
-                        </div>
-                    @else
-                        <!-- Google User Info -->
-                        <div class="card mb-4 border border-primary">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    @if (session('google_user.avatar'))
-                                        <img src="{{ session('google_user.avatar') }}" alt="Avatar"
-                                            class="rounded-circle me-3" width="60" height="60">
-                                    @else
-                                        <div class="avatar avatar-lg me-3">
-                                            <span class="avatar-initial rounded-circle bg-label-primary">
-                                                {{ strtoupper(substr(session('google_user.name'), 0, 1)) }}
-                                            </span>
-                                        </div>
-                                    @endif
-                                    <div>
-                                        <h6 class="mb-0">{{ session('google_user.name') }}</h6>
-                                        <small class="text-muted">{{ session('google_user.email') }}</small>
-                                        <br>
-                                        <span class="badge bg-label-success mt-1">
-                                            <i class="ti ti-brand-google me-1"></i>Google Account
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <input type="email" placeholder="Email (from Google)" 
+                       value="{{ session('google_user.email') }}" readonly 
+                       style="background-color: #f0f0f0; cursor: not-allowed;" />
 
-                        <form id="formAuthentication" class="mb-3"
-                            action="{{ route('register.google.complete') }}" method="POST">
-                            @csrf
+                <input type="text" name="phone" placeholder="Phone Number (Optional)" 
+                       value="{{ old('phone') }}" />
 
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Full Name</label>
-                                <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                    id="name" name="name" placeholder="Enter your full name"
-                                    value="{{ old('name', session('google_user.name')) }}" autofocus required />
-                                @error('name')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                <input type="password" name="password" placeholder="Create Password" required />
 
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email"
-                                    value="{{ session('google_user.email') }}" readonly disabled />
-                                <small class="text-muted">Email from your Google account (cannot be changed)</small>
-                            </div>
+                <input type="password" name="password_confirmation" placeholder="Confirm Password" required />
+                
+                <small style="display: block; text-align: left; color: #666; font-size: 12px; margin: -5px 0 8px 0;">
+                    Password for manual login (min. 8 characters)
+                </small>
 
-                            <div class="mb-3">
-                                <label for="phone" class="form-label">Phone Number (Optional)</label>
-                                <input type="text" class="form-control @error('phone') is-invalid @enderror"
-                                    id="phone" name="phone" placeholder="Enter your phone number"
-                                    value="{{ old('phone') }}" />
-                                @error('phone')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                                <small class="text-muted">We may use this for account recovery</small>
-                            </div>
+                <select name="language_pref" style="width: 100%; padding: 12px 15px; margin: 8px 0; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;">
+                    <option value="en" {{ old('language_pref', 'en') == 'en' ? 'selected' : '' }}>English</option>
+                    <option value="id" {{ old('language_pref') == 'id' ? 'selected' : '' }}>Bahasa Indonesia</option>
+                </select>
 
-                            <div class="mb-3">
-                                <label for="language_pref" class="form-label">Preferred Language</label>
-                                <select class="form-select @error('language_pref') is-invalid @enderror"
-                                    id="language_pref" name="language_pref">
-                                    <option value="en" {{ old('language_pref', 'en') == 'en' ? 'selected' : '' }}>
-                                        English</option>
-                                    <option value="id" {{ old('language_pref') == 'id' ? 'selected' : '' }}>Bahasa
-                                        Indonesia</option>
-                                </select>
-                                @error('language_pref')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input @error('terms') is-invalid @enderror"
-                                        type="checkbox" id="terms-conditions" name="terms" required />
-                                    <label class="form-check-label" for="terms-conditions">
-                                        I agree to <a href="javascript:void(0);">privacy policy & terms</a>
-                                    </label>
-                                    @error('terms')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary d-grid w-100">
-                                <i class="ti ti-check me-2"></i>Complete Registration
-                            </button>
-                        </form>
-
-                        <p class="text-center">
-                            <span>Want to use a different account?</span>
-                            <a href="{{ route('login') }}">
-                                <span>Back to login</span>
-                            </a>
-                        </p>
-
-                    @endif
+                <div class="terms-checkbox">
+                    <label>
+                        <input type="checkbox" name="terms" required> 
+                        I agree to <a href="#" style="color: #FF416C;">privacy policy & terms</a>
+                    </label>
                 </div>
+
+                <button type="submit">Complete Registration</button>
+
+                <div style="margin-top: 15px;">
+                    <a href="{{ route('login') }}" style="color: #FF416C; text-decoration: none; font-size: 13px;">
+                        ← Back to login
+                    </a>
+                </div>
+            @endif
+        </form>
+    </div>
+
+    <!-- Overlay Panel -->
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-panel overlay-right">
+                <h1>Almost There! 🎉</h1>
+                <p>Just a few more details to complete your registration</p>
             </div>
-            <!-- /Register -->
         </div>
     </div>
-    <!-- / Content -->
+</div>
 
-    <!-- Core JS -->
-    <script src="{{ asset('assets/vendor/libs/jquery/jquery.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/popper/popper.js') }}"></script>
-    <script src="{{ asset('assets/vendor/js/bootstrap.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/node-waves/node-waves.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/hammer/hammer.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/typeahead-js/typeahead.js') }}"></script>
-    <script src="{{ asset('assets/vendor/js/menu.js') }}"></script>
+@push('styles')
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
 
-    <!-- Main JS -->
-    <script src="{{ asset('assets/js/main.js') }}"></script>
-</body>
+    /* Container adjustments */
+    #container {
+        position: relative;
+        max-width: 1100px;
+        width: 90%;
+        min-height: 600px;
+        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    }
 
-</html>
+
+
+    .alert-message {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+    
+    .alert-message.success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    
+    .alert-message.error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    .alert-message.info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+    }
+
+    .terms-checkbox {
+        width: 100%;
+        text-align: left;
+        font-size: 13px;
+        margin: 10px 0;
+    }
+
+    .terms-checkbox label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+    }
+
+    .terms-checkbox input[type="checkbox"] {
+        width: auto;
+        margin: 0;
+    }
+
+    /* Form container adjustments */
+    .form-container {
+        width: 50%;
+        z-index: 2;
+    }
+
+    .sign-in-container {
+        left: 0;
+        width: 50%;
+        z-index: 2;
+        transform: translateX(0);
+    }
+
+    .overlay-container {
+        width: 50%;
+        left: 50%;
+        overflow: hidden;
+    }
+
+    .overlay {
+        background: #FF416C;
+        background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C);
+        background: linear-gradient(to right, #FF4B2B, #FF416C);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: 0 0;
+        color: #FFFFFF;
+        position: relative;
+        left: 0%;
+        height: 100%;
+        width: 100%;
+        transform: translateX(0);
+        transition: transform 0.6s ease-in-out;
+    }
+
+    .overlay-panel {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 0 40px;
+        text-align: center;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        transform: translateX(0);
+        transition: transform 0.6s ease-in-out;
+    }
+
+    .overlay-right {
+        right: 0;
+        transform: translateX(0);
+    }
+
+    /* Hide Sign Up container */
+    .sign-up-container {
+        display: none;
+    }
+
+    /* Make it responsive */
+    @media (max-width: 768px) {
+        .overlay-container {
+            display: none;
+        }
+
+        .form-container {
+            width: 100%;
+        }
+    }
+</style>
+@endpush
+
+@push('scripts')
+<script>
+    // Disable the sliding functionality for this page
+    document.addEventListener('DOMContentLoaded', function() {
+        const signUpButton = document.getElementById('signUp');
+        const signInButton = document.getElementById('signIn');
+        
+        if (signUpButton) signUpButton.remove();
+        if (signInButton) signInButton.remove();
+    });
+</script>
+@endpush
+@endsection

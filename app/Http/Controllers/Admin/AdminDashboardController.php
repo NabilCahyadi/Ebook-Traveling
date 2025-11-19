@@ -20,8 +20,21 @@ class AdminDashboardController extends Controller
      */
     public function index()
     {
-        $ebooks = $this->ebookService->getAllEbooks(10);
+        // Get statistics
+        $totalEbooks = \App\Models\Ebook::count();
+        $totalUsers = \App\Models\User::count();
+        $totalCategories = \App\Models\Category::count();
+        $totalCities = \App\Models\City::count();
+        
+        // Get recent data
+        $recentEbooks = \App\Models\Ebook::with('category')->latest()->take(5)->get();
 
-        return view('admin.dashboard', compact('ebooks'));
+        return view('admin.dashboard', compact(
+            'recentEbooks',
+            'totalEbooks',
+            'totalUsers',
+            'totalCategories',
+            'totalCities'
+        ));
     }
 }

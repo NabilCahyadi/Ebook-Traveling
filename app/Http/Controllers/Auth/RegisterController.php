@@ -88,10 +88,14 @@ class RegisterController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:20'],
+            'password' => ['required', 'confirmed', Password::min(8)],
             'language_pref' => ['required', 'in:en,id'],
             'terms' => ['required', 'accepted'],
         ], [
             'name.required' => 'Full name is required.',
+            'password.required' => 'Password is required.',
+            'password.confirmed' => 'Password confirmation does not match.',
+            'password.min' => 'Password must be at least 8 characters.',
             'language_pref.required' => 'Please select your preferred language.',
             'terms.required' => 'You must accept the terms and conditions.',
             'terms.accepted' => 'You must accept the terms and conditions.',
@@ -112,7 +116,8 @@ class RegisterController extends Controller
             return redirect()->route('dashboard')
                 ->with('success', 'Welcome to Ebook Traveling, ' . $user->name . '! Your account has been created successfully.');
         } catch (\Exception $e) {
-            return back()->with('error', 'Registration failed. Please try again.');
+            \Log::error('Google Registration Error: ' . $e->getMessage());
+            return back()->with('error', 'Registration failed: ' . $e->getMessage());
         }
     }
 }

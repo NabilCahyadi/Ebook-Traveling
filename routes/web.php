@@ -30,10 +30,13 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
-// User Dashboard (protected route)
+// Dashboard (protected route) - redirects based on user type
 Route::get('/dashboard', function () {
+    if (auth()->user()->user_type === 'admin') {
+        return redirect()->route('admin.dashboard');
+    }
     return view('user.dashboard');
-})->middleware('auth')->name('user.dashboard');
+})->middleware('auth')->name('dashboard');
 
 // User Routes - Ebook Reader
 Route::middleware('auth')->group(function () {
