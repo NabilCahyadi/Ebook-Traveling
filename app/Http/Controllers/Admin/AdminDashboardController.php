@@ -25,7 +25,7 @@ class AdminDashboardController extends Controller
         $totalUsers = \App\Models\User::count();
         $totalCategories = \App\Models\Category::count();
         $totalCities = \App\Models\City::count();
-        
+
         // Get recent data
         $recentEbooks = \App\Models\Ebook::with('category')->latest()->take(5)->get();
 

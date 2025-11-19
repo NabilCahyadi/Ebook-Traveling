@@ -1,4 +1,5 @@
-<nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
+<nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+    id="layout-navbar">
     <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
         <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
             <i class="ti ti-menu-2 ti-md"></i>
@@ -20,7 +21,8 @@
         <ul class="navbar-nav flex-row align-items-center ms-auto">
             <!-- Language -->
             <li class="nav-item dropdown-language dropdown">
-                <a class="nav-link btn btn-text-secondary btn-icon rounded-pill dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                <a class="nav-link btn btn-text-secondary btn-icon rounded-pill dropdown-toggle hide-arrow"
+                    href="javascript:void(0);" data-bs-toggle="dropdown">
                     <i class="ti ti-language rounded-circle ti-md"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
@@ -40,7 +42,8 @@
 
             <!-- Style Switcher -->
             <li class="nav-item dropdown-style-switcher dropdown">
-                <a class="nav-link btn btn-text-secondary btn-icon rounded-pill dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                <a class="nav-link btn btn-text-secondary btn-icon rounded-pill dropdown-toggle hide-arrow"
+                    href="javascript:void(0);" data-bs-toggle="dropdown">
                     <i class="ti ti-md"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end dropdown-styles">
@@ -65,7 +68,9 @@
 
             <!-- Notification -->
             <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-2">
-                <a class="nav-link btn btn-text-secondary btn-icon rounded-pill dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                <a class="nav-link btn btn-text-secondary btn-icon rounded-pill dropdown-toggle hide-arrow"
+                    href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                    aria-expanded="false">
                     <span class="position-relative">
                         <i class="ti ti-bell ti-md"></i>
                         <span class="badge rounded-pill bg-danger badge-dot badge-notifications border"></span>
@@ -77,7 +82,10 @@
                             <h6 class="mb-0 me-auto">Notification</h6>
                             <div class="d-flex align-items-center h6 mb-0">
                                 <span class="badge bg-label-primary me-2">8 New</span>
-                                <a href="javascript:void(0)" class="btn btn-text-secondary rounded-pill btn-icon dropdown-notifications-all" data-bs-toggle="tooltip" data-bs-placement="top" title="Mark all as read"><i class="ti ti-mail-opened text-heading"></i></a>
+                                <a href="javascript:void(0)"
+                                    class="btn btn-text-secondary rounded-pill btn-icon dropdown-notifications-all"
+                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Mark all as read"><i
+                                        class="ti ti-mail-opened text-heading"></i></a>
                             </div>
                         </div>
                     </li>
@@ -87,7 +95,8 @@
                                 <div class="d-flex">
                                     <div class="flex-shrink-0 me-3">
                                         <div class="avatar">
-                                            <span class="avatar-initial rounded-circle bg-label-success"><i class="ti ti-shopping-cart"></i></span>
+                                            <span class="avatar-initial rounded-circle bg-label-success"><i
+                                                    class="ti ti-shopping-cart"></i></span>
                                         </div>
                                     </div>
                                     <div class="flex-grow-1">
@@ -123,7 +132,8 @@
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0 me-2">
                                     <div class="avatar avatar-online">
-                                        <img src="{{ url('assets/admin/img/avatars/1.png') }}" alt class="rounded-circle" />
+                                        <img src="{{ url('assets/admin/img/avatars/1.png') }}" alt
+                                            class="rounded-circle" />
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">
@@ -160,7 +170,8 @@
 
     <!-- Search Small Screens -->
     <div class="navbar-search-wrapper search-input-wrapper d-none">
-        <input type="text" class="form-control search-input container-xxl border-0" placeholder="Search..." aria-label="Search..." />
+        <input type="text" class="form-control search-input container-xxl border-0" placeholder="Search..."
+            aria-label="Search..." />
         <i class="ti ti-x search-toggler cursor-pointer"></i>
     </div>
 </nav>

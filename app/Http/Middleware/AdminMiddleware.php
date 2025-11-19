@@ -23,12 +23,12 @@ class AdminMiddleware
 
         // Check if user has admin access
         $user = Auth::user();
-        
+
         // Check user_type field first (primary method)
         if (isset($user->user_type) && $user->user_type === 'admin') {
             return $next($request);
         }
-        
+
         // Fallback: Check roles relationship (if exists)
         if (method_exists($user, 'roles') && $user->roles()->where('name', 'admin')->exists()) {
             return $next($request);

@@ -43,17 +43,33 @@ class LoginController extends Controller
         // Determine if login field is email or phone
         $fieldType = filter_var($loginField, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
 
+        \Log::info('Login attempt', [
+            'field_type' => $fieldType,
+            'login_field' => $loginField,
+            'credentials' => [$fieldType => $loginField]
+        ]);
+
+        // Check if user exists
+        $user = \App\Models\User::where($fieldType, $loginField)->first();
+        \Log::info('User found', ['user' => $user ? $user->toArray() : 'null']);
+
         if (Auth::attempt([$fieldType => $loginField, 'password' => $password], $remember)) {
             $request->session()->regenerate();
 
             $user = Auth::user();
-            
+
+            \Log::info('Login successful', ['user_type' => $user->user_type]);
+
             // Redirect based on user type/role
             $redirectRoute = $this->getRedirectRoute($user);
+
+            \Log::info('Redirecting to', ['route' => $redirectRoute]);
 
             return redirect()->intended(route($redirectRoute))
                 ->with('success', 'Welcome back, ' . $user->name . '!');
         }
+
+        \Log::warning('Login failed', ['field' => $loginField]);
 
         throw ValidationException::withMessages([
             'email' => __('The provided credentials do not match our records.'),
@@ -132,7 +148,6 @@ class LoginController extends Controller
                 return redirect()->route('register.google')
                     ->with('info', 'Please complete your registration to continue.');
             }
-
         } catch (\Exception $e) {
             \Log::error('Google OAuth Error: ' . $e->getMessage());
             return redirect()->route('login')

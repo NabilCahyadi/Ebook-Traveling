@@ -34,7 +34,8 @@
                                 <li>
                                     <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                                         @csrf
-                                        <a href="#" onclick="event.preventDefault(); this.closest('form').submit();">Logout</a>
+                                        <a href="#"
+                                            onclick="event.preventDefault(); this.closest('form').submit();">Logout</a>
                                     </form>
                                 </li>
                             @endguest
@@ -48,7 +49,8 @@
         <div class="container">
             <div class="header-wrap">
                 <div class="logo logo-width-1">
-                    <a href="{{ route('home') }}"><img src="{{ asset('assets/front/imgs/theme/logo.svg') }}" alt="logo" /></a>
+                    <a href="{{ route('home') }}"><img src="{{ asset('assets/front/imgs/theme/logo.svg') }}"
+                            alt="logo" /></a>
                 </div>
                 <div class="header-right">
                     <div class="search-style-2">
@@ -64,21 +66,24 @@
                         <div class="header-action-2">
                             <div class="header-action-icon-2">
                                 <a href="{{ route('shop.wishlist') }}">
-                                    <img class="svgInject" alt="Wishlist" src="{{ asset('assets/front/imgs/theme/icons/icon-heart.svg') }}" />
+                                    <img class="svgInject" alt="Wishlist"
+                                        src="{{ asset('assets/front/imgs/theme/icons/icon-heart.svg') }}" />
                                     <span class="pro-count blue">0</span>
                                 </a>
                                 <a href="{{ route('shop.wishlist') }}"><span class="lable">Wishlist</span></a>
                             </div>
                             <div class="header-action-icon-2">
                                 <a class="mini-cart-icon" href="{{ route('shop.cart') }}">
-                                    <img alt="Cart" src="{{ asset('assets/front/imgs/theme/icons/icon-cart.svg') }}" />
+                                    <img alt="Cart"
+                                        src="{{ asset('assets/front/imgs/theme/icons/icon-cart.svg') }}" />
                                     <span class="pro-count blue">0</span>
                                 </a>
                                 <a href="{{ route('shop.cart') }}"><span class="lable">Cart</span></a>
                             </div>
                             <div class="header-action-icon-2">
                                 <a href="{{ route('user.account') }}">
-                                    <img class="svgInject" alt="Account" src="{{ asset('assets/front/imgs/theme/icons/icon-user.svg') }}" />
+                                    <img class="svgInject" alt="Account"
+                                        src="{{ asset('assets/front/imgs/theme/icons/icon-user.svg') }}" />
                                 </a>
                                 <a href="{{ route('user.account') }}"><span class="lable ml-0">Account</span></a>
                             </div>
@@ -92,16 +97,21 @@
         <div class="container">
             <div class="header-wrap header-space-between position-relative">
                 <div class="logo logo-width-1 d-block d-lg-none">
-                    <a href="{{ route('home') }}"><img src="{{ asset('assets/front/imgs/theme/logo.svg') }}" alt="logo" /></a>
+                    <a href="{{ route('home') }}"><img src="{{ asset('assets/front/imgs/theme/logo.svg') }}"
+                            alt="logo" /></a>
                 </div>
                 <div class="header-nav d-none d-lg-flex">
                     <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block font-heading">
                         <nav>
                             <ul>
-                                <li><a class="{{ Request::is('/') ? 'active' : '' }}" href="{{ route('home') }}">Home</a></li>
-                                <li><a class="{{ Request::is('shop*') ? 'active' : '' }}" href="{{ route('shop.index') }}">Shop</a></li>
-                                <li><a class="{{ Request::is('blog*') ? 'active' : '' }}" href="{{ route('blog.index') }}">Blog</a></li>
-                                <li><a class="{{ Request::is('contact') ? 'active' : '' }}" href="{{ route('page.contact') }}">Contact</a></li>
+                                <li><a class="{{ Request::is('/') ? 'active' : '' }}"
+                                        href="{{ route('home') }}">Home</a></li>
+                                <li><a class="{{ Request::is('shop*') ? 'active' : '' }}"
+                                        href="{{ route('shop.index') }}">Shop</a></li>
+                                <li><a class="{{ Request::is('blog*') ? 'active' : '' }}"
+                                        href="{{ route('blog.index') }}">Blog</a></li>
+                                <li><a class="{{ Request::is('contact') ? 'active' : '' }}"
+                                        href="{{ route('page.contact') }}">Contact</a></li>
                             </ul>
                         </nav>
                     </div>
@@ -125,7 +135,8 @@
     <div class="mobile-header-wrapper-inner">
         <div class="mobile-header-top">
             <div class="mobile-header-logo">
-                <a href="{{ route('home') }}"><img src="{{ asset('assets/front/imgs/theme/logo.svg') }}" alt="logo" /></a>
+                <a href="{{ route('home') }}"><img src="{{ asset('assets/front/imgs/theme/logo.svg') }}"
+                        alt="logo" /></a>
             </div>
             <div class="mobile-menu-close close-style-wrap close-style-position-inherit">
                 <button class="close-style search-close">

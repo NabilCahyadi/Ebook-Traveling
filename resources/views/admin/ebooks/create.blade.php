@@ -51,8 +51,8 @@
                         <!-- Title -->
                         <div class="mb-3">
                             <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('title') is-invalid @enderror"
-                                id="title" name="title" value="{{ old('title') }}" required>
+                            <input type="text" class="form-control @error('title') is-invalid @enderror" id="title"
+                                name="title" value="{{ old('title') }}" required>
                             @error('title')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -61,8 +61,8 @@
                         <!-- Author -->
                         <div class="mb-3">
                             <label for="author" class="form-label">Author</label>
-                            <input type="text" class="form-control @error('author') is-invalid @enderror"
-                                id="author" name="author" value="{{ old('author') }}">
+                            <input type="text" class="form-control @error('author') is-invalid @enderror" id="author"
+                                name="author" value="{{ old('author') }}">
                             @error('author')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -71,8 +71,8 @@
                         <!-- Category -->
                         <div class="mb-3">
                             <label for="category_id" class="form-label">Category <span class="text-danger">*</span></label>
-                            <select class="form-select @error('category_id') is-invalid @enderror"
-                                id="category_id" name="category_id" required>
+                            <select class="form-select @error('category_id') is-invalid @enderror" id="category_id"
+                                name="category_id" required>
                                 <option value="">Select Category</option>
                                 @foreach (\App\Models\Category::all() as $category)
                                     <option value="{{ $category->id }}"
@@ -89,8 +89,8 @@
                         <!-- City -->
                         <div class="mb-3">
                             <label for="city_id" class="form-label">City <span class="text-danger">*</span></label>
-                            <select class="form-select @error('city_id') is-invalid @enderror"
-                                id="city_id" name="city_id" required>
+                            <select class="form-select @error('city_id') is-invalid @enderror" id="city_id" name="city_id"
+                                required>
                                 <option value="">Select City</option>
                                 @foreach (\App\Models\City::all() as $city)
                                     <option value="{{ $city->id }}"
@@ -106,9 +106,10 @@
 
                         <!-- Description -->
                         <div class="mb-3">
-                            <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
-                            <textarea class="form-control @error('description') is-invalid @enderror" 
-                                id="description" name="description" rows="4" required>{{ old('description') }}</textarea>
+                            <label for="description" class="form-label">Description <span
+                                    class="text-danger">*</span></label>
+                            <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
+                                rows="4" required>{{ old('description') }}</textarea>
                             @error('description')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -117,8 +118,8 @@
                         <!-- Preview Content -->
                         <div class="mb-3">
                             <label for="preview_content" class="form-label">Preview Content</label>
-                            <textarea class="form-control @error('preview_content') is-invalid @enderror" 
-                                id="preview_content" name="preview_content" rows="3">{{ old('preview_content') }}</textarea>
+                            <textarea class="form-control @error('preview_content') is-invalid @enderror" id="preview_content"
+                                name="preview_content" rows="3">{{ old('preview_content') }}</textarea>
                             <small class="text-muted">This content will be shown as a preview to users</small>
                             @error('preview_content')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -131,7 +132,8 @@
                             <div class="input-group">
                                 <span class="input-group-text">Rp</span>
                                 <input type="number" class="form-control @error('price') is-invalid @enderror"
-                                    id="price" name="price" value="{{ old('price', 0) }}" min="0" step="1000">
+                                    id="price" name="price" value="{{ old('price', 0) }}" min="0"
+                                    step="1000">
                             </div>
                             <small class="text-muted">Set to 0 for free ebook</small>
                             @error('price')
@@ -149,8 +151,8 @@
                     <div class="card-body">
                         <h5 class="card-title mb-3">Status</h5>
                         <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="is_active"
-                                name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}>
+                            <input class="form-check-input" type="checkbox" id="is_active" name="is_active"
+                                value="1" {{ old('is_active', true) ? 'checked' : '' }}>
                             <label class="form-check-label" for="is_active">
                                 Active
                             </label>
@@ -209,19 +211,19 @@
 @endsection
 
 @push('scripts')
-<script>
-    // Image preview
-    document.getElementById('cover_image').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const preview = document.getElementById('imagePreview');
-                preview.querySelector('img').src = e.target.result;
-                preview.classList.remove('d-none');
+    <script>
+        // Image preview
+        document.getElementById('cover_image').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('imagePreview');
+                    preview.querySelector('img').src = e.target.result;
+                    preview.classList.remove('d-none');
+                }
+                reader.readAsDataURL(file);
             }
-            reader.readAsDataURL(file);
-        }
-    });
-</script>
+        });
+    </script>
 @endpush

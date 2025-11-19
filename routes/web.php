@@ -35,20 +35,25 @@ Route::get('/dashboard', function () {
     if (auth()->user()->user_type === 'admin') {
         return redirect()->route('admin.dashboard');
     }
-    return view('user.dashboard');
+    return redirect()->route('user.dashboard');
 })->middleware('auth')->name('dashboard');
+
+// User Dashboard
+Route::get('/user/dashboard', function () {
+    return view('user.dashboard');
+})->middleware('auth')->name('user.dashboard');
 
 // User Routes - Ebook Reader
 Route::middleware('auth')->group(function () {
     Route::get('/read/{slug}', [\App\Http\Controllers\User\EbookReaderController::class, 'read'])->name('ebook.read');
-    
+
     // Text content
-    Route::post('/api/set-reader-token', function(\Illuminate\Http\Request $request) {
+    Route::post('/api/set-reader-token', function (\Illuminate\Http\Request $request) {
         session(['reader_token_' . $request->ebook_id => $request->token]);
         return response()->json(['success' => true]);
     });
     Route::get('/api/ebook/{id}/content', [\App\Http\Controllers\User\EbookReaderController::class, 'getContent'])->name('ebook.content');
-    
+
     // PDF handling
     Route::post('/api/set-pdf-token', [\App\Http\Controllers\User\EbookReaderController::class, 'setPdfToken']);
     Route::get('/api/ebook/{id}/pdf', [\App\Http\Controllers\User\EbookReaderController::class, 'servePdf'])->name('ebook.pdf');
