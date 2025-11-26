@@ -94,7 +94,7 @@
 
         .back-btn {
             padding: 0.5rem 1rem;
-            background: #7367f0;
+            background: #ff263f;
             color: white;
             text-decoration: none;
             border-radius: 6px;
@@ -103,7 +103,7 @@
         }
 
         .back-btn:hover {
-            background: #5e50ee;
+            background: #ff263f;
         }
 
         /* Reader Container */

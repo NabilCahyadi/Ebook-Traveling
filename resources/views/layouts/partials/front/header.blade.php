@@ -59,7 +59,7 @@
                                 <option value="">All Categories</option>
                                 <!-- Add categories dynamically -->
                             </select>
-                            <input type="text" name="q" placeholder="Search for items..." />
+                            <input type="text" name="q" placeholder="Search by E-book Title or Author..." />
                         </form>
                     </div>
                     <div class="header-action-right">
@@ -148,7 +148,7 @@
         <div class="mobile-header-content-area">
             <div class="mobile-search search-style-3 mobile-header-border">
                 <form action="{{ route('shop.search') }}" method="GET">
-                    <input type="text" name="q" placeholder="Search for items…" />
+                    <input type="text" name="q" placeholder="Search by E-book Title or Author..." />
                     <button type="submit"><i class="fi-rs-search"></i></button>
                 </form>
             </div>
