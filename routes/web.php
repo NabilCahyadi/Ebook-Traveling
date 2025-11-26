@@ -6,8 +6,47 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
 });
+Route::get('/pricing', function () {
+    return view('pricing');
+})->name('pricing');
+Route::get('/destinations', function () {
+    return view('destinations');
+})->name('destinations');
+route::get('/blogs', function () {
+    return view('blogs');
+})->name('blogs');
+route::get('/promo', function () {
+    return view('promo');
+})->name('promo');
+route::get('/contact', function () {
+    return view('contact');
+})->name('contact');
+route::get('/help-center', function () {
+    return view('help-center');
+})->name('help-center');
+route::get('/about-us', function () {
+    return view('about-us');
+})->name('about-us');
+route::get('/terms-conditions', function () {
+    return view('terms-conditions');
+})->name('terms-conditions');
+route::get('/privacy-policy', function () {
+    return view('privacy-policy');
+})->name('privacy-policy');
+route::get('/shopping-policy', function () {
+    return view('shopping-policy');
+})->name('shopping-policy');
+route::get('/payment-policy', function () {
+    return view('payment-policy');
+})->name('payment-policy');
+route::get('/faq', function () {
+    return view('faq');
+})->name('faq');
+route::get('/page-account', function () {
+    return view('page-account');
+})->name('page-account');
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
