@@ -7,6 +7,7 @@ use App\Services\AuthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Log;
 
 class RegisterController extends Controller
 {
@@ -116,7 +117,7 @@ class RegisterController extends Controller
             return redirect()->route('dashboard')
                 ->with('success', 'Welcome to Ebook Traveling, ' . $user->name . '! Your account has been created successfully.');
         } catch (\Exception $e) {
-            \Log::error('Google Registration Error: ' . $e->getMessage());
+            Log::error('Google Registration Error: ' . $e->getMessage());
             return back()->with('error', 'Registration failed: ' . $e->getMessage());
         }
     }
