@@ -8,6 +8,11 @@ use Illuminate\Support\Collection;
 interface UserRepositoryInterface
 {
     /**
+     * Get all users.
+     */
+    public function getAll(): Collection;
+
+    /**
      * Get all users with pagination.
      */
     public function getAllPaginated(int $perPage = 15): mixed;

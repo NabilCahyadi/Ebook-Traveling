@@ -18,7 +18,7 @@ class AdminMiddleware
     {
         // Check if user is authenticated
         if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'Please login first.');
+            return redirect()->route('admin.login')->with('error', 'Please login as admin first.');
         }
 
         // Check if user has admin access
@@ -34,7 +34,7 @@ class AdminMiddleware
             return $next($request);
         }
 
-        // Not authorized
-        abort(403, 'Unauthorized access. Admin only.');
+        // Not authorized - redirect to admin login
+        return redirect()->route('admin.login')->with('error', 'Unauthorized access. Admin only.');
     }
 }

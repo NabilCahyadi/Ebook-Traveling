@@ -9,6 +9,16 @@ use Illuminate\Support\Facades\Hash;
 class UserRepository implements UserRepositoryInterface
 {
     /**
+     * Get all users.
+     */
+    public function getAll(): \Illuminate\Support\Collection
+    {
+        return User::where('user_type', 'user')
+            ->orderBy('name', 'asc')
+            ->get(['id', 'name', 'email', 'phone']);
+    }
+
+    /**
      * Get all users with pagination.
      */
     public function getAllPaginated(int $perPage = 15): mixed
