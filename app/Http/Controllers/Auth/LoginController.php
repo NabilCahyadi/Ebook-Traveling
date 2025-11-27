@@ -53,6 +53,14 @@ class LoginController extends Controller
         $user = \App\Models\User::where($fieldType, $loginField)->first();
         \Log::info('User found', ['user' => $user ? $user->toArray() : 'null']);
 
+        // Block admin from logging in via user form
+        if ($user && isset($user->user_type) && $user->user_type === 'admin') {
+            \Log::warning('Admin attempted to login via user form', ['email' => $loginField]);
+            throw ValidationException::withMessages([
+                'email' => __('Please use the admin login page to access your account.'),
+            ]);
+        }
+
         if (Auth::attempt([$fieldType => $loginField, 'password' => $password], $remember)) {
             $request->session()->regenerate();
 

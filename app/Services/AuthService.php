@@ -77,6 +77,32 @@ class AuthService
     }
 
     /**
+     * Attempt to login admin user.
+     */
+    public function attemptAdminLogin(string $email, string $password, bool $remember = false): User
+    {
+        $credentials = [
+            'email' => $email,
+            'password' => $password,
+            'user_type' => 'admin',
+            'status' => 'active'
+        ];
+
+        if (!Auth::attempt($credentials, $remember)) {
+            throw new \Exception('Invalid credentials or you do not have admin access.');
+        }
+
+        $user = Auth::user();
+        
+        // Update last login
+        $this->userRepository->update($user, [
+            'last_login_at' => now()
+        ]);
+
+        return $user;
+    }
+
+    /**
      * Handle Google OAuth callback.
      */
     public function handleGoogleCallback($googleUser): array
@@ -105,6 +131,40 @@ class AuthService
                 'avatar' => $googleUser->getAvatar(),
             ]
         ];
+    }
+
+    /**
+     * Handle Google OAuth callback for admin.
+     */
+    public function handleAdminGoogleCallback($googleUser): User
+    {
+        $user = $this->userRepository->findByEmail($googleUser->getEmail());
+
+        if (!$user) {
+            throw new \Exception('No admin account found with this Google email.');
+        }
+
+        if ($user->user_type !== 'admin' || $user->status !== 'active') {
+            throw new \Exception('You do not have admin access.');
+        }
+
+        // Update Google ID if not set
+        if (!$user->google_id) {
+            $this->userRepository->update($user, [
+                'google_id' => $googleUser->getId(),
+                'avatar' => $googleUser->getAvatar(),
+            ]);
+        }
+
+        // Update last login
+        $this->userRepository->update($user, [
+            'last_login_at' => now()
+        ]);
+
+        // Login the admin user
+        Auth::login($user);
+
+        return $user;
     }
 
     /**

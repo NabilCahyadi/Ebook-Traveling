@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 
 Route::get('/', function () {
     return view('index');
@@ -47,6 +48,22 @@ route::get('/faq', function () {
 route::get('/page-account', function () {
     return view('page-account');
 })->name('page-account');
+
+// Admin Authentication Routes
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::middleware('guest')->group(function () {
+        Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
+        Route::post('/login', [AdminAuthController::class, 'login'])->name('login.post');
+        
+        // Google OAuth Routes for Admin
+        Route::get('/login/google', [AdminAuthController::class, 'redirectToGoogle'])->name('login.google');
+        Route::get('/login/google/callback', [AdminAuthController::class, 'handleGoogleCallback'])->name('login.google.callback');
+    });
+
+    Route::middleware('auth')->group(function () {
+        Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
+    });
+});
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -99,7 +116,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Admin Routes
-Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // User Management Routes
@@ -113,4 +130,22 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 
     // City Routes
     Route::resource('cities', \App\Http\Controllers\Admin\CityController::class);
+
+    // Subscription Plan Routes
+    Route::resource('subscription-plans', \App\Http\Controllers\Admin\SubscriptionPlanController::class);
+
+    // Manual Subscription Routes
+    Route::resource('manual-subscriptions', \App\Http\Controllers\Admin\ManualSubscriptionController::class);
+    Route::get('manual-subscriptions/{id}/extend', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'extend'])->name('manual-subscriptions.extend');
+    Route::post('manual-subscriptions/{id}/extend', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'processExtend'])->name('manual-subscriptions.process-extend');
+    Route::post('manual-subscriptions/{id}/cancel', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'cancel'])->name('manual-subscriptions.cancel');
+
+    // Payment Link Routes
+    Route::get('payment-links', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'paymentLinks'])->name('payment-links.index');
+    Route::get('payment-links/create', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'showPaymentLinkForm'])->name('payment-links.create');
+    Route::post('payment-links/generate', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'generatePaymentLink'])->name('payment-links.generate');
+    Route::get('payment-links/{id}', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'showPaymentLink'])->name('manual-subscriptions.payment-link.show');
+
+    // Blog Routes
+    Route::resource('blogs', \App\Http\Controllers\Admin\BlogController::class);
 });

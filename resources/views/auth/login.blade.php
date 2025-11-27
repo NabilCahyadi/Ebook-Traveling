@@ -11,7 +11,6 @@
                 <h1>Create Account</h1>
                 <div class="social-container">
                     <a href="{{ route('login.google') }}" class="social"><i class="fab fa-google"></i></a>
-                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
                 </div>
                 <span>or use your email for registration</span>
                 <input type="text" name="name" placeholder="Name" value="{{ old('name') }}" required />
@@ -29,7 +28,6 @@
                 <h1>Sign in</h1>
                 <div class="social-container">
                     <a href="{{ route('login.google') }}" class="social"><i class="fab fa-google"></i></a>
-                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
                 </div>
                 <span>or use your account</span>
 
