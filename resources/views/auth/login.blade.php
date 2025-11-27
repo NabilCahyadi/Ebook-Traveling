@@ -17,6 +17,14 @@
                 <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" required />
                 <input type="password" name="password" placeholder="Password" required />
                 <input type="password" name="password_confirmation" placeholder="Confirm Password" required />
+                
+                <div class="terms-container">
+                    <label style="font-size: 12px; display: flex; align-items: center; gap: 5px;">
+                        <input type="checkbox" name="terms" value="1" {{ old('terms') ? 'checked' : '' }} required>
+                        I agree to the <a href="{{ route('terms') }}" target="_blank" style="color: #ff4b2b;">Terms and Conditions</a>
+                    </label>
+                </div>
+                
                 <button type="submit">Sign Up</button>
             </form>
         </div>
@@ -128,6 +136,25 @@
             }
 
             .remember-forgot a:hover {
+                text-decoration: underline;
+            }
+
+            .terms-container {
+                width: 100%;
+                margin: 10px 0;
+                text-align: left;
+            }
+
+            .terms-container label {
+                cursor: pointer;
+            }
+
+            .terms-container a {
+                color: #ff4b2b;
+                text-decoration: none;
+            }
+
+            .terms-container a:hover {
                 text-decoration: underline;
             }
         </style>
