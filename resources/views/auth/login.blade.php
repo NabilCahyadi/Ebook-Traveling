@@ -21,7 +21,7 @@
                 <div class="terms-container">
                     <label style="font-size: 12px; display: flex; align-items: center; gap: 5px;">
                         <input type="checkbox" name="terms" value="1" {{ old('terms') ? 'checked' : '' }} required>
-                        I agree to the <a href="{{ route('terms') }}" target="_blank" style="color: #ff4b2b;">Terms and Conditions</a>
+                        I agree to the Terms and Conditions
                     </label>
                 </div>
                 
