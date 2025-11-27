@@ -37,7 +37,7 @@ Route::get('/promo', function () {
 // Contact Page
 Route::get('/contact', function () {
     return view('contact');
-})->name('contact');
+})->name('page.contact');
 
 // Help Center
 Route::get('/help-center', function () {
@@ -47,7 +47,7 @@ Route::get('/help-center', function () {
 // About Us
 Route::get('/about-us', function () {
     return view('about-us');
-})->name('about-us');
+})->name('page.about');  // Alias untuk kompatibilitas
 
 // Terms & Conditions
 Route::get('/terms-conditions', function () {
@@ -77,4 +77,4 @@ Route::get('/faq', function () {
 // Page Account (Public account page/info)
 Route::get('/page-account', function () {
     return view('page-account');
-})->name('page-account');
+})->name('page.account');
