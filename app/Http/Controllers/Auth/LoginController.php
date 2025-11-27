@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
@@ -43,7 +44,7 @@ class LoginController extends Controller
         // Determine if login field is email or phone
         $fieldType = filter_var($loginField, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
 
-        \Log::info('Login attempt', [
+        Log::info('Login attempt', [
             'field_type' => $fieldType,
             'login_field' => $loginField,
             'credentials' => [$fieldType => $loginField]
@@ -51,11 +52,11 @@ class LoginController extends Controller
 
         // Check if user exists
         $user = \App\Models\User::where($fieldType, $loginField)->first();
-        \Log::info('User found', ['user' => $user ? $user->toArray() : 'null']);
+        Log::info('User found', ['user' => $user ? $user->toArray() : 'null']);
 
         // Block admin from logging in via user form
         if ($user && isset($user->user_type) && $user->user_type === 'admin') {
-            \Log::warning('Admin attempted to login via user form', ['email' => $loginField]);
+            Log::warning('Admin attempted to login via user form', ['email' => $loginField]);
             throw ValidationException::withMessages([
                 'email' => __('Please use the admin login page to access your account.'),
             ]);
@@ -66,18 +67,18 @@ class LoginController extends Controller
 
             $user = Auth::user();
 
-            \Log::info('Login successful', ['user_type' => $user->user_type]);
+            Log::info('Login successful', ['user_type' => $user->user_type]);
 
             // Redirect based on user type/role
             $redirectRoute = $this->getRedirectRoute($user);
 
-            \Log::info('Redirecting to', ['route' => $redirectRoute]);
+            Log::info('Redirecting to', ['route' => $redirectRoute]);
 
             return redirect()->intended(route($redirectRoute))
                 ->with('success', 'Welcome back, ' . $user->name . '!');
         }
 
-        \Log::warning('Login failed', ['field' => $loginField]);
+        Log::warning('Login failed', ['field' => $loginField]);
 
         throw ValidationException::withMessages([
             'email' => __('The provided credentials do not match our records.'),
@@ -157,7 +158,7 @@ class LoginController extends Controller
                     ->with('info', 'Please complete your registration to continue.');
             }
         } catch (\Exception $e) {
-            \Log::error('Google OAuth Error: ' . $e->getMessage());
+            Log::error('Google OAuth Error: ' . $e->getMessage());
             return redirect()->route('login')
                 ->with('error', 'Unable to login with Google: ' . $e->getMessage());
         }
