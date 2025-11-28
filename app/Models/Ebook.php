@@ -24,8 +24,6 @@ class Ebook extends Model
         'preview_content',
         'page_count',
         'language',
-        'price',
-        'discount_price',
         'is_featured',
         'is_free',
         'status',

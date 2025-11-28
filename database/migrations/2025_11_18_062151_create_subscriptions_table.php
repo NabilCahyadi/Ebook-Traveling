@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('user_id');
-            $table->uuid('plan_id');
+            $table->uuid('subscription_plan_id'); // Changed from plan_id to subscription_plan_id
             $table->string('subscription_code', 100)->unique();
             $table->date('start_date');
             $table->date('end_date');
@@ -24,8 +24,9 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('plan_id')->references('id')->on('subscription_plans')->onDelete('cascade');
+            $table->foreign('subscription_plan_id')->references('id')->on('subscription_plans')->onDelete('cascade');
             $table->index('user_id');
+            $table->index('subscription_plan_id');
             $table->index('status');
             $table->index('end_date');
         });

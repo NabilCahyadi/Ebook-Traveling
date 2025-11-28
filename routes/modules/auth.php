@@ -35,7 +35,7 @@ Route::middleware('guest')->group(function () {
 Route::prefix('admin')->name('admin.')->middleware('guest')->group(function () {
     Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AdminAuthController::class, 'login'])->name('login.post');
-    
+
     // Google OAuth Routes for Admin
     Route::get('/login/google', [AdminAuthController::class, 'redirectToGoogle'])->name('login.google');
     Route::get('/login/google/callback', [AdminAuthController::class, 'handleGoogleCallback'])->name('login.google.callback');
@@ -48,12 +48,12 @@ Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admi
 // Dashboard Redirect (Auto-redirect based on user type)
 Route::get('/dashboard', function () {
     $user = auth()->user();
-    
+
     if ($user->user_type === 'admin') {
         return redirect()->route('admin.dashboard');
     } elseif ($user->user_type === 'creator') {
         return redirect()->route('creator.dashboard');
     }
-    
+
     return redirect()->route('user.dashboard');
 })->middleware('auth')->name('dashboard');

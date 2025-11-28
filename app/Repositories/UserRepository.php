@@ -13,7 +13,8 @@ class UserRepository implements UserRepositoryInterface
      */
     public function getAll(): \Illuminate\Support\Collection
     {
-        return User::where('user_type', 'user')
+        return User::whereIn('user_type', ['user', 'customer', 'creator'])
+            ->orWhereNull('user_type')
             ->orderBy('name', 'asc')
             ->get(['id', 'name', 'email', 'phone']);
     }
@@ -29,7 +30,7 @@ class UserRepository implements UserRepositoryInterface
     /**
      * Find user by ID.
      */
-    public function findById(int $id): ?User
+    public function findById(string $id): ?User
     {
         return User::find($id);
     }

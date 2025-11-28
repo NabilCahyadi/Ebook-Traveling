@@ -34,83 +34,148 @@
             </div>
         </div>
 
-        <!-- Cities Table -->
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Cities</h5>
-                <div class="text-muted">Total: {{ $cities->total() }} cities</div>
-            </div>
+        <!-- Search and Filter -->
+        <div class="card mb-4">
             <div class="card-body">
-                @if ($cities->count() > 0)
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>City Name</th>
-                                    <th>Country</th>
-                                    <th>Total Ebooks</th>
-                                    <th>Created</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($cities as $city)
-                                    <tr>
-                                        <td><strong>#{{ $city->id }}</strong></td>
-                                        <td>
-                                            <div class="fw-medium">
-                                                <i class="ti ti-map-pin ti-xs me-1"></i>
-                                                {{ $city->name }}
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-label-primary">{{ $city->country }}</span>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-label-info">{{ $city->ebooks_count }} ebooks</span>
-                                        </td>
-                                        <td>
-                                            <small class="text-muted">{{ $city->created_at->format('d M Y') }}</small>
-                                        </td>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-icon btn-primary"
-                                                onclick="editCity({{ $city->id }}, '{{ $city->name }}', '{{ $city->country }}')">
-                                                <i class="ti ti-pencil"></i>
-                                            </button>
-                                            <form action="{{ route('admin.cities.destroy', $city->id) }}" method="POST"
-                                                class="d-inline"
-                                                onsubmit="return confirm('Are you sure you want to delete this city?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-icon btn-danger">
-                                                    <i class="ti ti-trash"></i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
+                <form action="{{ route('admin.cities.index') }}" method="GET">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label for="search" class="form-label">Search</label>
+                            <input type="text" class="form-control" id="search" name="search" 
+                                   value="{{ request('search') }}" placeholder="Search by city name or province...">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="province" class="form-label">Filter by Province</label>
+                            <select class="form-select" id="province" name="province">
+                                <option value="">All Provinces</option>
+                                @foreach($provinces as $province)
+                                    <option value="{{ $province }}" {{ request('province') == $province ? 'selected' : '' }}>
+                                        {{ $province }}
+                                    </option>
                                 @endforeach
-                            </tbody>
-                        </table>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="sort_by" class="form-label">Sort By</label>
+                            <select class="form-select" id="sort_by" name="sort_by">
+                                <option value="created_at" {{ request('sort_by') == 'created_at' ? 'selected' : '' }}>Date</option>
+                                <option value="name" {{ request('sort_by') == 'name' ? 'selected' : '' }}>Name</option>
+                                <option value="province" {{ request('sort_by') == 'province' ? 'selected' : '' }}>Province</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="sort_order" class="form-label">Order</label>
+                            <select class="form-select" id="sort_order" name="sort_order">
+                                <option value="asc" {{ request('sort_order') == 'asc' ? 'selected' : '' }}>Ascending</option>
+                                <option value="desc" {{ request('sort_order') == 'desc' ? 'selected' : '' }}>Descending</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="ti ti-search"></i>
+                            </button>
+                        </div>
+                        @if(request()->hasAny(['search', 'province', 'sort_by', 'sort_order']))
+                            <div class="col-12">
+                                <a href="{{ route('admin.cities.index') }}" class="btn btn-label-secondary">
+                                    <i class="ti ti-x me-1"></i> Clear Filters
+                                </a>
+                            </div>
+                        @endif
                     </div>
-
-                    <!-- Pagination -->
-                    <div class="mt-4">
-                        {{ $cities->links() }}
-                    </div>
-                @else
-                    <div class="text-center py-5">
-                        <i class="ti ti-map-off ti-xl text-muted mb-3"></i>
-                        <h5 class="text-muted">No cities found</h5>
-                        <p class="text-muted">Start by creating your first city</p>
-                        <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal"
-                            data-bs-target="#createModal">
-                            <i class="ti ti-plus me-1"></i> Add New City
-                        </button>
-                    </div>
-                @endif
+                </form>
             </div>
         </div>
+
+        <!-- Cities Cards -->
+        @if ($cities->count() > 0)
+            <div class="mb-3 d-flex justify-content-between align-items-center">
+                <div class="text-muted">Total: {{ $cities->total() }} cities</div>
+                <div class="text-muted">
+                    Showing {{ $cities->firstItem() }} to {{ $cities->lastItem() }} of {{ $cities->total() }} results
+                </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+                @foreach ($cities as $city)
+                    <div class="col-md-6 col-lg-4 col-xl-3">
+                        <div class="card h-100 shadow-sm">
+                            <!-- Image Header -->
+                            <div class="position-relative"
+                                style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); overflow: hidden;">
+                                <div class="position-absolute top-0 end-0 m-2">
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-icon btn-white" type="button"
+                                            data-bs-toggle="dropdown">
+                                            <i class="ti ti-dots-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li>
+                                                <a class="dropdown-item" href="javascript:void(0);"
+                                                    onclick="editCity('{{ $city->id }}', '{{ $city->name }}', '{{ $city->province }}')">
+                                                    <i class="ti ti-pencil me-2"></i> Edit
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
+                                            <li>
+                                                <form action="{{ route('admin.cities.destroy', $city->id) }}" method="POST"
+                                                    onsubmit="return confirm('Are you sure you want to delete this city?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="dropdown-item text-danger">
+                                                        <i class="ti ti-trash me-2"></i> Delete
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <!-- Placeholder Image/Icon -->
+                                <div class="d-flex align-items-center justify-content-center h-100">
+                                    <div class="text-center text-white">
+                                        <i class="ti ti-map-pin" style="font-size: 64px; opacity: 0.3;"></i>
+                                        <div class="mt-2"
+                                            style="font-size: 24px; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                                            foto
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <h5 class="card-title mb-2" style="font-weight: 600;">{{ $city->name }}</h5>
+                                <p class="text-muted mb-2" style="font-size: 14px;">
+                                    <i class="ti ti-map ti-xs me-1"></i>{{ $city->province }}
+                                </p>
+                                <small class="text-muted">
+                                    <i class="ti ti-calendar ti-xs me-1"></i>{{ $city->created_at->format('d M Y') }}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <!-- Pagination -->
+            <div class="d-flex justify-content-center">
+                {{ $cities->links() }}
+            </div>
+        @else
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="ti ti-map-off ti-xl text-muted mb-3"></i>
+                    <h5 class="text-muted">No cities found</h5>
+                    <p class="text-muted">Start by creating your first city</p>
+                    <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal"
+                        data-bs-target="#createModal">
+                        <i class="ti ti-plus me-1"></i> Add New City
+                    </button>
+                </div>
+            </div>
+        @endif
     </div>
 
     <!-- Create Modal -->
@@ -133,10 +198,11 @@
                             @enderror
                         </div>
                         <div class="mb-3">
-                            <label for="country" class="form-label">Country <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('country') is-invalid @enderror" id="country"
-                                name="country" value="{{ old('country') }}" placeholder="e.g. Indonesia" required>
-                            @error('country')
+                            <label for="province" class="form-label">Province <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control @error('province') is-invalid @enderror"
+                                id="province" name="province" value="{{ old('province') }}" placeholder="e.g. Jawa Barat"
+                                required>
+                            @error('province')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -171,10 +237,10 @@
                                 placeholder="e.g. Bali" required>
                         </div>
                         <div class="mb-3">
-                            <label for="edit_country" class="form-label">Country <span
+                            <label for="edit_province" class="form-label">Province <span
                                     class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="edit_country" name="country"
-                                placeholder="e.g. Indonesia" required>
+                            <input type="text" class="form-control" id="edit_province" name="province"
+                                placeholder="e.g. Jawa Barat" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -190,10 +256,10 @@
 
     @push('scripts')
         <script>
-            function editCity(id, name, country) {
+            function editCity(id, name, province) {
                 document.getElementById('editForm').action = '/admin/cities/' + id;
                 document.getElementById('edit_name').value = name;
-                document.getElementById('edit_country').value = country;
+                document.getElementById('edit_province').value = province;
                 new bootstrap.Modal(document.getElementById('editModal')).show();
             }
 
@@ -202,5 +268,19 @@
                 new bootstrap.Modal(document.getElementById('createModal')).show();
             @endif
         </script>
+    @endpush
+
+    @push('styles')
+        <style>
+            /* Fix pagination styling */
+            .pagination {
+                margin: 0;
+            }
+
+            .pagination .page-link {
+                padding: 0.375rem 0.75rem;
+                font-size: 0.9375rem;
+            }
+        </style>
     @endpush
 @endsection

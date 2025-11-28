@@ -75,6 +75,48 @@
             </a>
         </li>
 
+        <!-- Subscription Management -->
+        <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">Subscription Management</span>
+        </li>
+
+        <!-- Subscription Plans -->
+        <li class="menu-item {{ Request::is('admin/subscription-plans*') ? 'active' : '' }}">
+            <a href="{{ route('admin.subscription-plans.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-crown"></i>
+                <div data-i18n="Subscription Plans">Subscription Plans</div>
+            </a>
+        </li>
+
+        <!-- Manual Subscriptions -->
+        <li class="menu-item {{ Request::is('admin/manual-subscriptions*') ? 'active' : '' }}">
+            <a href="{{ route('admin.manual-subscriptions.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-clipboard-check"></i>
+                <div data-i18n="Manual Subscriptions">Manual Subscriptions</div>
+            </a>
+        </li>
+
+        <!-- Payment Links -->
+        <li class="menu-item {{ Request::is('admin/payment-links*') ? 'active' : '' }}">
+            <a href="{{ route('admin.payment-links.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-link"></i>
+                <div data-i18n="Payment Links">Payment Links</div>
+            </a>
+        </li>
+
+        <!-- Content Management -->
+        <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">Content Management</span>
+        </li>
+
+        <!-- Blogs -->
+        <li class="menu-item {{ Request::is('admin/blogs*') ? 'active' : '' }}">
+            <a href="{{ route('admin.blogs.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-article"></i>
+                <div data-i18n="Blogs">Blogs</div>
+            </a>
+        </li>
+
         <!-- Users Management -->
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">User Management</span>

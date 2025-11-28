@@ -14,7 +14,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = EbookCategory::withCount('ebooks')->paginate(10);
+        $categories = EbookCategory::withCount('ebooks')->paginate(5);
         return view('admin.categories.index', compact('categories'));
     }
 

@@ -17,14 +17,14 @@
                 <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" required />
                 <input type="password" name="password" placeholder="Password" required />
                 <input type="password" name="password_confirmation" placeholder="Confirm Password" required />
-                
+
                 <div class="terms-container">
                     <label style="font-size: 12px; display: flex; align-items: center; gap: 5px;">
                         <input type="checkbox" name="terms" value="1" {{ old('terms') ? 'checked' : '' }} required>
                         I agree to the Terms and Conditions
                     </label>
                 </div>
-                
+
                 <button type="submit">Sign Up</button>
             </form>
         </div>

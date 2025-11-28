@@ -47,24 +47,24 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     // System Settings
     // Route::get('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings');
     // Route::put('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('settings.update');
-    
+
     // Reports & Analytics
     // Route::get('/reports', [\App\Http\Controllers\Admin\ReportController::class, 'index'])->name('reports');
     // Route::get('/reports/sales', [\App\Http\Controllers\Admin\ReportController::class, 'sales'])->name('reports.sales');
     // Route::get('/reports/users', [\App\Http\Controllers\Admin\ReportController::class, 'users'])->name('reports.users');
-    
+
     // Banner Management
     // Route::resource('banners', \App\Http\Controllers\Admin\BannerController::class);
-    
+
     // Promo Management
     // Route::resource('promos', \App\Http\Controllers\Admin\PromoController::class);
-    
+
     // FAQ Management
     // Route::resource('faqs', \App\Http\Controllers\Admin\FaqController::class);
-    
+
     // Static Page Management
     // Route::resource('pages', \App\Http\Controllers\Admin\PageController::class);
-    
+
     // Email Template Management
     // Route::resource('email-templates', \App\Http\Controllers\Admin\EmailTemplateController::class);
 });
