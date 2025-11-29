@@ -55,7 +55,11 @@
 
                             <!-- LOGOUT -->
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('logout') }}">
+                                {{-- Form Logout User --}}
+                                <form method="POST" action="{{ route('user.logout') }}" id="nav-logout-form" style="display: none;">
+                                    @csrf
+                                </form>
+                                <a class="nav-link" onclick="event.preventDefault(); document.getElementById('nav-logout-form').submit();">
                                     <i class="fi-rs-sign-out mr-10"></i>Logout
                                 </a>
                             </li>

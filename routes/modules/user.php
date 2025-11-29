@@ -10,10 +10,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('user')->name('user.')->middleware('auth')->group(function () {
-    // Dashboard
-    Route::get('/dashboard', function () {
-        return view('user.dashboard');
-    })->name('dashboard');
+
 
     // Ebook Reader Routes
     Route::get('/read/{slug}', [\App\Http\Controllers\User\EbookReaderController::class, 'read'])->name('ebook.read');

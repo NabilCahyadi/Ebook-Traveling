@@ -63,7 +63,7 @@ class LoginController extends Controller
         }
 
         if (Auth::attempt([$fieldType => $loginField, 'password' => $password], $remember)) {
-            $request->session()->regenerate();
+            // $request->session()->regenerate(); DIHAPUS SOALNYA INI CONFLICT yang bikin session user tidak terbaca
 
             $user = Auth::user();
 
@@ -99,7 +99,7 @@ class LoginController extends Controller
                 case 'customer':
                 case 'user':
                 default:
-                    return 'user.dashboard';
+                    return 'home';
             }
         }
 
@@ -109,21 +109,58 @@ class LoginController extends Controller
         }
 
         // Default to user dashboard
-        return 'user.dashboard';
+        return 'home';
     }
 
     /**
      * Logout the user.
      */
-    public function logout(Request $request)
+    // public function logout(Request $request)
+    // {
+    //     $this->authService->logout();
+
+    //     $request->session()->invalidate();
+    //     $request->session()->regenerateToken();
+
+    //     return redirect()->route('login')
+    //         ->with('success', 'You have been successfully logged out.');
+    // }
+
+    /**
+     * Logout untuk user regular.
+     */
+    public function userLogout(Request $request)
     {
-        $this->authService->logout();
+        Log::info('=== LOGIN CONTROLLER USER LOGOUT START ===', [
+            'user_id' => Auth::id(),
+            'session_id' => session()->getId()
+        ]);
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        // Gunakan AuthService untuk logout business logic
+        $logoutResult = $this->authService->logoutUser();
 
-        return redirect()->route('login')
-            ->with('success', 'You have been successfully logged out.');
+        if ($logoutResult['success']) {
+            // Invalidate session
+            $request->session()->invalidate();
+
+            // Regenerate CSRF token
+            $request->session()->regenerateToken();
+
+            Log::info('=== LOGIN CONTROLLER USER LOGOUT COMPLETE ===', [
+                'user_id' => $logoutResult['user_id'],
+                'redirect_to' => 'home'
+            ]);
+
+            return redirect()->route('home')
+                ->with('success', 'You have been successfully logged out.');
+        }
+
+        Log::error('=== LOGIN CONTROLLER USER LOGOUT FAILED ===', [
+            'error' => $logoutResult['error']
+        ]);
+
+        return redirect()->back()
+            ->with('error', 'Logout failed: ' . $logoutResult['error']);
     }
 
     /**

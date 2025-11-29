@@ -42,7 +42,7 @@ Route::prefix('admin')->name('admin.')->middleware('guest')->group(function () {
 });
 
 // Logout Routes (Authenticated)
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
+Route::post('/logout', [LoginController::class, 'userLogout'])->name('user.logout')->middleware('auth');
 Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout')->middleware('auth');
 
 // Dashboard Redirect (Auto-redirect based on user type)
@@ -55,5 +55,5 @@ Route::get('/dashboard', function () {
         return redirect()->route('creator.dashboard');
     }
 
-    return redirect()->route('user.dashboard');
+    return redirect()->route('home');
 })->middleware('auth')->name('dashboard');

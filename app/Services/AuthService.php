@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AuthService
 {
@@ -93,7 +94,7 @@ class AuthService
         }
 
         $user = Auth::user();
-        
+
         // Update last login
         $this->userRepository->update($user, [
             'last_login_at' => now()
@@ -170,8 +171,56 @@ class AuthService
     /**
      * Logout user.
      */
-    public function logout(): void
+    // public function logout(): void
+    // {
+    //     Auth::logout();
+    // }
+
+    /**
+     * Logout user dengan redirect ke home page.
+     */
+    public function logoutUser(): array
     {
-        Auth::logout();
+        try {
+            $user = Auth::user();
+            $userId = $user ? $user->id : null;
+            $userEmail = $user ? $user->email : 'Unknown';
+
+            Log::info('=== USER LOGOUT START ===', [
+                'user_id' => $userId,
+                'email' => $userEmail,
+                'user_type' => $user->user_type ?? 'user',
+                'session_id' => session()->getId()
+            ]);
+
+            // Logout dari Auth
+            Auth::logout();
+
+            // Clear session untuk memastikan
+            session()->flush();
+
+            Log::info('=== USER LOGOUT SUCCESS ===', [
+                'user_id' => $userId,
+                'auth_check_after' => Auth::check() ? 'TRUE' : 'FALSE'
+            ]);
+
+            return [
+                'success' => true,
+                'user_id' => $userId,
+                'redirect_to' => 'home',
+                'message' => 'User logged out successfully'
+            ];
+        } catch (\Exception $e) {
+            Log::error('=== USER LOGOUT FAILED ===', [
+                'error' => $e->getMessage(),
+                'user_id' => Auth::id() ?? 'Unknown'
+            ]);
+
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+                'message' => 'Logout failed'
+            ];
+        }
     }
 }
