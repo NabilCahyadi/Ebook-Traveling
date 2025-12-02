@@ -261,4 +261,37 @@ class ManualSubscriptionController extends Controller
 
         return view('admin.manual-subscriptions.payment-links-list', compact('paymentLinks', 'search'));
     }
+
+    /**
+     * Search users for autocomplete (AJAX)
+     * Filter out admin users
+     */
+    public function searchUsers(Request $request)
+    {
+        $search = $request->get('q', '');
+
+        if (strlen($search) < 2) {
+            return response()->json([]);
+        }
+
+        // Get admin role IDs
+        $adminRoleIds = \App\Models\Role::where('name', 'admin')
+            ->orWhere('name', 'super_admin')
+            ->pluck('id');
+
+        // Get user IDs that have admin role
+        $adminUserIds = \App\Models\UserRole::whereIn('role_id', $adminRoleIds)
+            ->pluck('user_id');
+
+        // Search users excluding admins
+        $users = \App\Models\User::where(function ($query) use ($search) {
+            $query->where('name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%");
+        })
+            ->whereNotIn('id', $adminUserIds)
+            ->limit(10)
+            ->get(['id', 'name', 'email']);
+
+        return response()->json($users);
+    }
 }

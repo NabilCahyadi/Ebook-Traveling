@@ -46,7 +46,7 @@
             </a>
             <ul class="menu-sub">
                 <li
-                    class="menu-item {{ Request::is('admin/ebooks') && !Request::is('admin/ebooks/create') ? 'active' : '' }}">
+                    class="menu-item {{ Request::is('admin/ebooks') && !Request::is('admin/ebooks/create') && !Request::is('admin/ebooks/pending-approval') ? 'active' : '' }}">
                     <a href="{{ route('admin.ebooks.index') }}" class="menu-link">
                         <div data-i18n="All Ebooks">All Ebooks</div>
                     </a>
@@ -54,6 +54,17 @@
                 <li class="menu-item {{ Request::is('admin/ebooks/create') ? 'active' : '' }}">
                     <a href="{{ route('admin.ebooks.create') }}" class="menu-link">
                         <div data-i18n="Add New">Add New</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('admin/ebooks/pending-approval') ? 'active' : '' }}">
+                    <a href="{{ route('admin.ebooks.pending-approval') }}" class="menu-link">
+                        <div data-i18n="Pending Approval">Pending Approval</div>
+                        @php
+                            $pendingCount = \App\Models\Ebook::where('status', 'waiting_approval')->count();
+                        @endphp
+                        @if ($pendingCount > 0)
+                            <span class="badge bg-warning rounded-pill ms-auto">{{ $pendingCount }}</span>
+                        @endif
                     </a>
                 </li>
             </ul>
@@ -72,6 +83,49 @@
             <a href="{{ route('admin.cities.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-map-pin"></i>
                 <div data-i18n="Cities">Cities</div>
+            </a>
+        </li>
+
+        <!-- Users Management -->
+        <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">User Management</span>
+        </li>
+        <li class="menu-item {{ Request::is('admin/users*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-users"></i>
+                <div data-i18n="Users">Users</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ Request::is('admin/users') && !Request::get('role') ? 'active' : '' }}">
+                    <a href="{{ route('admin.users.index') }}" class="menu-link">
+                        <div data-i18n="All Users">All Users</div>
+                    </a>
+                </li>
+                @if (isset($sidebarRoles) && $sidebarRoles->count() > 0)
+                    @foreach ($sidebarRoles as $role)
+                        <li class="menu-item {{ Request::get('role') === $role->slug ? 'active' : '' }}">
+                            <a href="{{ route('admin.users.index', ['role' => $role->slug]) }}" class="menu-link">
+                                <div data-i18n="{{ $role->name }}">{{ $role->name }}</div>
+                            </a>
+                        </li>
+                    @endforeach
+                @endif
+            </ul>
+        </li>
+
+        <!-- Roles -->
+        <li class="menu-item {{ Request::is('admin/roles*') ? 'active' : '' }}">
+            <a href="{{ route('admin.roles.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-shield"></i>
+                <div data-i18n="Roles">Roles</div>
+            </a>
+        </li>
+
+        <!-- Permissions -->
+        <li class="menu-item {{ Request::is('admin/permissions*') ? 'active' : '' }}">
+            <a href="{{ route('admin.permissions.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-lock"></i>
+                <div data-i18n="Permissions">Permissions</div>
             </a>
         </li>
 
@@ -96,11 +150,19 @@
             </a>
         </li>
 
-        <!-- Payment Links -->
-        <li class="menu-item {{ Request::is('admin/payment-links*') ? 'active' : '' }}">
-            <a href="{{ route('admin.payment-links.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-link"></i>
-                <div data-i18n="Payment Links">Payment Links</div>
+        <!-- Active Subscribers -->
+        <li class="menu-item {{ Request::is('admin/active-subscribers*') ? 'active' : '' }}">
+            <a href="{{ route('admin.active-subscribers.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-users-group"></i>
+                <div data-i18n="Active Subscribers">Active Subscribers</div>
+            </a>
+        </li>
+
+        <!-- Payment History -->
+        <li class="menu-item {{ Request::is('admin/subscription-history*') ? 'active' : '' }}">
+            <a href="{{ route('admin.subscription-history.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-history"></i>
+                <div data-i18n="Payment History">Payment History</div>
             </a>
         </li>
 
@@ -114,17 +176,6 @@
             <a href="{{ route('admin.blogs.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-article"></i>
                 <div data-i18n="Blogs">Blogs</div>
-            </a>
-        </li>
-
-        <!-- Users Management -->
-        <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">User Management</span>
-        </li>
-        <li class="menu-item {{ Request::is('admin/users*') ? 'active' : '' }}">
-            <a href="{{ route('admin.users.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-users"></i>
-                <div data-i18n="Users">Users</div>
             </a>
         </li>
     </ul>

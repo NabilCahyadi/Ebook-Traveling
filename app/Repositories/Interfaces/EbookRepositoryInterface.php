@@ -20,7 +20,7 @@ interface EbookRepositoryInterface
     /**
      * Find ebook by ID.
      */
-    public function findById(int $id): ?Ebook;
+    public function findById(string $id): ?Ebook;
 
     /**
      * Find ebook by slug.
@@ -45,12 +45,12 @@ interface EbookRepositoryInterface
     /**
      * Get ebooks by category.
      */
-    public function getByCategory(int $categoryId): Collection;
+    public function getByCategory(string $categoryId): Collection;
 
     /**
      * Get ebooks by city.
      */
-    public function getByCity(int $cityId): Collection;
+    public function getByCity(string $cityId): Collection;
 
     /**
      * Search ebooks.

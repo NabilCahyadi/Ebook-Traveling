@@ -11,15 +11,21 @@ class Category extends Model
     use HasFactory, HasUuids;
 
     protected $fillable = [
+        'id',
         'name',
         'slug',
         'description',
+        'image',
+        'type',
         'icon',
         'color',
         'parent_id',
         'sort_order',
         'is_active',
     ];
+
+    protected $keyType = 'string';
+    public $incrementing = false;
 
     protected $casts = [
         'sort_order' => 'integer',
@@ -47,6 +53,6 @@ class Category extends Model
      */
     public function ebooks()
     {
-        return $this->belongsToMany(Ebook::class, 'ebook_categories');
+        return $this->belongsToMany(Ebook::class, 'ebook_categories', 'category_id', 'ebook_id');
     }
 }

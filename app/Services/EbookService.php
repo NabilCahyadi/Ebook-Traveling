@@ -35,7 +35,7 @@ class EbookService
     /**
      * Get ebook by ID.
      */
-    public function getEbookById(int $id): ?Ebook
+    public function getEbookById(string $id): ?Ebook
     {
         return $this->ebookRepository->findById($id);
     }
@@ -55,17 +55,11 @@ class EbookService
     {
         DB::beginTransaction();
         try {
-            // Handle file uploads
-            if (isset($data['cover_image'])) {
-                $data['cover_image'] = $data['cover_image']->store('ebooks/covers', 'public');
-            }
+            // cover_image is already processed as base64 in controller, no need to process here
 
-            if (isset($data['file_url'])) {
+            // Handle PDF file upload if provided
+            if (isset($data['file_url']) && is_object($data['file_url'])) {
                 $data['file_url'] = $data['file_url']->store('ebooks/files', 'public');
-            }
-
-            if (isset($data['pdf_file'])) {
-                $data['pdf_file'] = $data['pdf_file']->store('ebooks/pdfs', 'public');
             }
 
             $ebook = $this->ebookRepository->create($data);
@@ -76,14 +70,8 @@ class EbookService
             DB::rollBack();
 
             // Clean up uploaded files if transaction fails
-            if (isset($data['cover_image']) && is_string($data['cover_image'])) {
-                Storage::disk('public')->delete($data['cover_image']);
-            }
             if (isset($data['file_url']) && is_string($data['file_url'])) {
                 Storage::disk('public')->delete($data['file_url']);
-            }
-            if (isset($data['pdf_file']) && is_string($data['pdf_file'])) {
-                Storage::disk('public')->delete($data['pdf_file']);
             }
 
             throw $e;
@@ -93,7 +81,7 @@ class EbookService
     /**
      * Update ebook.
      */
-    public function updateEbook(int $id, array $data): bool
+    public function updateEbook(string $id, array $data): bool
     {
         DB::beginTransaction();
         try {
@@ -120,14 +108,6 @@ class EbookService
                 $data['file_url'] = $data['file_url']->store('ebooks/files', 'public');
             }
 
-            if (isset($data['pdf_file'])) {
-                // Delete old PDF
-                if ($ebook->pdf_file) {
-                    Storage::disk('public')->delete($ebook->pdf_file);
-                }
-                $data['pdf_file'] = $data['pdf_file']->store('ebooks/pdfs', 'public');
-            }
-
             $result = $this->ebookRepository->update($ebook, $data);
 
             DB::commit();
@@ -141,7 +121,7 @@ class EbookService
     /**
      * Delete ebook.
      */
-    public function deleteEbook(int $id): bool
+    public function deleteEbook(string $id): bool
     {
         DB::beginTransaction();
         try {
@@ -157,9 +137,6 @@ class EbookService
             }
             if ($ebook->file_url) {
                 Storage::disk('public')->delete($ebook->file_url);
-            }
-            if ($ebook->pdf_file) {
-                Storage::disk('public')->delete($ebook->pdf_file);
             }
 
             $result = $this->ebookRepository->delete($ebook);

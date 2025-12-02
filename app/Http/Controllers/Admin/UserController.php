@@ -18,10 +18,18 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = $this->userService->getAllUsers(5);
-        return view('admin.users.index', compact('users'));
+        $roleSlug = $request->get('role');
+        $search = $request->get('search');
+
+        if ($roleSlug && $roleSlug !== 'all') {
+            $users = $this->userService->getUsersByRole($roleSlug, 10, $search);
+        } else {
+            $users = $this->userService->getAllUsers(10, $search);
+        }
+
+        return view('admin.users.index', compact('users', 'roleSlug', 'search'));
     }
 
     /**

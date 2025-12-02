@@ -14,6 +14,7 @@ class SubscriptionPlan extends Model
         'name',
         'slug',
         'description',
+        'cover_image',
         'price',
         'duration_days',
         'features',

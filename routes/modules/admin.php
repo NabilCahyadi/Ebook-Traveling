@@ -17,7 +17,16 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     // User Management (All users: admin, creator, customer)
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
 
+    // Role Management
+    Route::resource('roles', \App\Http\Controllers\Admin\RoleController::class);
+
+    // Permission Management
+    Route::resource('permissions', \App\Http\Controllers\Admin\PermissionController::class);
+
     // Ebook Management (All ebooks in system)
+    Route::get('ebooks/pending-approval', [\App\Http\Controllers\Admin\EbookController::class, 'pendingApproval'])->name('ebooks.pending-approval');
+    Route::post('ebooks/{id}/approve', [\App\Http\Controllers\Admin\EbookController::class, 'approve'])->name('ebooks.approve');
+    Route::post('ebooks/{id}/reject', [\App\Http\Controllers\Admin\EbookController::class, 'reject'])->name('ebooks.reject');
     Route::resource('ebooks', \App\Http\Controllers\Admin\EbookController::class);
 
     // Category Management
@@ -30,16 +39,21 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('subscription-plans', \App\Http\Controllers\Admin\SubscriptionPlanController::class);
 
     // Manual Subscription Management
+    // AJAX endpoints - HARUS DI ATAS resource route
+    Route::get('manual-subscriptions/search-users', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'searchUsers'])->name('manual-subscriptions.search-users');
+
     Route::resource('manual-subscriptions', \App\Http\Controllers\Admin\ManualSubscriptionController::class);
     Route::get('manual-subscriptions/{id}/extend', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'extend'])->name('manual-subscriptions.extend');
     Route::post('manual-subscriptions/{id}/extend', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'processExtend'])->name('manual-subscriptions.process-extend');
     Route::post('manual-subscriptions/{id}/cancel', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'cancel'])->name('manual-subscriptions.cancel');
 
-    // Payment Link Management (Mayar.id Integration)
-    Route::get('payment-links', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'paymentLinks'])->name('payment-links.index');
-    Route::get('payment-links/create', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'showPaymentLinkForm'])->name('payment-links.create');
-    Route::post('payment-links/generate', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'generatePaymentLink'])->name('payment-links.generate');
-    Route::get('payment-links/{id}', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'showPaymentLink'])->name('manual-subscriptions.payment-link.show');
+    // Active Subscribers
+    Route::get('active-subscribers', [\App\Http\Controllers\Admin\SubscriberController::class, 'index'])->name('active-subscribers.index');
+
+    // Subscription History
+    Route::get('subscription-history', [\App\Http\Controllers\Admin\SubscriptionHistoryController::class, 'index'])->name('subscription-history.index');
+    Route::get('subscription-history/{id}', [\App\Http\Controllers\Admin\SubscriptionHistoryController::class, 'show'])->name('subscription-history.show');
+    Route::get('subscription-history-export', [\App\Http\Controllers\Admin\SubscriptionHistoryController::class, 'export'])->name('subscription-history.export');
 
     // Blog Management
     Route::resource('blogs', \App\Http\Controllers\Admin\BlogController::class);

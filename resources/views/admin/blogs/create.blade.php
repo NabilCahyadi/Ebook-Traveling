@@ -77,13 +77,22 @@
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="is_published" name="is_published"
-                                        {{ old('is_published') ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="is_published">
-                                        Publish immediately
-                                    </label>
-                                </div>
+                                <label class="form-label" for="status">Status <span class="text-danger">*</span></label>
+                                <select class="form-select @error('status') is-invalid @enderror" id="status"
+                                    name="status" required>
+                                    <option value="draft" {{ old('status', 'draft') == 'draft' ? 'selected' : '' }}>Draft
+                                    </option>
+                                    <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>
+                                        Published</option>
+                                    <option value="unpublished" {{ old('status') == 'unpublished' ? 'selected' : '' }}>
+                                        Unpublished</option>
+                                    <option value="archived" {{ old('status') == 'archived' ? 'selected' : '' }}>Archived
+                                    </option>
+                                </select>
+                                @error('status')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <div class="form-text">Set blog post status</div>
                             </div>
 
                             <div class="d-grid gap-2">

@@ -14,12 +14,10 @@ class Role extends Model
         'name',
         'slug',
         'description',
-        'level',
         'is_active',
     ];
 
     protected $casts = [
-        'level' => 'integer',
         'is_active' => 'boolean',
     ];
 

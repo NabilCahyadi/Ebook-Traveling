@@ -81,10 +81,14 @@
                                             <i class="bx bx-show me-1"></i>{{ number_format($blog->view_count) }}
                                         </td>
                                         <td>
-                                            @if ($blog->is_published)
+                                            @if ($blog->status === 'published')
                                                 <span class="badge bg-success">Published</span>
+                                            @elseif($blog->status === 'draft')
+                                                <span class="badge bg-warning">Draft</span>
+                                            @elseif($blog->status === 'unpublished')
+                                                <span class="badge bg-secondary">Unpublished</span>
                                             @else
-                                                <span class="badge bg-secondary">Draft</span>
+                                                <span class="badge bg-dark">Archived</span>
                                             @endif
                                         </td>
                                         <td>
@@ -96,28 +100,31 @@
                                         </td>
                                         <td>
                                             <div class="dropdown">
-                                                <button type="button" class="btn btn-sm btn-icon"
-                                                    data-bs-toggle="dropdown">
-                                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                                <button type="button"
+                                                    class="btn btn-sm btn-icon btn-text-secondary rounded-pill dropdown-toggle hide-arrow"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="ti ti-dots-vertical"></i>
                                                 </button>
-                                                <div class="dropdown-menu">
+                                                <div class="dropdown-menu dropdown-menu-end">
                                                     <a class="dropdown-item"
                                                         href="{{ route('admin.blogs.show', $blog->id) }}">
-                                                        <i class="bx bx-show me-2"></i> View
+                                                        <i class="ti ti-eye me-2"></i> View
                                                     </a>
                                                     <a class="dropdown-item"
                                                         href="{{ route('admin.blogs.edit', $blog->id) }}">
-                                                        <i class="bx bx-edit me-2"></i> Edit
+                                                        <i class="ti ti-pencil me-2"></i> Edit
                                                     </a>
                                                     <div class="dropdown-divider"></div>
                                                     <form action="{{ route('admin.blogs.destroy', $blog->id) }}"
-                                                        method="POST"
-                                                        onsubmit="return confirm('Are you sure you want to delete this blog?');">
+                                                        method="POST" style="display: none;"
+                                                        id="delete-blog-{{ $blog->id }}">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="dropdown-item text-danger">
-                                                            <i class="bx bx-trash me-2"></i> Delete
-                                                        </button>
+                                                    </form>
+                                                    <a class="dropdown-item text-danger" href="javascript:void(0);"
+                                                        onclick="if(confirm('Are you sure you want to delete this blog?')) document.getElementById('delete-blog-{{ $blog->id }}').submit();">
+                                                        <i class="ti ti-trash me-2"></i> Delete
+                                                    </a>
                                                     </form>
                                                 </div>
                                             </div>

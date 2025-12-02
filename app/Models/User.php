@@ -95,10 +95,10 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if user is customer.
+     * Check if user is member.
      */
-    public function isCustomer()
+    public function isMember()
     {
-        return $this->user_type === 'customer';
+        return $this->user_type === 'member';
     }
 }
