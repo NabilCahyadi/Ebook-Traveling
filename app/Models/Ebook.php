@@ -5,8 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Support\Str;
+use App\Models\EbookCategory;
+use App\Models\City;
+use App\Models\EbookSection;
+use App\Models\Rating;
+use App\Models\Collection;
 
 class Ebook extends Model
 {
@@ -35,6 +41,8 @@ class Ebook extends Model
     protected $casts = [
         'published_at' => 'datetime',
         'average_rating' => 'decimal:2',
+        'is_active' => 'boolean',
+        'id' => 'string',
     ];
 
     /**
@@ -104,6 +112,16 @@ class Ebook extends Model
     public function ratings(): HasMany
     {
         return $this->hasMany(Rating::class, 'ebook_id');
+    }
+
+    /**
+     * Get the collections that contain the ebook (many-to-many).
+     */
+    public function collections(): BelongsToMany
+    {
+        return $this->belongsToMany(Collection::class, 'collection_ebooks')
+            ->withPivot('order_index')
+            ->withTimestamps();
     }
 
     /**

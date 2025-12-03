@@ -22,7 +22,7 @@
                 <label class="checkbox-label">
                     <input type="checkbox" name="terms" value="1" {{ old('terms') ? 'checked' : '' }} required>
                     <span class="checkmark"></span>
-                    I agree to the Terms and Conditions
+                    I agree to the <a href="{{route('terms-conditions')}}">Terms and Conditions</a> 
                 </label>
             </div>
 

@@ -6,6 +6,10 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
 use App\View\Composers\SidebarComposer;
+use App\Repositories\BannerRepository;
+use App\Services\BannerService;
+use App\Repositories\Interfaces\CollectionRepositoryInterface;
+use App\Repositories\CollectionRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,7 +18,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(BannerRepository::class);
+        $this->app->bind(BannerService::class);
+        $this->app->bind(CollectionRepositoryInterface::class, CollectionRepository::class);
     }
 
     /**

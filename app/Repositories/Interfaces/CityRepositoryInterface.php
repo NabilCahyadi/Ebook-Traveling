@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Repositories\Interfaces;
+use Illuminate\Support\Collection;
 
 interface CityRepositoryInterface
 {
@@ -19,4 +20,9 @@ interface CityRepositoryInterface
     public function withCount(string $relation);
 
     public function findByCountry(string $country);
+
+    public function getPopularCities(int $limit = 10): Collection;
+    public function getAllCities(int $perPage = 15);
+    public function findBySlug(string $slug); 
+    public function incrementViews(string $id): bool;
 }

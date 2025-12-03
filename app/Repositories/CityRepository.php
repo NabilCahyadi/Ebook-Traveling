@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\City;
 use App\Repositories\Interfaces\CityRepositoryInterface;
+use Illuminate\Support\Collection;
 
 class CityRepository implements CityRepositoryInterface
 {
@@ -52,8 +53,39 @@ class CityRepository implements CityRepositoryInterface
         return $this->model->withCount($relation);
     }
 
+    public function findBySlug(string $slug)
+    {
+        return City::where('slug', $slug)->first();
+    }
+
     public function findByCountry(string $country)
     {
         return $this->model->where('country', $country)->get();
+    }
+
+    public function getPopularCities(int $limit = 10): Collection
+    {
+        return City::active()
+            ->popular()
+            ->ordered()
+            ->limit($limit)
+            ->get();
+    }
+
+    public function getAllCities(int $perPage = 15)
+    {
+        return City::active()
+            ->ordered()
+            ->paginate($perPage);
+    }
+
+    public function incrementViews(string $id): bool
+    {
+        $city = City::find($id);
+        if ($city) {
+            $city->increment('views_count');
+            return true;
+        }
+        return false;
     }
 }
