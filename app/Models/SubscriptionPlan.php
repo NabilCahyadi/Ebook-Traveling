@@ -17,7 +17,6 @@ class SubscriptionPlan extends Model
         'price',
         'duration_days',
         'features',
-        'max_downloads',
         'is_active',
     ];
 
@@ -25,7 +24,6 @@ class SubscriptionPlan extends Model
         'price' => 'decimal:2',
         'duration_days' => 'integer',
         'features' => 'array',
-        'max_downloads' => 'integer',
         'is_active' => 'boolean',
     ];
 

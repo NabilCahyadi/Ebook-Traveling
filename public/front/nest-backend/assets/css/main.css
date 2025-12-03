@@ -244,11 +244,11 @@ table .form-check {
 }
 
 .bg-primary {
-  background-color: rgba(59, 183, 126, 0.2);
+  background-color: #932f4737;
 }
 
 .bg-brand-2 {
-  background-color: #FDC040;
+  background-color: #FF416C;
 }
 
 .text-primary {
@@ -256,7 +256,7 @@ table .form-check {
 }
 
 .bg-primary-light {
-  background-color: rgba(59, 183, 126, 0.2) !important;
+  background-color: #932f4737 !important;
 }
 
 .dropdown-item.active, .dropdown-item:active {
@@ -548,7 +548,7 @@ b {
 }
 
 .menu-aside .menu-item.active .menu-link {
-  background-color: rgba(59, 183, 126, 0.2);
+  background-color: #932f4737;
 }
 
 .menu-aside .menu-item.active .submenu a.active {
@@ -698,7 +698,7 @@ b {
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
   color: #FF4C61;
-  background-color: rgba(59, 183, 126, 0.2);
+  background-color: #932f4737;
 }
 
 .btn {
@@ -1931,7 +1931,7 @@ a.itemside:hover .title {
 .card-user .card-header {
   position: relative;
   height: 100px;
-  background-color: rgba(59, 183, 126, 0.2) !important;
+  background-color: #932f4737 !important;
   text-align: center;
 }
 
@@ -2056,7 +2056,7 @@ ul.row, ul.row-sm {
   font-family: 'Font Awesome 5 Free';
   font-weight: 900;
   font-size: 12px;
-  color: #3ed092;
+  color: #FF416C;
   position: absolute;
   top: 2px;
   left: 0;

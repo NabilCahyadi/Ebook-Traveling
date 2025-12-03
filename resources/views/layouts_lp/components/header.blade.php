@@ -99,6 +99,25 @@
             font-weight: 500;
         }
     </style>
+    <style>
+        /* style for button login register */
+        .btn-simple:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 76, 97, 0.3);
+        }
+
+        /* Hover untuk Sign In */
+        .header-action-icon-2 a[href*="login"]:hover {
+            background: #FF4C61 !important;
+            color: white !important;
+        }
+
+        /* Hover untuk Sign Up */
+        .header-action-icon-2 a[href*="register"]:hover {
+            background: transparent !important;
+            color: #FF4C61 !important;
+        }
+    </style>
     <div class="mobile-promotion">
         <span>Grand opening, <strong>up to 15%</strong> off all items. Only <strong>3 days</strong> left</span>
     </div>
@@ -260,31 +279,47 @@
                                     </div>
                                 </div>
                             </div>
+                            {{-- AUTH SECTION --}}
+                            @if(auth()->check())
                             <div class="header-action-icon-2">
-                                <a href="{{route('page-account')}}">
+                                <a href="{{ route('page-account') }}">
                                     <img class="svgInject" alt="Nest" src="assets-nest/nest-fe/imgs/theme/icons/icon-user.svg" />
                                 </a>
-                                <!-- <a href="{{route('page-account')}}"><span class="lable ml-0">Account</span></a> -->
                                 <div class="cart-dropdown-wrap cart-dropdown-hm2 account-dropdown">
                                     <ul>
                                         <li>
-                                            <a href="#"><i class="fi fi-rs-user mr-10"></i>Account</a>
+                                            <a href="{{ route('page-account') }}"><i class="fi fi-rs-user mr-10"></i>Account</a>
                                         </li>
                                         <li>
-                                            <a href=""><i class="fi fi-rs-label mr-10"></i>Promo</a>
-                                        </li>
-                                        <!-- <li>
-                                            <a href="shop-wishlist.html"><i class="fi fi-rs-heart mr-10"></i>My Wishlist</a>
-                                        </li> -->
-                                        <li>
-                                            <a href="#"><i class="fi fi-rs-settings-sliders mr-10"></i>Setting</a>
+                                            <a href="{{ route('page-account') }}?tab=orders"><i class="fi fi-rs-label mr-10"></i>Wishlist</a>
                                         </li>
                                         <li>
-                                            <a href="page-login.html"><i class="fi fi-rs-sign-out mr-10"></i>Sign out</a>
+                                            <a href="{{ route('page-account') }}?tab=creator"><i class="fi-rs-edit mr-10"></i>Creator</a>
+                                        </li>
+                                        <li>
+                                            {{-- FORM LOGOUT USER --}}
+                                            <form method="POST" action="{{ route('user.logout') }}" id="logout-form" style="display: none;">
+                                                @csrf
+                                            </form>
+                                            <a onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                                <i class="fi fi-rs-sign-out mr-10"></i>Sign out
+                                            </a>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
+                            @else
+                            <div class="header-action-icon-2">
+                                <a href="{{ route('login') }}" class="btn-simple" style="padding: 8px 20px; background: transparent; color: #FF4C61; border-radius: 25px; text-decoration: none; font-size: 14px; border: 1.5px solid #FF4C61; transition: all 0.3s ease;">
+                                    Sign In
+                                </a>
+                            </div>
+                            <div class="header-action-icon-2">
+                                <a href="{{ route('login') }}?form=register" class="btn-simple" style="padding: 8px 20px; background: #FF4C61; color: white; border-radius: 25px; text-decoration: none; font-size: 14px; border: 1.5px solid #FF4C61; transition: all 0.3s ease;">
+                                    Sign Up
+                                </a>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>

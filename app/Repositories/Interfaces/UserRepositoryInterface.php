@@ -20,7 +20,7 @@ interface UserRepositoryInterface
     /**
      * Find user by ID.
      */
-    public function findById(int $id): ?User;
+    public function findById(string $id): ?User;
 
     /**
      * Find user by email.

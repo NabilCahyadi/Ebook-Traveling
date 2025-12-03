@@ -34,4 +34,3 @@ require __DIR__ . '/modules/creator.php';
 
 // Load Admin Routes
 require __DIR__ . '/modules/admin.php';
-

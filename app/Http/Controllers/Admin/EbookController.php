@@ -20,7 +20,7 @@ class EbookController extends Controller
      */
     public function index()
     {
-        $ebooks = $this->ebookService->getAllEbooks(12);
+        $ebooks = $this->ebookService->getAllEbooks(5);
         return view('admin.ebooks.index', compact('ebooks'));
     }
 

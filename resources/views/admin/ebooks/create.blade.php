@@ -126,20 +126,6 @@
                             @enderror
                         </div>
 
-                        <!-- Price -->
-                        <div class="mb-0">
-                            <label for="price" class="form-label">Price</label>
-                            <div class="input-group">
-                                <span class="input-group-text">Rp</span>
-                                <input type="number" class="form-control @error('price') is-invalid @enderror"
-                                    id="price" name="price" value="{{ old('price', 0) }}" min="0"
-                                    step="1000">
-                            </div>
-                            <small class="text-muted">Set to 0 for free ebook</small>
-                            @error('price')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
                     </div>
                 </div>
             </div>

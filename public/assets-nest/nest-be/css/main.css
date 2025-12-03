@@ -244,7 +244,7 @@ table .form-check {
 }
 
 .bg-primary {
-  background-color: rgba(59, 183, 126, 0.2);
+  background-color: #9946595f;
 }
 
 .bg-brand-2 {
@@ -256,7 +256,7 @@ table .form-check {
 }
 
 .bg-primary-light {
-  background-color: rgba(59, 183, 126, 0.2) !important;
+  background-color: #9946595f !important;
 }
 
 .dropdown-item.active, .dropdown-item:active {
@@ -1453,14 +1453,14 @@ textarea.form-control {
 
 .badge-soft-primary {
   color: #FF4C61;
-  background-color: rgba(85, 230, 150, 0.18);
+  background-color: #9946595f;
 }
 
 .badge-soft-primary[href]:focus,
 .badge-soft-primary[href]:hover {
   color: #FF4C61;
   text-decoration: none;
-  background-color: rgba(85, 230, 150, 0.18);
+  background-color: #9946595f;
 }
 
 .badge.bg-secondary[href]:focus,

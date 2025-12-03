@@ -1,6 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\HelpController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\DestinationController;
+use App\Http\Controllers\CollectionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -10,9 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Homepage
-Route::get('/', function () {
-    return view('index');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Pricing Page
 Route::get('/pricing', function () {
@@ -20,9 +23,8 @@ Route::get('/pricing', function () {
 })->name('pricing');
 
 // Destinations Page
-Route::get('/destinations', function () {
-    return view('destinations');
-})->name('destinations');
+Route::get('/destinations', [DestinationController::class, 'index'])->name('destinations');
+Route::get('/destination/{slug}', [DestinationController::class, 'show'])->name('destination.show');
 
 // Blog List
 Route::get('/blogs', function () {
@@ -75,6 +77,13 @@ Route::get('/faq', function () {
 })->name('faq');
 
 // Page Account (Public account page/info)
-Route::get('/page-account', function () {
-    return view('page-account');
-})->name('page-account');
+// Account Routes
+Route::middleware('auth')->group(function () {
+    Route::get('/page-account', [AccountController::class, 'index'])->name('page-account');
+    Route::put('/profile/update', [AccountController::class, 'updateProfile'])->name('profile.update');
+});
+
+Route::put('/password/update', [AccountController::class, 'updatePassword'])->name('password.update')->middleware('auth');
+Route::get('/help/content/{type}', [HelpController::class, 'loadContent'])->name('help.content');
+
+Route::get('/collections/{collection:slug}', [CollectionController::class, 'show'])->name('collections.show');

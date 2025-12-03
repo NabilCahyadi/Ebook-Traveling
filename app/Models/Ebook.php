@@ -5,6 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\EbookCategory;
+use App\Models\City;
+use App\Models\EbookSection;
+use App\Models\Rating;
+use App\Models\Collection;
 
 class Ebook extends Model
 {
@@ -24,8 +30,6 @@ class Ebook extends Model
         'preview_content',
         'page_count',
         'language',
-        'price',
-        'discount_price',
         'is_featured',
         'is_free',
         'status',
@@ -34,6 +38,7 @@ class Ebook extends Model
 
     protected $casts = [
         'is_active' => 'boolean',
+        'id' => 'string',
     ];
 
     /**
@@ -66,5 +71,23 @@ class Ebook extends Model
     public function ratings(): HasMany
     {
         return $this->hasMany(Rating::class, 'ebook_id');
+    }
+
+    /**
+     * RELASI BARU: Collections (many-to-many)
+     */
+    public function collections(): BelongsToMany
+    {
+        return $this->belongsToMany(Collection::class, 'collection_ebooks')
+            ->withPivot('order_index')
+            ->withTimestamps();
+    }
+
+    /**
+     * Dapatkan creator yang membuat ebook ini.
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(Creator::class);
     }
 }

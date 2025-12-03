@@ -13,11 +13,12 @@ class Subscription extends Model
     protected $fillable = [
         'user_id',
         'subscription_plan_id',
+        'subscription_code',
         'start_date',
         'end_date',
         'status',
-        'payment_id',
         'auto_renew',
+        'total_amount',
     ];
 
     protected $casts = [

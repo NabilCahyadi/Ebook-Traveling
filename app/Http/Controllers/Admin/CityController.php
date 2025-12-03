@@ -11,10 +11,35 @@ class CityController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $cities = City::withCount('ebooks')->paginate(10);
-        return view('admin.cities.index', compact('cities'));
+        $query = City::query();
+
+        // Search
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('province', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by province
+        if ($request->has('province') && $request->province != '') {
+            $query->where('province', $request->province);
+        }
+
+        // Sorting
+        $sortBy = $request->get('sort_by', 'created_at');
+        $sortOrder = $request->get('sort_order', 'desc');
+        $query->orderBy($sortBy, $sortOrder);
+
+        $cities = $query->paginate(8)->withQueryString();
+        
+        // Get unique provinces for filter dropdown
+        $provinces = City::select('province')->distinct()->orderBy('province')->pluck('province');
+
+        return view('admin.cities.index', compact('cities', 'provinces'));
     }
 
     /**
@@ -32,7 +57,7 @@ class CityController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
+            'province' => 'required|string|max:255',
         ]);
 
         City::create($validated);
@@ -46,7 +71,7 @@ class CityController extends Controller
      */
     public function show(string $id)
     {
-        $city = City::withCount('ebooks')->findOrFail($id);
+        $city = City::findOrFail($id);
         return view('admin.cities.show', compact('city'));
     }
 
@@ -68,7 +93,7 @@ class CityController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
+            'province' => 'required|string|max:255',
         ]);
 
         $city->update($validated);
