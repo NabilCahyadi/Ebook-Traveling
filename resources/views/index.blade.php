@@ -1,3 +1,10 @@
+@php
+// Pastikan $collections selalu ada
+if (!isset($collections)) {
+$collections = collect();
+}
+@endphp
+
 @extends('layouts_lp.app')
 @section('title', 'Home - MeatMap')
 
@@ -21,10 +28,8 @@
 
     .scroll-item {
         flex: 0 0 20%;
-        /* 5 products per row (100% / 5 = 20%) */
         padding: 0 10px;
         min-width: 20%;
-        /* Ensure consistent width */
         box-sizing: border-box;
     }
 
@@ -226,158 +231,335 @@
         min-height: 3em;
     }
 </style>
+<style>
+    /* style untuk banner slider */
+    /* Slider Title Styling */
+    .slider-title {
+        font-size: 3rem !important;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 1.5rem !important;
+        word-wrap: break-word;
+        max-width: 100%;
+    }
+
+    /* Untuk desktop - sedikit lebih besar */
+    @media (min-width: 768px) {
+        .slider-title {
+            font-size: 3.5rem !important;
+        }
+    }
+
+    /* Untuk mobile - lebih kecil lagi */
+    @media (max-width: 767px) {
+        .slider-title {
+            font-size: 2rem !important;
+            line-height: 1.3;
+        }
+    }
+
+    .slider-description {
+        font-size: 1.1rem;
+        margin-bottom: 2rem !important;
+        line-height: 1.5;
+    }
+
+    /* Fallback jika CSS tidak load */
+    .display-2 {
+        font-size: 2.5rem !important;
+    }
+</style>
+<style>
+    /* Kustomisasi Koleksi E-book */
+
+    /* Poin 1: Style untuk deskripsi koleksi */
+    .section-title.style-2 .collection-description {
+        font-size: 0.9em;
+        color: #888;
+        margin-top: 0;
+        margin-bottom: 20px;
+        line-height: 1.5;
+    }
+
+    .section-title.style-2 h3 {
+        margin-bottom: 5px;
+    }
+
+    /* Poin 3: Style untuk indikator akses berlangganan (pengganti harga) */
+    .product-cart-wrap .product-access-indicator {
+        text-align: center;
+        color: #FF4C61;
+        font-weight: 500;
+        font-size: 0.9em;
+        margin-top: 10px;
+        padding: 5px 0;
+    }
+
+    .product-cart-wrap .product-access-indicator i {
+        margin-right: 5px;
+    }
+
+    /* Poin 2: Style untuk tombol scroll saat dinonaktifkan */
+    .scroll-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    /* ==========================================================================
+    Kustomisasi Tampilan E-book (Satu Kartu, Tombol Berbeda)
+   ========================================================================== */
+
+    .product-cart-wrap {
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    /* --- Gaya Umum untuk Elemen Kartu --- */
+    .product-cart-wrap h2 {
+        font-size: 1.1rem;
+        line-height: 1.4;
+        margin-bottom: 0.5rem;
+        min-height: 3.2em;
+    }
+
+    .product-cart-wrap .product-description {
+        min-height: 3.2em;
+    }
+
+    .product-author {
+        font-size: 0.9rem;
+        color: var(--text-color-muted);
+        margin-bottom: 0.75rem;
+    }
+
+    .product-description {
+        font-size: 0.85rem;
+        color: var(--text-color-muted);
+        margin-bottom: 1rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .product-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        font-size: 0.8rem;
+    }
+
+    .read-count {
+        color: var(--text-color-muted);
+    }
+
+    /* --- Badge Bahasa --- */
+    .badge-language {
+        /* background-color: #6c757d; */
+        color: #fff;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    /* Untuk membatasi judul buku maksimal 2 baris */
+    .product-cart-wrap h2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        /* Maksimal 2 baris */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* Menambahkan "..." */
+    }
+
+    /* Untuk membatasi deskripsi buku maksimal 2 baris */
+    .product-description {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        /* Maksimal 2 baris */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* Menambahkan "..." */
+    }
+
+    /* --- Gaya untuk Tombol Aksi --- */
+    .action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-read-now {
+        background-color: #28a745;
+        /* Hijau untuk aksi positif */
+        color: #fff;
+    }
+
+    .btn-read-now:hover {
+        background-color: #218838;
+        color: #fff;
+    }
+
+    .btn-subscribe-now {
+        background: #FF4C61;
+        color: #fff;
+    }
+
+    .btn-subscribe-now:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(168, 85, 247, 0.4);
+        color: #FF4C61;
+        background-color: #fff;
+    }
+
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.7);
+        }
+
+        70% {
+            box-shadow: 0 0 0 10px rgba(168, 85, 247, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(168, 85, 247, 0);
+        }
+    }
+</style>
 <div class="container mx-auto p-6">
     <section class="home-slider position-relative mb-30">
         <div class="container">
             <div class="home-slide-cover mt-30">
                 <div class="hero-slider-1 style-4 dot-style-1 dot-style-1-position-1 temp-hidden">
-                    <div class="single-hero-slider single-animation-wrap" style="background-image: url(images/slider-1.webp)">
-                        <div class="slider-content">
-                            <h1 class="display-2 mb-40">
-                                Get My Essential<br />
-                                Travel Guide
-                            </h1>
-                            <p class="mb-65">Access insider tips and verified travel itineraries.</p>
-                            <a href="{{ route('pricing') }}" class="pricing-button-inverted" style="width: 100%; padding: 1rem 2rem; margin-top: auto; letter-spacing: 0.05em; color: #ffffffff; text-transform: capitalize; background-color: #FF4C61; border-radius: 20rem; border: none; cursor: pointer; transition: background-color 0.3s ease;">
-                                Subscribe Now
-                            </a>
-                        </div>
+
+                    {{-- FALLBACK SOLUTION --}}
+                    @php
+                    // Jika $homeSliders tidak ada, buat data default
+                    if (!isset($homeSliders)) {
+                    $homeSliders = collect([
+                    (object)[
+                    'image' => 'images/slider-1.webp',
+                    'title' => "Get My Essential Travel Guide",
+                    'description' => 'Access insider tips and verified travel itineraries.',
+                    'target_url' => '/pricing'
+                    ],
+                    (object)[
+                    'image' => 'images/slider-2.webp',
+                    'title' => "Start Your Plan Claim Your Promo",
+                    'description' => 'Save up to 50% off on your first order',
+                    'target_url' => '/promo'
+                    ]
+                    ]);
+                    }
+                    @endphp
+
+                    @foreach($homeSliders as $slider)
+                    <div class="single-hero-slider single-animation-wrap" style="background-image: url({{ asset($slider->image) }})">
+                        <a href="{{ $slider->target_url }}" style="display: block; height: 100%; text-decoration: none;">
+                            <div class="slider-content">
+                                <h1 class="slider-title mb-40">
+                                    {{-- Pisahkan judul setiap 23 karakter --}}
+                                    @php
+                                    $title = $slider->title;
+                                    $words = explode(' ', $title);
+                                    $currentLine = '';
+                                    $lines = [];
+
+                                    foreach ($words as $word) {
+                                    // Jika panjang line + kata berikutnya <= 23 karakter
+                                        if (strlen($currentLine . ' ' . $word) <=23) {
+                                        $currentLine .=($currentLine ? ' ' : '' ) . $word;
+                                        } else {
+                                        // Simpan line saat ini dan mulai line baru
+                                        if ($currentLine) {
+                                        $lines[]=$currentLine;
+                                        }
+                                        $currentLine=$word;
+                                        }
+                                        }
+
+                                        // Tambahkan line terakhir
+                                        if ($currentLine) {
+                                        $lines[]=$currentLine;
+                                        }
+
+                                        // Jika hanya 1 line, coba split di tengah
+                                        if (count($lines)===1 && strlen($title)> 23) {
+                                        $midPoint = floor(strlen($title) / 2);
+                                        $spacePos = strpos($title, ' ', $midPoint);
+
+                                        if ($spacePos !== false) {
+                                        $lines = [
+                                        substr($title, 0, $spacePos),
+                                        substr($title, $spacePos + 1)
+                                        ];
+                                        }
+                                        }
+                                        @endphp
+
+                                        {{-- Tampilkan judul dengan line break --}}
+                                        @foreach($lines as $line)
+                                        {{ $line }}@if(!$loop->last)<br>@endif
+                                        @endforeach
+                                </h1>
+                                <p class="slider-description mb-65">{{ $slider->description }}</p>
+                            </div>
+                        </a>
                     </div>
-                    <div class="single-hero-slider single-animation-wrap" style="background-image: url(images/slider-2.webp)">
-                        <div class="slider-content">
-                            <h1 class="display-2 mb-40">
-                                Start Your Plan<br />
-                                Claim Your Promo
-                            </h1>
-                            <p class="mb-65">Save up to <strong style="color:#FF4C61">50%</strong> off on your first order</p>
-                            <a href="{{ route('promo') }}" class="pricing-button-inverted" style="width: 100%; padding: 1rem 2rem; margin-top: auto; letter-spacing: 0.05em; color: #ffffffff; text-transform: capitalize; background-color: #FF4C61; border-radius: 20rem; border: none; cursor: pointer; transition: background-color 0.3s ease;">
-                                Claim Promo
-                            </a>
-                        </div>
-                    </div>
+                    @endforeach
+
                 </div>
                 <div class="slider-arrow hero-slider-1-arrow"></div>
             </div>
         </div>
     </section>
-    <!-- kategori Ibu Kota setiap provinsi -->
+    <!-- top 10 ibu kota di indonesia -->
     <section class="popular-categories section-padding">
         <div class="container wow animate__animated animate__fadeIn">
             <div class="section-title style-2 flex-container-custom">
                 <div class="title">
                     <h3>Top 10 City Guides</h3>
                 </div>
-                <a href="{{ route('destinations')}}" class="show-all">View All</a>
+                <a href="/destinations" class="show-all">View All</a>
             </div>
             <div class="slider-arrow slider-arrow-2 flex carausel-10-columns-arrow"></div>
             <div class="carausel-10-columns-cover position-relative">
                 <div class="carausel-10-columns" id="carausel-10-columns">
 
-                    <div class="card-2 bg-12 wow animate__animated animate__fadeInUp" data-wow-delay=".1s">
+                    {{-- SEKARANG LEBIH SEDERHANA - Fallback sudah di Service --}}
+                    @foreach($topCities as $index => $city)
+                    <div class="card-2 bg-12 wow animate__animated animate__fadeInUp" data-wow-delay="{{ ($index + 1) * 0.1 }}s">
                         <figure class="img-hover-scale overflow-hidden" style="width: 100px; height: 80px; margin: 0 auto 10px; border-radius: 8px;">
-                            <a href="shop-grid-right.html">
-                                <img src="images/ach.jpg" alt="Bandung" style="width: 100%; height: 100%; object-fit: cover;" />
+                            <a href="/destination/{{ $city->slug }}">
+                                <img src="{{ asset($city->image) }}" alt="{{ $city->name }}" style="width: 100%; height: 100%; object-fit: cover;" />
                             </a>
                         </figure>
-                        <h6><a href="shop-grid-right.html">Bandung</a></h6>
-                        <span>26 items</span>
+                        <h6>
+                            <a href="/destination/{{ $city->slug }}">{{ $city->name }}</a>
+                        </h6>
+                        <span>{{ $city->items_count }} items</span>
                     </div>
-
-                    <div class="card-2 bg-12 wow animate__animated animate__fadeInUp" data-wow-delay=".2s">
-                        <figure class="img-hover-scale overflow-hidden" style="width: 100px; height: 80px; margin: 0 auto 10px; border-radius: 8px;">
-                            <a href="shop-grid-right.html">
-                                <img src="images/mdn.jpg" alt="Surabaya" style="width: 100%; height: 100%; object-fit: cover;" />
-                            </a>
-                        </figure>
-                        <h6><a href="shop-grid-right.html">Surabaya</a></h6>
-                        <span>28 items</span>
-                    </div>
-
-                    <div class="card-2 bg-12 wow animate__animated animate__fadeInUp" data-wow-delay=".3s">
-                        <figure class="img-hover-scale overflow-hidden" style="width: 100px; height: 80px; margin: 0 auto 10px; border-radius: 8px;">
-                            <a href="shop-grid-right.html">
-                                <img src="images/pdg.jpg" alt="Semarang" style="width: 100%; height: 100%; object-fit: cover;" />
-                            </a>
-                        </figure>
-                        <h6><a href="shop-grid-right.html">Semarang</a></h6>
-                        <span>14 items</span>
-                    </div>
-
-                    <div class="card-2 bg-12 wow animate__animated animate__fadeInUp" data-wow-delay=".4s">
-                        <figure class="img-hover-scale overflow-hidden" style="width: 100px; height: 80px; margin: 0 auto 10px; border-radius: 8px;">
-                            <a href="shop-grid-right.html">
-                                <img src="images/jkt.jpg" alt="Jakarta" style="width: 100%; height: 100%; object-fit: cover;" />
-                            </a>
-                        </figure>
-                        <h6><a href="shop-grid-right.html">Jakarta</a></h6>
-                        <span>54 items</span>
-                    </div>
-
-                    <div class="card-2 bg-12 wow animate__animated animate__fadeInUp" data-wow-delay=".5s">
-                        <figure class="img-hover-scale overflow-hidden" style="width: 100px; height: 80px; margin: 0 auto 10px; border-radius: 8px;">
-                            <a href="shop-grid-right.html">
-                                <img src="images/ach.jpg" alt="Serang" style="width: 100%; height: 100%; object-fit: cover;" />
-                            </a>
-                        </figure>
-                        <h6><a href="shop-grid-right.html">Serang</a></h6>
-                        <span>56 items</span>
-                    </div>
-
-                    <div class="card-2 bg-12 wow animate__animated animate__fadeInUp" data-wow-delay=".6s">
-                        <figure class="img-hover-scale overflow-hidden" style="width: 100px; height: 80px; margin: 0 auto 10px; border-radius: 8px;">
-                            <a href="shop-grid-right.html">
-                                <img src="images/mdn.jpg" alt="Medan" style="width: 100%; height: 100%; object-fit: cover;" />
-                            </a>
-                        </figure>
-                        <h6><a href="shop-grid-right.html">Medan</a></h6>
-                        <span>72 items</span>
-                    </div>
-
-                    <div class="card-2 bg-12 wow animate__animated animate__fadeInUp" data-wow-delay=".7s">
-                        <figure class="img-hover-scale overflow-hidden" style="width: 100px; height: 80px; margin: 0 auto 10px; border-radius: 8px;">
-                            <a href="shop-grid-right.html">
-                                <img src="images/pdg.jpg" alt="Makassar" style="width: 100%; height: 100%; object-fit: cover;" />
-                            </a>
-                        </figure>
-                        <h6><a href="shop-grid-right.html">Makassar</a></h6>
-                        <span>36 items</span>
-                    </div>
-
-                    <div class="card-2 bg-12 wow animate__animated animate__fadeInUp" data-wow-delay=".8s">
-                        <figure class="img-hover-scale overflow-hidden" style="width: 100px; height: 80px; margin: 0 auto 10px; border-radius: 8px;">
-                            <a href="shop-grid-right.html">
-                                <img src="images/jkt.jpg" alt="Yogyakarta" style="width: 100%; height: 100%; object-fit: cover;" />
-                            </a>
-                        </figure>
-                        <h6><a href="shop-grid-right.html">Yogyakarta</a></h6>
-                        <span>123 items</span>
-                    </div>
-
-                    <div class="card-2 bg-12 wow animate__animated animate__fadeInUp" data-wow-delay=".9s">
-                        <figure class="img-hover-scale overflow-hidden" style="width: 100px; height: 80px; margin: 0 auto 10px; border-radius: 8px;">
-                            <a href="shop-grid-right.html">
-                                <img src="images/ach.jpg" alt="Bandar Lampung" style="width: 100%; height: 100%; object-fit: cover;" />
-                            </a>
-                        </figure>
-                        <h6><a href="shop-grid-right.html">Bandar Lampung</a></h6>
-                        <span>34 items</span>
-                    </div>
-
-                    <div class="card-2 bg-12 wow animate__animated animate__fadeInUp" data-wow-delay="1s">
-                        <figure class="img-hover-scale overflow-hidden" style="width: 100px; height: 80px; margin: 0 auto 10px; border-radius: 8px;">
-                            <a href="shop-grid-right.html">
-                                <img src="images/mdn.jpg" alt="Denpasar" style="width: 100%; height: 100%; object-fit: cover;" />
-                            </a>
-                        </figure>
-                        <h6><a href="shop-grid-right.html">Denpasar</a></h6>
-                        <span>89 items</span>
-                    </div>
+                    @endforeach
 
                 </div>
             </div>
         </div>
     </section>
-    <!-- 3 banner -->
+    <!-- 3 subscriprion plans -->
+    <!-- Subscription Plans -->
     <section class="banners mb-25">
         <div class="container">
             <div class="row">
@@ -387,490 +569,130 @@
                     </div>
                     <a href="{{ route('pricing') }}" class="show-all">View All</a>
                 </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="banner-img wow animate__animated animate__fadeInUp" data-wow-delay="0">
-                        <img src="images/banner-subs-1.webp" alt="" />
+
+                @php
+                // Fallback jika $subscriptionPlans tidak ada
+                if (!isset($subscriptionPlans)) {
+                $subscriptionPlans = app(\App\Services\SubscriptionPlanService::class)->getHomepagePlans(3);
+                }
+                @endphp
+
+                @foreach($subscriptionPlans as $index => $plan)
+                @php
+                // Tentukan class col untuk responsive design
+                $colClass = 'col-lg-4 ';
+                $colClass .= ($index == 2) ? 'd-md-none d-lg-flex' : 'col-md-6';
+
+                // Tentukan delay untuk animation
+                $delay = $index * 0.2;
+                @endphp
+
+                <div class="{{ $colClass }}">
+                    <div class="banner-img wow animate__animated animate__fadeInUp" data-wow-delay="{{ $delay }}s">
+                        <a href="{{ route('pricing') }}">
+                            <img src="{{ asset($plan->image) }}" alt="{{ $plan->name }}" />
+                        </a>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="banner-img wow animate__animated animate__fadeInUp" data-wow-delay=".2s">
-                        <img src="images/banner-subs-2.webp" alt="" />
-                    </div>
-                </div>
-                <div class="col-lg-4 d-md-none d-lg-flex">
-                    <div class="banner-img mb-sm-0 wow animate__animated animate__fadeInUp" data-wow-delay=".4s">
-                        <img src="images/banner-subs-3.webp" alt="" />
-                    </div>
-                </div>
+                @endforeach
+
             </div>
         </div>
     </section>
     <!--End banners-->
-    <!-- percobaaan 1 -->
+    <!-- collection -->
+    @if($collections->isNotEmpty())
+    @foreach($collections as $collection)
     <section class="product-tabs section-padding position-relative">
         <div class="container">
+            {{-- ... Bagian Judul Koleksi dan Tombol Navigasi Tetap Sama ... --}}
             <div class="section-title style-2 wow animate__animated animate__fadeIn">
-                <h3>Popular Products</h3>
-                <a href="#" class="show-all">View All</a>
+                <h3>{{ $collection->name }}</h3>
+                <a href="/collections/{{ $collection->slug }}" class="show-all">View All</a>
             </div>
-
-            <!-- Navigation Arrows -->
-            <button class="scroll-btn scroll-left" disabled>
-                <i class="fi-rs-angle-left"></i>
-            </button>
-            <button class="scroll-btn scroll-right">
-                <i class="fi-rs-angle-right"></i>
-            </button>
+            <button class="scroll-btn scroll-left"><i class="fi-rs-angle-left"></i></button>
+            <button class="scroll-btn scroll-right"><i class="fi-rs-angle-right"></i></button>
 
             <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="tab-one" role="tabpanel" aria-labelledby="tab-one">
+                <div class="tab-pane fade show active" id="{{ $collection->slug }}" role="tabpanel">
                     <div class="products-scroll-container">
                         <div class="row product-grid-4 scroll-wrapper">
-                            <!-- PRODUCT CARD 1 -->
+
+                            @if($collection->ebooks->isNotEmpty())
+                            @foreach($collection->ebooks as $index => $ebook)
                             <div class="col-lg-1-5 col-md-4 col-12 col-sm-6 scroll-item">
-                                <div class="product-cart-wrap mb-30 wow animate__animated animate__fadeIn" data-wow-delay=".1s">
-                                    <!-- Isi product card sama seperti sebelumnya -->
+
+                                {{-- ========== KARTU EBOOK YANG SAMA UNTUK SEMUA USER ========== --}}
+                                <div class="product-cart-wrap mb-30 wow animate__animated animate__fadeIn" data-wow-delay="{{ ($index + 1) * 0.1 }}s">
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
-                                            <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets-nest/nest-fe/imgs/shop/product-1-1.jpg" alt="" />
-                                                <img class="hover-img" src="assets-nest/nest-fe/imgs/shop/product-1-2.jpg" alt="" />
+                                            <a href="/ebook/{{ $ebook->slug }}">
+                                                <img class="default-img" src="{{ $ebook->cover_image ?: 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg' }}" alt="{{ $ebook->title }}" />
                                             </a>
-                                        </div>
-                                        <div class="product-action-1">
-                                            <a aria-label="Quick view" class="action-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
-                                            <a aria-label="Add To Wishlist" class="action-btn" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                            <a aria-label="Share" class="action-btn" href="#" title="Share"><i class="fi-rs-share"></i></a>
                                         </div>
                                         <div class="product-badges product-badges-position product-badges-mrg">
-                                            <span class="hot">Hot</span>
+                                            <!-- @if($ebook->is_featured)
+                                            <span class="hot">Featured</span>
+                                            @endif -->
+                                            <span class="badge-language hot">{{ strtoupper($ebook->language) }}</span>
                                         </div>
                                     </div>
                                     <div class="product-content-wrap">
-                                        <div class="product-category">
-                                            <a href="shop-grid-right.html">Travel Guide</a>
+                                        <h2 style="margin-top:15px;"><a href="/ebook/{{ $ebook->slug }}">{{ Str::limit($ebook->title, 40) }}</a></h2>
+
+                                        <div class="product-author" style="margin-bottom:-4px;">
+                                            @if($ebook->creator)
+                                            <span>by {{ $ebook->creator->pen_name ?? $ebook->creator->user->name }}</span>
+                                            @else
+                                            <span>by Unknown Author</span>
+                                            @endif
                                         </div>
-                                        <h2><a href="shop-product-right.html">Hidden Paradise of Bali</a></h2>
-                                        <div class="product-rate-cover">
-                                            <div class="product-rate d-inline-block">
-                                                <div class="product-rating" style="width: 90%"></div>
+
+                                        <div class="product-meta">
+                                            <div class="product-rate-cover">
+                                                <div class="product-rate d-inline-block">
+                                                    <div class="product-rating" style="width: {{ ($ebook->average_rating / 5) * 100 }}%"></div>
+                                                </div>
+                                                <span class="font-small ml-5 text-muted">({{ $ebook->average_rating }})</span>
                                             </div>
-                                            <span class="font-small ml-5 text-muted"> (4.0)</span>
-                                        </div>
-                                        <div>
-                                            <span class="font-small text-muted">By <a href="vendor-details-1.html">Sarah Creator</a></span>
-                                        </div>
-                                        <div class="product-card-bottom">
-                                            <div class="product-price">
-                                                <span>Rp 99.000</span>
-                                                <span class="old-price">Rp 120.000</span>
-                                            </div>
-                                            <div class="add-cart">
-                                                <a class="add" href="shop-cart.html"><i class="fi-rs-shopping-cart mr-5"></i>Add </a>
+                                            <div class="read-count">
+                                                <i class="fi-rs-eye mt-5"></i> {{ number_format($ebook->read_count) }}
                                             </div>
                                         </div>
+
+                                        <p class="product-description">{{ Str::limit($ebook->short_description ?? $ebook->description, 80) }}</p>
+
+                                        {{-- LOGIKA HANYA PADA TOMBOL AKSI --}}
+                                        @if(auth()->check() && auth()->user()->hasActiveSubscription())
+                                        <a href="/reader/{{ $ebook->slug }}" class="action-btn btn-read-now">
+                                            <i class="fi-rs-book-open"></i>
+                                            <span>Read Now</span>
+                                        </a>
+                                        @else
+                                        <a href="/pricing" class="action-btn btn-subscribe-now">
+                                            <i class="fi-rs-lock"></i>
+                                            <span>Subscribe to Read</span>
+                                        </a>
+                                        @endif
                                     </div>
                                 </div>
+
                             </div>
-                            <!-- END PRODUCT CARD 1 -->
-                            <div class="col-lg-1-5 col-md-4 col-12 col-sm-6 scroll-item">
-                                <div class="product-cart-wrap mb-30 wow animate__animated animate__fadeIn" data-wow-delay=".2s">
-                                    <div class="product-img-action-wrap">
-                                        <div class="product-img product-img-zoom">
-                                            <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets-nest/nest-fe/imgs/shop/product-2-1.jpg" alt="" />
-                                                <img class="hover-img" src="assets-nest/nest-fe/imgs/shop/product-2-2.jpg" alt="" />
-                                            </a>
-                                        </div>
-                                        <div class="product-action-1">
-                                            <a aria-label="Add To Wishlist" class="action-btn" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                            <a aria-label="Compare" class="action-btn" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
-                                            <a aria-label="Quick view" class="action-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
-                                        </div>
-                                        <div class="product-badges product-badges-position product-badges-mrg">
-                                            <span class="sale">Sale</span>
-                                        </div>
-                                    </div>
-                                    <div class="product-content-wrap">
-                                        <div class="product-category">
-                                            <a href="shop-grid-right.html">Hodo Foods</a>
-                                        </div>
-                                        <h2><a href="shop-product-right.html">All Natural Italian-Style Chicken Meatballs</a></h2>
-                                        <div class="product-rate-cover">
-                                            <div class="product-rate d-inline-block">
-                                                <div class="product-rating" style="width: 80%"></div>
-                                            </div>
-                                            <span class="font-small ml-5 text-muted"> (3.5)</span>
-                                        </div>
-                                        <div>
-                                            <span class="font-small text-muted">By <a href="vendor-details-1.html">Stouffer</a></span>
-                                        </div>
-                                        <div class="product-card-bottom">
-                                            <div class="product-price">
-                                                <span>$52.85</span>
-                                                <span class="old-price">$55.8</span>
-                                            </div>
-                                            <div class="add-cart">
-                                                <a class="add" href="shop-cart.html"><i class="fi-rs-shopping-cart mr-5"></i>Add </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            @endforeach
+                            @else
+                            <div class="col-12 text-center py-5">
+                                <p class="text-muted">No ebooks available in this collection yet.</p>
                             </div>
-                            <!--end product card-->
-                            <div class="col-lg-1-5 col-md-4 col-12 col-sm-6 scroll-item">
-                                <div class="product-cart-wrap mb-30 wow animate__animated animate__fadeIn" data-wow-delay=".3s">
-                                    <div class="product-img-action-wrap">
-                                        <div class="product-img product-img-zoom">
-                                            <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets-nest/nest-fe/imgs/shop/product-3-1.jpg" alt="" />
-                                                <img class="hover-img" src="assets-nest/nest-fe/imgs/shop/product-3-2.jpg" alt="" />
-                                            </a>
-                                        </div>
-                                        <div class="product-action-1">
-                                            <a aria-label="Add To Wishlist" class="action-btn" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                            <a aria-label="Compare" class="action-btn" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
-                                            <a aria-label="Quick view" class="action-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
-                                        </div>
-                                        <div class="product-badges product-badges-position product-badges-mrg">
-                                            <span class="new">New</span>
-                                        </div>
-                                    </div>
-                                    <div class="product-content-wrap">
-                                        <div class="product-category">
-                                            <a href="shop-grid-right.html">Snack</a>
-                                        </div>
-                                        <h2><a href="shop-product-right.html">Angie’s Boomchickapop Sweet & Salty Kettle Corn</a></h2>
-                                        <div class="product-rate-cover">
-                                            <div class="product-rate d-inline-block">
-                                                <div class="product-rating" style="width: 85%"></div>
-                                            </div>
-                                            <span class="font-small ml-5 text-muted"> (4.0)</span>
-                                        </div>
-                                        <div>
-                                            <span class="font-small text-muted">By <a href="vendor-details-1.html">StarKist</a></span>
-                                        </div>
-                                        <div class="product-card-bottom">
-                                            <div class="product-price">
-                                                <span>$48.85</span>
-                                                <span class="old-price">$52.8</span>
-                                            </div>
-                                            <div class="add-cart">
-                                                <a class="add" href="shop-cart.html"><i class="fi-rs-shopping-cart mr-5"></i>Add </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--end product card-->
-                            <div class="col-lg-1-5 col-md-4 col-12 col-sm-6 scroll-item">
-                                <div class="product-cart-wrap mb-30 wow animate__animated animate__fadeIn" data-wow-delay=".4s">
-                                    <div class="product-img-action-wrap">
-                                        <div class="product-img product-img-zoom">
-                                            <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets-nest/nest-fe/imgs/shop/product-4-1.jpg" alt="" />
-                                                <img class="hover-img" src="assets-nest/nest-fe/imgs/shop/product-4-2.jpg" alt="" />
-                                            </a>
-                                        </div>
-                                        <div class="product-action-1">
-                                            <a aria-label="Add To Wishlist" class="action-btn" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                            <a aria-label="Compare" class="action-btn" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
-                                            <a aria-label="Quick view" class="action-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
-                                        </div>
-                                    </div>
-                                    <div class="product-content-wrap">
-                                        <div class="product-category">
-                                            <a href="shop-grid-right.html">Vegetables</a>
-                                        </div>
-                                        <h2><a href="shop-product-right.html">Foster Farms Takeout Crispy Classic Buffalo Wings</a></h2>
-                                        <div class="product-rate-cover">
-                                            <div class="product-rate d-inline-block">
-                                                <div class="product-rating" style="width: 90%"></div>
-                                            </div>
-                                            <span class="font-small ml-5 text-muted"> (4.0)</span>
-                                        </div>
-                                        <div>
-                                            <span class="font-small text-muted">By <a href="vendor-details-1.html">NestFood</a></span>
-                                        </div>
-                                        <div class="product-card-bottom">
-                                            <div class="product-price">
-                                                <span>$17.85</span>
-                                                <span class="old-price">$19.8</span>
-                                            </div>
-                                            <div class="add-cart">
-                                                <a class="add" href="shop-cart.html"><i class="fi-rs-shopping-cart mr-5"></i>Add </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--end product card-->
-                            <div class="col-lg-1-5 col-md-4 col-12 col-sm-6 scroll-item">
-                                <div class="product-cart-wrap mb-30 wow animate__animated animate__fadeIn" data-wow-delay=".5s">
-                                    <div class="product-img-action-wrap">
-                                        <div class="product-img product-img-zoom">
-                                            <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets-nest/nest-fe/imgs/shop/product-5-1.jpg" alt="" />
-                                                <img class="hover-img" src="assets-nest/nest-fe/imgs/shop/product-5-2.jpg" alt="" />
-                                            </a>
-                                        </div>
-                                        <div class="product-action-1">
-                                            <a aria-label="Add To Wishlist" class="action-btn" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                            <a aria-label="Compare" class="action-btn" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
-                                            <a aria-label="Quick view" class="action-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
-                                        </div>
-                                        <div class="product-badges product-badges-position product-badges-mrg">
-                                            <span class="best">-14%</span>
-                                        </div>
-                                    </div>
-                                    <div class="product-content-wrap">
-                                        <div class="product-category">
-                                            <a href="shop-grid-right.html">Pet Foods</a>
-                                        </div>
-                                        <h2><a href="shop-product-right.html">Blue Diamond Almonds Lightly Salted Vegetables</a></h2>
-                                        <div class="product-rate-cover">
-                                            <div class="product-rate d-inline-block">
-                                                <div class="product-rating" style="width: 90%"></div>
-                                            </div>
-                                            <span class="font-small ml-5 text-muted"> (4.0)</span>
-                                        </div>
-                                        <div>
-                                            <span class="font-small text-muted">By <a href="vendor-details-1.html">NestFood</a></span>
-                                        </div>
-                                        <div class="product-card-bottom">
-                                            <div class="product-price">
-                                                <span>$23.85</span>
-                                                <span class="old-price">$25.8</span>
-                                            </div>
-                                            <div class="add-cart">
-                                                <a class="add" href="shop-cart.html"><i class="fi-rs-shopping-cart mr-5"></i>Add </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--end product card-->
-                            <div class="col-lg-1-5 col-md-4 col-12 col-sm-6 scroll-item">
-                                <div class="product-cart-wrap wow animate__animated animate__fadeIn" data-wow-delay=".1s">
-                                    <div class="product-img-action-wrap">
-                                        <div class="product-img product-img-zoom">
-                                            <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets-nest/nest-fe/imgs/shop/product-6-1.jpg" alt="" />
-                                                <img class="hover-img" src="assets-nest/nest-fe/imgs/shop/product-6-2.jpg" alt="" />
-                                            </a>
-                                        </div>
-                                        <div class="product-action-1">
-                                            <a aria-label="Add To Wishlist" class="action-btn" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                            <a aria-label="Compare" class="action-btn" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
-                                            <a aria-label="Quick view" class="action-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
-                                        </div>
-                                    </div>
-                                    <div class="product-content-wrap">
-                                        <div class="product-category">
-                                            <a href="shop-grid-right.html">Hodo Foods</a>
-                                        </div>
-                                        <h2><a href="shop-product-right.html">Chobani Complete Vanilla Greek Yogurt</a></h2>
-                                        <div class="product-rate-cover">
-                                            <div class="product-rate d-inline-block">
-                                                <div class="product-rating" style="width: 90%"></div>
-                                            </div>
-                                            <span class="font-small ml-5 text-muted"> (4.0)</span>
-                                        </div>
-                                        <div>
-                                            <span class="font-small text-muted">By <a href="vendor-details-1.html">NestFood</a></span>
-                                        </div>
-                                        <div class="product-card-bottom">
-                                            <div class="product-price">
-                                                <span>$54.85</span>
-                                                <span class="old-price">$55.8</span>
-                                            </div>
-                                            <div class="add-cart">
-                                                <a class="add" href="shop-cart.html"><i class="fi-rs-shopping-cart mr-5"></i>Add </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--end product card-->
-                            <div class="col-lg-1-5 col-md-4 col-12 col-sm-6 scroll-item">
-                                <div class="product-cart-wrap wow animate__animated animate__fadeIn" data-wow-delay=".2s">
-                                    <div class="product-img-action-wrap">
-                                        <div class="product-img product-img-zoom">
-                                            <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets-nest/nest-fe/imgs/shop/product-7-1.jpg" alt="" />
-                                                <img class="hover-img" src="assets-nest/nest-fe/imgs/shop/product-7-2.jpg" alt="" />
-                                            </a>
-                                        </div>
-                                        <div class="product-action-1">
-                                            <a aria-label="Add To Wishlist" class="action-btn" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                            <a aria-label="Compare" class="action-btn" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
-                                            <a aria-label="Quick view" class="action-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
-                                        </div>
-                                    </div>
-                                    <div class="product-content-wrap">
-                                        <div class="product-category">
-                                            <a href="shop-grid-right.html">Meats</a>
-                                        </div>
-                                        <h2><a href="shop-product-right.html">Canada Dry Ginger Ale – 2 L Bottle - 200ml - 400g</a></h2>
-                                        <div class="product-rate-cover">
-                                            <div class="product-rate d-inline-block">
-                                                <div class="product-rating" style="width: 90%"></div>
-                                            </div>
-                                            <span class="font-small ml-5 text-muted"> (4.0)</span>
-                                        </div>
-                                        <div>
-                                            <span class="font-small text-muted">By <a href="vendor-details-1.html">NestFood</a></span>
-                                        </div>
-                                        <div class="product-card-bottom">
-                                            <div class="product-price">
-                                                <span>$32.85</span>
-                                                <span class="old-price">$33.8</span>
-                                            </div>
-                                            <div class="add-cart">
-                                                <a class="add" href="shop-cart.html"><i class="fi-rs-shopping-cart mr-5"></i>Add </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--end product card-->
-                            <div class="col-lg-1-5 col-md-4 col-12 col-sm-6 scroll-item">
-                                <div class="product-cart-wrap wow animate__animated animate__fadeIn" data-wow-delay=".3s">
-                                    <div class="product-img-action-wrap">
-                                        <div class="product-img product-img-zoom">
-                                            <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets-nest/nest-fe/imgs/shop/product-8-1.jpg" alt="" />
-                                                <img class="hover-img" src="assets-nest/nest-fe/imgs/shop/product-8-2.jpg" alt="" />
-                                            </a>
-                                        </div>
-                                        <div class="product-action-1">
-                                            <a aria-label="Add To Wishlist" class="action-btn" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                            <a aria-label="Compare" class="action-btn" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
-                                            <a aria-label="Quick view" class="action-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
-                                        </div>
-                                        <div class="product-badges product-badges-position product-badges-mrg">
-                                            <span class="sale">Sale</span>
-                                        </div>
-                                    </div>
-                                    <div class="product-content-wrap">
-                                        <div class="product-category">
-                                            <a href="shop-grid-right.html">Snack</a>
-                                        </div>
-                                        <h2><a href="shop-product-right.html">Encore Seafoods Stuffed Alaskan Salmon</a></h2>
-                                        <div class="product-rate-cover">
-                                            <div class="product-rate d-inline-block">
-                                                <div class="product-rating" style="width: 90%"></div>
-                                            </div>
-                                            <span class="font-small ml-5 text-muted"> (4.0)</span>
-                                        </div>
-                                        <div>
-                                            <span class="font-small text-muted">By <a href="vendor-details-1.html">NestFood</a></span>
-                                        </div>
-                                        <div class="product-card-bottom">
-                                            <div class="product-price">
-                                                <span>$35.85</span>
-                                                <span class="old-price">$37.8</span>
-                                            </div>
-                                            <div class="add-cart">
-                                                <a class="add" href="shop-cart.html"><i class="fi-rs-shopping-cart mr-5"></i>Add </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--end product card-->
-                            <div class="col-lg-1-5 col-md-4 col-12 col-sm-6 scroll-item">
-                                <div class="product-cart-wrap wow animate__animated animate__fadeIn" data-wow-delay=".4s">
-                                    <div class="product-img-action-wrap">
-                                        <div class="product-img product-img-zoom">
-                                            <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets-nest/nest-fe/imgs/shop/product-9-1.jpg" alt="" />
-                                                <img class="hover-img" src="assets-nest/nest-fe/imgs/shop/product-9-2.jpg" alt="" />
-                                            </a>
-                                        </div>
-                                        <div class="product-action-1">
-                                            <a aria-label="Add To Wishlist" class="action-btn" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                            <a aria-label="Compare" class="action-btn" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
-                                            <a aria-label="Quick view" class="action-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
-                                        </div>
-                                        <div class="product-badges product-badges-position product-badges-mrg">
-                                            <span class="hot">Hot</span>
-                                        </div>
-                                    </div>
-                                    <div class="product-content-wrap">
-                                        <div class="product-category">
-                                            <a href="shop-grid-right.html">Coffes</a>
-                                        </div>
-                                        <h2><a href="shop-product-right.html">Gorton’s Beer Battered Fish Fillets with soft paper</a></h2>
-                                        <div class="product-rate-cover">
-                                            <div class="product-rate d-inline-block">
-                                                <div class="product-rating" style="width: 90%"></div>
-                                            </div>
-                                            <span class="font-small ml-5 text-muted"> (4.0)</span>
-                                        </div>
-                                        <div>
-                                            <span class="font-small text-muted">By <a href="vendor-details-1.html">Old El Paso</a></span>
-                                        </div>
-                                        <div class="product-card-bottom">
-                                            <div class="product-price">
-                                                <span>$23.85</span>
-                                                <span class="old-price">$25.8</span>
-                                            </div>
-                                            <div class="add-cart">
-                                                <a class="add" href="shop-cart.html"><i class="fi-rs-shopping-cart mr-5"></i>Add </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--end product card-->
-                            <div class="col-lg-1-5 col-md-4 col-12 col-sm-6 scroll-item d-none d-xl-block">
-                                <div class="product-cart-wrap wow animate__animated animate__fadeIn" data-wow-delay=".5s">
-                                    <div class="product-img-action-wrap">
-                                        <div class="product-img product-img-zoom">
-                                            <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets-nest/nest-fe/imgs/shop/product-10-1.jpg" alt="" />
-                                                <img class="hover-img" src="assets-nest/nest-fe/imgs/shop/product-10-2.jpg" alt="" />
-                                            </a>
-                                        </div>
-                                        <div class="product-action-1">
-                                            <a aria-label="Add To Wishlist" class="action-btn" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                            <a aria-label="Compare" class="action-btn" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
-                                            <a aria-label="Quick view" class="action-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
-                                        </div>
-                                    </div>
-                                    <div class="product-content-wrap">
-                                        <div class="product-category">
-                                            <a href="shop-grid-right.html">Cream</a>
-                                        </div>
-                                        <h2><a href="shop-product-right.html">Haagen-Dazs Caramel Cone Ice Cream Ketchup</a></h2>
-                                        <div class="product-rate-cover">
-                                            <div class="product-rate d-inline-block">
-                                                <div class="product-rating" style="width: 50%"></div>
-                                            </div>
-                                            <span class="font-small ml-5 text-muted"> (2.0)</span>
-                                        </div>
-                                        <div>
-                                            <span class="font-small text-muted">By <a href="vendor-details-1.html">Tyson</a></span>
-                                        </div>
-                                        <div class="product-card-bottom">
-                                            <div class="product-price">
-                                                <span>$22.85</span>
-                                                <span class="old-price">$24.8</span>
-                                            </div>
-                                            <div class="add-cart">
-                                                <a class="add" href="shop-cart.html"><i class="fi-rs-shopping-cart mr-5"></i>Add </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            @endif
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+    @endforeach
+    @endif
     <!--Products Tabs-->
     <section class="section-padding pb-5">
         <div class="container">
@@ -1286,6 +1108,61 @@
                 });
             }, 0);
         }
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sections = document.querySelectorAll('.product-tabs');
+
+        sections.forEach(section => {
+            const scrollContainer = section.querySelector('.products-scroll-container');
+            const scrollLeftBtn = section.querySelector('.scroll-left');
+            const scrollRightBtn = section.querySelector('.scroll-right');
+
+            if (!scrollContainer || !scrollLeftBtn || !scrollRightBtn) {
+                return;
+            }
+
+            // Fungsi untuk memperbarui status tombol (enable/disable)
+            const updateButtonStates = () => {
+                // Nonaktifkan tombol kiri jika di posisi paling kiri
+                if (scrollContainer.scrollLeft <= 0) {
+                    scrollLeftBtn.disabled = true;
+                } else {
+                    scrollLeftBtn.disabled = false;
+                }
+
+                // Nonaktifkan tombol kanan jika di posisi paling kanan
+                // scrollWidth adalah total lebar konten, clientWidth adalah lebar yang terlihat
+                if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth - scrollContainer.clientWidth) {
+                    scrollRightBtn.disabled = true;
+                } else {
+                    scrollRightBtn.disabled = false;
+                }
+            };
+
+            // Event listener untuk tombol scroll
+            scrollRightBtn.addEventListener('click', () => {
+                // Geser sejauh lebar container yang terlihat
+                scrollContainer.scrollBy({
+                    left: scrollContainer.clientWidth,
+                    behavior: 'smooth'
+                });
+            });
+
+            scrollLeftBtn.addEventListener('click', () => {
+                scrollContainer.scrollBy({
+                    left: -scrollContainer.clientWidth,
+                    behavior: 'smooth'
+                });
+            });
+
+            // Event listener untuk memperbarui tombol saat konten di-scroll
+            scrollContainer.addEventListener('scroll', updateButtonStates);
+
+            // Panggil sekali saat halaman dimuat untuk set status awal
+            updateButtonStates();
+        });
     });
 </script>
 @endsection

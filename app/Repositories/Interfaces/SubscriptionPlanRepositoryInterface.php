@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Repositories\Interfaces;
+use Illuminate\Support\Collection;
 
 interface SubscriptionPlanRepositoryInterface
 {
@@ -21,4 +22,7 @@ interface SubscriptionPlanRepositoryInterface
     public function delete(string $id);
 
     public function hasActiveSubscriptions(string $id): bool;
+
+    public function getActivePlans(int $limit = null): Collection;
+    public function getAllActive();
 }

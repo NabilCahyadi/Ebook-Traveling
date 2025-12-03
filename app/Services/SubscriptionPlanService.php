@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\Interfaces\SubscriptionPlanRepositoryInterface;
 use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
 
 class SubscriptionPlanService
 {

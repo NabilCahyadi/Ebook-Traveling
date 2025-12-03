@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\SubscriptionPlan;
 use App\Repositories\Interfaces\SubscriptionPlanRepositoryInterface;
+use Illuminate\Support\Collection;
 
 class SubscriptionPlanRepository implements SubscriptionPlanRepositoryInterface
 {
@@ -57,6 +58,25 @@ class SubscriptionPlanRepository implements SubscriptionPlanRepositoryInterface
     {
         $plan = $this->getById($id);
         return $plan->delete();
+    }
+
+    public function getActivePlans(int $limit = null): Collection
+    {
+        $query = SubscriptionPlan::where('is_active', true)
+            ->orderBy('order_index', 'asc');
+
+        if ($limit) {
+            $query->limit($limit);
+        }
+
+        return $query->get();
+    }
+
+    public function getAllActive()
+    {
+        return SubscriptionPlan::where('is_active', true)
+            ->orderBy('order_index', 'asc')
+            ->get();
     }
 
     public function hasActiveSubscriptions(string $id): bool

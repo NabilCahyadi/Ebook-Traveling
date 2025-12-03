@@ -288,13 +288,13 @@
                                 <div class="cart-dropdown-wrap cart-dropdown-hm2 account-dropdown">
                                     <ul>
                                         <li>
-                                            <a href="{{ route('page-account') }}"><i class="fi fi-rs-user mr-10"></i>My Account</a>
+                                            <a href="{{ route('page-account') }}"><i class="fi fi-rs-user mr-10"></i>Account</a>
                                         </li>
                                         <li>
-                                            <a href=""><i class="fi fi-rs-label mr-10"></i>Promo</a>
+                                            <a href="{{ route('page-account') }}?tab=orders"><i class="fi fi-rs-label mr-10"></i>Wishlist</a>
                                         </li>
                                         <li>
-                                            <a href="#"><i class="fi fi-rs-settings-sliders mr-10"></i>Settings</a>
+                                            <a href="{{ route('page-account') }}?tab=creator"><i class="fi-rs-edit mr-10"></i>Creator</a>
                                         </li>
                                         <li>
                                             {{-- FORM LOGOUT USER --}}
