@@ -70,8 +70,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     // Banner Management
     // Route::resource('banners', \App\Http\Controllers\Admin\BannerController::class);
 
-    // Promo Management
-    // Route::resource('promos', \App\Http\Controllers\Admin\PromoController::class);
+    // Promo Management (Subscription Promos)
+    Route::resource('promos', \App\Http\Controllers\Admin\PromoController::class);
+    Route::post('promos/{id}/toggle-active', [\App\Http\Controllers\Admin\PromoController::class, 'toggleActive'])->name('promos.toggle-active');
 
     // FAQ Management
     // Route::resource('faqs', \App\Http\Controllers\Admin\FaqController::class);

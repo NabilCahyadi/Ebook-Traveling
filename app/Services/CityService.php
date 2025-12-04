@@ -67,22 +67,21 @@ class CityService
     public function getPopularCitiesWithEbookCount(int $limit = 10): Collection
     {
         try {
-            $cities = $this->getPopularCities($limit);
+            $cities = $this->cityRepository->getPopularCities($limit);
 
-            // Tambahkan items_count ke setiap city
+            // Jika hasil kosong, gunakan fallback
+            if ($cities->isEmpty()) {
+                return $this->getRealTimeFallbackCities()->take($limit);
+            }
+
+            // Map items_count dari ebooks_count yang sudah di-load dari database
             return $cities->map(function ($city) {
-                // Jika city dari database, hitung ebooks count
-                if (isset($city->ebooks)) {
-                    $city->items_count = $city->ebooks->count();
-                } else {
-                    // Jika fallback data, gunakan items_count yang sudah ada
-                    $city->items_count = $city->items_count ?? 0;
-                }
+                $city->items_count = $city->ebooks_count ?? 0;
                 return $city;
             });
         } catch (\Exception $e) {
-            // Fallback ke data statis jika ada error
-            return $this->getFallbackCities()->take($limit);
+            // Fallback ke data real-time jika ada error
+            return $this->getRealTimeFallbackCities()->take($limit);
         }
     }
 
@@ -99,8 +98,32 @@ class CityService
             });
         } catch (\Exception $e) {
             // Ultimate fallback
-            return $this->getFallbackCities()->take($limit);
+            return $this->getRealTimeFallbackCities()->take($limit);
         }
+    }
+
+    /**
+     * Get real-time fallback cities dengan count ebook dari database
+     */
+    public function getRealTimeFallbackCities(): Collection
+    {
+        // Ambil semua cities dari database dengan ebook count
+        $cities = \App\Models\City::withCount('ebooks')
+            ->where('is_active', true)
+            ->orderBy('ebooks_count', 'desc')
+            ->take(10)
+            ->get();
+
+        // Jika database kosong, gunakan fallback statis
+        if ($cities->isEmpty()) {
+            return $this->getFallbackCities();
+        }
+
+        // Map ke format yang konsisten
+        return $cities->map(function ($city) {
+            $city->items_count = $city->ebooks_count ?? 0;
+            return $city;
+        });
     }
 
     public function getCityBySlug(string $slug)

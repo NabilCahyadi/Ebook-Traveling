@@ -59,6 +59,18 @@
                                 </select>
                             </div>
 
+                            <!-- Sort By -->
+                            <div class="input-group" style="width: 200px;">
+                                <span class="input-group-text"><i class="ti ti-sort-ascending"></i></span>
+                                <select class="form-select" id="sortBy" onchange="applySorting()">
+                                    <option value="created_at_desc" {{ request('sort_by') == 'created_at' && request('sort_order') == 'desc' ? 'selected' : '' }}>Terbaru</option>
+                                    <option value="view_count_desc" {{ request('sort_by') == 'view_count' && request('sort_order') == 'desc' ? 'selected' : '' }}>Views Terbanyak</option>
+                                    <option value="view_count_asc" {{ request('sort_by') == 'view_count' && request('sort_order') == 'asc' ? 'selected' : '' }}>Views Tersedikit</option>
+                                    <option value="page_count_desc" {{ request('sort_by') == 'page_count' && request('sort_order') == 'desc' ? 'selected' : '' }}>Pages Terbanyak</option>
+                                    <option value="page_count_asc" {{ request('sort_by') == 'page_count' && request('sort_order') == 'asc' ? 'selected' : '' }}>Pages Tersedikit</option>
+                                </select>
+                            </div>
+
                             <!-- View Toggle -->
                             <div class="btn-group" role="group">
                                 <button type="button" class="btn btn-outline-primary active" id="viewTable"
@@ -270,7 +282,7 @@
 
             @if ($ebooks->hasPages())
                 <div class="card-footer">
-                    {{ $ebooks->appends(['per_page' => request('per_page', 6)])->links() }}
+                    {{ $ebooks->appends(['per_page' => request('per_page', 6), 'sort_by' => request('sort_by'), 'sort_order' => request('sort_order')])->links() }}
                 </div>
             @endif
         </div>
@@ -344,6 +356,30 @@
 
             // Filter functionality
             document.getElementById('filterStatus')?.addEventListener('change', filterEbooks);
+
+            // Sort functionality
+            window.applySorting = function() {
+                const sortValue = document.getElementById('sortBy').value;
+                const [sortBy, sortOrder] = sortValue.split('_');
+                const lastPart = sortValue.split('_').pop();
+                
+                // Reconstruct proper sort_by and sort_order
+                let actualSortBy = sortBy;
+                let actualSortOrder = lastPart;
+                
+                if (sortValue.startsWith('view_count')) {
+                    actualSortBy = 'view_count';
+                } else if (sortValue.startsWith('page_count')) {
+                    actualSortBy = 'page_count';
+                } else if (sortValue.startsWith('created_at')) {
+                    actualSortBy = 'created_at';
+                }
+                
+                const currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('sort_by', actualSortBy);
+                currentUrl.searchParams.set('sort_order', actualSortOrder);
+                window.location.href = currentUrl.toString();
+            }
 
             function filterEbooks() {
                 const searchTerm = document.getElementById('searchEbook').value.toLowerCase();

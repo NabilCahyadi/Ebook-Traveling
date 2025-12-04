@@ -6,6 +6,7 @@ use App\Http\Controllers\HelpController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DestinationController;
 use App\Http\Controllers\CollectionController;
+use App\Http\Controllers\BlogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,10 +27,9 @@ Route::get('/pricing', function () {
 Route::get('/destinations', [DestinationController::class, 'index'])->name('destinations');
 Route::get('/destination/{slug}', [DestinationController::class, 'show'])->name('destination.show');
 
-// Blog List
-Route::get('/blogs', function () {
-    return view('blogs');
-})->name('blogs');
+// Blog Routes
+Route::get('/blogs', [BlogController::class, 'index'])->name('blogs');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blogs.show');
 
 // Promo Page
 Route::get('/promo', function () {

@@ -171,10 +171,12 @@ class AuthService
     /**
      * Logout user.
      */
-    // public function logout(): void
-    // {
-    //     Auth::logout();
-    // }
+    public function logout(): void
+    {
+        Auth::logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+    }
 
     /**
      * Logout user dengan redirect ke home page.

@@ -44,11 +44,11 @@
             <h5 class="mb-0">Users List</h5>
             <div class="text-muted">Total: {{ $users->total() }} users</div>
         </div>
-        
+
         <!-- Search Filter -->
         <div class="card-body border-bottom">
             <form action="{{ route('admin.users.index') }}" method="GET" class="row g-3">
-                @if(isset($roleSlug) && $roleSlug)
+                @if (isset($roleSlug) && $roleSlug)
                     <input type="hidden" name="role" value="{{ $roleSlug }}">
                 @endif
                 <div class="col-md-10">
@@ -56,9 +56,8 @@
                         <span class="input-group-text">
                             <i class="ti ti-search"></i>
                         </span>
-                        <input type="text" class="form-control" name="search" 
-                               value="{{ $search ?? '' }}" 
-                               placeholder="Search by name, email, or phone...">
+                        <input type="text" class="form-control" name="search" value="{{ $search ?? '' }}"
+                            placeholder="Search by name, email, or phone...">
                     </div>
                 </div>
                 <div class="col-md-2">
@@ -66,9 +65,10 @@
                         <i class="ti ti-search me-1"></i> Search
                     </button>
                 </div>
-                @if(isset($search) && $search)
+                @if (isset($search) && $search)
                     <div class="col-12">
-                        <a href="{{ route('admin.users.index', ['role' => $roleSlug]) }}" class="btn btn-sm btn-outline-secondary">
+                        <a href="{{ route('admin.users.index', ['role' => $roleSlug]) }}"
+                            class="btn btn-sm btn-outline-secondary">
                             <i class="ti ti-x me-1"></i> Clear Filter
                         </a>
                         <span class="text-muted ms-2">Showing results for: <strong>"{{ $search }}"</strong></span>
@@ -76,7 +76,7 @@
                 @endif
             </form>
         </div>
-        
+
         <div class="card-body">
             @if ($users->count() > 0)
                 <div class="table-responsive">

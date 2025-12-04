@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Services\EbookService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class EbookController extends Controller
 {
@@ -22,7 +25,10 @@ class EbookController extends Controller
     {
         // Default 6 for table, 8 for card view
         $perPage = $request->get('per_page', 6);
-        $ebooks = $this->ebookService->getAllEbooks($perPage);
+        $sortBy = $request->get('sort_by', 'created_at');
+        $sortOrder = $request->get('sort_order', 'desc');
+
+        $ebooks = $this->ebookService->getAllEbooks($perPage, $sortBy, $sortOrder);
         return view('admin.ebooks.index', compact('ebooks'));
     }
 
@@ -55,7 +61,7 @@ class EbookController extends Controller
             ]);
 
             // Check if user is admin
-            $user = auth()->user();
+            $user = Auth::user();
             $isAdmin = $user->roles()->where('name', 'admin')->exists();
 
             // If user is not admin and tries to publish, change to waiting_approval
@@ -71,7 +77,7 @@ class EbookController extends Controller
                 $validated['cover_image'] = $this->saveBase64Image($request->cover_image);
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
-            \Log::error('Ebook Validation Error:', [
+            Log::error('Ebook Validation Error:', [
                 'errors' => $e->errors(),
                 'input' => $request->except(['cover_image', 'file_url', 'pdf_file'])
             ]);
@@ -79,9 +85,9 @@ class EbookController extends Controller
         }
 
         try {
-            \Log::info('Creating ebook with data:', $validated);
+            Log::info('Creating ebook with data:', $validated);
             $ebook = $this->ebookService->createEbook($validated);
-            \Log::info('Ebook created successfully:', ['id' => $ebook->id]);
+            Log::info('Ebook created successfully:', ['id' => $ebook->id]);
 
             $message = 'Ebook created successfully!';
             if (!$isAdmin && $validated['status'] === 'waiting_approval') {
@@ -90,7 +96,7 @@ class EbookController extends Controller
 
             return redirect()->route('admin.ebooks.index')->with('success', $message);
         } catch (\Exception $e) {
-            \Log::error('Ebook Creation Error:', [
+            Log::error('Ebook Creation Error:', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -120,7 +126,7 @@ class EbookController extends Controller
             $path = 'ebook_covers/' . $filename;
 
             // Save to storage
-            \Storage::disk('public')->put($path, $imageData);
+            Storage::disk('public')->put($path, $imageData);
 
             return $path;
         }

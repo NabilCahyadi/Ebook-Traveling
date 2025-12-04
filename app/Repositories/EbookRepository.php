@@ -12,10 +12,10 @@ class EbookRepository implements EbookRepositoryInterface
     /**
      * Get all ebooks with pagination.
      */
-    public function getAllPaginated(int $perPage = 15): mixed
+    public function getAllPaginated(int $perPage = 15, string $sortBy = 'created_at', string $sortOrder = 'desc'): mixed
     {
         return Ebook::with(['category', 'city'])
-            ->orderBy('created_at', 'desc')
+            ->orderBy($sortBy, $sortOrder)
             ->paginate($perPage);
     }
 

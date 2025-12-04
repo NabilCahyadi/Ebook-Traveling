@@ -8,6 +8,7 @@ use App\Services\BannerService;
 use App\Services\CityService;
 use App\Services\SubscriptionPlanService;
 use App\Services\CollectionService;
+use App\Services\BlogService;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
@@ -16,7 +17,8 @@ class HomeController extends Controller
         private BannerService $bannerService,
         private CityService $cityService,
         private SubscriptionPlanService $subscriptionPlanService,
-        private CollectionService $collectionService
+        private CollectionService $collectionService,
+        private BlogService $blogService
     ) {}
 
     public function index()
@@ -37,6 +39,8 @@ class HomeController extends Controller
         // $collections = $this->collectionService->getHomepageCollections();
         $collectionData = $this->collectionService->getHomepageCollectionsWithSubscriptionStatus();
 
+        // Get latest 4 published blogs
+        $latestBlogs = $this->blogService->getPublishedBlogs(4);
 
         return view('index', [
             'homeSliders' => $homeSliders,
@@ -44,6 +48,7 @@ class HomeController extends Controller
             'subscriptionPlans' => $subscriptionPlans,
             'collections' => $collectionData['collections'],
             'isSubscribed' => $collectionData['isSubscribed'],
+            'latestBlogs' => $latestBlogs,
         ]);
     }
 
