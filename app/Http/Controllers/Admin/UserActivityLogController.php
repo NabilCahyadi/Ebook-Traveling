@@ -38,7 +38,7 @@ class UserActivityLogController extends Controller
 
         // Filter by action type
         if ($request->has('action') && $request->action !== 'all') {
-            $query->where('action', $request->action);
+            $query->where('action_type', $request->action);
         }
 
         // Filter by date range
@@ -53,8 +53,8 @@ class UserActivityLogController extends Controller
         if ($request->has('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('description', 'like', "%{$search}%")
-                    ->orWhere('model_type', 'like', "%{$search}%")
+                $q->where('table_name', 'like', "%{$search}%")
+                    ->orWhere('url', 'like', "%{$search}%")
                     ->orWhereHas('user', function ($userQuery) use ($search) {
                         $userQuery->where('name', 'like', "%{$search}%")
                             ->orWhere('email', 'like', "%{$search}%");
@@ -106,7 +106,7 @@ class UserActivityLogController extends Controller
             $query->where('user_id', $request->user_id);
         }
         if ($request->has('action') && $request->action !== 'all') {
-            $query->where('action', $request->action);
+            $query->where('action_type', $request->action);
         }
         if ($request->has('date_from')) {
             $query->whereDate('created_at', '>=', $request->date_from);
@@ -128,7 +128,7 @@ class UserActivityLogController extends Controller
             $file = fopen('php://output', 'w');
 
             // CSV headers
-            fputcsv($file, ['ID', 'User', 'Email', 'Role', 'Action', 'Description', 'Model Type', 'Model ID', 'IP Address', 'Date/Time']);
+            fputcsv($file, ['ID', 'User', 'Email', 'Role', 'Action', 'Table', 'Record ID', 'IP Address', 'Date/Time']);
 
             foreach ($logs as $log) {
                 fputcsv($file, [
@@ -136,10 +136,9 @@ class UserActivityLogController extends Controller
                     $log->user->name ?? 'N/A',
                     $log->user->email ?? 'N/A',
                     $log->user->roles->first()->name ?? 'N/A',
-                    $log->action,
-                    $log->description,
-                    $log->model_type ?? 'N/A',
-                    $log->model_id ?? 'N/A',
+                    $log->action_type,
+                    $log->table_name ?? 'N/A',
+                    $log->record_id ?? 'N/A',
                     $log->ip_address ?? 'N/A',
                     $log->created_at->format('Y-m-d H:i:s'),
                 ]);

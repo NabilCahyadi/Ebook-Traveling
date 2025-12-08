@@ -38,20 +38,20 @@
                                     ];
                                     $color = $actionColors[$log->action] ?? 'secondary';
                                 @endphp
-                                <span class="badge bg-{{ $color }}">{{ ucfirst($log->action) }}</span>
+                                <span class="badge bg-{{ $color }}">{{ ucfirst($log->action_type) }}</span>
                             </div>
                         </div>
 
                         <div class="row mb-3">
-                            <div class="col-sm-3 fw-medium">Description:</div>
-                            <div class="col-sm-9">{{ $log->description }}</div>
+                            <div class="col-sm-3 fw-medium">URL:</div>
+                            <div class="col-sm-9">{{ $log->url ?? 'N/A' }}</div>
                         </div>
 
                         <div class="row mb-3">
-                            <div class="col-sm-3 fw-medium">Model Type:</div>
+                            <div class="col-sm-3 fw-medium">Table Name:</div>
                             <div class="col-sm-9">
-                                @if ($log->model_type)
-                                    <code>{{ $log->model_type }}</code>
+                                @if ($log->table_name)
+                                    <code>{{ $log->table_name }}</code>
                                 @else
                                     <span class="text-muted">-</span>
                                 @endif
@@ -59,10 +59,10 @@
                         </div>
 
                         <div class="row mb-3">
-                            <div class="col-sm-3 fw-medium">Model ID:</div>
+                            <div class="col-sm-3 fw-medium">Record ID:</div>
                             <div class="col-sm-9">
-                                @if ($log->model_id)
-                                    <code>#{{ $log->model_id }}</code>
+                                @if ($log->record_id)
+                                    <code>#{{ $log->record_id }}</code>
                                 @else
                                     <span class="text-muted">-</span>
                                 @endif

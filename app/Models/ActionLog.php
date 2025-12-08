@@ -10,18 +10,36 @@ class ActionLog extends Model
 {
     use HasFactory, HasUuids;
 
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['created_at'];
+
     protected $fillable = [
         'user_id',
-        'action',
-        'model_type',
-        'model_id',
+        'action_type',
+        'table_name',
+        'record_id',
+        'old_values',
+        'new_values',
         'ip_address',
         'user_agent',
-        'details',
+        'url',
+        'method',
     ];
 
     protected $casts = [
-        'details' => 'array',
+        'old_values' => 'array',
+        'new_values' => 'array',
     ];
 
     /**
