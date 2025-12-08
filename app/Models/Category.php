@@ -43,10 +43,10 @@ class Category extends Model
     }
 
     /**
-     * Get the ebooks for the category.
+     * E-book yang ada di kategori ini.
      */
     public function ebooks()
     {
-        return $this->belongsToMany(Ebook::class, 'ebook_categories');
+        return $this->belongsToMany(Ebook::class, 'ebook_categories', 'category_id', 'ebook_id');
     }
 }

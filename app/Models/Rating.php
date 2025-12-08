@@ -7,15 +7,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Rating extends Model
 {
+    protected $table = 'ebook_ratings';
+
     protected $fillable = [
         'user_id',
         'ebook_id',
         'rating',
-        'review',
+        'review_title',
+        'review_text',
     ];
 
     protected $casts = [
         'rating' => 'integer',
+        'is_approved' => 'boolean',
     ];
 
     /**

@@ -69,15 +69,10 @@ class CityService
         try {
             $cities = $this->getPopularCities($limit);
 
-            // Tambahkan items_count ke setiap city
+            // Karena ebook belum ada, kita beri nilai statis atau acak untuk demo
             return $cities->map(function ($city) {
-                // Jika city dari database, hitung ebooks count
-                if (isset($city->ebooks)) {
-                    $city->items_count = $city->ebooks->count();
-                } else {
-                    // Jika fallback data, gunakan items_count yang sudah ada
-                    $city->items_count = $city->items_count ?? 0;
-                }
+                // Berikan nilai contoh, misalnya 10 items untuk setiap kota
+                $city->items_count = (0); // atau angka statis seperti 10
                 return $city;
             });
         } catch (\Exception $e) {

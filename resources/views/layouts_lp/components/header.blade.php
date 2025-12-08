@@ -182,7 +182,7 @@
         <div class="container">
             <div class="header-wrap">
                 <div class="logo">
-                    <a href="/" class="mx-1"><img src="images/logo_horizontall.png" alt="logo" style="width: 120px; height: auto;" /></a>
+                    <a href="/" class="mx-1"><img src="/images/logo_horizontall.png" alt="logo" style="width: 120px; height: auto;" /></a>
                 </div>
                 <div class="header-right">
                     <div class="search-style-2">
@@ -283,7 +283,7 @@
                             @if(auth()->check())
                             <div class="header-action-icon-2">
                                 <a href="{{ route('page-account') }}">
-                                    <img class="svgInject" alt="Nest" src="assets-nest/nest-fe/imgs/theme/icons/icon-user.svg" />
+                                    <img class="svgInject" alt="Nest" src="/assets-nest/nest-fe/imgs/theme/icons/icon-user.svg" />
                                 </a>
                                 <div class="cart-dropdown-wrap cart-dropdown-hm2 account-dropdown">
                                     <ul>
@@ -330,7 +330,7 @@
         <div class="container">
             <div class="header-wrap header-space-between position-relative">
                 <div class="logo logo-width-1 d-block d-lg-none">
-                    <a href="index.html"><img src="images/logo_horizontall.png" alt="logo" style="width: 150px; height: auto; margin-right:10px;" /></a>
+                    <a href="index.html"><img src="/images/logo_horizontall.png" alt="logo" style="width: 150px; height: auto; margin-right:10px;" /></a>
                 </div>
                 <div class="header-nav d-none d-lg-flex">
                     <div class="main-categori-wrap d-none d-lg-block">
@@ -408,7 +408,7 @@
                                     <a href="{{ route('destinations') }}">Destinations</a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('blogs') }}">Blog</a>
+                                    <a href="{{ route('blogs.index') }}">Blog</a>
                                 </li>
                                 <li>
                                     <a href="{{ route('pricing') }}">Pricing</a>

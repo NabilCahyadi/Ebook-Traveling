@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Blog extends Model
 {
@@ -29,6 +30,7 @@ class Blog extends Model
         'view_count' => 'integer',
         'is_published' => 'boolean',
         'published_at' => 'datetime',
+        'tags' => 'array',
     ];
 
     /**
@@ -47,5 +49,10 @@ class Blog extends Model
         return $query->where('is_published', true)
             ->whereNotNull('published_at')
             ->where('published_at', '<=', now());
+    }
+
+    public function ebooks(): BelongsToMany
+    {
+        return $this->belongsToMany(Ebook::class, 'blog_ebook', 'blog_id', 'ebook_id');
     }
 }

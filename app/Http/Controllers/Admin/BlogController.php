@@ -65,10 +65,15 @@ class BlogController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($slug)
     {
-        $blog = $this->blogService->getBlogById($id);
-        return view('admin.blogs.show', compact('blog'));
+        // Ambil blog berdasarkan slug
+        $blog = $this->blogService->getBlogBySlug($slug);
+
+        // Tambah view count
+        $this->blogService->incrementViewCount($blog->id);
+
+        return view('blog-detail', compact('blog'));
     }
 
     /**

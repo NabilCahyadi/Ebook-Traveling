@@ -210,7 +210,8 @@
                                                     plan</a>.</u>
                                             Get unlimited access to all ebooks, advanced features, and priority support.
                                             Enjoy a limited-time <u><a href="{{route('promo')}}">exclusive offer</a></u>
-                                            <strong>don't miss out!</strong></p>
+                                            <strong>don't miss out!</strong>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -290,6 +291,59 @@
                         <!-- PROFILE SETTINGS TAB -->
                         <div class="tab-pane fade {{ request('tab') == 'account-detail' ? 'active show' : '' }}"
                             id="account-detail" role="tabpanel">
+                            {{-- Tambahkan ini di bagian atas untuk debugging --}}
+                            @if($errors->any())
+                            <div class="alert alert-danger">
+                                <strong>Ada kesalahan:</strong>
+                                <ul>
+                                    @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                            @endif
+
+                            {{-- AWAL: FORM UNTUK UPDATE AVATAR --}}
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5>Profile Picture</h5>
+                                </div>
+                                <div class="card-body">
+                                    @if(session('avatar_success'))
+                                    <div class="alert alert-success">
+                                        {{ session('avatar_success') }}
+                                    </div>
+                                    @endif
+
+                                    <form method="POST" action="{{ route('account.update.avatar') }}" enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="row align-items-center">
+                                            <div class="col-md-3 text-center">
+                                                <label for="avatar_input" style="cursor: pointer;">
+                                                    {{-- SOLUSI CACHE-BUSTING: Tambahkan ?t={{ time() }} --}}
+                                                    <img id="avatar-preview"
+                                                        src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) . '?t=' . auth()->user()->updated_at->timestamp : asset('images/user-avatar.png') }}"
+                                                        alt="Avatar Preview"
+                                                        class="img-fluid rounded-circle"
+                                                        style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #e9ecef;">
+                                                    <p class="mt-2 mb-0"><small>Klik untuk mengganti foto</small></p>
+                                                </label>
+                                                <input type="file" id="avatar_input" name="avatar" class="form-control d-none" accept="image/*">
+                                            </div>
+                                            <div class="col-md-9">
+                                                <p class="mb-2">Unggah foto profil baru. Format yang didukung: JPEG, PNG, JPG, GIF. Maksimal ukuran: 2MB.</p>
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fi-rs-camera mr-5"></i> Update Picture
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            {{-- AKHIR: FORM UNTUK UPDATE AVATAR --}}
+
+
+                            {{-- FORM LAMA UNTUK DETAIL PROFIL --}}
                             <div class="card">
                                 <div class="card-header">
                                     <h5>Profile Settings</h5>
@@ -457,7 +511,8 @@
                                         <div class="col-md-3 mb-3">
                                             <div class="text-center p-3 border rounded">
                                                 <h4 class="text-warning">
-                                                    {{ $readingStats['currently_reading']->count() ?? 0 }}</h4>
+                                                    {{ $readingStats['currently_reading']->count() ?? 0 }}
+                                                </h4>
                                                 <p class="mb-0">In Progress</p>
                                             </div>
                                         </div>
@@ -592,7 +647,8 @@
                                                 <div class="card-body">
                                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                                         <h6 class="card-title mb-0">
-                                                            {{ $rating->ebook->title ?? 'Unknown Book' }}</h6>
+                                                            {{ $rating->ebook->title ?? 'Unknown Book' }}
+                                                        </h6>
                                                         <div class="rating">
                                                             @for($i = 1; $i <= 5; $i++) <i
                                                                 class="fi-rs-star{{ $i <= $rating->rating ? ' text-warning' : '' }}">
@@ -601,7 +657,8 @@
                                                         </div>
                                                     </div>
                                                     <p class="card-text small text-muted">by
-                                                        {{ $rating->ebook->author ?? 'Unknown Author' }}</p>
+                                                        {{ $rating->ebook->author ?? 'Unknown Author' }}
+                                                    </p>
                                                     @if($rating->review_title)
                                                     <h6 class="text-dark">{{ $rating->review_title }}</h6>
                                                     @endif
@@ -720,7 +777,8 @@
                                                 <div class="card-body">
                                                     <h6 class="card-title">{{ $ebook->title }}</h6>
                                                     <p class="card-text small text-muted">
-                                                        {{ $ebook->short_description }}</p>
+                                                        {{ $ebook->short_description }}
+                                                    </p>
                                                     <div class="mb-2">
                                                         @foreach($ebook->categories as $category)
                                                         <span class="badge bg-secondary">{{ $category->name }}</span>
@@ -859,11 +917,11 @@
                 </div>
                 <div class="modal-footer border-top-0 px-4 pb-4 pt-0">
                     <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
-                        <i class="fi-rs-cross mr-2"></i>Cancel
+                        Cancel
                     </button>
                     <button type="submit" class="btn btn-primary btn-custom px-4"
                         style="background: linear-gradient(135deg, #FF4C61 0%, #FF416C 100%); border: none;">
-                        <i class="fi-rs-check mr-2"></i>Update Password
+                        Update Password
                     </button>
                 </div>
             </form>
@@ -872,38 +930,89 @@
 </div>
 @endsection
 
+{{-- SOLUSI PREVIEW: JavaScript yang lebih andal --}}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const avatarInput = document.getElementById('avatar_input');
+        const avatarPreview = document.getElementById('avatar-preview');
+
+        if (avatarInput && avatarPreview) {
+            avatarInput.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        avatarPreview.src = e.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Pilih semua elemen dengan class 'alert' (termasuk alert-success dan alert-danger)
+        const alerts = document.querySelectorAll('.alert');
+
+        // Loop melalui setiap alert yang ditemukan
+        alerts.forEach(function(alert) {
+            // Set timer untuk 5 detik (5000 milidetik)
+            setTimeout(function() {
+                // Tambahkan class untuk efek fade-out
+                alert.classList.add('alert-fade-out');
+
+                // Setelah transisi selesai (0.5 detik), hapus elemen dari DOM
+                setTimeout(function() {
+                    alert.remove();
+                }, 500);
+            }, 5000); // 5000 milidetik = 5 detik
+        });
+    });
+</script>
+
+{{-- STYLES UNTUK CUSTOM CSS --}}
+
 @push('styles')
 <style>
-.btn-custom {
-    margin-top: 7px;
-}
+    .btn-custom {
+        margin-top: 7px;
+    }
 
-.stat-card {
-    transition: all 0.3s ease;
-}
+    .stat-card {
+        transition: all 0.3s ease;
+    }
 
-.stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
 
-.required {
-    color: #dc3545;
-}
+    .required {
+        color: #dc3545;
+    }
 
-.btn-small {
-    padding: 5px 10px;
-    background: #FF4C61;
-    color: white;
-    border-radius: 4px;
-    text-decoration: none;
-    font-size: 12px;
-    transition: all 0.3s ease;
-}
+    .btn-small {
+        padding: 5px 10px;
+        background: #FF4C61;
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 12px;
+        transition: all 0.3s ease;
+    }
 
-.btn-small:hover {
-    background: #e04154;
-    color: white;
-}
+    .btn-small:hover {
+        background: #e04154;
+        color: white;
+    }
+</style>
+<style>
+    /* style untuk alert */
+    .alert-fade-out {
+        opacity: 0;
+        transition: opacity 0.5s ease-out;
+    }
 </style>
 @endpush

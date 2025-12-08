@@ -21,7 +21,7 @@
                     <div class="widget-about font-md mb-md-3 mb-lg-3 mb-xl-0">
                         <div class="logo mb-30">
                             <a href="/" class="mb-15">
-                                <img src="images/logo_horizontall.png" alt="logo" style="width: 180px; height: auto;">
+                                <img src="/images/logo_horizontall.png" alt="logo" style="width: 180px; height: auto;">
                             </a>
                             <p class="font-lg text-heading">The Most Comprehensive Indonesia Destination Guide</p>
                         </div>
@@ -101,11 +101,11 @@
             <div class="col-xl-6 col-lg-6 col-md-6 text-end d-none d-md-block">
                 <div class="mobile-social-icon">
                     <h6>Follow Us</h6>
-                    <a href="#"><img src="assets-nest/nest-fe/imgs/theme/icons/icon-facebook-white.svg" alt="" /></a>
-                    <a href="#"><img src="assets-nest/nest-fe/imgs/theme/icons/icon-twitter-white.svg" alt="" /></a>
-                    <a href="#"><img src="assets-nest/nest-fe/imgs/theme/icons/icon-instagram-white.svg" alt="" /></a>
-                    <a href="#"><img src="assets-nest/nest-fe/imgs/theme/icons/icon-pinterest-white.svg" alt="" /></a>
-                    <a href="#"><img src="assets-nest/nest-fe/imgs/theme/icons/icon-youtube-white.svg" alt="" /></a>
+                    <a href="#"><img src="/assets-nest/nest-fe/imgs/theme/icons/icon-facebook-white.svg" alt="" /></a>
+                    <a href="#"><img src="/assets-nest/nest-fe/imgs/theme/icons/icon-twitter-white.svg" alt="" /></a>
+                    <a href="#"><img src="/assets-nest/nest-fe/imgs/theme/icons/icon-instagram-white.svg" alt="" /></a>
+                    <a href="#"><img src="/assets-nest/nest-fe/imgs/theme/icons/icon-pinterest-white.svg" alt="" /></a>
+                    <a href="#"><img src="/assets-nest/nest-fe/imgs/theme/icons/icon-youtube-white.svg" alt="" /></a>
                 </div>
                 <!-- <p class="font-sm">Up to 15% discount on your first subscribe</p> -->
             </div>

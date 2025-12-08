@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Repositories\Interfaces\BlogRepositoryInterface;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Collection;
+use App\Models\Blog;
 
 class BlogService
 {
@@ -35,10 +37,10 @@ class BlogService
         return $this->blogRepository->getById($id);
     }
 
-    public function getBlogBySlug(string $slug)
-    {
-        return $this->blogRepository->getBySlug($slug);
-    }
+    // public function getBlogBySlug(string $slug)
+    // {
+    //     return $this->blogRepository->getBySlug($slug);
+    // }
 
     public function createBlog(array $data)
     {
@@ -140,5 +142,19 @@ class BlogService
         }
 
         return $query->exists();
+    }
+
+    public function getLatestForHomepage(int $limit = 4): Collection
+    {
+        return $this->blogRepository->getLatestPublished($limit);
+    }
+
+    /**
+     * Ambil blog berdasarkan slug beserta e-book terkaitnya.
+     */
+    public function getBlogBySlug($slug)
+    {
+        // Tambahkan 'ebooks' pada with() untuk eager loading
+        return Blog::with('ebooks')->where('slug', $slug)->firstOrFail();
     }
 }

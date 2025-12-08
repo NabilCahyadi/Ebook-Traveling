@@ -6,6 +6,10 @@ use App\Http\Controllers\HelpController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DestinationController;
 use App\Http\Controllers\CollectionController;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\EbookController;
+use App\Http\Controllers\RatingController;
+use App\Http\Controllers\ReaderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,11 +29,6 @@ Route::get('/pricing', function () {
 // Destinations Page
 Route::get('/destinations', [DestinationController::class, 'index'])->name('destinations');
 Route::get('/destination/{slug}', [DestinationController::class, 'show'])->name('destination.show');
-
-// Blog List
-Route::get('/blogs', function () {
-    return view('blogs');
-})->name('blogs');
 
 // Promo Page
 Route::get('/promo', function () {
@@ -81,9 +80,18 @@ Route::get('/faq', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/page-account', [AccountController::class, 'index'])->name('page-account');
     Route::put('/profile/update', [AccountController::class, 'updateProfile'])->name('profile.update');
+    Route::post('/account/update-avatar', [AccountController::class, 'updateAvatar'])->name('account.update.avatar');
+    Route::put('/password/update', [AccountController::class, 'updatePassword'])->name('password.update');
 });
 
-Route::put('/password/update', [AccountController::class, 'updatePassword'])->name('password.update')->middleware('auth');
+// Route::put('/password/update', [AccountController::class, 'updatePassword'])->name('password.update')->middleware('auth');
 Route::get('/help/content/{type}', [HelpController::class, 'loadContent'])->name('help.content');
 
 Route::get('/collections/{collection:slug}', [CollectionController::class, 'show'])->name('collections.show');
+Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index');
+// Route::get('/blog-news', [BlogController::class, 'index'])->name('blogs');
+Route::get('/blogs/tag/{tag}', [BlogController::class, 'byTag'])->name('blogs.by.tag');
+Route::get('/blogs/{slug}', [BlogController::class, 'show'])->name('blogs.show');
+Route::get('/ebooks/{slug}', [EbookController::class, 'show'])->name('ebooks.show');
+Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store')->middleware('auth');
+Route::get('/reader/{slug}', [ReaderController::class, 'show'])->name('reader.show')->middleware('premium');
