@@ -132,5 +132,4 @@ class BlogRepository implements BlogRepositoryInterface
             ->distinct()
             ->pluck('category');
     }
-    }
 }
