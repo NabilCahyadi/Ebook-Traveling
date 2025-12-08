@@ -18,7 +18,8 @@
                 <h5 class="mb-0">Edit Subscription Plan: {{ $plan->name }}</h5>
             </div>
             <div class="card-body">
-                <form action="{{ route('admin.subscription-plans.update', $plan->id) }}" method="POST">
+                <form action="{{ route('admin.subscription-plans.update', $plan->id) }}" method="POST"
+                    enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -32,6 +33,42 @@
                             @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                        </div>
+                    </div>
+
+                    <!-- Banner Image Upload -->
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label" for="banner_image">Banner Image</label>
+                        <div class="col-sm-10">
+                            @if ($plan->banner_image)
+                                <div class="mb-2">
+                                    <div class="border rounded p-2" style="max-width: 600px;">
+                                        <img src="{{ asset('storage/' . $plan->banner_image) }}" alt="Current Banner"
+                                            style="width: 100%; height: auto; border-radius: 0.375rem;">
+                                        <small class="text-muted d-block mt-1">Current banner image</small>
+                                    </div>
+                                </div>
+                            @endif
+
+                            <input type="file" class="form-control @error('banner_image') is-invalid @enderror"
+                                id="banner_image" name="banner_image" accept="image/*" onchange="previewBanner(event)">
+                            @error('banner_image')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <div class="form-text">Upload a new banner image to replace the current one (Optional,
+                                recommended size: 1200x400px)</div>
+
+                            <!-- Preview -->
+                            <div id="bannerPreview" class="mt-3" style="display: none;">
+                                <div class="border rounded p-2" style="max-width: 600px;">
+                                    <img id="bannerPreviewImg" src="" alt="Banner Preview"
+                                        style="width: 100%; height: auto; border-radius: 0.375rem;">
+                                    <button type="button" class="btn btn-sm btn-label-danger mt-2"
+                                        onclick="removeBanner()">
+                                        <i class="ti ti-x me-1"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -173,6 +210,25 @@
                     }
                 });
             });
+
+            // Banner image preview
+            function previewBanner(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('bannerPreviewImg').src = e.target.result;
+                        document.getElementById('bannerPreview').style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            function removeBanner() {
+                document.getElementById('banner_image').value = '';
+                document.getElementById('bannerPreview').style.display = 'none';
+                document.getElementById('bannerPreviewImg').src = '';
+            }
         </script>
     @endpush
 @endsection

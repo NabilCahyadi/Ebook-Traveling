@@ -12,10 +12,10 @@ class EbookRepository implements EbookRepositoryInterface
     /**
      * Get all ebooks with pagination.
      */
-    public function getAllPaginated(int $perPage = 15): mixed
+    public function getAllPaginated(int $perPage = 15, string $sortBy = 'created_at', string $sortOrder = 'desc'): mixed
     {
         return Ebook::with(['category', 'city'])
-            ->orderBy('created_at', 'desc')
+            ->orderBy($sortBy, $sortOrder)
             ->paginate($perPage);
     }
 
@@ -33,9 +33,9 @@ class EbookRepository implements EbookRepositoryInterface
     /**
      * Find ebook by ID.
      */
-    public function findById(int $id): ?Ebook
+    public function findById(string $id): ?Ebook
     {
-        return Ebook::with(['category', 'city', 'sections'])->find($id);
+        return Ebook::with(['category', 'city'])->find($id);
     }
 
     /**
@@ -83,7 +83,7 @@ class EbookRepository implements EbookRepositoryInterface
     /**
      * Get ebooks by category.
      */
-    public function getByCategory(int $categoryId): Collection
+    public function getByCategory(string $categoryId): Collection
     {
         return Ebook::with(['category', 'city'])
             ->where('category_id', $categoryId)
@@ -95,7 +95,7 @@ class EbookRepository implements EbookRepositoryInterface
     /**
      * Get ebooks by city.
      */
-    public function getByCity(int $cityId): Collection
+    public function getByCity(string $cityId): Collection
     {
         return Ebook::with(['category', 'city'])
             ->where('city_id', $cityId)
@@ -110,9 +110,9 @@ class EbookRepository implements EbookRepositoryInterface
     public function search(string $query): Collection
     {
         return Ebook::with(['category', 'city'])
-            ->where(function($q) use ($query) {
+            ->where(function ($q) use ($query) {
                 $q->where('title', 'like', "%{$query}%")
-                  ->orWhere('description', 'like', "%{$query}%");
+                    ->orWhere('description', 'like', "%{$query}%");
             })
             ->where('is_active', true)
             ->orderBy('created_at', 'desc')

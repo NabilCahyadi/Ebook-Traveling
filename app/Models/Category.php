@@ -11,15 +11,21 @@ class Category extends Model
     use HasFactory, HasUuids;
 
     protected $fillable = [
+        'id',
         'name',
         'slug',
         'description',
+        'image',
+        'type',
         'icon',
         'color',
         'parent_id',
         'sort_order',
         'is_active',
     ];
+
+    protected $keyType = 'string';
+    public $incrementing = false;
 
     protected $casts = [
         'sort_order' => 'integer',

@@ -143,17 +143,6 @@
                         </form>
 
                         <p class="text-center">
-                            <span>or sign in with</span>
-                        </p>
-
-                        <div class="d-grid mb-3">
-                            <a href="{{ route('admin.login.google') }}" class="btn btn-outline-secondary">
-                                <i class="ti ti-brand-google me-2"></i>
-                                Sign in with Google
-                            </a>
-                        </div>
-
-                        <p class="text-center">
                             <span>Back to </span>
                             <a href="/">
                                 <span>Homepage</span>

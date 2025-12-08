@@ -24,6 +24,11 @@
         <div>
             <h4 class="fw-bold py-3 mb-2">
                 <span class="text-muted fw-light">Admin /</span> User Management
+                @if (isset($roleSlug) && $roleSlug)
+                    <span class="badge bg-label-primary ms-2">
+                        {{ ucfirst(str_replace('-', ' ', $roleSlug)) }}
+                    </span>
+                @endif
             </h4>
         </div>
         <div>
@@ -39,6 +44,39 @@
             <h5 class="mb-0">Users List</h5>
             <div class="text-muted">Total: {{ $users->total() }} users</div>
         </div>
+
+        <!-- Search Filter -->
+        <div class="card-body border-bottom">
+            <form action="{{ route('admin.users.index') }}" method="GET" class="row g-3">
+                @if (isset($roleSlug) && $roleSlug)
+                    <input type="hidden" name="role" value="{{ $roleSlug }}">
+                @endif
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="ti ti-search"></i>
+                        </span>
+                        <input type="text" class="form-control" name="search" value="{{ $search ?? '' }}"
+                            placeholder="Search by name, email, or phone...">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="ti ti-search me-1"></i> Search
+                    </button>
+                </div>
+                @if (isset($search) && $search)
+                    <div class="col-12">
+                        <a href="{{ route('admin.users.index', ['role' => $roleSlug]) }}"
+                            class="btn btn-sm btn-outline-secondary">
+                            <i class="ti ti-x me-1"></i> Clear Filter
+                        </a>
+                        <span class="text-muted ms-2">Showing results for: <strong>"{{ $search }}"</strong></span>
+                    </div>
+                @endif
+            </form>
+        </div>
+
         <div class="card-body">
             @if ($users->count() > 0)
                 <div class="table-responsive">
@@ -48,6 +86,7 @@
                                 <th>ID</th>
                                 <th>Name</th>
                                 <th>Email</th>
+                                <th>Role(s)</th>
                                 <th>Google ID</th>
                                 <th>Registered</th>
                                 <th>Actions</th>
@@ -85,6 +124,15 @@
                                         @endif
                                     </td>
                                     <td>
+                                        @if ($user->roles && $user->roles->count() > 0)
+                                            @foreach ($user->roles as $role)
+                                                <span class="badge bg-label-primary mb-1">{{ $role->name }}</span>
+                                            @endforeach
+                                        @else
+                                            <span class="badge bg-label-secondary">No Role</span>
+                                        @endif
+                                    </td>
+                                    <td>
                                         @if ($user->google_id)
                                             <span class="badge bg-label-info">
                                                 <i class="ti ti-brand-google ti-xs"></i> Linked
@@ -102,21 +150,38 @@
                                         </small>
                                     </td>
                                     <td>
-                                        <button type="button" class="btn btn-sm btn-icon btn-primary"
-                                            onclick="editUser({{ $user->id }}, '{{ $user->name }}', '{{ $user->email }}')">
-                                            <i class="ti ti-pencil"></i>
-                                        </button>
-                                        @if ($user->id !== auth()->id())
-                                            <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
-                                                class="d-inline"
-                                                onsubmit="return confirm('Are you sure you want to delete this user?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-icon btn-danger">
-                                                    <i class="ti ti-trash"></i>
-                                                </button>
-                                            </form>
-                                        @endif
+                                        <div class="dropdown">
+                                            <button type="button"
+                                                class="btn btn-sm btn-icon btn-text-secondary rounded-pill dropdown-toggle hide-arrow"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="ti ti-dots-vertical"></i>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <a class="dropdown-item" href="javascript:void(0);"
+                                                    onclick="editUser('{{ $user->id }}', '{{ $user->name }}', '{{ $user->email }}')">
+                                                    <i class="ti ti-pencil me-2"></i>
+                                                    <span>Edit</span>
+                                                </a>
+                                                <a class="dropdown-item" href="{{ route('admin.users.show', $user->id) }}">
+                                                    <i class="ti ti-eye me-2"></i>
+                                                    <span>View Details</span>
+                                                </a>
+                                                @if ($user->id !== auth()->id())
+                                                    <div class="dropdown-divider"></div>
+                                                    <a class="dropdown-item text-danger" href="javascript:void(0);"
+                                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this user?')) document.getElementById('delete-form-{{ $user->id }}').submit();">
+                                                        <i class="ti ti-trash me-2"></i>
+                                                        <span>Delete</span>
+                                                    </a>
+                                                    <form id="delete-form-{{ $user->id }}"
+                                                        action="{{ route('admin.users.destroy', $user->id) }}"
+                                                        method="POST" style="display: none;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                    </form>
+                                                @endif
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -126,7 +191,7 @@
 
                 <!-- Pagination -->
                 <div class="mt-4">
-                    {{ $users->links() }}
+                    {{ $users->appends(['role' => $roleSlug, 'search' => $search])->links() }}
                 </div>
             @else
                 <div class="text-center py-5">
@@ -165,8 +230,9 @@
                         <div class="mb-3">
                             <label for="email" class="form-label">Email Address <span
                                     class="text-danger">*</span></label>
-                            <input type="email" class="form-control @error('email') is-invalid @enderror" id="email"
-                                name="email" value="{{ old('email') }}" placeholder="e.g. user@example.com" required>
+                            <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                id="email" name="email" value="{{ old('email') }}"
+                                placeholder="e.g. user@example.com" required>
                             @error('email')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

@@ -65,11 +65,72 @@ class BlogRepository implements BlogRepositoryInterface
 
     public function getLatestPublished(int $limit = 4): Collection
     {
-        // Gunakan scopePublished() dari model dan muat relasi 'author'
+        // Use scopePublished() from model and load 'author' relation
         return Blog::with('author')
             ->published()
             ->orderBy('published_at', 'desc')
             ->limit($limit)
             ->get();
+    }
+
+    public function getFiltered(array $filters, int $perPage = 15)
+    {
+        $query = $this->model->with('author');
+
+        // Exclude archived by default
+        if (isset($filters['exclude_archived']) && $filters['exclude_archived']) {
+            $query->where('status', '!=', 'archived');
+        }
+
+        // Filter by status
+        if (isset($filters['status']) && $filters['status']) {
+            $query->where('status', $filters['status']);
+        }
+
+        // Filter by category
+        if (isset($filters['category']) && $filters['category']) {
+            $query->where('category', $filters['category']);
+        }
+
+        // Search
+        if (isset($filters['search']) && $filters['search']) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('content', 'like', "%{$search}%")
+                    ->orWhere('excerpt', 'like', "%{$search}%");
+            });
+        }
+
+        // Custom ordering: draft, published, unpublished
+        $query->orderByRaw("FIELD(status, 'draft', 'published', 'unpublished')")
+            ->latest('created_at');
+
+        return $query->paginate($perPage);
+    }
+
+    public function getArchived(?string $search = null, int $perPage = 15)
+    {
+        $query = $this->model->with('author')->where('status', 'archived');
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('content', 'like', "%{$search}%")
+                    ->orWhere('excerpt', 'like', "%{$search}%");
+            });
+        }
+
+        return $query->latest('created_at')->paginate($perPage);
+    }
+
+    public function getAllCategories()
+    {
+        return $this->model->select('category')
+            ->whereNotNull('category')
+            ->where('category', '!=', '')
+            ->distinct()
+            ->pluck('category');
+    }
     }
 }

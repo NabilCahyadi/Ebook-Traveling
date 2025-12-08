@@ -20,9 +20,44 @@ class UserService
     /**
      * Get all users with pagination.
      */
-    public function getAllUsers(int $perPage = 10)
+    public function getAllUsers(int $perPage = 10, ?string $search = null)
     {
-        return $this->userRepository->getAllPaginated($perPage);
+        $query = User::with('roles');
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%')
+                    ->orWhere('phone', 'like', '%' . $search . '%');
+            });
+        }
+
+        return $query->paginate($perPage);
+    }
+
+    /**
+     * Get users by role slug with pagination.
+     */
+    public function getUsersByRole(string $roleSlug, int $perPage = 10, ?string $search = null)
+    {
+        $query = User::where(function ($query) use ($roleSlug) {
+            // Check if user has role in user_roles table
+            $query->whereHas('roles', function ($q) use ($roleSlug) {
+                $q->where('slug', $roleSlug);
+            })
+                // OR check user_type column (fallback for users without role assignment)
+                ->orWhere('user_type', $roleSlug);
+        });
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%')
+                    ->orWhere('phone', 'like', '%' . $search . '%');
+            });
+        }
+
+        return $query->with('roles')->paginate($perPage);
     }
 
     /**

@@ -8,53 +8,79 @@ use App\Models\Blog;
 
 class BlogController extends Controller
 {
-    protected $blogService;
-
-    public function __construct(BlogService $blogService)
-    {
-        $this->blogService = $blogService;
-    }
+    public function __construct(
+        private BlogService $blogService
+    ) {}
 
     /**
-     * Menampilkan halaman daftar semua blog.
+     * Display a listing of published blogs.
      */
     public function index()
     {
-        // Ambil semua blog yang sudah dipublish dengan pagination
-        $blogs = $this->blogService->getPublishedBlogs(10); // 9 blog per halaman
+        // Get published blogs with pagination
+        $blogs = $this->blogService->getPublishedBlogs(12);
 
-        // Ambil semua tags dari blog yang sudah dipublish untuk sidebar
-        $allTags = Blog::where('is_published', 1)->pluck('tags')->flatten()->unique();
+        // Get all tags from published blogs for sidebar
+        $allTags = Blog::where('status', 'published')
+            ->whereNotNull('tags')
+            ->pluck('tags')
+            ->flatten()
+            ->unique()
+            ->filter();
 
-        return view('blogs', compact('blogs', 'allTags'));
+        return view('blogs', [
+            'blogs' => $blogs,
+            'allTags' => $allTags
+        ]);
     }
 
     /**
-     * Menampilkan detail satu blog berdasarkan slug.
+     * Display the specified blog.
      */
-    public function show($slug)
+    public function show(string $slug)
     {
-        // Tambahkan 'ebooks' untuk eager loading
-        // $blog = Blog::with('ebooks')->where('slug', $slug)->firstOrFail();
         $blog = $this->blogService->getBlogBySlug($slug);
 
-        // Tambah view count
+        if (!$blog || $blog->status !== 'published') {
+            abort(404, 'Blog not found');
+        }
+
+        // Increment view count
         $this->blogService->incrementViewCount($blog->id);
 
-        return view('blog-detail', compact('blog'));
+        // Get related blogs (same category, exclude current)
+        $relatedBlogs = Blog::where('status', 'published')
+            ->where('category', $blog->category)
+            ->where('id', '!=', $blog->id)
+            ->orderBy('published_at', 'desc')
+            ->take(3)
+            ->get();
+
+        return view('blog-detail', [
+            'blog' => $blog,
+            'relatedBlogs' => $relatedBlogs
+        ]);
     }
 
+    /**
+     * Display blogs filtered by tag.
+     */
     public function byTag($tag)
     {
-        // Ambil blog berdasarkan tag yang dipilih
-        $blogs = Blog::where('is_published', 1)
+        // Get blogs by selected tag
+        $blogs = Blog::where('status', 'published')
             ->whereJsonContains('tags', $tag)
             ->orderBy('published_at', 'desc')
             ->paginate(10);
 
-        // Ambil semua tags untuk sidebar
-        $allTags = Blog::where('is_published', 1)->pluck('tags')->flatten()->unique();
+        // Get all tags for sidebar
+        $allTags = Blog::where('status', 'published')
+            ->whereNotNull('tags')
+            ->pluck('tags')
+            ->flatten()
+            ->unique()
+            ->filter();
 
-        return view('blogs-index', compact('blogs', 'tag', 'allTags'));
+        return view('blogs', compact('blogs', 'tag', 'allTags'));
     }
 }

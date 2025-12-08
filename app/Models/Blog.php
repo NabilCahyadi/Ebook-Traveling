@@ -21,14 +21,13 @@ class Blog extends Model
         'category',
         'tags',
         'view_count',
-        'is_published',
+        'status',
         'published_at',
     ];
 
     protected $casts = [
         'tags' => 'array',
         'view_count' => 'integer',
-        'is_published' => 'boolean',
         'published_at' => 'datetime',
         'tags' => 'array',
     ];
@@ -46,7 +45,7 @@ class Blog extends Model
      */
     public function scopePublished($query)
     {
-        return $query->where('is_published', true)
+        return $query->where('status', 'published')
             ->whereNotNull('published_at')
             ->where('published_at', '<=', now());
     }

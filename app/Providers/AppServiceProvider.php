@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\View;
+use App\View\Composers\SidebarComposer;
 use App\Repositories\BannerRepository;
 use App\Services\BannerService;
 use App\Repositories\Interfaces\CollectionRepositoryInterface;
@@ -30,5 +32,8 @@ class AppServiceProvider extends ServiceProvider
     {
         Rating::observe(RatingObserver::class);
         Paginator::useBootstrapFive();
+
+        // Register View Composer for sidebar
+        View::composer('layouts.partials.admin.sidebar', SidebarComposer::class);
     }
 }

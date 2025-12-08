@@ -71,9 +71,13 @@ class SubscriptionService
             // Generate subscription code
             $subscriptionCode = 'SUB-' . strtoupper(Str::random(10));
 
-            // Calculate dates
+            // Calculate dates with quantity
+            $quantity = $data['quantity'] ?? 1;
+            $totalDays = $plan->duration_days * $quantity;
+            $totalAmount = $plan->price * $quantity;
+
             $startDate = now();
-            $endDate = now()->addDays($plan->duration_days);
+            $endDate = now()->addDays($totalDays);
 
             // Create subscription
             $subscription = $this->subscriptionRepository->create([
@@ -83,7 +87,7 @@ class SubscriptionService
                 'start_date' => $startDate,
                 'end_date' => $endDate,
                 'status' => 'active',
-                'total_amount' => $plan->price,
+                'total_amount' => $totalAmount,
                 'auto_renew' => false,
             ]);
 
@@ -126,6 +130,45 @@ class SubscriptionService
             $this->subscriptionRepository->update($subscription, [
                 'end_date' => $newEndDate,
                 'status' => 'active',
+            ]);
+
+            DB::commit();
+            return $subscription->fresh();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * Extend subscription by plan with quantity
+     */
+    public function extendSubscriptionByPlan(string $id, string $planId, int $quantity = 1): Subscription
+    {
+        DB::beginTransaction();
+        try {
+            $subscription = $this->subscriptionRepository->findById($id);
+            if (!$subscription) {
+                throw new \Exception('Subscription not found.');
+            }
+
+            $plan = $this->subscriptionPlanRepository->findById($planId);
+            if (!$plan) {
+                throw new \Exception('Subscription plan not found.');
+            }
+
+            // Calculate total days and amount
+            $totalDays = $plan->duration_days * $quantity;
+            $totalAmount = $plan->price * $quantity;
+
+            // Extend end date
+            $newEndDate = \Carbon\Carbon::parse($subscription->end_date)->addDays($totalDays);
+
+            // Update subscription
+            $this->subscriptionRepository->update($subscription, [
+                'end_date' => $newEndDate,
+                'status' => 'active',
+                'total_amount' => $subscription->total_amount + $totalAmount,
             ]);
 
             DB::commit();

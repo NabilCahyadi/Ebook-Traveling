@@ -19,10 +19,34 @@ class BlogController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $blogs = $this->blogService->getPaginatedBlogs(5);
-        return view('admin.blogs.index', compact('blogs'));
+        $status = $request->get('status');
+        $category = $request->get('category');
+        $search = $request->get('search');
+
+        $blogs = $this->blogService->getFilteredBlogs([
+            'status' => $status,
+            'category' => $category,
+            'search' => $search,
+            'exclude_archived' => true,
+        ], 15);
+
+        $categories = $this->blogService->getAllCategories();
+
+        return view('admin.blogs.index', compact('blogs', 'status', 'category', 'search', 'categories'));
+    }
+
+    /**
+     * Display archived blogs
+     */
+    public function archived(Request $request)
+    {
+        $search = $request->get('search');
+
+        $blogs = $this->blogService->getArchivedBlogs($search, 15);
+
+        return view('admin.blogs.archived', compact('blogs', 'search'));
     }
 
     /**
@@ -45,11 +69,15 @@ class BlogController extends Controller
             'featured_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
             'category' => 'nullable|string|max:100',
             'tags' => 'nullable|string',
-            'is_published' => 'boolean',
+            'status' => 'required|in:draft,published,unpublished,archived',
         ]);
 
         $validated['author_id'] = Auth::id();
-        $validated['is_published'] = $request->has('is_published');
+
+        // Set published_at if status is published
+        if ($validated['status'] === 'published' && !isset($validated['published_at'])) {
+            $validated['published_at'] = now();
+        }
 
         try {
             $this->blogService->createBlog($validated);
@@ -97,12 +125,17 @@ class BlogController extends Controller
             'featured_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
             'category' => 'nullable|string|max:100',
             'tags' => 'nullable|string',
-            'is_published' => 'boolean',
+            'status' => 'required|in:draft,published,unpublished,archived',
             'remove_image' => 'boolean',
         ]);
 
-        $validated['is_published'] = $request->has('is_published');
         $validated['remove_image'] = $request->has('remove_image');
+
+        // Set published_at if status is published and not already set
+        $blog = $this->blogService->getBlogById($id);
+        if ($validated['status'] === 'published' && !$blog->published_at) {
+            $validated['published_at'] = now();
+        }
 
         try {
             $this->blogService->updateBlog($id, $validated);

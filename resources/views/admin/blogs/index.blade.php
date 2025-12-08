@@ -28,9 +28,58 @@
         @endif
 
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">All Blogs</h5>
-                <span class="badge bg-primary">{{ $blogs->total() }} Total</span>
+            <div class="card-header">
+                <h5 class="mb-3">All Blogs</h5>
+
+                <!-- Filter Section -->
+                <form method="GET" action="{{ route('admin.blogs.index') }}" class="row g-3">
+                    <div class="col-md-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="">All Status</option>
+                            <option value="draft" {{ $status == 'draft' ? 'selected' : '' }}>Draft</option>
+                            <option value="published" {{ $status == 'published' ? 'selected' : '' }}>Published</option>
+                            <option value="unpublished" {{ $status == 'unpublished' ? 'selected' : '' }}>Unpublished
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-select" id="category" name="category">
+                            <option value="">All Categories</option>
+                            @foreach ($categories as $cat)
+                                <option value="{{ $cat }}" {{ $category == $cat ? 'selected' : '' }}>
+                                    {{ $cat }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="search" class="form-label">Search</label>
+                        <input type="text" class="form-control" id="search" name="search"
+                            placeholder="Search by title, content..." value="{{ $search ?? '' }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">&nbsp;</label>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bx bx-search-alt me-1"></i> Filter
+                            </button>
+                            @if ($status || $category || $search)
+                                <a href="{{ route('admin.blogs.index') }}" class="btn btn-outline-secondary">
+                                    <i class="bx bx-x"></i>
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Stats -->
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <span class="badge bg-primary">{{ $blogs->total() }} Total</span>
+                    <a href="{{ route('admin.blogs.archived') }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="bx bx-archive me-1"></i> View Archived
+                    </a>
+                </div>
             </div>
             <div class="card-body">
                 @if ($blogs->count() > 0)
@@ -81,10 +130,14 @@
                                             <i class="bx bx-show me-1"></i>{{ number_format($blog->view_count) }}
                                         </td>
                                         <td>
-                                            @if ($blog->is_published)
+                                            @if ($blog->status === 'published')
                                                 <span class="badge bg-success">Published</span>
+                                            @elseif($blog->status === 'draft')
+                                                <span class="badge bg-warning">Draft</span>
+                                            @elseif($blog->status === 'unpublished')
+                                                <span class="badge bg-secondary">Unpublished</span>
                                             @else
-                                                <span class="badge bg-secondary">Draft</span>
+                                                <span class="badge bg-dark">Archived</span>
                                             @endif
                                         </td>
                                         <td>
@@ -96,28 +149,31 @@
                                         </td>
                                         <td>
                                             <div class="dropdown">
-                                                <button type="button" class="btn btn-sm btn-icon"
-                                                    data-bs-toggle="dropdown">
-                                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                                <button type="button"
+                                                    class="btn btn-sm btn-icon btn-text-secondary rounded-pill dropdown-toggle hide-arrow"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="ti ti-dots-vertical"></i>
                                                 </button>
-                                                <div class="dropdown-menu">
+                                                <div class="dropdown-menu dropdown-menu-end">
                                                     <a class="dropdown-item"
                                                         href="{{ route('admin.blogs.show', $blog->id) }}">
-                                                        <i class="bx bx-show me-2"></i> View
+                                                        <i class="ti ti-eye me-2"></i> View
                                                     </a>
                                                     <a class="dropdown-item"
                                                         href="{{ route('admin.blogs.edit', $blog->id) }}">
-                                                        <i class="bx bx-edit me-2"></i> Edit
+                                                        <i class="ti ti-pencil me-2"></i> Edit
                                                     </a>
                                                     <div class="dropdown-divider"></div>
                                                     <form action="{{ route('admin.blogs.destroy', $blog->id) }}"
-                                                        method="POST"
-                                                        onsubmit="return confirm('Are you sure you want to delete this blog?');">
+                                                        method="POST" style="display: none;"
+                                                        id="delete-blog-{{ $blog->id }}">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="dropdown-item text-danger">
-                                                            <i class="bx bx-trash me-2"></i> Delete
-                                                        </button>
+                                                    </form>
+                                                    <a class="dropdown-item text-danger" href="javascript:void(0);"
+                                                        onclick="if(confirm('Are you sure you want to delete this blog?')) document.getElementById('delete-blog-{{ $blog->id }}').submit();">
+                                                        <i class="ti ti-trash me-2"></i> Delete
+                                                    </a>
                                                     </form>
                                                 </div>
                                             </div>
@@ -129,7 +185,7 @@
                     </div>
 
                     <div class="mt-3">
-                        {{ $blogs->links() }}
+                        {{ $blogs->appends(['status' => $status, 'category' => $category, 'search' => $search])->links() }}
                     </div>
                 @else
                     <div class="text-center py-5">

@@ -13,31 +13,29 @@ class SubscriptionPlanSeeder extends Seeder
         $plans = [
             [
                 'name' => 'Basic Plan',
+                'slug' => 'basic-plan',
                 'description' => 'Perfect for casual readers and occasional travelers. Access to essential travel guides with basic features.',
-                'price_monthly' => 9.99,
-                
-                'price_annual' => 99.99,
+                'price' => 9.99,
                 'duration_days' => 30,
-                'max_books' => 50,
-                'features' => [
+                'cover_image' => 'images/banner-subs-1.webp',
+                'features' => json_encode([
                     'Access to 100+ travel guides',
                     'Basic customer support',
                     'Mobile app access',
                     'Regular content updates',
                     'Email support',
                     '1 device at a time'
-                ],
+                ]),
                 'is_active' => true,
-                'order_index' => 0,
             ],
             [
                 'name' => 'Premium Plan',
+                'slug' => 'premium-plan',
                 'description' => 'For avid travelers and frequent readers. Get access to exclusive city guides and advanced features.',
-                'price_monthly' => 19.99,
-                'price_annual' => 199.99,
+                'price' => 19.99,
                 'duration_days' => 30,
-                'max_books' => 200,
-                'features' => [
+                'cover_image' => 'images/banner-subs-2.webp',
+                'features' => json_encode([
                     'Access to 500+ travel guides',
                     'Priority customer support',
                     'Offline reading',
@@ -46,18 +44,17 @@ class SubscriptionPlanSeeder extends Seeder
                     'Download up to 50 guides',
                     '3 devices at a time',
                     'Advanced search filters'
-                ],
+                ]),
                 'is_active' => true,
-                'order_index' => 1,
             ],
             [
                 'name' => 'Pro Plan',
+                'slug' => 'pro-plan',
                 'description' => 'Ultimate travel experience with exclusive benefits. Perfect for travel enthusiasts and professionals.',
-                'price_monthly' => 29.99,
-                'price_annual' => 299.99,
+                'price' => 29.99,
                 'duration_days' => 30,
-                'max_books' => 999, // Unlimited
-                'features' => [
+                'cover_image' => 'images/banner-subs-3.webp',
+                'features' => json_encode([
                     'Unlimited travel guides',
                     '24/7 premium support',
                     'Offline download all guides',
@@ -68,64 +65,13 @@ class SubscriptionPlanSeeder extends Seeder
                     '5 devices at a time',
                     'Priority feature requests',
                     'Monthly newsletter with tips'
-                ],
+                ]),
                 'is_active' => true,
-                'order_index' => 2,
             ],
-            // Optional: Free Trial Plan
-            [
-                'name' => 'Free Trial',
-                'description' => 'Try our service for free with limited access to premium features.',
-                'price_monthly' => 0.00,
-                'price_annual' => 0.00,
-                'duration_days' => 7,
-                'max_books' => 10,
-                'features' => [
-                    'Access to 10 travel guides',
-                    'Basic customer support',
-                    'Mobile app access',
-                    '7-day free trial'
-                ],
-                'is_active' => true,
-                'order_index' => 3,
-            ],
-            // Optional: Annual Saver Plan
-            [
-                'name' => 'Annual Saver',
-                'description' => 'Save 25% with annual billing. Perfect for long-term travelers and book enthusiasts.',
-                'price_monthly' => 24.99,
-                'price_annual' => 249.99,
-                'duration_days' => 365,
-                'max_books' => 300,
-                'features' => [
-                    'Access to 800+ travel guides',
-                    'Priority customer support',
-                    'Offline reading all guides',
-                    'Annual travel report',
-                    'Discount on partner services',
-                    '4 devices at a time',
-                    'Free travel checklist'
-                ],
-                'is_active' => true,
-                'order_index' => 4,
-            ]
         ];
 
         foreach ($plans as $plan) {
-            SubscriptionPlan::create([
-                'id' => Str::uuid(),
-                'name' => $plan['name'],
-                'description' => $plan['description'],
-                'price_monthly' => $plan['price_monthly'],
-                'price_annual' => $plan['price_annual'],
-                'duration_days' => $plan['duration_days'],
-                'features' => json_encode($plan['features']),
-                'max_books' => $plan['max_books'],
-                'is_active' => $plan['is_active'],
-                'order_index' => $plan['order_index'],
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            SubscriptionPlan::create($plan);
         }
 
         $this->command->info('✅ Subscription plans seeded successfully!');

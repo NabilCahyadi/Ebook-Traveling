@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Support\Str;
 use App\Models\EbookCategory;
 use App\Models\City;
 use App\Models\EbookSection;
@@ -14,6 +16,8 @@ use App\Models\Collection;
 
 class Ebook extends Model
 {
+    use HasUuids;
+
     protected $fillable = [
         'category_id',
         'city_id',
@@ -21,34 +25,71 @@ class Ebook extends Model
         'slug',
         'description',
         'author',
-        'publisher',
-        'isbn',
         'cover_image',
         'file_url',
-        'pdf_file',
-        'content_text',
-        'preview_content',
         'page_count',
-        'language',
-        'is_featured',
-        'is_free',
         'status',
         'is_active',
+        'is_featured',
+        'view_count',
+        'read_count',
+        'average_rating',
+        'total_reviews',
+        'creator_id',
         'published_at',
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
-        'id' => 'string',
         'published_at' => 'datetime',
+        'average_rating' => 'decimal:2',
+        'is_active' => 'boolean',
+        'is_featured' => 'boolean',
+        'id' => 'string',
     ];
+
+    /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($ebook) {
+            if (empty($ebook->slug)) {
+                $ebook->slug = static::generateUniqueSlug($ebook->title);
+            }
+        });
+
+        static::updating(function ($ebook) {
+            if ($ebook->isDirty('title') && empty($ebook->slug)) {
+                $ebook->slug = static::generateUniqueSlug($ebook->title);
+            }
+        });
+    }
+
+    /**
+     * Generate a unique slug.
+     */
+    protected static function generateUniqueSlug($title)
+    {
+        $slug = Str::slug($title);
+        $originalSlug = $slug;
+        $count = 1;
+
+        while (static::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+
+        return $slug;
+    }
 
     /**
      * Get the category that owns the ebook.
      */
     public function category(): BelongsTo
     {
-        return $this->belongsTo(EbookCategory::class, 'category_id');
+        return $this->belongsTo(Category::class, 'category_id');
     }
 
     /**
@@ -76,7 +117,7 @@ class Ebook extends Model
     }
 
     /**
-     * RELASI BARU: Collections (many-to-many)
+     * Get the collections that contain the ebook (many-to-many).
      */
     public function collections(): BelongsToMany
     {
@@ -86,11 +127,19 @@ class Ebook extends Model
     }
 
     /**
-     * Dapatkan creator yang membuat ebook ini.
+     * Get the user who created the ebook.
      */
     public function creator(): BelongsTo
     {
-        return $this->belongsTo(Creator::class);
+        return $this->belongsTo(User::class, 'creator_id');
+    }
+
+    /**
+     * Get the order items for the ebook.
+     */
+    public function orderItems(): HasMany
+    {
+        return $this->hasMany(OrderItem::class, 'ebook_id');
     }
 
     /**

@@ -44,10 +44,19 @@ class SubscriptionPlanController extends Controller
             'price' => 'required|numeric|min:0',
             'duration_days' => 'required|integer|min:1',
             'features' => 'nullable|string',
+            'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         // Set is_active
         $validated['is_active'] = $request->has('is_active');
+
+        // Handle banner image upload
+        if ($request->hasFile('banner_image')) {
+            $image = $request->file('banner_image');
+            $filename = 'banner_' . time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+            $path = $image->storeAs('subscription_banners', $filename, 'public');
+            $validated['banner_image'] = $path;
+        }
 
         try {
             $this->subscriptionPlanService->createPlan($validated);
@@ -92,10 +101,26 @@ class SubscriptionPlanController extends Controller
             'price' => 'required|numeric|min:0',
             'duration_days' => 'required|integer|min:1',
             'features' => 'nullable|string',
+            'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         // Set is_active
         $validated['is_active'] = $request->has('is_active');
+
+        // Handle banner image upload
+        if ($request->hasFile('banner_image')) {
+            $plan = $this->subscriptionPlanService->getPlanById($id);
+
+            // Delete old banner if exists
+            if ($plan->banner_image && \Storage::disk('public')->exists($plan->banner_image)) {
+                \Storage::disk('public')->delete($plan->banner_image);
+            }
+
+            $image = $request->file('banner_image');
+            $filename = 'banner_' . time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+            $path = $image->storeAs('subscription_banners', $filename, 'public');
+            $validated['banner_image'] = $path;
+        }
 
         try {
             $this->subscriptionPlanService->updatePlan($id, $validated);
