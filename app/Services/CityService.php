@@ -69,18 +69,18 @@ class CityService
         try {
             $cities = $this->cityRepository->getPopularCities($limit);
 
-            // If results are empty, use fallback
+            // Jika hasil kosong, gunakan fallback
             if ($cities->isEmpty()) {
                 return $this->getRealTimeFallbackCities()->take($limit);
             }
 
-            // Map items_count from ebooks_count that's already loaded from database
+            // Map items_count dari ebooks_count yang sudah di-load dari database
             return $cities->map(function ($city) {
                 $city->items_count = $city->ebooks_count ?? 0;
                 return $city;
             });
         } catch (\Exception $e) {
-            // Fallback to real-time data if there's an error
+            // Fallback ke data real-time jika ada error
             return $this->getRealTimeFallbackCities()->take($limit);
         }
     }

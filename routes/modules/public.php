@@ -30,10 +30,6 @@ Route::get('/pricing', function () {
 Route::get('/destinations', [DestinationController::class, 'index'])->name('destinations');
 Route::get('/destination/{slug}', [DestinationController::class, 'show'])->name('destination.show');
 
-// Blog Routes
-Route::get('/blogs', [BlogController::class, 'index'])->name('blogs');
-Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blogs.show');
-
 // Promo Page
 Route::get('/promo', function () {
     return view('promo');
@@ -92,15 +88,10 @@ Route::middleware('auth')->group(function () {
 Route::get('/help/content/{type}', [HelpController::class, 'loadContent'])->name('help.content');
 
 Route::get('/collections/{collection:slug}', [CollectionController::class, 'show'])->name('collections.show');
-
-// Blog Routes (Extended)
+Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index');
+// Route::get('/blog-news', [BlogController::class, 'index'])->name('blogs');
 Route::get('/blogs/tag/{tag}', [BlogController::class, 'byTag'])->name('blogs.by.tag');
-
-// Ebook Routes
+Route::get('/blogs/{slug}', [BlogController::class, 'show'])->name('blogs.show');
 Route::get('/ebooks/{slug}', [EbookController::class, 'show'])->name('ebooks.show');
-
-// Rating Routes
 Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store')->middleware('auth');
-
-// Reader Routes
 Route::get('/reader/{slug}', [ReaderController::class, 'show'])->name('reader.show')->middleware('premium');

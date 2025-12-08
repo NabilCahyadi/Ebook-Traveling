@@ -40,8 +40,6 @@ class HomeController extends Controller
         // $collections = $this->collectionService->getHomepageCollections();
         $collectionData = $this->collectionService->getHomepageCollectionsWithSubscriptionStatus();
 
-        // Get latest 4 published blogs
-        $latestBlogs = $this->blogService->getPublishedBlogs(4);
 
         return view('index', [
             'homeSliders' => $homeSliders,
