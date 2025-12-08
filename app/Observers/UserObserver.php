@@ -2,17 +2,21 @@
 
 namespace App\Observers;
 
-use App\Models\ActionLog;
-use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
-class UserObserver
+class UserObserver extends BaseObserver
 {
     /**
      * Handle the User "created" event.
      */
     public function created($user)
     {
-        $this->logActivity('create', 'users', $user->id);
+        $this->logActivity('create', $this->getTableName($user), $user->id, [
+            'target_user_name' => $user->name,
+            'target_user_email' => $user->email,
+            'target_user_id' => $user->id,
+            'data' => $this->getModelData($user, ['id', 'password', 'remember_token', 'email_verified_at', 'created_at', 'updated_at'])
+        ]);
     }
 
     /**
@@ -20,7 +24,13 @@ class UserObserver
      */
     public function updated($user)
     {
-        $this->logActivity('update', 'users', $user->id);
+        $this->logActivity('update', $this->getTableName($user), $user->id, [
+            'target_user_name' => $user->name,
+            'target_user_email' => $user->email,
+            'target_user_id' => $user->id,
+            'changes' => $user->getChanges(),
+            'data' => $this->getModelData($user, ['id', 'password', 'remember_token', 'email_verified_at', 'created_at', 'updated_at'])
+        ]);
     }
 
     /**
@@ -28,26 +38,39 @@ class UserObserver
      */
     public function deleted($user)
     {
-        $this->logActivity('delete', 'users', $user->id);
+        $this->logActivity('delete', $this->getTableName($user), $user->id, [
+            'target_user_name' => $user->name,
+            'target_user_email' => $user->email,
+            'target_user_id' => $user->id,
+            'soft_delete' => true,
+            'data' => $this->getModelData($user, ['id', 'password', 'remember_token', 'email_verified_at', 'created_at', 'updated_at'])
+        ]);
     }
 
     /**
-     * Log activity
+     * Handle the User "restored" event.
      */
-    private function logActivity($action, $table, $recordId)
+    public function restored($user)
     {
-        if (Auth::check()) {
-            ActionLog::create([
-                'user_id' => Auth::id(),
-                'action_type' => $action,
-                'table_name' => $table,
-                'record_id' => $recordId,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'url' => request()->fullUrl(),
-                'method' => request()->method(),
-                'created_at' => now()
-            ]);
-        }
+        $this->logActivity('restore', $this->getTableName($user), $user->id, [
+            'target_user_name' => $user->name,
+            'target_user_email' => $user->email,
+            'target_user_id' => $user->id,
+            'data' => $this->getModelData($user, ['id', 'password', 'remember_token', 'email_verified_at', 'created_at', 'updated_at'])
+        ]);
+    }
+
+    /**
+     * Handle the User "force deleted" event.
+     */
+    public function forceDeleted($user)
+    {
+        $this->logActivity('force_delete', $this->getTableName($user), $user->id, [
+            'target_user_name' => $user->name,
+            'target_user_email' => $user->email,
+            'target_user_id' => $user->id,
+            'force_delete' => true,
+            'data' => $this->getModelData($user, ['id', 'password', 'remember_token', 'email_verified_at', 'created_at', 'updated_at'])
+        ]);
     }
 }

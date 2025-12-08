@@ -119,13 +119,45 @@ class EbookService
     }
 
     /**
-     * Delete ebook.
+     * Delete ebook (soft delete).
      */
     public function deleteEbook(string $id): bool
     {
-        DB::beginTransaction();
         try {
             $ebook = $this->ebookRepository->findById($id);
+
+            if (!$ebook) {
+                throw new \Exception('Ebook not found');
+            }
+
+            return $ebook->delete(); // Soft delete
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+    
+    /**
+     * Restore ebook.
+     */
+    public function restoreEbook(string $id): bool
+    {
+        $ebook = \App\Models\Ebook::onlyTrashed()->find($id);
+        
+        if (!$ebook) {
+            return false;
+        }
+        
+        return $ebook->restore();
+    }
+    
+    /**
+     * Permanently delete ebook.
+     */
+    public function forceDeleteEbook(string $id): bool
+    {
+        DB::beginTransaction();
+        try {
+            $ebook = \App\Models\Ebook::onlyTrashed()->find($id);
 
             if (!$ebook) {
                 throw new \Exception('Ebook not found');
@@ -139,7 +171,7 @@ class EbookService
                 Storage::disk('public')->delete($ebook->file_url);
             }
 
-            $result = $this->ebookRepository->delete($ebook);
+            $result = $ebook->forceDelete();
 
             DB::commit();
             return $result;
@@ -147,6 +179,14 @@ class EbookService
             DB::rollBack();
             throw $e;
         }
+    }
+    
+    /**
+     * Get trashed ebooks.
+     */
+    public function getTrashedEbooks(int $perPage = 10)
+    {
+        return \App\Models\Ebook::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate($perPage);
     }
 
     /**

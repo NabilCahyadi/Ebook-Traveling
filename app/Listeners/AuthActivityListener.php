@@ -23,7 +23,6 @@ class AuthActivityListener
                 'user_agent' => request()->userAgent(),
                 'url' => request()->fullUrl(),
                 'method' => request()->method(),
-                'created_at' => now()
             ]);
         }
     }
@@ -43,7 +42,6 @@ class AuthActivityListener
                 'user_agent' => request()->userAgent(),
                 'url' => request()->fullUrl(),
                 'method' => request()->method(),
-                'created_at' => now()
             ]);
         }
     }

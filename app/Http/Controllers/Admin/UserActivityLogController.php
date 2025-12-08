@@ -31,15 +31,15 @@ class UserActivityLogController extends Controller
         }
 
         // Filter by action type
-        if ($request->has('action') && $request->action !== 'all') {
+        if ($request->has('action') && $request->action && $request->action !== 'all') {
             $query->where('action_type', $request->action);
         }
 
         // Filter by date range
-        if ($request->has('date_from')) {
+        if ($request->has('date_from') && $request->date_from) {
             $query->whereDate('created_at', '>=', $request->date_from);
         }
-        if ($request->has('date_to')) {
+        if ($request->has('date_to') && $request->date_to) {
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 

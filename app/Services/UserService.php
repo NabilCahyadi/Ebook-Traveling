@@ -20,9 +20,13 @@ class UserService
     /**
      * Get all users with pagination.
      */
-    public function getAllUsers(int $perPage = 10, ?string $search = null)
+    public function getAllUsers(int $perPage = 10, ?string $search = null, bool $withTrashed = false)
     {
         $query = User::with('roles');
+
+        if ($withTrashed) {
+            $query->withTrashed();
+        }
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -38,7 +42,7 @@ class UserService
     /**
      * Get users by role slug with pagination.
      */
-    public function getUsersByRole(string $roleSlug, int $perPage = 10, ?string $search = null)
+    public function getUsersByRole(string $roleSlug, int $perPage = 10, ?string $search = null, bool $withTrashed = false)
     {
         $query = User::where(function ($query) use ($roleSlug) {
             // Check if user has role in user_roles table
@@ -48,6 +52,10 @@ class UserService
                 // OR check user_type column (fallback for users without role assignment)
                 ->orWhere('user_type', $roleSlug);
         });
+
+        if ($withTrashed) {
+            $query->withTrashed();
+        }
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -63,8 +71,11 @@ class UserService
     /**
      * Get user by ID.
      */
-    public function getUserById(string $id): ?User // UBAH int jadi string
+    public function getUserById(string $id, bool $withTrashed = false): ?User // UBAH int jadi string
     {
+        if ($withTrashed) {
+            return User::withTrashed()->find($id);
+        }
         return $this->userRepository->findById($id);
     }
 
@@ -109,7 +120,7 @@ class UserService
     }
 
     /**
-     * Delete user.
+     * Soft delete user.
      */
     public function deleteUser(string $id): bool // UBAH int jadi string
     {
@@ -122,11 +133,12 @@ class UserService
             }
 
             // Prevent deleting current logged in user
-            if (Auth::id() && $user->id === Auth::check()) {
+            if (Auth::id() && $user->id === Auth::id()) {
                 throw new \Exception('You cannot delete your own account');
             }
 
-            $result = $this->userRepository->delete($user);
+            // Soft delete the user
+            $result = $user->delete();
 
             DB::commit();
             return $result;
@@ -134,6 +146,79 @@ class UserService
             DB::rollBack();
             throw $e;
         }
+    }
+
+    /**
+     * Restore soft deleted user.
+     */
+    public function restoreUser(string $id): bool
+    {
+        DB::beginTransaction();
+        try {
+            $user = User::withTrashed()->find($id);
+
+            if (!$user) {
+                throw new \Exception('User not found');
+            }
+
+            if (!$user->trashed()) {
+                throw new \Exception('User is not deleted');
+            }
+
+            $result = $user->restore();
+
+            DB::commit();
+            return $result;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * Permanently delete user.
+     */
+    public function forceDeleteUser(string $id): bool
+    {
+        DB::beginTransaction();
+        try {
+            $user = User::withTrashed()->find($id);
+
+            if (!$user) {
+                throw new \Exception('User not found');
+            }
+
+            // Prevent force deleting current logged in user
+            if (Auth::id() && $user->id === Auth::id()) {
+                throw new \Exception('You cannot permanently delete your own account');
+            }
+
+            $result = $user->forceDelete();
+
+            DB::commit();
+            return $result;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * Get only trashed users.
+     */
+    public function getTrashedUsers(int $perPage = 10, ?string $search = null)
+    {
+        $query = User::onlyTrashed()->with('roles');
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%')
+                    ->orWhere('phone', 'like', '%' . $search . '%');
+            });
+        }
+
+        return $query->paginate($perPage);
     }
 
     /**

@@ -29,9 +29,21 @@
                         {{ ucfirst(str_replace('-', ' ', $roleSlug)) }}
                     </span>
                 @endif
+                @if($showTrashed ?? false)
+                    <span class="badge bg-label-danger ms-2">Trashed Users</span>
+                @endif
             </h4>
         </div>
         <div>
+            @if($showTrashed ?? false)
+                <a href="{{ route('admin.users.index') }}" class="btn btn-secondary me-2">
+                    <i class="ti ti-arrow-left me-1"></i> Back to Active Users
+                </a>
+            @else
+                <a href="{{ route('admin.users.trashed') }}" class="btn btn-outline-danger me-2">
+                    <i class="ti ti-trash me-1"></i> View Trashed Users
+                </a>
+            @endif
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
                 <i class="ti ti-plus me-1"></i> Add New User
             </button>
@@ -94,8 +106,13 @@
                         </thead>
                         <tbody>
                             @foreach ($users as $user)
-                                <tr>
-                                    <td><strong>#{{ $user->id }}</strong></td>
+                                <tr @if($user->trashed()) class="table-danger" @endif>
+                                    <td>
+                                        <strong>#{{ $user->id }}</strong>
+                                        @if($user->trashed())
+                                            <span class="badge bg-label-danger ms-1">Deleted</span>
+                                        @endif
+                                    </td>
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <div class="avatar avatar-sm me-2">
@@ -104,7 +121,12 @@
                                                 </span>
                                             </div>
                                             <div>
-                                                <div class="fw-medium">{{ $user->name }}</div>
+                                                <div class="fw-medium">
+                                                    {{ $user->name }}
+                                                    @if($user->trashed())
+                                                        <i class="ti ti-trash text-danger ms-1" title="Deleted"></i>
+                                                    @endif
+                                                </div>
                                                 @if ($user->id === auth()->id())
                                                     <small class="badge bg-label-success">You</small>
                                                 @endif
@@ -157,28 +179,58 @@
                                                 <i class="ti ti-dots-vertical"></i>
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item" href="javascript:void(0);"
-                                                    onclick="editUser('{{ $user->id }}', '{{ $user->name }}', '{{ $user->email }}')">
-                                                    <i class="ti ti-pencil me-2"></i>
-                                                    <span>Edit</span>
-                                                </a>
-                                                <a class="dropdown-item" href="{{ route('admin.users.show', $user->id) }}">
-                                                    <i class="ti ti-eye me-2"></i>
-                                                    <span>View Details</span>
-                                                </a>
-                                                @if ($user->id !== auth()->id())
-                                                    <div class="dropdown-divider"></div>
-                                                    <a class="dropdown-item text-danger" href="javascript:void(0);"
-                                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this user?')) document.getElementById('delete-form-{{ $user->id }}').submit();">
-                                                        <i class="ti ti-trash me-2"></i>
-                                                        <span>Delete</span>
+                                                @if(!$user->trashed())
+                                                    {{-- Actions for active users --}}
+                                                    <a class="dropdown-item" href="javascript:void(0);"
+                                                        onclick="editUser('{{ $user->id }}', '{{ $user->name }}', '{{ $user->email }}')">
+                                                        <i class="ti ti-pencil me-2"></i>
+                                                        <span>Edit</span>
                                                     </a>
-                                                    <form id="delete-form-{{ $user->id }}"
-                                                        action="{{ route('admin.users.destroy', $user->id) }}"
+                                                    <a class="dropdown-item" href="{{ route('admin.users.show', $user->id) }}">
+                                                        <i class="ti ti-eye me-2"></i>
+                                                        <span>View Details</span>
+                                                    </a>
+                                                    @if ($user->id !== auth()->id())
+                                                        <div class="dropdown-divider"></div>
+                                                        <a class="dropdown-item text-warning" href="javascript:void(0);"
+                                                            onclick="event.preventDefault(); if(confirm('Are you sure you want to move this user to trash?')) document.getElementById('delete-form-{{ $user->id }}').submit();">
+                                                            <i class="ti ti-trash me-2"></i>
+                                                            <span>Move to Trash</span>
+                                                        </a>
+                                                        <form id="delete-form-{{ $user->id }}"
+                                                            action="{{ route('admin.users.destroy', $user->id) }}"
+                                                            method="POST" style="display: none;">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                        </form>
+                                                    @endif
+                                                @else
+                                                    {{-- Actions for trashed users --}}
+                                                    <a class="dropdown-item text-success" href="javascript:void(0);"
+                                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to restore this user?')) document.getElementById('restore-form-{{ $user->id }}').submit();">
+                                                        <i class="ti ti-restore me-2"></i>
+                                                        <span>Restore</span>
+                                                    </a>
+                                                    <form id="restore-form-{{ $user->id }}"
+                                                        action="{{ route('admin.users.restore', $user->id) }}"
                                                         method="POST" style="display: none;">
                                                         @csrf
-                                                        @method('DELETE')
+                                                        @method('PATCH')
                                                     </form>
+                                                    @if ($user->id !== auth()->id())
+                                                        <div class="dropdown-divider"></div>
+                                                        <a class="dropdown-item text-danger" href="javascript:void(0);"
+                                                            onclick="event.preventDefault(); if(confirm('Are you sure you want to permanently delete this user? This action cannot be undone!')) document.getElementById('force-delete-form-{{ $user->id }}').submit();">
+                                                            <i class="ti ti-trash-x me-2"></i>
+                                                            <span>Delete Permanently</span>
+                                                        </a>
+                                                        <form id="force-delete-form-{{ $user->id }}"
+                                                            action="{{ route('admin.users.force-delete', $user->id) }}"
+                                                            method="POST" style="display: none;">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                        </form>
+                                                    @endif
                                                 @endif
                                             </div>
                                         </div>

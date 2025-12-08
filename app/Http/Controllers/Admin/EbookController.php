@@ -176,15 +176,59 @@ class EbookController extends Controller
     }
 
     /**
-     * Remove the specified ebook.
+     * Remove the specified ebook (soft delete).
      */
     public function destroy($id)
     {
         try {
             $this->ebookService->deleteEbook($id);
-            return redirect()->route('admin.ebooks.index')->with('success', 'Ebook deleted successfully!');
+            return redirect()->route('admin.ebooks.index')->with('success', 'Ebook moved to trash successfully!');
         } catch (\Exception $e) {
             return back()->with('error', 'Failed to delete ebook: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Display trashed ebooks.
+     */
+    public function trashed()
+    {
+        try {
+            $ebooks = $this->ebookService->getTrashedEbooks(15);
+            return view('admin.ebooks.trashed', compact('ebooks'));
+        } catch (\Exception $e) {
+            return redirect()->route('admin.ebooks.index')
+                ->with('error', 'Failed to load trashed ebooks: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Restore a soft deleted ebook.
+     */
+    public function restore(string $id)
+    {
+        try {
+            $this->ebookService->restoreEbook($id);
+            return redirect()->route('admin.ebooks.trashed')
+                ->with('success', 'Ebook restored successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to restore ebook: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Permanently delete an ebook.
+     */
+    public function forceDelete(string $id)
+    {
+        try {
+            $this->ebookService->forceDeleteEbook($id);
+            return redirect()->route('admin.ebooks.trashed')
+                ->with('success', 'Ebook permanently deleted!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to permanently delete ebook: ' . $e->getMessage());
         }
     }
 

@@ -21,6 +21,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     // User Management (All users: admin, creator, customer)
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+    Route::get('users-trashed', [\App\Http\Controllers\Admin\UserController::class, 'trashed'])->name('users.trashed');
+    Route::patch('users/{id}/restore', [\App\Http\Controllers\Admin\UserController::class, 'restore'])->name('users.restore');
+    Route::delete('users/{id}/force-delete', [\App\Http\Controllers\Admin\UserController::class, 'forceDelete'])->name('users.force-delete');
 
     // User Activity Logs (non-admin users only)
     Route::get('user-activity-logs', [\App\Http\Controllers\Admin\UserActivityLogController::class, 'index'])->name('user-activity-logs.index');
@@ -29,23 +32,35 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     // Role Management
     Route::resource('roles', \App\Http\Controllers\Admin\RoleController::class);
+    Route::get('roles-trashed', [\App\Http\Controllers\Admin\RoleController::class, 'trashed'])->name('roles.trashed');
+    Route::patch('roles/{id}/restore', [\App\Http\Controllers\Admin\RoleController::class, 'restore'])->name('roles.restore');
+    Route::delete('roles/{id}/force-delete', [\App\Http\Controllers\Admin\RoleController::class, 'forceDelete'])->name('roles.force-delete');
 
     // Permission Management
     Route::resource('permissions', \App\Http\Controllers\Admin\PermissionController::class);
 
     // Ebook Management (All ebooks in system)
     Route::get('ebooks/pending-approval', [\App\Http\Controllers\Admin\EbookController::class, 'pendingApproval'])->name('ebooks.pending-approval');
+    Route::get('ebooks/trashed', [\App\Http\Controllers\Admin\EbookController::class, 'trashed'])->name('ebooks.trashed');
+    Route::patch('ebooks/{ebook}/restore', [\App\Http\Controllers\Admin\EbookController::class, 'restore'])->name('ebooks.restore');
+    Route::delete('ebooks/{ebook}/force-delete', [\App\Http\Controllers\Admin\EbookController::class, 'forceDelete'])->name('ebooks.force-delete');
     Route::post('ebooks/{id}/approve', [\App\Http\Controllers\Admin\EbookController::class, 'approve'])->name('ebooks.approve');
     Route::post('ebooks/{id}/reject', [\App\Http\Controllers\Admin\EbookController::class, 'reject'])->name('ebooks.reject');
     Route::resource('ebooks', \App\Http\Controllers\Admin\EbookController::class);
 
     // Category Management
+    Route::get('categories/trashed', [\App\Http\Controllers\Admin\CategoryController::class, 'trashed'])->name('categories.trashed');
+    Route::patch('categories/{category}/restore', [\App\Http\Controllers\Admin\CategoryController::class, 'restore'])->name('categories.restore');
+    Route::delete('categories/{category}/force-delete', [\App\Http\Controllers\Admin\CategoryController::class, 'forceDelete'])->name('categories.force-delete');
     Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
 
     // City/Location Management
     Route::resource('cities', \App\Http\Controllers\Admin\CityController::class);
 
     // Subscription Plan Management
+    Route::get('subscription-plans/trashed', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'trashed'])->name('subscription-plans.trashed');
+    Route::patch('subscription-plans/{subscription_plan}/restore', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'restore'])->name('subscription-plans.restore');
+    Route::delete('subscription-plans/{subscription_plan}/force-delete', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'forceDelete'])->name('subscription-plans.force-delete');
     Route::resource('subscription-plans', \App\Http\Controllers\Admin\SubscriptionPlanController::class);
 
     // Order Management
@@ -74,6 +89,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     // Blog Management
     Route::get('blogs/archived', [\App\Http\Controllers\Admin\BlogController::class, 'archived'])->name('blogs.archived');
+    Route::get('blogs/trashed', [\App\Http\Controllers\Admin\BlogController::class, 'trashed'])->name('blogs.trashed');
+    Route::patch('blogs/{blog}/restore', [\App\Http\Controllers\Admin\BlogController::class, 'restore'])->name('blogs.restore');
+    Route::delete('blogs/{blog}/force-delete', [\App\Http\Controllers\Admin\BlogController::class, 'forceDelete'])->name('blogs.force-delete');
     Route::resource('blogs', \App\Http\Controllers\Admin\BlogController::class);
 
     // System Settings

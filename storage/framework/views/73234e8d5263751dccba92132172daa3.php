@@ -24,9 +24,21 @@
         <div>
             <h4 class="fw-bold py-3 mb-2">
                 <span class="text-muted fw-light">Admin /</span> Role Management
+                <?php if($showTrashed ?? false): ?>
+                    <span class="badge bg-label-danger ms-2">Trashed Roles</span>
+                <?php endif; ?>
             </h4>
         </div>
         <div>
+            <?php if($showTrashed ?? false): ?>
+                <a href="<?php echo e(route('admin.roles.index')); ?>" class="btn btn-secondary me-2">
+                    <i class="ti ti-arrow-left me-1"></i> Back to Active Roles
+                </a>
+            <?php else: ?>
+                <a href="<?php echo e(route('admin.roles.trashed')); ?>" class="btn btn-outline-danger me-2">
+                    <i class="ti ti-trash me-1"></i> View Trashed Roles
+                </a>
+            <?php endif; ?>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
                 <i class="ti ti-plus me-1"></i> Add New Role
             </button>
@@ -94,23 +106,51 @@
                                                 <i class="ti ti-dots-vertical"></i>
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item" href="javascript:void(0);"
-                                                    onclick="editRole('<?php echo e($role->id); ?>', '<?php echo e($role->name); ?>', '<?php echo e($role->slug); ?>', '<?php echo e($role->description); ?>', <?php echo e($role->is_active ? 'true' : 'false'); ?>)">
-                                                    <i class="ti ti-pencil me-2"></i>
-                                                    <span>Edit</span>
-                                                </a>
-                                                <div class="dropdown-divider"></div>
-                                                <a class="dropdown-item text-danger" href="javascript:void(0);"
-                                                    onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this role?')) document.getElementById('delete-form-<?php echo e($role->id); ?>').submit();">
-                                                    <i class="ti ti-trash me-2"></i>
-                                                    <span>Delete</span>
-                                                </a>
-                                                <form id="delete-form-<?php echo e($role->id); ?>"
-                                                    action="<?php echo e(route('admin.roles.destroy', $role->id)); ?>" method="POST"
-                                                    style="display: none;">
-                                                    <?php echo csrf_field(); ?>
-                                                    <?php echo method_field('DELETE'); ?>
-                                                </form>
+                                                <?php if(!$role->trashed()): ?>
+                                                    
+                                                    <a class="dropdown-item" href="javascript:void(0);"
+                                                        onclick="editRole('<?php echo e($role->id); ?>', '<?php echo e($role->name); ?>', '<?php echo e($role->slug); ?>', '<?php echo e($role->description); ?>', <?php echo e($role->is_active ? 'true' : 'false'); ?>)">
+                                                        <i class="ti ti-pencil me-2"></i>
+                                                        <span>Edit</span>
+                                                    </a>
+                                                    <div class="dropdown-divider"></div>
+                                                    <a class="dropdown-item text-warning" href="javascript:void(0);"
+                                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to move this role to trash?')) document.getElementById('delete-form-<?php echo e($role->id); ?>').submit();">
+                                                        <i class="ti ti-trash me-2"></i>
+                                                        <span>Move to Trash</span>
+                                                    </a>
+                                                    <form id="delete-form-<?php echo e($role->id); ?>"
+                                                        action="<?php echo e(route('admin.roles.destroy', $role->id)); ?>" method="POST"
+                                                        style="display: none;">
+                                                        <?php echo csrf_field(); ?>
+                                                        <?php echo method_field('DELETE'); ?>
+                                                    </form>
+                                                <?php else: ?>
+                                                    
+                                                    <a class="dropdown-item text-success" href="javascript:void(0);"
+                                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to restore this role?')) document.getElementById('restore-form-<?php echo e($role->id); ?>').submit();">
+                                                        <i class="ti ti-restore me-2"></i>
+                                                        <span>Restore</span>
+                                                    </a>
+                                                    <form id="restore-form-<?php echo e($role->id); ?>"
+                                                        action="<?php echo e(route('admin.roles.restore', $role->id)); ?>"
+                                                        method="POST" style="display: none;">
+                                                        <?php echo csrf_field(); ?>
+                                                        <?php echo method_field('PATCH'); ?>
+                                                    </form>
+                                                    <div class="dropdown-divider"></div>
+                                                    <a class="dropdown-item text-danger" href="javascript:void(0);"
+                                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to permanently delete this role? This action cannot be undone!')) document.getElementById('force-delete-form-<?php echo e($role->id); ?>').submit();">
+                                                        <i class="ti ti-trash-x me-2"></i>
+                                                        <span>Delete Permanently</span>
+                                                    </a>
+                                                    <form id="force-delete-form-<?php echo e($role->id); ?>"
+                                                        action="<?php echo e(route('admin.roles.force-delete', $role->id)); ?>"
+                                                        method="POST" style="display: none;">
+                                                        <?php echo csrf_field(); ?>
+                                                        <?php echo method_field('DELETE'); ?>
+                                                    </form>
+                                                <?php endif; ?>
                                             </div>
                                         </div>
                                     </td>

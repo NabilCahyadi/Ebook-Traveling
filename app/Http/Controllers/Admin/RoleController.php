@@ -18,10 +18,11 @@ class RoleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $roles = $this->roleService->getAllRoles(15);
-        return view('admin.roles.index', compact('roles'));
+        $showTrashed = $request->get('show_trashed', false);
+        $roles = $this->roleService->getAllRoles(15, null, $showTrashed);
+        return view('admin.roles.index', compact('roles', 'showTrashed'));
     }
 
     /**
@@ -115,9 +116,48 @@ class RoleController extends Controller
             $this->roleService->deleteRole($id);
 
             return redirect()->route('admin.roles.index')
-                ->with('success', 'Role deleted successfully!');
+                ->with('success', 'Role moved to trash successfully!');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
+    }
+
+    /**
+     * Restore the specified resource from trash.
+     */
+    public function restore(string $id)
+    {
+        try {
+            $this->roleService->restoreRole($id);
+
+            return redirect()->route('admin.roles.index')
+                ->with('success', 'Role restored successfully!');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * Permanently delete the specified resource.
+     */
+    public function forceDelete(string $id)
+    {
+        try {
+            $this->roleService->forceDeleteRole($id);
+
+            return redirect()->route('admin.roles.index')
+                ->with('success', 'Role permanently deleted!');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * Display trashed roles.
+     */
+    public function trashed(Request $request)
+    {
+        $roles = $this->roleService->getTrashedRoles(15);
+        return view('admin.roles.trashed', compact('roles'));
     }
 }

@@ -56,13 +56,44 @@ class BlogService
     public function deleteBlog(string $id)
     {
         $blog = $this->getBlogById($id);
-
+        
+        if (!$blog) {
+            return false;
+        }
+        
+        return $blog->delete(); // Soft delete
+    }
+    
+    public function restoreBlog(string $id)
+    {
+        $blog = \App\Models\Blog::onlyTrashed()->find($id);
+        
+        if (!$blog) {
+            return false;
+        }
+        
+        return $blog->restore();
+    }
+    
+    public function forceDeleteBlog(string $id)
+    {
+        $blog = \App\Models\Blog::onlyTrashed()->find($id);
+        
+        if (!$blog) {
+            return false;
+        }
+        
         // Delete featured image if exists
         if ($blog->featured_image) {
             Storage::disk('public')->delete($blog->featured_image);
         }
-
-        return $this->blogRepository->delete($id);
+        
+        return $blog->forceDelete();
+    }
+    
+    public function getTrashedBlogs(int $perPage = 10)
+    {
+        return \App\Models\Blog::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate($perPage);
     }
 
     public function incrementViewCount(string $id)

@@ -19,16 +19,33 @@ class RoleService
     /**
      * Get all roles with pagination.
      */
-    public function getAllRoles(int $perPage = 10)
+    public function getAllRoles(int $perPage = 10, ?string $search = null, bool $withTrashed = false)
     {
-        return $this->roleRepository->getAllPaginated($perPage);
+        $query = Role::query();
+        
+        if ($withTrashed) {
+            $query->withTrashed();
+        }
+        
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('slug', 'like', '%' . $search . '%')
+                    ->orWhere('description', 'like', '%' . $search . '%');
+            });
+        }
+        
+        return $query->paginate($perPage);
     }
 
     /**
      * Get role by ID.
      */
-    public function getRoleById(string $id): ?Role
+    public function getRoleById(string $id, bool $withTrashed = false): ?Role
     {
+        if ($withTrashed) {
+            return Role::withTrashed()->find($id);
+        }
         return $this->roleRepository->findById($id);
     }
 
@@ -105,7 +122,7 @@ class RoleService
     }
 
     /**
-     * Delete role.
+     * Soft delete role.
      */
     public function deleteRole(string $id): bool
     {
@@ -122,7 +139,8 @@ class RoleService
                 throw new \Exception('Cannot delete role that has assigned users');
             }
 
-            $result = $this->roleRepository->delete($role);
+            // Soft delete the role
+            $result = $role->delete();
 
             DB::commit();
             return $result;
@@ -130,5 +148,78 @@ class RoleService
             DB::rollBack();
             throw $e;
         }
+    }
+
+    /**
+     * Restore soft deleted role.
+     */
+    public function restoreRole(string $id): bool
+    {
+        DB::beginTransaction();
+        try {
+            $role = Role::withTrashed()->find($id);
+
+            if (!$role) {
+                throw new \Exception('Role not found');
+            }
+
+            if (!$role->trashed()) {
+                throw new \Exception('Role is not deleted');
+            }
+
+            $result = $role->restore();
+
+            DB::commit();
+            return $result;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * Permanently delete role.
+     */
+    public function forceDeleteRole(string $id): bool
+    {
+        DB::beginTransaction();
+        try {
+            $role = Role::withTrashed()->find($id);
+
+            if (!$role) {
+                throw new \Exception('Role not found');
+            }
+
+            // Check if role has users (even for force delete)
+            if ($role->users()->count() > 0) {
+                throw new \Exception('Cannot permanently delete role that has assigned users');
+            }
+
+            $result = $role->forceDelete();
+
+            DB::commit();
+            return $result;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * Get only trashed roles.
+     */
+    public function getTrashedRoles(int $perPage = 10, ?string $search = null)
+    {
+        $query = Role::onlyTrashed();
+        
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('slug', 'like', '%' . $search . '%')
+                    ->orWhere('description', 'like', '%' . $search . '%');
+            });
+        }
+        
+        return $query->paginate($perPage);
     }
 }

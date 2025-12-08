@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\EbookCategory;
 use App\Models\City;
 use App\Models\EbookSection;
@@ -14,6 +17,8 @@ use App\Models\Collection;
 
 class Ebook extends Model
 {
+    use HasFactory, HasUuids, SoftDeletes;
+
     protected $fillable = [
         'category_id',
         'city_id',

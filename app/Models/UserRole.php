@@ -3,45 +3,28 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class UserRole extends Model
+class UserRole extends Pivot
 {
-    use HasFactory, HasUuids;
+    use HasUuids;
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
+     * The "type" of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
 
     protected $fillable = [
         'user_id',
         'role_id',
-        'assigned_by',
-        'assigned_at',
     ];
-
-    protected $casts = [
-        'assigned_at' => 'datetime',
-    ];
-
-    /**
-     * Get the user that owns the role.
-     */
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    /**
-     * Get the role.
-     */
-    public function role()
-    {
-        return $this->belongsTo(Role::class);
-    }
-
-    /**
-     * Get the user who assigned this role.
-     */
-    public function assignedBy()
-    {
-        return $this->belongsTo(User::class, 'assigned_by');
-    }
 }

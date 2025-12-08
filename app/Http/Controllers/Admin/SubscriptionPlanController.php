@@ -135,7 +135,7 @@ class SubscriptionPlanController extends Controller
     }
 
     /**
-     * Remove the specified subscription plan.
+     * Remove the specified subscription plan (soft delete).
      */
     public function destroy(string $id)
     {
@@ -143,10 +143,54 @@ class SubscriptionPlanController extends Controller
             $this->subscriptionPlanService->deletePlan($id);
 
             return redirect()->route('admin.subscription-plans.index')
-                ->with('success', 'Subscription plan deleted successfully!');
+                ->with('success', 'Subscription plan moved to trash successfully!');
         } catch (\Exception $e) {
             return redirect()->route('admin.subscription-plans.index')
                 ->with('error', $e->getMessage());
+        }
+    }
+    
+    /**
+     * Display trashed subscription plans.
+     */
+    public function trashed()
+    {
+        try {
+            $plans = $this->subscriptionPlanService->getTrashedPlans(15);
+            return view('admin.subscription-plans.trashed', compact('plans'));
+        } catch (\Exception $e) {
+            return redirect()->route('admin.subscription-plans.index')
+                ->with('error', 'Failed to load trashed subscription plans: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Restore a soft deleted subscription plan.
+     */
+    public function restore(string $id)
+    {
+        try {
+            $this->subscriptionPlanService->restorePlan($id);
+            return redirect()->route('admin.subscription-plans.trashed')
+                ->with('success', 'Subscription plan restored successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to restore subscription plan: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Permanently delete a subscription plan.
+     */
+    public function forceDelete(string $id)
+    {
+        try {
+            $this->subscriptionPlanService->forceDeletePlan($id);
+            return redirect()->route('admin.subscription-plans.trashed')
+                ->with('success', 'Subscription plan permanently deleted!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to permanently delete subscription plan: ' . $e->getMessage());
         }
     }
 }

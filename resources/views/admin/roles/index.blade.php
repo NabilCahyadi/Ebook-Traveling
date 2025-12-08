@@ -24,9 +24,21 @@
         <div>
             <h4 class="fw-bold py-3 mb-2">
                 <span class="text-muted fw-light">Admin /</span> Role Management
+                @if($showTrashed ?? false)
+                    <span class="badge bg-label-danger ms-2">Trashed Roles</span>
+                @endif
             </h4>
         </div>
         <div>
+            @if($showTrashed ?? false)
+                <a href="{{ route('admin.roles.index') }}" class="btn btn-secondary me-2">
+                    <i class="ti ti-arrow-left me-1"></i> Back to Active Roles
+                </a>
+            @else
+                <a href="{{ route('admin.roles.trashed') }}" class="btn btn-outline-danger me-2">
+                    <i class="ti ti-trash me-1"></i> View Trashed Roles
+                </a>
+            @endif
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
                 <i class="ti ti-plus me-1"></i> Add New Role
             </button>
@@ -94,23 +106,51 @@
                                                 <i class="ti ti-dots-vertical"></i>
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item" href="javascript:void(0);"
-                                                    onclick="editRole('{{ $role->id }}', '{{ $role->name }}', '{{ $role->slug }}', '{{ $role->description }}', {{ $role->is_active ? 'true' : 'false' }})">
-                                                    <i class="ti ti-pencil me-2"></i>
-                                                    <span>Edit</span>
-                                                </a>
-                                                <div class="dropdown-divider"></div>
-                                                <a class="dropdown-item text-danger" href="javascript:void(0);"
-                                                    onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this role?')) document.getElementById('delete-form-{{ $role->id }}').submit();">
-                                                    <i class="ti ti-trash me-2"></i>
-                                                    <span>Delete</span>
-                                                </a>
-                                                <form id="delete-form-{{ $role->id }}"
-                                                    action="{{ route('admin.roles.destroy', $role->id) }}" method="POST"
-                                                    style="display: none;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                </form>
+                                                @if(!$role->trashed())
+                                                    {{-- Actions for active roles --}}
+                                                    <a class="dropdown-item" href="javascript:void(0);"
+                                                        onclick="editRole('{{ $role->id }}', '{{ $role->name }}', '{{ $role->slug }}', '{{ $role->description }}', {{ $role->is_active ? 'true' : 'false' }})">
+                                                        <i class="ti ti-pencil me-2"></i>
+                                                        <span>Edit</span>
+                                                    </a>
+                                                    <div class="dropdown-divider"></div>
+                                                    <a class="dropdown-item text-warning" href="javascript:void(0);"
+                                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to move this role to trash?')) document.getElementById('delete-form-{{ $role->id }}').submit();">
+                                                        <i class="ti ti-trash me-2"></i>
+                                                        <span>Move to Trash</span>
+                                                    </a>
+                                                    <form id="delete-form-{{ $role->id }}"
+                                                        action="{{ route('admin.roles.destroy', $role->id) }}" method="POST"
+                                                        style="display: none;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                    </form>
+                                                @else
+                                                    {{-- Actions for trashed roles --}}
+                                                    <a class="dropdown-item text-success" href="javascript:void(0);"
+                                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to restore this role?')) document.getElementById('restore-form-{{ $role->id }}').submit();">
+                                                        <i class="ti ti-restore me-2"></i>
+                                                        <span>Restore</span>
+                                                    </a>
+                                                    <form id="restore-form-{{ $role->id }}"
+                                                        action="{{ route('admin.roles.restore', $role->id) }}"
+                                                        method="POST" style="display: none;">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                    </form>
+                                                    <div class="dropdown-divider"></div>
+                                                    <a class="dropdown-item text-danger" href="javascript:void(0);"
+                                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to permanently delete this role? This action cannot be undone!')) document.getElementById('force-delete-form-{{ $role->id }}').submit();">
+                                                        <i class="ti ti-trash-x me-2"></i>
+                                                        <span>Delete Permanently</span>
+                                                    </a>
+                                                    <form id="force-delete-form-{{ $role->id }}"
+                                                        action="{{ route('admin.roles.force-delete', $role->id) }}"
+                                                        method="POST" style="display: none;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                    </form>
+                                                @endif
                                             </div>
                                         </div>
                                     </td>

@@ -2,17 +2,21 @@
 
 namespace App\Observers;
 
-use App\Models\ActionLog;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Ebook;
 
-class EbookObserver
+class EbookObserver extends BaseObserver
 {
     /**
      * Handle the Ebook "created" event.
      */
     public function created($ebook)
     {
-        $this->logActivity('create', 'ebooks', $ebook->id);
+        $this->logActivity('create', $this->getTableName($ebook), $ebook->id, [
+            'ebook_title' => $ebook->title,
+            'ebook_slug' => $ebook->slug,
+            'is_published' => $ebook->is_published,
+            'data' => $this->getModelData($ebook)
+        ]);
     }
 
     /**
@@ -20,7 +24,13 @@ class EbookObserver
      */
     public function updated($ebook)
     {
-        $this->logActivity('update', 'ebooks', $ebook->id);
+        $this->logActivity('update', $this->getTableName($ebook), $ebook->id, [
+            'ebook_title' => $ebook->title,
+            'ebook_slug' => $ebook->slug,
+            'is_published' => $ebook->is_published,
+            'changes' => $ebook->getChanges(),
+            'data' => $this->getModelData($ebook)
+        ]);
     }
 
     /**
@@ -28,26 +38,39 @@ class EbookObserver
      */
     public function deleted($ebook)
     {
-        $this->logActivity('delete', 'ebooks', $ebook->id);
+        $this->logActivity('delete', $this->getTableName($ebook), $ebook->id, [
+            'ebook_title' => $ebook->title,
+            'ebook_slug' => $ebook->slug,
+            'is_published' => $ebook->is_published,
+            'soft_delete' => true,
+            'data' => $this->getModelData($ebook)
+        ]);
     }
 
     /**
-     * Log activity
+     * Handle the Ebook "restored" event.
      */
-    private function logActivity($action, $table, $recordId)
+    public function restored($ebook)
     {
-        if (Auth::check()) {
-            ActionLog::create([
-                'user_id' => Auth::id(),
-                'action_type' => $action,
-                'table_name' => $table,
-                'record_id' => $recordId,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'url' => request()->fullUrl(),
-                'method' => request()->method(),
-                'created_at' => now()
-            ]);
-        }
+        $this->logActivity('restore', $this->getTableName($ebook), $ebook->id, [
+            'ebook_title' => $ebook->title,
+            'ebook_slug' => $ebook->slug,
+            'is_published' => $ebook->is_published,
+            'data' => $this->getModelData($ebook)
+        ]);
+    }
+
+    /**
+     * Handle the Ebook "force deleted" event.
+     */
+    public function forceDeleted($ebook)
+    {
+        $this->logActivity('force_delete', $this->getTableName($ebook), $ebook->id, [
+            'ebook_title' => $ebook->title,
+            'ebook_slug' => $ebook->slug,
+            'is_published' => $ebook->is_published,
+            'force_delete' => true,
+            'data' => $this->getModelData($ebook)
+        ]);
     }
 }

@@ -134,11 +134,56 @@
                                                     'logout' => 'secondary',
                                                     'view' => 'info',
                                                     'download' => 'warning',
+                                                    'restore' => 'warning',
+                                                    'force_delete' => 'danger',
                                                 ];
                                                 $color = $actionColors[$log->action_type] ?? 'secondary';
+                                                
+                                                // Get detailed info from new_values
+                                                $detailInfo = '';
+                                                if ($log->new_values) {
+                                                    $data = $log->new_values;
+                                                    
+                                                    // For User actions
+                                                    if (isset($data['target_user_name'])) {
+                                                        $detailInfo = " → {$data['target_user_name']}";
+                                                        if (isset($data['target_user_email'])) {
+                                                            $detailInfo .= " ({$data['target_user_email']})";
+                                                        }
+                                                    }
+                                                    // For Role actions
+                                                    elseif (isset($data['role_name'])) {
+                                                        $detailInfo = " → Role: {$data['role_name']}";
+                                                    }
+                                                    // For Blog actions
+                                                    elseif (isset($data['blog_title'])) {
+                                                        $detailInfo = " → Blog: {$data['blog_title']}";
+                                                    }
+                                                    // For Category actions
+                                                    elseif (isset($data['category_name'])) {
+                                                        $detailInfo = " → Category: {$data['category_name']}";
+                                                    }
+                                                    // For Banner actions
+                                                    elseif (isset($data['banner_title'])) {
+                                                        $detailInfo = " → Banner: {$data['banner_title']}";
+                                                    }
+                                                    // For Ebook actions
+                                                    elseif (isset($data['ebook_title'])) {
+                                                        $detailInfo = " → Ebook: {$data['ebook_title']}";
+                                                    }
+                                                    // For Subscription Plan actions
+                                                    elseif (isset($data['plan_name'])) {
+                                                        $detailInfo = " → Plan: {$data['plan_name']}";
+                                                        if (isset($data['plan_price'])) {
+                                                            $detailInfo .= " (Rp " . number_format($data['plan_price'], 0, ',', '.') . ")";
+                                                        }
+                                                    }
+                                                }
                                             @endphp
-                                            <span
-                                                class="badge bg-label-{{ $color }}">{{ ucfirst($log->action_type) }}</span>
+                                            <span class="badge bg-label-{{ $color }}">{{ ucfirst(str_replace('_', ' ', $log->action_type)) }}</span>
+                                            @if($detailInfo)
+                                                <br><small class="text-muted">{{ $detailInfo }}</small>
+                                            @endif
                                         </td>
                                         <td>
                                             <span class="text-truncate d-inline-block" style="max-width: 300px;"

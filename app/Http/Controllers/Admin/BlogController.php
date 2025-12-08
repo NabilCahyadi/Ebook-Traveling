@@ -144,17 +144,61 @@ class BlogController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from storage (soft delete).
      */
     public function destroy(string $id)
     {
         try {
             $this->blogService->deleteBlog($id);
             return redirect()->route('admin.blogs.index')
-                ->with('success', 'Blog deleted successfully!');
+                ->with('success', 'Blog moved to trash successfully!');
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('error', 'Failed to delete blog: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Display trashed blogs.
+     */
+    public function trashed()
+    {
+        try {
+            $blogs = $this->blogService->getTrashedBlogs(15);
+            return view('admin.blogs.trashed', compact('blogs'));
+        } catch (\Exception $e) {
+            return redirect()->route('admin.blogs.index')
+                ->with('error', 'Failed to load trashed blogs: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Restore a soft deleted blog.
+     */
+    public function restore(string $id)
+    {
+        try {
+            $this->blogService->restoreBlog($id);
+            return redirect()->route('admin.blogs.trashed')
+                ->with('success', 'Blog restored successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to restore blog: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Permanently delete a blog.
+     */
+    public function forceDelete(string $id)
+    {
+        try {
+            $this->blogService->forceDeleteBlog($id);
+            return redirect()->route('admin.blogs.trashed')
+                ->with('success', 'Blog permanently deleted!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to permanently delete blog: ' . $e->getMessage());
         }
     }
 }
