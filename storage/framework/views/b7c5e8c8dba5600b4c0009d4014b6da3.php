@@ -92,8 +92,12 @@
                                 <?php $__currentLoopData = $logs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $log): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <tr>
                                         <td>
-                                            <small><?php echo e($log->created_at->format('Y-m-d')); ?></small><br>
-                                            <small class="text-muted"><?php echo e($log->created_at->format('H:i:s')); ?></small>
+                                            <?php if($log->created_at): ?>
+                                                <small><?php echo e($log->created_at->format('Y-m-d')); ?></small><br>
+                                                <small class="text-muted"><?php echo e($log->created_at->format('H:i:s')); ?></small>
+                                            <?php else: ?>
+                                                <small class="text-muted">No date</small>
+                                            <?php endif; ?>
                                         </td>
                                         <td>
                                             <?php if($log->user): ?>

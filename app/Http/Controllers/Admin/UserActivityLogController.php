@@ -23,13 +23,7 @@ class UserActivityLogController extends Controller
             ])->with('warning', 'ActionLog model is not available. Please check your database migrations.');
         }
 
-        $query = ActionLog::with(['user.roles'])
-            ->whereHas('user', function ($q) {
-                // Exclude admin users
-                $q->whereHas('roles', function ($roleQuery) {
-                    $roleQuery->where('slug', '!=', 'admin');
-                });
-            });
+        $query = ActionLog::with(['user.roles']);
 
         // Filter by user
         if ($request->has('user_id') && $request->user_id) {
@@ -64,10 +58,8 @@ class UserActivityLogController extends Controller
 
         $logs = $query->latest()->paginate(20);
 
-        // Get non-admin users for filter
-        $users = User::whereHas('roles', function ($q) {
-            $q->where('slug', '!=', 'admin');
-        })->orderBy('name')->get();
+        // Get all users for filter
+        $users = User::with('roles')->orderBy('name')->get();
 
         $actions = ['all', 'create', 'update', 'delete', 'login', 'logout', 'view', 'download'];
 
@@ -81,11 +73,6 @@ class UserActivityLogController extends Controller
     {
         $log = ActionLog::with(['user.roles'])->findOrFail($id);
 
-        // Ensure log is not from admin
-        if ($log->user && $log->user->roles->contains('slug', 'admin')) {
-            abort(403, 'Cannot view admin activity logs from this page.');
-        }
-
         return view('admin.user-activity-logs.show', compact('log'));
     }
 
@@ -94,12 +81,7 @@ class UserActivityLogController extends Controller
      */
     public function export(Request $request)
     {
-        $query = ActionLog::with(['user.roles'])
-            ->whereHas('user', function ($q) {
-                $q->whereHas('roles', function ($roleQuery) {
-                    $roleQuery->where('slug', '!=', 'admin');
-                });
-            });
+        $query = ActionLog::with(['user.roles']);
 
         // Apply same filters as index
         if ($request->has('user_id') && $request->user_id) {
