@@ -12,6 +12,8 @@ use App\Repositories\Interfaces\CollectionRepositoryInterface;
 use App\Repositories\CollectionRepository;
 use App\Models\Rating;
 use App\Observers\RatingObserver;
+use App\Models\Ebook;
+use App\Observers\EbookObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Rating::observe(RatingObserver::class);
+        Ebook::observe(EbookObserver::class);
         Paginator::useBootstrapFive();
 
         // Register View Composer for sidebar
