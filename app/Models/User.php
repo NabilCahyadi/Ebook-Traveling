@@ -103,6 +103,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the first role for the user (for backward compatibility).
+     */
+    public function role()
+    {
+        return $this->roles()->first();
+    }
+
+    /**
      * Get the saved books (wishlist) for the user.
      */
     public function savedBooks()

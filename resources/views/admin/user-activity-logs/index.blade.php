@@ -27,7 +27,7 @@
                             <option value="">All Users</option>
                             @foreach ($users as $user)
                                 <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
-                                    {{ $user->name }} ({{ $user->role->name ?? 'No Role' }})
+                                    {{ $user->name }} ({{ $user->roles->first()->name ?? 'No Role' }})
                                 </option>
                             @endforeach
                         </select>
@@ -114,8 +114,8 @@
                                             @endif
                                         </td>
                                         <td>
-                                            @if ($log->user && $log->user->role)
-                                                <span class="badge bg-label-info">{{ $log->user->role->name }}</span>
+                                            @if ($log->user && $log->user->roles->isNotEmpty())
+                                                <span class="badge bg-label-info">{{ $log->user->roles->first()->name }}</span>
                                             @else
                                                 <span class="text-muted">-</span>
                                             @endif

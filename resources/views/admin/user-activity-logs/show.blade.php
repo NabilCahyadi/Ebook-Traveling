@@ -128,8 +128,8 @@
 
                             <div class="mb-3">
                                 <small class="text-muted d-block mb-1">Role</small>
-                                @if ($log->user->role)
-                                    <span class="badge bg-label-info">{{ $log->user->role->name }}</span>
+                                @if ($log->user->roles->isNotEmpty())
+                                    <span class="badge bg-label-info">{{ $log->user->roles->first()->name }}</span>
                                 @else
                                     <span class="text-muted">No role assigned</span>
                                 @endif

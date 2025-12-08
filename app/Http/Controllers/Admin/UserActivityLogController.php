@@ -23,10 +23,10 @@ class UserActivityLogController extends Controller
             ])->with('warning', 'ActionLog model is not available. Please check your database migrations.');
         }
 
-        $query = ActionLog::with(['user.role'])
+        $query = ActionLog::with(['user.roles'])
             ->whereHas('user', function ($q) {
                 // Exclude admin users
-                $q->whereHas('role', function ($roleQuery) {
+                $q->whereHas('roles', function ($roleQuery) {
                     $roleQuery->where('slug', '!=', 'admin');
                 });
             });
@@ -65,7 +65,7 @@ class UserActivityLogController extends Controller
         $logs = $query->latest()->paginate(20);
 
         // Get non-admin users for filter
-        $users = User::whereHas('role', function ($q) {
+        $users = User::whereHas('roles', function ($q) {
             $q->where('slug', '!=', 'admin');
         })->orderBy('name')->get();
 
@@ -79,10 +79,10 @@ class UserActivityLogController extends Controller
      */
     public function show($id)
     {
-        $log = ActionLog::with(['user.role'])->findOrFail($id);
+        $log = ActionLog::with(['user.roles'])->findOrFail($id);
 
         // Ensure log is not from admin
-        if ($log->user && $log->user->role && $log->user->role->slug === 'admin') {
+        if ($log->user && $log->user->roles->contains('slug', 'admin')) {
             abort(403, 'Cannot view admin activity logs from this page.');
         }
 
@@ -94,9 +94,9 @@ class UserActivityLogController extends Controller
      */
     public function export(Request $request)
     {
-        $query = ActionLog::with(['user.role'])
+        $query = ActionLog::with(['user.roles'])
             ->whereHas('user', function ($q) {
-                $q->whereHas('role', function ($roleQuery) {
+                $q->whereHas('roles', function ($roleQuery) {
                     $roleQuery->where('slug', '!=', 'admin');
                 });
             });
@@ -135,7 +135,7 @@ class UserActivityLogController extends Controller
                     $log->id,
                     $log->user->name ?? 'N/A',
                     $log->user->email ?? 'N/A',
-                    $log->user->role->name ?? 'N/A',
+                    $log->user->roles->first()->name ?? 'N/A',
                     $log->action,
                     $log->description,
                     $log->model_type ?? 'N/A',
