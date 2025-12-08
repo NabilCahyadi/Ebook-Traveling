@@ -34,11 +34,13 @@ class Ebook extends Model
         'is_free',
         'status',
         'is_active',
+        'published_at',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'id' => 'string',
+        'published_at' => 'datetime',
     ];
 
     /**
@@ -89,5 +91,22 @@ class Ebook extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(Creator::class);
+    }
+
+    /**
+     * Blog yang terkait dengan e-book ini.
+     */
+    public function blogs(): BelongsToMany
+    {
+        return $this->belongsToMany(Blog::class, 'blog_ebook', 'ebook_id', 'blog_id');
+    }
+
+    /**
+     * Kategori yang dimiliki oleh e-book ini.
+     */
+    public function categories()
+    {
+        // Penting: Tentukan nama tabel dan foreign key secara manual
+        return $this->belongsToMany(Category::class, 'ebook_categories', 'ebook_id', 'category_id');
     }
 }

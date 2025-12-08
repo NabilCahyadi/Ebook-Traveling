@@ -170,6 +170,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
+                    {{-- PINDAHKAN BAGIAN FILTER & SORT KE SINI --}}
                     <div class="shop-product-fillter mb-30">
                         <div class="totall-product">
                             <h4>
@@ -181,7 +182,7 @@
                             <div class="sort-by-cover mr-10">
                                 <div class="sort-by-product-wrap">
                                     <div class="sort-by">
-                                        <span><i class="fi-rs-apps"></i>Show:</span>
+                                        <span><i class="fi-rs-apps"></i>Show :</span>
                                     </div>
                                     <div class="sort-by-dropdown-wrap">
                                         <span> 50 <i class="fi-rs-angle-small-down"></i></span>
@@ -200,7 +201,7 @@
                             <div class="sort-by-cover">
                                 <div class="sort-by-product-wrap">
                                     <div class="sort-by">
-                                        <span><i class="fi-rs-apps-sort"></i>Sort:</span>
+                                        <span><i class="fi-rs-apps-sort"></i>Sort :</span>
                                     </div>
                                     <div class="sort-by-dropdown-wrap">
                                         <span>Featured <i class="fi-rs-angle-small-down"></i></span>
@@ -217,421 +218,45 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- LOOP UNTUK MENAMPILKAN BLOG DIMULAI DARI SINI --}}
                     <div class="loop-grid">
                         <div class="row">
-                            <!-- Article 1 -->
+                            @forelse ($blogs as $blog)
                             <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
                                 <div class="post-thumb">
                                     <div class="image-frame">
-                                        <a href="post-rute-rahasia-indo.html">
-                                            <img class="border-radius-15" src="/images/blogs/1.webp" alt="Pemandangan tersembunyi" />
-                                        </a>
-                                    </div>
-                                    <div class="entry-meta">
-                                        <a class="entry-meta meta-2" href="kategori-eksplorasi.html"><i class="fi-rs-eye"></i></a>
-                                    </div>
-                                </div>
-                                <div class="entry-content-2">
-                                    <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="kategori-eksplorasi.html">Eksplorasi</a></h6>
-                                    <h5 class="post-title mb-15">
-                                        <a href="post-rute-rahasia-indo.html">7 Rute Rahasia Indonesia yang Tidak Ada di Peta Wisatawan Biasa</a>
-                                    </h5>
-                                    <div class="entry-meta font-xs color-grey mt-10 pb-10">
-                                        <div>
-                                            <span class="post-on mr-10">10 November 2025</span>
-                                            <span class="hit-count has-dot mr-10">3.2k Views</span>
-                                            <span class="hit-count has-dot">5 mins read</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <!-- Article 2 -->
-                            <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
-                                <div class="post-thumb">
-                                    <div class="image-frame">
-                                        <a href="post-liburan-hemat-budget.html">
-                                            <img class="border-radius-15" src="/images/blogs/2.webp" alt="Dompet dan koin" />
+                                        <a href="{{ route('blogs.show', $blog->slug) }}">
+                                            <img class="border-radius-15" src="{{ $blog->featured_image ?: asset('images/blog-placeholder.webp') }}" alt="{{ $blog->title }}" />
                                         </a>
                                     </div>
                                 </div>
                                 <div class="entry-content-2">
-                                    <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="kategori-tips-keuangan.html">Tips Keuangan</a></h6>
+                                    <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="#">{{ $blog->category }}</a></h6>
                                     <h5 class="post-title mb-15">
-                                        <a href="post-liburan-hemat-budget.html">Liburan Hemat Budget: Cara Menghemat Jutaan Rupiah Tanpa Mengorbankan Kenyamanan</a>
+                                        <a href="{{ route('blogs.show', $blog->slug) }}">{{ Str::limit($blog->title, 60) }}</a>
                                     </h5>
                                     <div class="entry-meta font-xs color-grey mt-10 pb-10">
                                         <div>
-                                            <span class="post-on mr-10">25 Oktober 2025</span>
-                                            <span class="hit-count has-dot mr-10">5.8k Views</span>
-                                            <span class="hit-count has-dot">6 mins read</span>
+                                            <span class="post-on mr-10">{{ $blog->published_at->format('d F Y') }}</span>
+                                            <span class="hit-count has-dot mr-10">{{ number_format($blog->view_count) }} Views</span>
+                                            {{-- Jika Anda menambah kolom read_time (dalam menit) --}}
+                                            {{--<span class="hit-count has-dot">{{ $blog->read_time ?? 5 }} mins read</span>--}}
                                         </div>
                                     </div>
                                 </div>
                             </article>
-
-                            <!-- Article 3 -->
-                            <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
-                                <div class="post-thumb">
-                                    <div class="image-frame">
-                                        <a href="post-culinary-journey.html">
-                                            <img class="border-radius-15" src="/images/blogs/3.webp" alt="Makanan Indonesia" />
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="entry-content-2">
-                                    <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="kategori-kuliner.html">Kuliner</a></h6>
-                                    <h5 class="post-title mb-15">
-                                        <a href="post-culinary-journey.html">Jelajahi Kuliner Nusantara: Dari Rendang Padang sampai Sate Madura</a>
-                                    </h5>
-                                    <div class="entry-meta font-xs color-grey mt-10 pb-10">
-                                        <div>
-                                            <span class="post-on mr-10">15 Oktober 2025</span>
-                                            <span class="hit-count has-dot mr-10">4.5k Views</span>
-                                            <span class="hit-count has-dot">7 mins read</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <!-- Article 4 -->
-                            <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
-                                <div class="post-thumb">
-                                    <div class="image-frame">
-                                        <a href="post-kesalahan-fatal.html">
-                                            <img class="border-radius-15" src="/images/blogs/4.webp" alt="Ransel traveling rusak" />
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="entry-content-2">
-                                    <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="kategori-kesalahan-umum.html">Panduan Praktis</a></h6>
-                                    <h5 class="post-title mb-15">
-                                        <a href="post-kesalahan-fatal.html">Jangan Sampai Salah! Ini 10 Kesalahan Fatal Saat Traveling ke Pedalaman</a>
-                                    </h5>
-                                    <div class="entry-meta font-xs color-grey mt-10 pb-10">
-                                        <div>
-                                            <span class="post-on mr-10">01 September 2025</span>
-                                            <span class="hit-count has-dot mr-10">7.9k Views</span>
-                                            <span class="hit-count has-dot">8 mins read</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <!-- Article 5 -->
-                            <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
-                                <div class="post-thumb">
-                                    <div class="image-frame">
-                                        <a href="post-digital-nomad-asia.html">
-                                            <img class="border-radius-15" src="/images/blogs/5.webp" alt="Orang bekerja di pantai" />
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="entry-content-2">
-                                    <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="kategori-digital-nomad.html">Gaya Hidup</a></h6>
-                                    <h5 class="post-title mb-15">
-                                        <a href="post-digital-nomad-asia.html">Mau Jadi Digital Nomad? Inilah Kota-Kota di Asia Tenggara dengan Biaya Hidup Paling Murah</a>
-                                    </h5>
-                                    <div class="entry-meta font-xs color-grey mt-10 pb-10">
-                                        <div>
-                                            <span class="post-on mr-10">15 Agustus 2025</span>
-                                            <span class="hit-count has-dot mr-10">4.5k Views</span>
-                                            <span class="hit-count has-dot">7 mins read</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <!-- Article 6 -->
-                            <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
-                                <div class="post-thumb">
-                                    <div class="image-frame">
-                                        <a href="post-itinerary-jogja-3hari.html">
-                                            <img class="border-radius-15" src="/images/blogs/6.webp" alt="Pemandangan kota Yogya" />
-                                        </a>
-                                    </div>
-                                    <div class="entry-meta">
-                                        <a class="entry-meta meta-2" href="kategori-itinerary.html"><i class="fi-rs-map-marker"></i></a>
-                                    </div>
-                                </div>
-                                <div class="entry-content-2">
-                                    <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="kategori-itinerary.html">Itinerary</a></h6>
-                                    <h5 class="post-title mb-15">
-                                        <a href="post-itinerary-jogja-3hari.html">Yogyakarta: Itinerary 3 Hari Terbaik dan Tempat Makan Wajib Coba</a>
-                                    </h5>
-                                    <div class="entry-meta font-xs color-grey mt-10 pb-10">
-                                        <div>
-                                            <span class="post-on mr-10">01 Agustus 2025</span>
-                                            <span class="hit-count has-dot mr-10">8.9k Views</span>
-                                            <span class="hit-count has-dot">5 mins read</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <!-- Article 7 -->
-                            <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
-                                <div class="post-thumb">
-                                    <div class="image-frame">
-                                        <a href="post-cara-memilih-ebook.html">
-                                            <img class="border-radius-15" src="/images/blogs/7.webp" alt="Tangan memegang e-book reader" />
-                                        </a>
-                                    </div>
-                                    <div class="entry-meta">
-                                        <a class="entry-meta meta-2" href="kategori-panduan.html"><i class="fi-rs-play-alt"></i></a>
-                                    </div>
-                                </div>
-                                <div class="entry-content-2">
-                                    <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="kategori-panduan.html">Produk</a></h6>
-                                    <h5 class="post-title mb-15">
-                                        <a href="post-cara-memilih-ebook.html">Panduan Lengkap: Cara Memilih E-book Travel yang Tepat Sesuai Gaya Perjalanan Anda</a>
-                                    </h5>
-                                    <div class="entry-meta font-xs color-grey mt-10 pb-10">
-                                        <div>
-                                            <span class="post-on mr-10">10 Juli 2025</span>
-                                            <span class="hit-count has-dot mr-10">1.5k Views</span>
-                                            <span class="hit-count has-dot">3 mins read</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <!-- Article 8 -->
-                            <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
-                                <div class="post-thumb">
-                                    <div class="image-frame">
-                                        <a href="post-solo-travel-wanita.html">
-                                            <img class="border-radius-15" src="/images/blogs/8.webp" alt="Wanita solo traveler" />
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="entry-content-2">
-                                    <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="kategori-solo-travel.html">Solo Travel</a></h6>
-                                    <h5 class="post-title mb-15">
-                                        <a href="post-solo-travel-wanita.html">Solo Travel Aman untuk Wanita: Tips dan Destinasi Paling Ramah di Asia</a>
-                                    </h5>
-                                    <div class="entry-meta font-xs color-grey mt-10 pb-10">
-                                        <div>
-                                            <span class="post-on mr-10">20 Juni 2025</span>
-                                            <span class="hit-count has-dot mr-10">6.1k Views</span>
-                                            <span class="hit-count has-dot">9 mins read</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <!-- Article 9 -->
-                            <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
-                                <div class="post-thumb">
-                                    <div class="image-frame">
-                                        <a href="post-persiapan-rinjani.html">
-                                            <img class="border-radius-15" src="/images/blogs/9.webp" alt="Pemandangan gunung" />
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="entry-content-2">
-                                    <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="kategori-mendaki.html">Adventure</a></h6>
-                                    <h5 class="post-title mb-15">
-                                        <a href="post-persiapan-rinjani.html">Persiapan Fisik & Mental: Checklist Wajib Sebelum Mendaki Gunung Rinjani</a>
-                                    </h5>
-                                    <div class="entry-meta font-xs color-grey mt-10 pb-10">
-                                        <div>
-                                            <span class="post-on mr-10">05 Juni 2025</span>
-                                            <span class="hit-count has-dot mr-10">3.9k Views</span>
-                                            <span class="hit-count has-dot">4 mins read</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <!-- Article 10 -->
-                            <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
-                                <div class="post-thumb">
-                                    <div class="image-frame">
-                                        <a href="post-review-ebook-nama.html">
-                                            <img class="border-radius-15" src="/images/blogs/10.webp" alt="Sampul e-book" />
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="entry-content-2">
-                                    <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="kategori-review.html">Review Produk</a></h6>
-                                    <h5 class="post-title mb-15">
-                                        <a href="post-review-ebook-nama.html">Review E-book "Backpacker Pro": Benarkah Ini Panduan Traveling Terlengkap Saat Ini?</a>
-                                    </h5>
-                                    <div class="entry-meta font-xs color-grey mt-10 pb-10">
-                                        <div>
-                                            <span class="post-on mr-10">15 Mei 2025</span>
-                                            <span class="hit-count has-dot mr-10">1.2k Views</span>
-                                            <span class="hit-count has-dot">3 mins read</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <!-- Article 11 -->
-                            <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
-                                <div class="post-thumb">
-                                    <div class="image-frame">
-                                        <a href="post-trik-pesawat-murah.html">
-                                            <img class="border-radius-15" src="/images/blogs/1.webp" alt="Pesawat di langit" />
-                                        </a>
-                                    </div>
-                                    <div class="entry-meta">
-                                        <a class="entry-meta meta-2" href="kategori-transportasi.html"><i class="fi-rs-heart"></i></a>
-                                    </div>
-                                </div>
-                                <div class="entry-content-2">
-                                    <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="kategori-transportasi.html">Transportasi</a></h6>
-                                    <h5 class="post-title mb-15">
-                                        <a href="post-trik-pesawat-murah.html">Trik Rahasia Mendapatkan Tiket Pesawat Murah ke Eropa dengan Penerbangan Jarak Jauh</a>
-                                    </h5>
-                                    <div class="entry-meta font-xs color-grey mt-10 pb-10">
-                                        <div>
-                                            <span class="post-on mr-10">01 Mei 2025</span>
-                                            <span class="hit-count has-dot mr-10">4.1k Views</span>
-                                            <span class="hit-count has-dot">6 mins read</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <!-- Article 12 -->
-                            <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
-                                <div class="post-thumb">
-                                    <div class="image-frame">
-                                        <a href="post-penginapan-unik-asia.html">
-                                            <img class="border-radius-15" src="/images/blogs/2.webp" alt="Penginapan unik" />
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="entry-content-2">
-                                    <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="kategori-akomodasi.html">Akomodasi</a></h6>
-                                    <h5 class="post-title mb-15">
-                                        <a href="post-penginapan-unik-asia.html">12 Penginapan Paling Unik di Asia yang Wajib Anda Coba (Glamping Sampai Rumah Pohon)</a>
-                                    </h5>
-                                    <div class="entry-meta font-xs color-grey mt-10 pb-10">
-                                        <div>
-                                            <span class="post-on mr-10">10 April 2025</span>
-                                            <span class="hit-count has-dot mr-10">2.7k Views</span>
-                                            <span class="hit-count has-dot">5 mins read</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <!-- Article 13 -->
-                            <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
-                                <div class="post-thumb">
-                                    <div class="image-frame">
-                                        <a href="post-makanan-khas-thailand.html">
-                                            <img class="border-radius-15" src="/images/blogs/3.webp" alt="Makanan khas Thailand" />
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="entry-content-2">
-                                    <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="kategori-kuliner.html"> Kuliner Lokal </a></h6>
-                                    <h5 class="post-title mb-15">
-                                        <a href="post-makanan-khas-thailand.html">Wajib Coba! 7 Makanan Khas Thailand yang Paling Autentik (Bukan Hanya Tom Yum)</a>
-                                    </h5>
-                                    <div class="entry-meta font-xs color-grey mt-10 pb-10">
-                                        <div>
-                                            <span class="post-on mr-10">20 Maret 2025</span>
-                                            <span class="hit-count has-dot mr-10">5.5k Views</span>
-                                            <span class="hit-count has-dot">4 mins read</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <!-- Article 14 -->
-                            <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
-                                <div class="post-thumb">
-                                    <div class="image-frame">
-                                        <a href="post-tips-packing-minimalis.html">
-                                            <img class="border-radius-15" src="/images/blogs/4.webp" alt="Koper rapi" />
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="entry-content-2">
-                                    <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="kategori-packing.html">Persiapan</a></h6>
-                                    <h5 class="post-title mb-15">
-                                        <a href="post-tips-packing-minimalis.html">Packing Minimalis: Cara Mengemas Koper 7 Hari Liburan Hanya dalam 1 Tas Ransel</a>
-                                    </h5>
-                                    <div class="entry-meta font-xs color-grey mt-10 pb-10">
-                                        <div>
-                                            <span class="post-on mr-10">01 Maret 2025</span>
-                                            <span class="hit-count has-dot mr-10">3.4k Views</span>
-                                            <span class="hit-count has-dot">5 mins read</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <!-- Article 15 -->
-                            <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
-                                <div class="post-thumb">
-                                    <div class="image-frame">
-                                        <a href="post-panduan-visa-schengen.html">
-                                            <img class="border-radius-15" src="/images/blogs/5.webp" alt="Paspor dan visa" />
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="entry-content-2">
-                                    <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="kategori-visa-dokumen.html">Dokumen</a></h6>
-                                    <h5 class="post-title mb-15">
-                                        <a href="post-panduan-visa-schengen.html">Panduan Praktis Mendapatkan Visa Schengen Tanpa Agen (Langkah demi Langkah)</a>
-                                    </h5>
-                                    <div class="entry-meta font-xs color-grey mt-10 pb-10">
-                                        <div>
-                                            <span class="post-on mr-10">10 Februari 2025</span>
-                                            <span class="hit-count has-dot mr-10">6.8k Views</span>
-                                            <span class="hit-count has-dot">8 mins read</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <!-- Article 16 -->
-                            <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
-                                <div class="post-thumb">
-                                    <div class="image-frame">
-                                        <a href="post-panduan-visa-schengen.html">
-                                            <img class="border-radius-15" src="/images/blogs/6.webp" alt="Paspor dan visa" />
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="entry-content-2">
-                                    <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="kategori-visa-dokumen.html">Dokumen</a></h6>
-                                    <h5 class="post-title mb-15">
-                                        <a href="post-panduan-visa-schengen.html">Relaksasi Diri - Solo Travel</a>
-                                    </h5>
-                                    <div class="entry-meta font-xs color-grey mt-10 pb-10">
-                                        <div>
-                                            <span class="post-on mr-10">30 April 2025</span>
-                                            <span class="hit-count has-dot mr-10">6.8k Views</span>
-                                            <span class="hit-count has-dot">8 mins read</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </article>
+                            @empty
+                            <div class="col-12 text-center py-5">
+                                <p class="text-muted">No blog posts available yet.</p>
+                            </div>
+                            @endforelse
                         </div>
                     </div>
+
+                    {{-- PAGINATION DI BAWAH LOOP --}}
                     <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination justify-content-end">
-                                <li class="page-item">
-                                    <a class="page-link" href="#"><i class="fi-rs-arrow-small-left"></i></a>
-                                </li>
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item active"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                                <li class="page-item"><a class="page-link" href="#">6</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#"><i class="fi-rs-arrow-small-right"></i></a>
-                                </li>
-                            </ul>
-                        </nav>
+                        {{ $blogs->links() }}
                     </div>
                 </div>
             </div>

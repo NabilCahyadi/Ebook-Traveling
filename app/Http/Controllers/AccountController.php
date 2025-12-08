@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
+
 
 class AccountController extends Controller
 {
@@ -84,5 +86,36 @@ class AccountController extends Controller
             return redirect()->back()
                 ->with('error', 'Password update failed: ' . $e->getMessage());
         }
+    }
+
+    public function updateAvatar(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $user = Auth::user();
+
+        // Hapus avatar lama jika ada dan bukan default
+        if ($user->avatar && $user->avatar !== 'users/avatars/default.png') {
+            Storage::delete('public/' . $user->avatar);
+        }
+
+        // Proses upload avatar baru
+        if ($request->hasFile('avatar')) {
+            $avatar = $request->file('avatar');
+            $filename = time() . '.' . $avatar->getClientOriginalExtension();
+
+            // --- GUNAKAN CARA INI YANG SUDAH TERBUKTI BERHASIL ---
+            $destinationPath = public_path('storage/users/avatars/' . $filename);
+            move_uploaded_file($avatar->getPathname(), $destinationPath);
+
+            // Update path avatar di database
+            $user->avatar = 'users/avatars/' . $filename;
+            $user->save();
+        }
+
+        return back()->with('success', 'Profile photo updated successfully!');
     }
 }

@@ -8,6 +8,7 @@ use App\Services\BannerService;
 use App\Services\CityService;
 use App\Services\SubscriptionPlanService;
 use App\Services\CollectionService;
+use App\Services\BlogService;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
@@ -16,7 +17,8 @@ class HomeController extends Controller
         private BannerService $bannerService,
         private CityService $cityService,
         private SubscriptionPlanService $subscriptionPlanService,
-        private CollectionService $collectionService
+        private CollectionService $collectionService,
+        private BlogService $blogService
     ) {}
 
     public function index()
@@ -25,6 +27,7 @@ class HomeController extends Controller
         $topCities = $this->cityService->getHomepageCities(10);
         // $subscriptionPlans = $this->subscriptionPlanService->getHomepagePlans(5);
         $subscriptionPlans = $this->subscriptionPlanService->getActivePlans()->take(3);
+        $latestBlogs = $this->blogService->getLatestForHomepage(4);
 
         // Tambahkan image property jika belum ada
         $subscriptionPlans = $subscriptionPlans->map(function ($plan, $index) {
@@ -44,6 +47,7 @@ class HomeController extends Controller
             'subscriptionPlans' => $subscriptionPlans,
             'collections' => $collectionData['collections'],
             'isSubscribed' => $collectionData['isSubscribed'],
+            'latestBlogs' => $latestBlogs,
         ]);
     }
 

@@ -403,13 +403,13 @@ $collections = collect();
     }
 
     .btn-read-now {
-        background-color: #28a745;
+        background-color: #FF4C61;
         /* Hijau untuk aksi positif */
         color: #fff;
     }
 
     .btn-read-now:hover {
-        background-color: #218838;
+        background-color: #de364aff;
         color: #fff;
     }
 
@@ -437,6 +437,41 @@ $collections = collect();
         100% {
             box-shadow: 0 0 0 0 rgba(168, 85, 247, 0);
         }
+    }
+
+    /* Untuk membatasi nama author maksimal 1 baris */
+    .product-author span {
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        /* Maksimal 1 baris */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Untuk membuat gambar blog post seragam dan rapi */
+    .post-thumb {
+        position: relative;
+        width: 100%;
+        padding-top: 50%;
+        overflow: hidden;
+        border-radius: 15px;
+        margin-bottom: 0px;
+    }
+
+    .post-thumb img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Untuk mengurangi jarak antara gambar dan kategori blog */
+    .entry-content-2 h6 a {
+        margin-top: -5px;
+        /* Tarik kategori ke atas untuk mengurangi jarak */
     }
 </style>
 <div class="container mx-auto p-6">
@@ -542,7 +577,7 @@ $collections = collect();
                     {{-- SEKARANG LEBIH SEDERHANA - Fallback sudah di Service --}}
                     @foreach($topCities as $index => $city)
                     <div class="card-2 bg-12 wow animate__animated animate__fadeInUp" data-wow-delay="{{ ($index + 1) * 0.1 }}s">
-                        <figure class="img-hover-scale overflow-hidden" style="width: 100px; height: 80px; margin: 0 auto 10px; border-radius: 8px;">
+                        <figure class="img-hover-scale overflow-hidden" style="width: 100px; height: 120px; margin: 0 auto 10px; border-radius: 8px;">
                             <a href="/destination/{{ $city->slug }}">
                                 <img src="{{ asset($city->image) }}" alt="{{ $city->name }}" style="width: 100%; height: 100%; object-fit: cover;" />
                             </a>
@@ -550,7 +585,6 @@ $collections = collect();
                         <h6>
                             <a href="/destination/{{ $city->slug }}">{{ $city->name }}</a>
                         </h6>
-                        <span>{{ $city->items_count }} items</span>
                     </div>
                     @endforeach
 
@@ -626,7 +660,7 @@ $collections = collect();
                                 <div class="product-cart-wrap mb-30 wow animate__animated animate__fadeIn" data-wow-delay="{{ ($index + 1) * 0.1 }}s">
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
-                                            <a href="/ebook/{{ $ebook->slug }}">
+                                            <a href="/ebooks/{{ $ebook->slug }}">
                                                 <img class="default-img" src="{{ $ebook->cover_image ?: 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg' }}" alt="{{ $ebook->title }}" />
                                             </a>
                                         </div>
@@ -638,7 +672,7 @@ $collections = collect();
                                         </div>
                                     </div>
                                     <div class="product-content-wrap">
-                                        <h2 style="margin-top:15px;"><a href="/ebook/{{ $ebook->slug }}">{{ Str::limit($ebook->title, 40) }}</a></h2>
+                                        <h2 style="margin-top:15px;"><a href="/ebooks/{{ $ebook->slug }}">{{ Str::limit($ebook->title, 40) }}</a></h2>
 
                                         <div class="product-author" style="margin-bottom:-4px;">
                                             @if($ebook->creator)
@@ -649,14 +683,35 @@ $collections = collect();
                                         </div>
 
                                         <div class="product-meta">
-                                            <div class="product-rate-cover">
-                                                <div class="product-rate d-inline-block">
-                                                    <div class="product-rating" style="width: {{ ($ebook->average_rating / 5) * 100 }}%"></div>
+                                            <div class="product-detail-rating">
+                                                <div class="product-rate-cover text-end">
+                                                    <div class="product-rate-cover">
+                                                        <div class="product-rate d-inline-block">
+                                                            {{-- HITUNG RATA-RATA LANGSUNG DARI TABEL ebook_ratings --}}
+                                                            <div class="product-rating" style="width: {{ ($ebook->ratings()->avg('rating') / 5) * 100 }}%"></div>
+                                                        </div>
+                                                        {{-- TAMPILKAN JUGA RATA-RATA YANG SAMA --}}
+                                                        <span class="font-small ml-5 text-muted">({{ round($ebook->ratings()->avg('rating'), 2) }})</span>
+                                                    </div>
                                                 </div>
-                                                <span class="font-small ml-5 text-muted">({{ $ebook->average_rating }})</span>
                                             </div>
                                             <div class="read-count">
-                                                <i class="fi-rs-eye mt-5"></i> {{ number_format($ebook->read_count) }}
+                                                <i class="fi-rs-eye align-middle"></i><!--  {{ number_format($ebook->view_count) }} -->
+                                                <span class="post-on">
+                                                    @php
+                                                    $views = $ebook->view_count;
+                                                    if ($views >= 1000000000) { // 1 Miliar
+                                                    $formattedViews = number_format($views / 1000000000, 1) . 'B';
+                                                    } elseif ($views >= 1000000) { // 1 Juta
+                                                    $formattedViews = number_format($views / 1000000, 1) . 'M';
+                                                    } elseif ($views >= 1000) { // 1 Ribu
+                                                    $formattedViews = number_format($views / 1000, 1) . 'k';
+                                                    } else {
+                                                    $formattedViews = $views;
+                                                    }
+                                                    @endphp
+                                                    {{ $formattedViews }}
+                                                </span>
                                             </div>
                                         </div>
 
@@ -693,232 +748,6 @@ $collections = collect();
     </section>
     @endforeach
     @endif
-    <!--Products Tabs-->
-    <section class="section-padding pb-5">
-        <div class="container">
-            <div class="section-title wow animate__animated animate__fadeIn">
-                <div class="title">
-                    <h4 class="">Promo Flash Sale</h4>
-                </div>
-                <a href="{{ route('promo') }}" class="show-all">View All</a>
-            </div>
-            <div class="row">
-                <div class="col-lg-3 d-none d-lg-flex wow animate__animated animate__fadeIn">
-                    <div class="banner-img style-2">
-                    </div>
-                </div>
-                <div class="col-lg-9 col-md-12 wow animate__animated animate__fadeIn" data-wow-delay=".4s">
-                    <div class="tab-content" id="myTabContent-1">
-                        <div class="tab-pane fade show active" id="tab-one-1" role="tabpanel" aria-labelledby="tab-one-1">
-                            <div class="carausel-4-columns-cover arrow-center position-relative">
-                                <div class="slider-arrow slider-arrow-2 carausel-4-columns-arrow" id="carausel-4-columns-arrows"></div>
-                                <div class="carausel-4-columns carausel-arrow-center" id="carausel-4-columns">
-                                    <div class="product-cart-wrap">
-                                        <div class="product-img-action-wrap">
-                                            <div class="product-img product-img-zoom">
-                                                <a href="shop-product-right.html">
-                                                    <img class="default-img" src="assets-nest/nest-fe/imgs/shop/product-1-1.jpg" alt="" />
-                                                    <img class="hover-img" src="assets-nest/nest-fe/imgs/shop/product-1-2.jpg" alt="" />
-                                                </a>
-                                            </div>
-                                            <div class="product-action-1">
-                                                <a aria-label="Quick view" class="action-btn small hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal"> <i class="fi-rs-eye"></i></a>
-                                                <a aria-label="Add To Wishlist" class="action-btn small hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                                <a aria-label="Compare" class="action-btn small hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
-                                            </div>
-                                            <div class="product-badges product-badges-position product-badges-mrg">
-                                                <span class="hot">Save 15%</span>
-                                            </div>
-                                        </div>
-                                        <div class="product-content-wrap">
-                                            <div class="product-category">
-                                                <a href="shop-grid-right.html">Hodo Foods</a>
-                                            </div>
-                                            <h2><a href="shop-product-right.html">Seeds of Change Organic Quinoa, Brown</a></h2>
-                                            <div class="product-rate d-inline-block">
-                                                <div class="product-rating" style="width: 80%"></div>
-                                            </div>
-                                            <div class="product-price mt-10">
-                                                <span>$238.85 </span>
-                                                <span class="old-price">$245.8</span>
-                                            </div>
-                                            <div class="sold mt-15 mb-15">
-                                                <div class="progress mb-5">
-                                                    <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                                <span class="font-xs text-heading"> Sold: 90/120</span>
-                                            </div>
-                                            <a href="shop-cart.html" class="btn w-100 hover-up"><i class="fi-rs-shopping-cart mr-5"></i>Add To Cart</a>
-                                        </div>
-                                    </div>
-                                    <!--End product Wrap-->
-                                    <div class="product-cart-wrap">
-                                        <div class="product-img-action-wrap">
-                                            <div class="product-img product-img-zoom">
-                                                <a href="shop-product-right.html">
-                                                    <img class="default-img" src="assets-nest/nest-fe/imgs/shop/product-5-1.jpg" alt="" />
-                                                    <img class="hover-img" src="assets-nest/nest-fe/imgs/shop/product-5-2.jpg" alt="" />
-                                                </a>
-                                            </div>
-                                            <div class="product-action-1">
-                                                <a aria-label="Quick view" class="action-btn small hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal"> <i class="fi-rs-eye"></i></a>
-                                                <a aria-label="Add To Wishlist" class="action-btn small hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                                <a aria-label="Compare" class="action-btn small hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
-                                            </div>
-                                            <div class="product-badges product-badges-position product-badges-mrg">
-                                                <span class="new">Save 35%</span>
-                                            </div>
-                                        </div>
-                                        <div class="product-content-wrap">
-                                            <div class="product-category">
-                                                <a href="shop-grid-right.html">Hodo Foods</a>
-                                            </div>
-                                            <h2><a href="shop-product-right.html">All Natural Italian-Style Chicken Meatballs</a></h2>
-                                            <div class="product-rate d-inline-block">
-                                                <div class="product-rating" style="width: 80%"></div>
-                                            </div>
-                                            <div class="product-price mt-10">
-                                                <span>$238.85 </span>
-                                                <span class="old-price">$245.8</span>
-                                            </div>
-                                            <div class="sold mt-15 mb-15">
-                                                <div class="progress mb-5">
-                                                    <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                                <span class="font-xs text-heading"> Sold: 90/120</span>
-                                            </div>
-                                            <a href="shop-cart.html" class="btn w-100 hover-up"><i class="fi-rs-shopping-cart mr-5"></i>Add To Cart</a>
-                                        </div>
-                                    </div>
-                                    <!--End product Wrap-->
-                                    <div class="product-cart-wrap">
-                                        <div class="product-img-action-wrap">
-                                            <div class="product-img product-img-zoom">
-                                                <a href="shop-product-right.html">
-                                                    <img class="default-img" src="assets-nest/nest-fe/imgs/shop/product-2-1.jpg" alt="" />
-                                                    <img class="hover-img" src="assets-nest/nest-fe/imgs/shop/product-2-2.jpg" alt="" />
-                                                </a>
-                                            </div>
-                                            <div class="product-action-1">
-                                                <a aria-label="Quick view" class="action-btn small hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal"> <i class="fi-rs-eye"></i></a>
-                                                <a aria-label="Add To Wishlist" class="action-btn small hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                                <a aria-label="Compare" class="action-btn small hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
-                                            </div>
-                                            <div class="product-badges product-badges-position product-badges-mrg">
-                                                <span class="sale">Sale</span>
-                                            </div>
-                                        </div>
-                                        <div class="product-content-wrap">
-                                            <div class="product-category">
-                                                <a href="shop-grid-right.html">Hodo Foods</a>
-                                            </div>
-                                            <h2><a href="shop-product-right.html">Angie’s Boomchickapop Sweet and womnies</a></h2>
-                                            <div class="product-rate d-inline-block">
-                                                <div class="product-rating" style="width: 80%"></div>
-                                            </div>
-                                            <div class="product-price mt-10">
-                                                <span>$238.85 </span>
-                                                <span class="old-price">$245.8</span>
-                                            </div>
-                                            <div class="sold mt-15 mb-15">
-                                                <div class="progress mb-5">
-                                                    <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                                <span class="font-xs text-heading"> Sold: 90/120</span>
-                                            </div>
-                                            <a href="shop-cart.html" class="btn w-100 hover-up"><i class="fi-rs-shopping-cart mr-5"></i>Add To Cart</a>
-                                        </div>
-                                    </div>
-                                    <!--End product Wrap-->
-                                    <div class="product-cart-wrap">
-                                        <div class="product-img-action-wrap">
-                                            <div class="product-img product-img-zoom">
-                                                <a href="shop-product-right.html">
-                                                    <img class="default-img" src="assets-nest/nest-fe/imgs/shop/product-3-1.jpg" alt="" />
-                                                    <img class="hover-img" src="assets-nest/nest-fe/imgs/shop/product-3-2.jpg" alt="" />
-                                                </a>
-                                            </div>
-                                            <div class="product-action-1">
-                                                <a aria-label="Quick view" class="action-btn small hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal"> <i class="fi-rs-eye"></i></a>
-                                                <a aria-label="Add To Wishlist" class="action-btn small hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                                <a aria-label="Compare" class="action-btn small hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
-                                            </div>
-                                            <div class="product-badges product-badges-position product-badges-mrg">
-                                                <span class="best">Best sale</span>
-                                            </div>
-                                        </div>
-                                        <div class="product-content-wrap">
-                                            <div class="product-category">
-                                                <a href="shop-grid-right.html">Hodo Foods</a>
-                                            </div>
-                                            <h2><a href="shop-product-right.html">Foster Farms Takeout Crispy Classic </a></h2>
-                                            <div class="product-rate d-inline-block">
-                                                <div class="product-rating" style="width: 80%"></div>
-                                            </div>
-                                            <div class="product-price mt-10">
-                                                <span>$238.85 </span>
-                                                <span class="old-price">$245.8</span>
-                                            </div>
-                                            <div class="sold mt-15 mb-15">
-                                                <div class="progress mb-5">
-                                                    <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                                <span class="font-xs text-heading"> Sold: 90/120</span>
-                                            </div>
-                                            <a href="shop-cart.html" class="btn w-100 hover-up"><i class="fi-rs-shopping-cart mr-5"></i>Add To Cart</a>
-                                        </div>
-                                    </div>
-                                    <!--End product Wrap-->
-                                    <div class="product-cart-wrap">
-                                        <div class="product-img-action-wrap">
-                                            <div class="product-img product-img-zoom">
-                                                <a href="shop-product-right.html">
-                                                    <img class="default-img" src="assets-nest/nest-fe/imgs/shop/product-4-1.jpg" alt="" />
-                                                    <img class="hover-img" src="assets-nest/nest-fe/imgs/shop/product-4-2.jpg" alt="" />
-                                                </a>
-                                            </div>
-                                            <div class="product-action-1">
-                                                <a aria-label="Quick view" class="action-btn small hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal"> <i class="fi-rs-eye"></i></a>
-                                                <a aria-label="Add To Wishlist" class="action-btn small hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                                <a aria-label="Compare" class="action-btn small hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
-                                            </div>
-                                            <div class="product-badges product-badges-position product-badges-mrg">
-                                                <span class="hot">Save 15%</span>
-                                            </div>
-                                        </div>
-                                        <div class="product-content-wrap">
-                                            <div class="product-category">
-                                                <a href="shop-grid-right.html">Hodo Foods</a>
-                                            </div>
-                                            <h2><a href="shop-product-right.html">Blue Diamond Almonds Lightly Salted</a></h2>
-                                            <div class="product-rate d-inline-block">
-                                                <div class="product-rating" style="width: 80%"></div>
-                                            </div>
-                                            <div class="product-price mt-10">
-                                                <span>$238.85 </span>
-                                                <span class="old-price">$245.8</span>
-                                            </div>
-                                            <div class="sold mt-15 mb-15">
-                                                <div class="progress mb-5">
-                                                    <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                                <span class="font-xs text-heading"> Sold: 90/120</span>
-                                            </div>
-                                            <a href="shop-cart.html" class="btn w-100 hover-up"><i class="fi-rs-shopping-cart mr-5"></i>Add To Cart</a>
-                                        </div>
-                                    </div>
-                                    <!--End product Wrap-->
-                                </div>
-                            </div>
-                        </div>
-                        <!--End tab-pane-->
-                    </div>
-                    <!--End tab-content-->
-                </div>
-                <!--End Col-lg-9-->
-            </div>
-        </div>
-    </section>
     <!-- blogs -->
     <section class="section-padding pb-5">
         <div class="container mb-30">
@@ -926,102 +755,55 @@ $collections = collect();
                 <div class="title">
                     <h3>Latest Blog</h3>
                 </div>
-                <a href="{{ route('blogs')}}" class="show-all">View All</a>
+                <a href="{{ route('blogs.index') }}" class="show-all">View All</a>
             </div>
             <div class="loop-grid">
                 <div class="row">
+                    @forelse ($latestBlogs as $blog)
                     <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
                         <div class="post-thumb">
-                            <a href="blog-post-right.html">
-                                <img class="border-radius-15" src="images/blogs/1.webp" alt="" />
-                            </a>
-                            <div class="entry-meta">
-                                <a class="entry-meta meta-2" href="blog-category-grid.html"><i class="fi-rs-heart"></i></a>
-                            </div>
-                        </div>
-                        <div class="entry-content-2">
-                            <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="blog-category-grid.html">Side Dish</a></h6>
-                            <h4 class="post-title mb-15">
-                                <a href="blog-post-right.html">Liburan Hemat Budget: Cara Menghemat Jutaan Rupiah Tanpa Mengorbankan Kenyamanan</a>
-                            </h4>
-                            <div class="entry-meta font-xs color-grey mt-10 pb-10">
-                                <div>
-                                    <span class="post-on mr-10">25 April 2022</span>
-                                    <span class="hit-count has-dot mr-10">126k Views</span>
-                                    <span class="hit-count has-dot">4 mins read</span>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                    <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
-                        <div class="post-thumb">
-                            <a href="blog-post-right.html">
-                                <img class="border-radius-15" src="images/blogs/2.webp" alt="" />
+                            <a href="{{ route('blogs.show', $blog->slug) }}">
+                                <img class="border-radius-15" src="{{ $blog->featured_image ?: asset('images/blog-placeholder.webp') }}" alt="{{ $blog->title }}" />
                             </a>
                         </div>
                         <div class="entry-content-2">
-                            <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="blog-category-grid.html">Soups and Stews</a></h6>
+                            <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="#">{{ $blog->category }}</a></h6>
                             <h4 class="post-title mb-15">
-                                <a href="blog-post-right.html">7 Rute Rahasia Indonesia yang Tidak Ada di Peta Wisatawan Biasa (Panduan Eksklusif)</a>
+                                <a href="{{ route('blogs.show', $blog->slug) }}">{{ Str::limit($blog->title, 60) }}</a>
                             </h4>
                             <div class="entry-meta font-xs color-grey mt-10 pb-10">
                                 <div>
-                                    <span class="post-on mr-10">25 April 2022</span>
-                                    <span class="hit-count has-dot mr-10">126k Views</span>
-                                    <span class="hit-count has-dot">4 mins read</span>
+                                    <!-- <span class="post-on mr-10">{{ $blog->published_at->format('d F Y') }}</span> -->
+                                    <span class="post-on mr-10">{{ \Carbon\Carbon::parse($blog->published_at)->diffInHours() < 24 ? $blog->published_at->diffForHumans() : $blog->published_at->format('d M Y') }}</span>
+                                    <span class="post-on has-dot">
+                                        @php
+                                        $views = $blog->view_count;
+                                        if ($views >= 1000000000) { // 1 Miliar
+                                        $formattedViews = number_format($views / 1000000000, 1) . 'B';
+                                        } elseif ($views >= 1000000) { // 1 Juta
+                                        $formattedViews = number_format($views / 1000000, 1) . 'M';
+                                        } elseif ($views >= 1000) { // 1 Ribu
+                                        $formattedViews = number_format($views / 1000, 1) . 'k';
+                                        } else {
+                                        $formattedViews = $views;
+                                        }
+                                        @endphp
+                                        {{ $formattedViews }} Views
+                                    </span>
+                                    {{-- Jika Anda menambah kolom read_time (dalam menit) --}}
+                                    {{--<span class="hit-count has-dot">{{ $blog->read_time }} mins read</span>--}}
                                 </div>
                             </div>
                         </div>
                     </article>
-                    <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
-                        <div class="post-thumb">
-                            <a href="blog-post-right.html">
-                                <img class="border-radius-15" src="images/blogs/3.webp" alt="" />
-                            </a>
-                            <div class="entry-meta">
-                                <a class="entry-meta meta-2" href="blog-category-grid.html"><i class="fi-rs-link"></i></a>
-                            </div>
-                        </div>
-                        <div class="entry-content-2">
-                            <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="blog-category-grid.html">Salad</a></h6>
-                            <h4 class="post-title mb-15">
-                                <a href="blog-post-right.html">Beyond Bali: 5 Destinasi Budaya Terbaik di Indonesia untuk Pecinta Sejarah</a>
-                            </h4>
-                            <div class="entry-meta font-xs color-grey mt-10 pb-10">
-                                <div>
-                                    <span class="post-on mr-10">25 April 2022</span>
-                                    <span class="hit-count has-dot mr-10">126k Views</span>
-                                    <span class="hit-count has-dot">4 mins read</span>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                    <!-- Article 4 -->
-                    <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
-                        <div class="post-thumb">
-                            <div class="image-frame">
-                                <a href="post-kesalahan-fatal.html">
-                                    <img class="border-radius-15" src="/images/blogs/6.webp" alt="Ransel traveling rusak" />
-                                </a>
-                            </div>
-                        </div>
-                        <div class="entry-content-2">
-                            <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="kategori-kesalahan-umum.html">Panduan Praktis</a></h6>
-                            <h5 class="post-title mb-15">
-                                <a href="post-kesalahan-fatal.html">Jangan Sampai Salah! Ini 10 Kesalahan Fatal Saat Traveling ke Pedalaman</a>
-                            </h5>
-                            <div class="entry-meta font-xs color-grey mt-10 pb-10">
-                                <div>
-                                    <span class="post-on mr-10">01 September 2025</span>
-                                    <span class="hit-count has-dot mr-10">7.9k Views</span>
-                                    <span class="hit-count has-dot">8 mins read</span>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
+                    @empty
+                    <div class="col-12 text-center py-5">
+                        <p class="text-muted">No blog posts available yet.</p>
+                    </div>
+                    @endforelse
                 </div>
             </div>
-        </div>
+            <!-- </div> -->
     </section>
 </div>
 <script>

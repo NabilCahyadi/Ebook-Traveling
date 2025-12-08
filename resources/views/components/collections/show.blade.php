@@ -111,12 +111,12 @@
     }
 
     .btn-read-now {
-        background-color: #28a745;
+        background-color: #FF4C61;
         color: #fff;
     }
 
     .btn-read-now:hover {
-        background-color: #218838;
+        background-color: #FF4C61;
         color: #fff;
     }
 
@@ -176,14 +176,35 @@
                                     </div>
 
                                     <div class="product-meta">
-                                        <div class="product-rate-cover">
-                                            <div class="product-rate d-inline-block">
-                                                <div class="product-rating" style="width: {{ ($ebook->average_rating / 5) * 100 }}%"></div>
+                                        <div class="product-detail-rating">
+                                            <div class="product-rate-cover text-end">
+                                                <div class="product-rate-cover">
+                                                    <div class="product-rate d-inline-block">
+                                                        {{-- HITUNG RATA-RATA LANGSUNG DARI TABEL ebook_ratings --}}
+                                                        <div class="product-rating" style="width: {{ ($ebook->ratings()->avg('rating') / 5) * 100 }}%"></div>
+                                                    </div>
+                                                    {{-- TAMPILKAN JUGA RATA-RATA YANG SAMA --}}
+                                                    <span class="font-small ml-5 text-muted">({{ round($ebook->ratings()->avg('rating'), 2) }})</span>
+                                                </div>
                                             </div>
-                                            <span class="font-small ml-5 text-muted">({{ $ebook->average_rating }})</span>
                                         </div>
                                         <div class="read-count">
-                                            <i class="fi-rs-eye mt-5"></i> {{ number_format($ebook->read_count) }}
+                                            <i class="fi-rs-eye align-middle"></i><!--  {{ number_format($ebook->view_count) }} -->
+                                            <span class="post-on">
+                                                @php
+                                                $views = $ebook->view_count;
+                                                if ($views >= 1000000000) { // 1 Miliar
+                                                $formattedViews = number_format($views / 1000000000, 1) . 'B';
+                                                } elseif ($views >= 1000000) { // 1 Juta
+                                                $formattedViews = number_format($views / 1000000, 1) . 'M';
+                                                } elseif ($views >= 1000) { // 1 Ribu
+                                                $formattedViews = number_format($views / 1000, 1) . 'k';
+                                                } else {
+                                                $formattedViews = $views;
+                                                }
+                                                @endphp
+                                                {{ $formattedViews }}
+                                            </span>
                                         </div>
                                     </div>
 

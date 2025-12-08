@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Blog;
 use App\Repositories\Interfaces\BlogRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 
 class BlogRepository implements BlogRepositoryInterface
 {
@@ -60,5 +61,15 @@ class BlogRepository implements BlogRepositoryInterface
     public function incrementViewCount(string $id)
     {
         return $this->model->where('id', $id)->increment('view_count');
+    }
+
+    public function getLatestPublished(int $limit = 4): Collection
+    {
+        // Gunakan scopePublished() dari model dan muat relasi 'author'
+        return Blog::with('author')
+            ->published()
+            ->orderBy('published_at', 'desc')
+            ->limit($limit)
+            ->get();
     }
 }

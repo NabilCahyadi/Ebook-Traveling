@@ -14,8 +14,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'creator' => \App\Http\Middleware\CreatorMiddleware::class,
+            'premium' => \App\Http\Middleware\IsPremiumUser::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
-    })->create();
+    })
+    ->withCommands([
+        \App\Console\Commands\UpdateEbookRatingsCommand::class,
+    ])->create();
