@@ -93,8 +93,12 @@
                                 @foreach ($logs as $log)
                                     <tr>
                                         <td>
-                                            <small>{{ $log->created_at->format('Y-m-d') }}</small><br>
-                                            <small class="text-muted">{{ $log->created_at->format('H:i:s') }}</small>
+                                            @if($log->created_at)
+                                                <small>{{ $log->created_at->format('Y-m-d') }}</small><br>
+                                                <small class="text-muted">{{ $log->created_at->format('H:i:s') }}</small>
+                                            @else
+                                                <small class="text-muted">No date</small>
+                                            @endif
                                         </td>
                                         <td>
                                             @if ($log->user)

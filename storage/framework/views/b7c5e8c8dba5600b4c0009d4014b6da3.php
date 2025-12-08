@@ -82,7 +82,7 @@
                                     <th>User</th>
                                     <th>Role</th>
                                     <th>Action</th>
-                                    <th>Description</th>
+                                    <th>URL</th>
                                     <th>Model</th>
                                     <th>IP Address</th>
                                     <th>Actions</th>
@@ -131,23 +131,23 @@
                                                     'view' => 'info',
                                                     'download' => 'warning',
                                                 ];
-                                                $color = $actionColors[$log->action] ?? 'secondary';
+                                                $color = $actionColors[$log->action_type] ?? 'secondary';
                                             ?>
                                             <span
-                                                class="badge bg-label-<?php echo e($color); ?>"><?php echo e(ucfirst($log->action)); ?></span>
+                                                class="badge bg-label-<?php echo e($color); ?>"><?php echo e(ucfirst($log->action_type)); ?></span>
                                         </td>
                                         <td>
                                             <span class="text-truncate d-inline-block" style="max-width: 300px;"
-                                                title="<?php echo e($log->description); ?>">
-                                                <?php echo e($log->description); ?>
+                                                title="<?php echo e($log->url); ?>">
+                                                <?php echo e($log->url ?? 'N/A'); ?>
 
                                             </span>
                                         </td>
                                         <td>
-                                            <?php if($log->model_type): ?>
-                                                <small><?php echo e(class_basename($log->model_type)); ?></small>
-                                                <?php if($log->model_id): ?>
-                                                    <br><small class="text-muted">#<?php echo e($log->model_id); ?></small>
+                                            <?php if($log->table_name): ?>
+                                                <small><?php echo e($log->table_name); ?></small>
+                                                <?php if($log->record_id): ?>
+                                                    <br><small class="text-muted">#<?php echo e($log->record_id); ?></small>
                                                 <?php endif; ?>
                                             <?php else: ?>
                                                 <span class="text-muted">-</span>

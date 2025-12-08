@@ -18,11 +18,15 @@ class ActionLog extends Model
     public $timestamps = false;
 
     /**
-     * The attributes that should be mutated to dates.
+     * The attributes that should be cast.
      *
      * @var array
      */
-    protected $dates = ['created_at'];
+    protected $casts = [
+        'created_at' => 'datetime',
+        'old_values' => 'array',
+        'new_values' => 'array',
+    ];
 
     protected $fillable = [
         'user_id',
@@ -35,11 +39,6 @@ class ActionLog extends Model
         'user_agent',
         'url',
         'method',
-    ];
-
-    protected $casts = [
-        'old_values' => 'array',
-        'new_values' => 'array',
     ];
 
     /**
