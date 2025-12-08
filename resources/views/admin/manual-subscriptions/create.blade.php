@@ -83,14 +83,9 @@
                             <input type="hidden" id="user_id" name="user_id" value="{{ old('user_id') }}">
 
                             <div class="position-relative">
-                                <input
-                                    type="text"
-                                    class="form-control @error('user_id') is-invalid @enderror"
-                                    id="user_search"
-                                    placeholder="Type to search user by name or email..."
-                                    autocomplete="off"
-                                    value="{{ old('user_search') }}"
-                                >
+                                <input type="text" class="form-control @error('user_id') is-invalid @enderror"
+                                    id="user_search" placeholder="Type to search user by name or email..."
+                                    autocomplete="off" value="{{ old('user_search') }}">
 
                                 <div id="search-loading" class="position-absolute top-50 end-0 translate-middle-y me-3"
                                     style="display: none;">
@@ -118,8 +113,7 @@
                                 id="subscription_plan_id" name="subscription_plan_id" required>
                                 <option value="">Choose a plan...</option>
                                 @foreach ($plans as $plan)
-                                    <option value="{{ $plan->id }}"
-                                        data-duration="{{ $plan->duration_days }}"
+                                    <option value="{{ $plan->id }}" data-duration="{{ $plan->duration_days }}"
                                         data-price="{{ $plan->price }}"
                                         {{ old('subscription_plan_id') == $plan->id ? 'selected' : '' }}>
                                         {{ $plan->name }} - {{ $plan->duration_days }} days (Rp
@@ -130,6 +124,42 @@
                             @error('subscription_plan_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="quantity">Quantity <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control @error('quantity') is-invalid @enderror"
+                                id="quantity" name="quantity" min="1" max="12"
+                                value="{{ old('quantity', 1) }}" required>
+                            <div class="form-text">Number of subscription periods (e.g., 2 for 2 months if plan is 1 month)
+                            </div>
+                            @error('quantity')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="card bg-light-info mb-3" id="subscription-summary" style="display: none;">
+                            <div class="card-body">
+                                <h6 class="card-title mb-2">Subscription Summary</h6>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <small class="text-muted">Plan Duration:</small>
+                                        <div class="fw-semibold" id="plan-duration">-</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">Quantity:</small>
+                                        <div class="fw-semibold" id="plan-quantity">-</div>
+                                    </div>
+                                    <div class="col-6 mt-2">
+                                        <small class="text-muted">Total Duration:</small>
+                                        <div class="fw-bold text-primary" id="total-duration">-</div>
+                                    </div>
+                                    <div class="col-6 mt-2">
+                                        <small class="text-muted">Total Amount:</small>
+                                        <div class="fw-bold text-success" id="total-amount">-</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="alert alert-info">
@@ -162,77 +192,84 @@
                     <h5 class="card-title">Subscription Preview</h5>
                     <hr>
                     <div id="preview-info">
-                        <div class="mb-3"><small class="text-muted d-block">User</small><strong id="preview-user">Not selected</strong></div>
-                        <div class="mb-3"><small class="text-muted d-block">Plan</small><strong id="preview-plan">Not selected</strong></div>
-                        <div class="mb-3"><small class="text-muted d-block">Duration</small><strong id="preview-duration">-</strong></div>
-                        <div class="mb-3"><small class="text-muted d-block">Amount</small><strong id="preview-amount">Rp 0</strong></div>
-                        <div class="mb-3"><small class="text-muted d-block">Start Date</small><strong>{{ now()->format('d M Y') }}</strong></div>
-                        <div class="mb-3"><small class="text-muted d-block">End Date</small><strong id="preview-end-date">-</strong></div>
+                        <div class="mb-3"><small class="text-muted d-block">User</small><strong id="preview-user">Not
+                                selected</strong></div>
+                        <div class="mb-3"><small class="text-muted d-block">Plan</small><strong id="preview-plan">Not
+                                selected</strong></div>
+                        <div class="mb-3"><small class="text-muted d-block">Duration</small><strong
+                                id="preview-duration">-</strong></div>
+                        <div class="mb-3"><small class="text-muted d-block">Amount</small><strong
+                                id="preview-amount">Rp 0</strong></div>
+                        <div class="mb-3"><small class="text-muted d-block">Start
+                                Date</small><strong>{{ now()->format('d M Y') }}</strong></div>
+                        <div class="mb-3"><small class="text-muted d-block">End Date</small><strong
+                                id="preview-end-date">-</strong></div>
                     </div>
                 </div>
             </div>
         </div>
 
-</div>
+    </div>
 @endsection
 
 @push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
 
-    const userSearchInput = document.getElementById('user_search');
-    const userIdInput = document.getElementById('user_id');
-    const suggestionsDiv = document.getElementById('user-suggestions');
-    const loadingIndicator = document.getElementById('search-loading');
-    const planSelect = document.getElementById('subscription_plan_id');
+            const userSearchInput = document.getElementById('user_search');
+            const userIdInput = document.getElementById('user_id');
+            const suggestionsDiv = document.getElementById('user-suggestions');
+            const loadingIndicator = document.getElementById('search-loading');
+            const planSelect = document.getElementById('subscription_plan_id');
 
-    let searchTimeout;
-    let selectedUserId = null;
+            let searchTimeout;
+            let selectedUserId = null;
 
-    userSearchInput.addEventListener('input', function() {
-        const query = this.value.trim();
-        clearTimeout(searchTimeout);
+            userSearchInput.addEventListener('input', function() {
+                const query = this.value.trim();
+                clearTimeout(searchTimeout);
 
-        if (query.length < 2) {
-            suggestionsDiv.style.display = 'none';
-            suggestionsDiv.innerHTML = '';
-            userIdInput.value = '';
-            document.getElementById('preview-user').textContent = 'Not selected';
-            return;
-        }
+                if (query.length < 2) {
+                    suggestionsDiv.style.display = 'none';
+                    suggestionsDiv.innerHTML = '';
+                    userIdInput.value = '';
+                    document.getElementById('preview-user').textContent = 'Not selected';
+                    return;
+                }
 
-        loadingIndicator.style.display = 'block';
+                loadingIndicator.style.display = 'block';
 
-        searchTimeout = setTimeout(() => {
-            fetch(`{{ route('admin.manual-subscriptions.search-users') }}?q=${encodeURIComponent(query)}`)
-                .then(response => response.json())
-                .then(users => {
-                    loadingIndicator.style.display = 'none';
-                    displaySuggestions(users);
-                })
-                .catch(() => {
-                    loadingIndicator.style.display = 'none';
-                    suggestionsDiv.innerHTML =
-                        '<div class="list-group-item text-danger">Error loading users</div>';
+                searchTimeout = setTimeout(() => {
+                    fetch(
+                            `{{ route('admin.manual-subscriptions.search-users') }}?q=${encodeURIComponent(query)}`)
+                        .then(response => response.json())
+                        .then(users => {
+                            loadingIndicator.style.display = 'none';
+                            displaySuggestions(users);
+                        })
+                        .catch(() => {
+                            loadingIndicator.style.display = 'none';
+                            suggestionsDiv.innerHTML =
+                                '<div class="list-group-item text-danger">Error loading users</div>';
+                            suggestionsDiv.style.display = 'block';
+                        });
+                }, 300);
+            });
+
+            function displaySuggestions(users) {
+                suggestionsDiv.innerHTML = '';
+
+                if (users.length === 0) {
+                    suggestionsDiv.innerHTML = '<div class="list-group-item text-muted">No users found</div>';
                     suggestionsDiv.style.display = 'block';
-                });
-        }, 300);
-    });
+                    return;
+                }
 
-    function displaySuggestions(users) {
-        suggestionsDiv.innerHTML = '';
-
-        if (users.length === 0) {
-            suggestionsDiv.innerHTML = '<div class="list-group-item text-muted">No users found</div>';
-            suggestionsDiv.style.display = 'block';
-            return;
-        }
-
-        users.forEach(user => {
-            const item = document.createElement('a');
-            item.href = '#';
-            item.className = 'list-group-item list-group-item-action';
-            item.innerHTML = `
+                users.forEach(user => {
+                    const item = document.createElement('a');
+                    item.href = '#';
+                    item.className = 'list-group-item list-group-item-action';
+                    item.innerHTML = `
                 <div class="d-flex align-items-center">
                     <div class="avatar avatar-sm me-2">
                         <span class="avatar-initial rounded-circle bg-label-primary">
@@ -246,64 +283,79 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
 
-            item.addEventListener('click', e => {
-                e.preventDefault();
-                selectUser(user);
-            });
+                    item.addEventListener('click', e => {
+                        e.preventDefault();
+                        selectUser(user);
+                    });
 
-            suggestionsDiv.appendChild(item);
-        });
-
-        suggestionsDiv.style.display = 'block';
-    }
-
-    function selectUser(user) {
-        selectedUserId = user.id;
-        userIdInput.value = user.id;
-        userSearchInput.value = `${user.name} (${user.email})`;
-        suggestionsDiv.style.display = 'none';
-
-        document.getElementById('preview-user').textContent = `${user.name} (${user.email})`;
-    }
-
-    document.addEventListener('click', function(e) {
-        if (!userSearchInput.contains(e.target) && !suggestionsDiv.contains(e.target)) {
-            suggestionsDiv.style.display = 'none';
-        }
-    });
-
-    planSelect.addEventListener('change', function() {
-        const selectedOption = this.options[this.selectedIndex];
-        const planName = selectedOption.text.split(' - ')[0];
-        const duration = selectedOption.dataset.duration;
-        const price = selectedOption.dataset.price;
-
-        if (planName !== 'Choose a plan...') {
-
-            document.getElementById('preview-plan').textContent = planName;
-            document.getElementById('preview-duration').textContent = duration + ' days';
-            document.getElementById('preview-amount').textContent =
-                'Rp ' + new Intl.NumberFormat('id-ID').format(price);
-
-            const startDate = new Date();
-            const endDate = new Date(startDate);
-            endDate.setDate(endDate.getDate() + parseInt(duration));
-
-            document.getElementById('preview-end-date').textContent =
-                endDate.toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric'
+                    suggestionsDiv.appendChild(item);
                 });
 
-        } else {
-            document.getElementById('preview-plan').textContent = 'Not selected';
-            document.getElementById('preview-duration').textContent = '-';
-            document.getElementById('preview-amount').textContent = 'Rp 0';
-            document.getElementById('preview-end-date').textContent = '-';
-        }
-    });
+                suggestionsDiv.style.display = 'block';
+            }
 
-});
-</script>
+            function selectUser(user) {
+                selectedUserId = user.id;
+                userIdInput.value = user.id;
+                userSearchInput.value = `${user.name} (${user.email})`;
+                suggestionsDiv.style.display = 'none';
+
+                document.getElementById('preview-user').textContent = `${user.name} (${user.email})`;
+            }
+
+            document.addEventListener('click', function(e) {
+                if (!userSearchInput.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+                    suggestionsDiv.style.display = 'none';
+                }
+            });
+
+            function updateSubscriptionSummary() {
+                const planSelect = document.getElementById('subscription_plan_id');
+                const quantityInput = document.getElementById('quantity');
+                const selectedOption = planSelect.options[planSelect.selectedIndex];
+
+                if (selectedOption.value && quantityInput.value) {
+                    const duration = parseInt(selectedOption.dataset.duration);
+                    const price = parseFloat(selectedOption.dataset.price);
+                    const quantity = parseInt(quantityInput.value);
+                    const planName = selectedOption.text.split(' - ')[0];
+
+                    const totalDuration = duration * quantity;
+                    const totalAmount = price * quantity;
+
+                    document.getElementById('plan-duration').textContent = duration + ' days';
+                    document.getElementById('plan-quantity').textContent = quantity + 'x';
+                    document.getElementById('total-duration').textContent = totalDuration + ' days';
+                    document.getElementById('total-amount').textContent = 'Rp ' + new Intl.NumberFormat('id-ID')
+                        .format(totalAmount);
+                    document.getElementById('subscription-summary').style.display = 'block';
+
+                    // Update preview
+                    document.getElementById('preview-plan').textContent = planName + ' (' + quantity + 'x)';
+                    document.getElementById('preview-duration').textContent = totalDuration + ' days';
+                    document.getElementById('preview-amount').textContent = 'Rp ' + new Intl.NumberFormat('id-ID')
+                        .format(totalAmount);
+
+                    const startDate = new Date();
+                    const endDate = new Date(startDate);
+                    endDate.setDate(endDate.getDate() + totalDuration);
+                    document.getElementById('preview-end-date').textContent = endDate.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    });
+                } else {
+                    document.getElementById('subscription-summary').style.display = 'none';
+                    document.getElementById('preview-plan').textContent = 'Not selected';
+                    document.getElementById('preview-duration').textContent = '-';
+                    document.getElementById('preview-amount').textContent = 'Rp 0';
+                    document.getElementById('preview-end-date').textContent = '-';
+                }
+            }
+
+            planSelect.addEventListener('change', updateSubscriptionSummary);
+            document.getElementById('quantity').addEventListener('input', updateSubscriptionSummary);
+
+        });
+    </script>
 @endpush

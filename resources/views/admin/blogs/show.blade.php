@@ -43,9 +43,15 @@
                                     <i class="bx bx-show me-1"></i> {{ number_format($blog->view_count) }} views
                                 </div>
                             </div>
-                            <span class="badge bg-{{ $blog->is_published ? 'success' : 'secondary' }}">
-                                {{ $blog->is_published ? 'Published' : 'Draft' }}
-                            </span>
+                            @if ($blog->status === 'published')
+                                <span class="badge bg-success">Published</span>
+                            @elseif($blog->status === 'draft')
+                                <span class="badge bg-warning">Draft</span>
+                            @elseif($blog->status === 'unpublished')
+                                <span class="badge bg-secondary">Unpublished</span>
+                            @else
+                                <span class="badge bg-dark">Archived</span>
+                            @endif
                         </div>
 
                         @if ($blog->category)
@@ -66,13 +72,19 @@
                             {!! $blog->content !!}
                         </div>
 
-                        @if ($blog->tags && count($blog->tags) > 0)
+                        @if ($blog->tags && (is_array($blog->tags) ? count($blog->tags) > 0 : !empty($blog->tags)))
                             <hr>
                             <div class="mt-3">
                                 <strong>Tags:</strong>
-                                @foreach ($blog->tags as $tag)
-                                    <span class="badge bg-label-secondary me-1">{{ $tag }}</span>
-                                @endforeach
+                                @if (is_array($blog->tags))
+                                    @foreach ($blog->tags as $tag)
+                                        <span class="badge bg-label-secondary me-1">{{ $tag }}</span>
+                                    @endforeach
+                                @else
+                                    @foreach (explode(',', $blog->tags) as $tag)
+                                        <span class="badge bg-label-secondary me-1">{{ trim($tag) }}</span>
+                                    @endforeach
+                                @endif
                             </div>
                         @endif
                     </div>
@@ -96,10 +108,25 @@
                         </div>
 
                         <div class="mb-3">
+                            <small class="text-muted d-block mb-1">Category</small>
+                            @if ($blog->category)
+                                <span class="badge bg-label-info">{{ $blog->category }}</span>
+                            @else
+                                <span class="text-muted">-</span>
+                            @endif
+                        </div>
+
+                        <div class="mb-3">
                             <small class="text-muted d-block mb-1">Status</small>
-                            <span class="badge bg-{{ $blog->is_published ? 'success' : 'secondary' }}">
-                                {{ $blog->is_published ? 'Published' : 'Draft' }}
-                            </span>
+                            @if ($blog->status === 'published')
+                                <span class="badge bg-success">Published</span>
+                            @elseif($blog->status === 'draft')
+                                <span class="badge bg-warning">Draft</span>
+                            @elseif($blog->status === 'unpublished')
+                                <span class="badge bg-secondary">Unpublished</span>
+                            @else
+                                <span class="badge bg-dark">Archived</span>
+                            @endif
                         </div>
 
                         @if ($blog->published_at)
@@ -118,6 +145,23 @@
                             <small class="text-muted d-block mb-1">Last Updated</small>
                             <p class="mb-0">{{ $blog->updated_at->format('d M Y, H:i') }}</p>
                         </div>
+
+                        @if ($blog->tags && (is_array($blog->tags) ? count($blog->tags) > 0 : !empty($blog->tags)))
+                            <div class="mb-3">
+                                <small class="text-muted d-block mb-1">Tags</small>
+                                <div>
+                                    @if (is_array($blog->tags))
+                                        @foreach ($blog->tags as $tag)
+                                            <span class="badge bg-label-secondary me-1 mb-1">{{ $tag }}</span>
+                                        @endforeach
+                                    @else
+                                        @foreach (explode(',', $blog->tags) as $tag)
+                                            <span class="badge bg-label-secondary me-1 mb-1">{{ trim($tag) }}</span>
+                                        @endforeach
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
 
@@ -133,6 +177,26 @@
                             <div>
                                 <small class="text-muted d-block">Total Views</small>
                                 <h5 class="mb-0">{{ number_format($blog->view_count) }}</h5>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="badge bg-label-info rounded p-2 me-3">
+                                <i class="bx bx-file fs-4"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted d-block">Content Length</small>
+                                <h6 class="mb-0">{{ number_format(strlen(strip_tags($blog->content))) }} characters</h6>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="badge bg-label-success rounded p-2 me-3">
+                                <i class="bx bx-time fs-4"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted d-block">Reading Time</small>
+                                <h6 class="mb-0">{{ ceil(str_word_count(strip_tags($blog->content)) / 200) }} min read
+                                </h6>
                             </div>
                         </div>
                     </div>

@@ -37,7 +37,7 @@
 
         <!-- Ebooks Management -->
         <li
-            class="menu-item {{ Request::is('admin/ebooks*') || Request::is('admin/categories*') || Request::is('admin/cities*') ? 'active open' : '' }}">
+            class="menu-item open {{ Request::is('admin/ebooks*') || Request::is('admin/categories*') || Request::is('admin/cities*') ? 'active' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-books"></i>
                 <div data-i18n="Ebook Management">Ebook Management</div>
@@ -95,7 +95,7 @@
 
         <!-- Users Management -->
         <li
-            class="menu-item {{ Request::is('admin/users*') || Request::is('admin/roles*') || Request::is('admin/permissions*') ? 'active open' : '' }}">
+            class="menu-item open {{ Request::is('admin/users*') || Request::is('admin/roles*') || Request::is('admin/permissions*') ? 'active' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-users"></i>
                 <div data-i18n="User Management">User Management</div>
@@ -142,12 +142,20 @@
                         <div data-i18n="Permissions">Permissions</div>
                     </a>
                 </li>
+
+                <!-- User Activity Logs -->
+                <li class="menu-item {{ Request::is('admin/user-activity-logs*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.user-activity-logs.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-activity"></i>
+                        <div data-i18n="Activity Logs">Activity Logs</div>
+                    </a>
+                </li>
             </ul>
         </li>
 
         <!-- Subscription Management -->
         <li
-            class="menu-item {{ Request::is('admin/subscription-plans*') || Request::is('admin/manual-subscriptions*') || Request::is('admin/active-subscribers*') || Request::is('admin/subscription-history*') || Request::is('admin/promos*') ? 'active open' : '' }}">
+            class="menu-item open {{ Request::is('admin/subscription-plans*') || Request::is('admin/manual-subscriptions*') || Request::is('admin/active-subscribers*') || Request::is('admin/subscription-history*') || Request::is('admin/promos*') ? 'active' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-crown"></i>
                 <div data-i18n="Subscription Management">Subscription Management</div>
@@ -196,7 +204,7 @@
         </li>
 
         <!-- Content Management -->
-        <li class="menu-item {{ Request::is('admin/blogs*') ? 'active open' : '' }}">
+        <li class="menu-item open {{ Request::is('admin/blogs*') ? 'active' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-file-text"></i>
                 <div data-i18n="Content Management">Content Management</div>

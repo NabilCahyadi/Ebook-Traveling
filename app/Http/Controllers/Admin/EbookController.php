@@ -23,8 +23,8 @@ class EbookController extends Controller
      */
     public function index(Request $request)
     {
-        // Default 6 for table, 8 for card view
-        $perPage = $request->get('per_page', 6);
+        // Default 8 for card view
+        $perPage = $request->get('per_page', 8);
         $sortBy = $request->get('sort_by', 'created_at');
         $sortOrder = $request->get('sort_order', 'desc');
 

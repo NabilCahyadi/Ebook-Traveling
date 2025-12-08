@@ -19,10 +19,34 @@ class BlogController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $blogs = $this->blogService->getPaginatedBlogs(5);
-        return view('admin.blogs.index', compact('blogs'));
+        $status = $request->get('status');
+        $category = $request->get('category');
+        $search = $request->get('search');
+
+        $blogs = $this->blogService->getFilteredBlogs([
+            'status' => $status,
+            'category' => $category,
+            'search' => $search,
+            'exclude_archived' => true,
+        ], 15);
+
+        $categories = $this->blogService->getAllCategories();
+
+        return view('admin.blogs.index', compact('blogs', 'status', 'category', 'search', 'categories'));
+    }
+
+    /**
+     * Display archived blogs
+     */
+    public function archived(Request $request)
+    {
+        $search = $request->get('search');
+
+        $blogs = $this->blogService->getArchivedBlogs($search, 15);
+
+        return view('admin.blogs.archived', compact('blogs', 'search'));
     }
 
     /**

@@ -498,7 +498,7 @@
                         selectInput.hide();
                         textInput.attr('type', 'number').attr('step', '0.01').attr('placeholder', 'e.g., 9.99');
                         valueRequired.show();
-                        hint.text('Enter minimum price in dollars (e.g., 9.99)');
+                        hint.text('Enter minimum price in rupiah');
                         break;
                     default:
                         valueWrapper.show();

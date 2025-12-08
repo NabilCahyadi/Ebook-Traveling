@@ -123,17 +123,18 @@
             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                 <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
-                        <img src="{{ url('assets/admin/img/avatars/1.png') }}" alt class="rounded-circle" />
+                        <img src="{{ Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : asset('assets/admin/img/avatars/default.jpeg') }}"
+                            alt class="rounded-circle" />
                     </div>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li>
-                        <a class="dropdown-item mt-0" href="javascript:void(0);">
+                        <a class="dropdown-item mt-0" href="{{ route('admin.profile.edit') }}">
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0 me-2">
                                     <div class="avatar avatar-online">
-                                        <img src="{{ url('assets/admin/img/avatars/1.png') }}" alt
-                                            class="rounded-circle" />
+                                        <img src="{{ Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : asset('assets/admin/img/avatars/default.jpeg') }}"
+                                            alt class="rounded-circle" />
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">
@@ -149,6 +150,11 @@
                     <li>
                         <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
                             <i class="ti ti-smart-home me-3 ti-md"></i><span class="align-middle">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="{{ route('admin.profile.edit') }}">
+                            <i class="ti ti-user me-3 ti-md"></i><span class="align-middle">My Profile</span>
                         </a>
                     </li>
                     <li>

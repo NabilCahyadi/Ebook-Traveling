@@ -20,7 +20,6 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('cover_image', 500)->nullable();
             $table->string('file_url', 500)->nullable();
-            $table->integer('page_count')->default(0);
             $table->string('status', 20)->default('draft'); // draft, published, archived, waiting_approval
             $table->integer('view_count')->default(0);
             $table->integer('read_count')->default(0);
