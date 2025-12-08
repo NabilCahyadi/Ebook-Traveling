@@ -26,7 +26,7 @@ return new class extends Migration
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('subscription_plan_id')->references('id')->on('subscription_plans')->onDelete('cascade');
-            // Note: payment_id foreign key will be added after payments table is created
+            $table->foreign('payment_id')->references('id')->on('payments')->onDelete('set null');
             $table->index('user_id');
             $table->index('subscription_plan_id');
             $table->index('payment_id');
