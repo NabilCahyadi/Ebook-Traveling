@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Repositories\Interfaces\BlogRepositoryInterface;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Collection;
 
 class BlogService
 {
@@ -155,5 +156,10 @@ class BlogService
         }
 
         return $query->exists();
+    }
+
+    public function getLatestForHomepage(int $limit = 4): Collection
+    {
+        return $this->blogRepository->getLatestPublished($limit);
     }
 }

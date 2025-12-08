@@ -121,4 +121,12 @@ class BlogRepository implements BlogRepositoryInterface
             ->distinct()
             ->pluck('category');
     }
+
+    public function getLatestPublished(int $limit = 4)
+    {
+        return $this->model->where('status', 'published')
+            ->latest('created_at')
+            ->limit($limit)
+            ->get();
+    }
 }

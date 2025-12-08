@@ -21,4 +21,6 @@ interface BlogRepositoryInterface
     public function delete(string $id);
 
     public function incrementViewCount(string $id);
+
+    public function getLatestPublished(int $limit = 4);
 }
