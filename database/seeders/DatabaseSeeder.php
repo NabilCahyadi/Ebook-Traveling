@@ -21,6 +21,8 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             CitySeeder::class,
             CategorySeeder::class,
+            EbookSeeder::class,
+            CollectionSeeder::class,
             LandingPageSectionsSeeder::class,
         ]);
     }
