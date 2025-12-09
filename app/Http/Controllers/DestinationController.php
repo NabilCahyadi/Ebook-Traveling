@@ -26,6 +26,10 @@ class DestinationController extends Controller
             abort(404);
         }
 
-        return view('destinations.show', compact('city'));
+        // Tambahkan baris ini untuk mengambil e-book terkait
+        $ebooks = $this->cityService->getEbooksByCityName($city->name);
+
+        // Kirim variabel $ebooks ke view
+        return view('components.destinations.show', compact('city', 'ebooks'));
     }
 }

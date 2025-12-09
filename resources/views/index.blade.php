@@ -336,11 +336,16 @@ $collections = collect();
     .product-description {
         font-size: 0.85rem;
         color: var(--text-color-muted);
+        margin-top: -15px;
         margin-bottom: 1rem;
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
+    }
+
+    .product-description.single-line {
+        margin-bottom: 1.3rem;
     }
 
     .product-meta {
@@ -473,6 +478,12 @@ $collections = collect();
         margin-top: -5px;
         /* Tarik kategori ke atas untuk mengurangi jarak */
     }
+
+    /* sedikit style untuk card top city */
+    .city-name-long {
+        font-size: 0.75em;
+        line-height: 1.2;
+    }
 </style>
 <div class="container mx-auto p-6">
     <section class="home-slider position-relative mb-30">
@@ -578,12 +589,14 @@ $collections = collect();
                     @foreach($topCities as $index => $city)
                     <div class="card-2 bg-12 wow animate__animated animate__fadeInUp" data-wow-delay="{{ ($index + 1) * 0.1 }}s">
                         <figure class="img-hover-scale overflow-hidden" style="width: 100px; height: 120px; margin: 0 auto 10px; border-radius: 8px;">
-                            <a href="/destination/{{ $city->slug }}">
+                            <a href="/destinations/{{ $city->slug }}">
                                 <img src="{{ asset($city->image) }}" alt="{{ $city->name }}" style="width: 100%; height: 100%; object-fit: cover;" />
                             </a>
                         </figure>
                         <h6>
-                            <a href="/destination/{{ $city->slug }}">{{ $city->name }}</a>
+                            <a href="/destinations/{{ $city->slug }}" class="{{ str_word_count($city->name) > 1 ? 'city-name-long' : '' }}">
+                                {{ $city->name }}
+                            </a>
                         </h6>
                     </div>
                     @endforeach
@@ -674,7 +687,7 @@ $collections = collect();
                                     <div class="product-content-wrap">
                                         <h2 style="margin-top:15px;"><a href="/ebooks/{{ $ebook->slug }}">{{ Str::limit($ebook->title, 40) }}</a></h2>
 
-                                        <div class="product-author" style="margin-bottom:-4px;">
+                                        <div class="product-author" style="margin-bottom:-12px;">
                                             @if($ebook->creator)
                                             <span>by {{ $ebook->creator->pen_name ?? $ebook->creator->user->name }}</span>
                                             @else
@@ -715,20 +728,31 @@ $collections = collect();
                                             </div>
                                         </div>
 
-                                        <p class="product-description">{{ Str::limit($ebook->short_description ?? $ebook->description, 80) }}</p>
+                                        <!-- <p class="product-description">{{ Str::limit($ebook->short_description ?? $ebook->description, 80) }}</p> -->
+                                        @php
+                                        // Ambil teks deskripsi
+                                        $descriptionText = $ebook->short_description ?? $ebook->description;
 
-                                        {{-- LOGIKA HANYA PADA TOMBOL AKSI --}}
-                                        @if(auth()->check() && auth()->user()->hasActiveSubscription())
-                                        <a href="/reader/{{ $ebook->slug }}" class="action-btn btn-read-now">
-                                            <i class="fi-rs-book-open"></i>
-                                            <span>Read Now</span>
-                                        </a>
-                                        @else
-                                        <a href="/pricing" class="action-btn btn-subscribe-now">
-                                            <i class="fi-rs-lock"></i>
-                                            <span>Subscribe to Read</span>
-                                        </a>
-                                        @endif
+                                        // Cek apakah teks pendek (kira-kira 1 baris). Sesuaikan angka 40 jika perlu.
+                                        $isSingleLine = strlen($descriptionText) <= 29;
+                                            @endphp
+
+                                            <p class="product-description {{ $isSingleLine ? 'single-line' : '' }}">
+                                            {{ Str::limit($descriptionText, 40) }}
+                                            </p>
+
+                                            {{-- LOGIKA HANYA PADA TOMBOL AKSI --}}
+                                            @if(auth()->check() && auth()->user()->hasActiveSubscription())
+                                            <a href="/reader/{{ $ebook->slug }}" class="action-btn btn-read-now">
+                                                <i class="fi-rs-book-open"></i>
+                                                <span>Read Now</span>
+                                            </a>
+                                            @else
+                                            <a href="/pricing" class="action-btn btn-subscribe-now">
+                                                <i class="fi-rs-lock"></i>
+                                                <span>Subscribe to Read</span>
+                                            </a>
+                                            @endif
                                     </div>
                                 </div>
 

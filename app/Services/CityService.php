@@ -6,6 +6,7 @@ use App\Repositories\Interfaces\CityRepositoryInterface;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use App\Models\Category;
 
 class CityService
 {
@@ -114,6 +115,34 @@ class CityService
 
         return null;
     }
+
+    /**
+     * =================================================================
+     *  METHOD BARU: Mengambil e-book berdasarkan nama kota (kategori)
+     * =================================================================
+     *
+     * @param string $cityName
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getEbooksByCityName(string $cityName)
+    {
+        // Cari kategori yang namanya sama dengan nama kota
+        $category = Category::where('name', $cityName)->first();
+
+        // Jika kategori tidak ditemukan, kembalikan koleksi kosong
+        if (!$category) {
+            return collect([]);
+        }
+
+        // Ambil semua e-book yang terhubung dengan kategori ini
+        // Eager load relasi 'creator' dan 'ratings' untuk menghindari N+1 problem
+        // dan untuk ditampilkan di view
+        return $category->ebooks()
+            ->with(['creator', 'ratings'])
+            ->where('status', 'published') // Opsional: Hanya ambil ebook yang sudah dipublish
+            ->get();
+    }
+
 
     public function getFallbackCities(): Collection
     {

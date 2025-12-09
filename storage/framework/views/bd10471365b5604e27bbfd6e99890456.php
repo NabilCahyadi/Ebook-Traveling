@@ -336,11 +336,16 @@ $collections = collect();
     .product-description {
         font-size: 0.85rem;
         color: var(--text-color-muted);
+        margin-top: -15px;
         margin-bottom: 1rem;
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
+    }
+
+    .product-description.single-line {
+        margin-bottom: 1.3rem;
     }
 
     .product-meta {
@@ -473,6 +478,12 @@ $collections = collect();
         margin-top: -5px;
         /* Tarik kategori ke atas untuk mengurangi jarak */
     }
+
+    /* sedikit style untuk card top city */
+    .city-name-long {
+        font-size: 0.75em;
+        line-height: 1.2;
+    }
 </style>
 <div class="container mx-auto p-6">
     <section class="home-slider position-relative mb-30">
@@ -578,12 +589,15 @@ $collections = collect();
                     <?php $__currentLoopData = $topCities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $city): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <div class="card-2 bg-12 wow animate__animated animate__fadeInUp" data-wow-delay="<?php echo e(($index + 1) * 0.1); ?>s">
                         <figure class="img-hover-scale overflow-hidden" style="width: 100px; height: 120px; margin: 0 auto 10px; border-radius: 8px;">
-                            <a href="/destination/<?php echo e($city->slug); ?>">
+                            <a href="/destinations/<?php echo e($city->slug); ?>">
                                 <img src="<?php echo e(asset($city->image)); ?>" alt="<?php echo e($city->name); ?>" style="width: 100%; height: 100%; object-fit: cover;" />
                             </a>
                         </figure>
                         <h6>
-                            <a href="/destination/<?php echo e($city->slug); ?>"><?php echo e($city->name); ?></a>
+                            <a href="/destinations/<?php echo e($city->slug); ?>" class="<?php echo e(str_word_count($city->name) > 1 ? 'city-name-long' : ''); ?>">
+                                <?php echo e($city->name); ?>
+
+                            </a>
                         </h6>
                     </div>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -674,7 +688,7 @@ $collections = collect();
                                     <div class="product-content-wrap">
                                         <h2 style="margin-top:15px;"><a href="/ebooks/<?php echo e($ebook->slug); ?>"><?php echo e(Str::limit($ebook->title, 40)); ?></a></h2>
 
-                                        <div class="product-author" style="margin-bottom:-4px;">
+                                        <div class="product-author" style="margin-bottom:-12px;">
                                             <?php if($ebook->creator): ?>
                                             <span>by <?php echo e($ebook->creator->pen_name ?? $ebook->creator->user->name); ?></span>
                                             <?php else: ?>
@@ -716,20 +730,32 @@ $collections = collect();
                                             </div>
                                         </div>
 
-                                        <p class="product-description"><?php echo e(Str::limit($ebook->short_description ?? $ebook->description, 80)); ?></p>
+                                        <!-- <p class="product-description"><?php echo e(Str::limit($ebook->short_description ?? $ebook->description, 80)); ?></p> -->
+                                        <?php
+                                        // Ambil teks deskripsi
+                                        $descriptionText = $ebook->short_description ?? $ebook->description;
 
-                                        
-                                        <?php if(auth()->check() && auth()->user()->hasActiveSubscription()): ?>
-                                        <a href="/reader/<?php echo e($ebook->slug); ?>" class="action-btn btn-read-now">
-                                            <i class="fi-rs-book-open"></i>
-                                            <span>Read Now</span>
-                                        </a>
-                                        <?php else: ?>
-                                        <a href="/pricing" class="action-btn btn-subscribe-now">
-                                            <i class="fi-rs-lock"></i>
-                                            <span>Subscribe to Read</span>
-                                        </a>
-                                        <?php endif; ?>
+                                        // Cek apakah teks pendek (kira-kira 1 baris). Sesuaikan angka 40 jika perlu.
+                                        $isSingleLine = strlen($descriptionText) <= 29;
+                                            ?>
+
+                                            <p class="product-description <?php echo e($isSingleLine ? 'single-line' : ''); ?>">
+                                            <?php echo e(Str::limit($descriptionText, 40)); ?>
+
+                                            </p>
+
+                                            
+                                            <?php if(auth()->check() && auth()->user()->hasActiveSubscription()): ?>
+                                            <a href="/reader/<?php echo e($ebook->slug); ?>" class="action-btn btn-read-now">
+                                                <i class="fi-rs-book-open"></i>
+                                                <span>Read Now</span>
+                                            </a>
+                                            <?php else: ?>
+                                            <a href="/pricing" class="action-btn btn-subscribe-now">
+                                                <i class="fi-rs-lock"></i>
+                                                <span>Subscribe to Read</span>
+                                            </a>
+                                            <?php endif; ?>
                                     </div>
                                 </div>
 

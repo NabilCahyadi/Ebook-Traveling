@@ -18,6 +18,7 @@ class BlogSeeder extends Seeder
         $authorId = '019ad0b2-083b-7119-be43-3f8f78d0ec6f';
 
         $blogs = [
+            // Data lama
             [
                 'title' => '10 Kesalahan Packing yang Paling Sering Dilakukan Pemula',
                 'slug' => 'kesalahan-packing-pemula',
@@ -70,20 +71,84 @@ class BlogSeeder extends Seeder
                 'published_at' => now()->subDays(1),
                 'view_count' => 2100,
             ],
+            // --- 5 DATA BLOG BARU ---
+            [
+                'title' => 'Liburan Seru Tanpa Bikin Kantong Bolong',
+                'slug' => 'liburan-budget-minim',
+                'excerpt' => 'Siapa bilang liburan harus mahal? Simak 7 tips jitu untuk menikmati perjalanan impian Anda tanpa harus menguras tabungan.',
+                'content' => '<p>Liburan adalah hak semua orang, bukan hanya mereka yang punya budget besar. Dengan perencanaan yang matang, Anda bisa menjelajahi tempat-tempat indah tanpa harus khawatir soal keuangan. Artikel ini membagikan rahasia liburan hemat, mulai dari memanfaatkan promo tiket pesawat, memilih penginapan yang ramah di kantong, hingga cara cerdas mengatur alokasi dana selama perjalanan. Siap untuk petualangan tak terlupakan yang tetap terjangkau?</p>',
+                'featured_image' => 'images/blogs/blog-5.webp',
+                'author_id' => $authorId,
+                'category' => 'Tips Traveling',
+                'tags' => json_encode(['Budget', 'Tips', 'Hemat']),
+                'is_published' => 1,
+                'published_at' => now()->subDays(8),
+                'view_count' => 4100,
+            ],
+            [
+                'title' => 'Tips Fotografi Traveling Ala Influencer',
+                'slug' => 'tips-fotografi-traveling',
+                'excerpt' => 'Abadikan setiap momen perjalanan Anda seperti seorang profesional. Pelajari komposisi, lighting, dan editing ponsel untuk hasil foto yang Instagram-able.',
+                'content' => '<p>Foto adalah kenangan abadi. Di era media sosial, kemampuan mengambil foto traveling yang bagus adalah sebuah keharusan. Anda tidak perlu kamera mahal untuk mendapatkan hasil yang memukau. Artikel ini akan mengajarkan Anda teknik-teknik dasar fotografi, seperti aturan sepertiga, memanfaatkan golden hour, hingga penggunaan aplikasi editing di ponsel untuk membuat foto Anda terlihat seperti hasil jepretan profesional.</p>',
+                'featured_image' => 'images/blogs/blog-6.webp',
+                'author_id' => $authorId,
+                'category' => 'Tips Traveling',
+                'tags' => json_encode(['Fotografi', 'Tips', 'Editing']),
+                'is_published' => 1,
+                'published_at' => now()->subDays(15),
+                'view_count' => 6200,
+            ],
+            [
+                'title' => 'Menemukan Surga Tersembunyi di Bali',
+                'slug' => 'surga-tersembunyi-bali',
+                'excerpt' => 'Selain Kuta dan Seminyak, Bali punya surga tersembunyi yang menenangkan. Yuk, jelajahi Nusa Penida, Munduk, dan destinasi lain yang masih perawan.',
+                'content' => '<p>Bali memang tak ada matinya. Namun, di balik keramaian Kuta dan Seminyak, tersimpan pesona alam yang masih alami dan menenangkan. Pulau-pulau kecil seperti Nusa Penida dan Nusa Lembongan menawarkan pemandangan tebing yang dramatis dan air laut yang jernih. Sementara itu, daerah seperti Munduk dan Sidemen menawarkan pengalaman pedesaan yang autentik. Artikel ini akan menjadi panduan Anda untuk menjelajahi sisi lain dari Bali yang lebih tenang dan jauh dari hiruk pikuk.</p>',
+                'featured_image' => 'images/blogs/blog-7.webp',
+                'author_id' => $authorId,
+                'category' => 'Destinasi',
+                'tags' => json_encode(['Bali', 'Nusa Penida', 'Alam']),
+                'is_published' => 1,
+                'published_at' => now()->subDays(22),
+                'view_count' => 7800,
+            ],
+            [
+                'title' => 'Naik Angkot, Jelajahi Jakarta Seperti Lokal',
+                'slug' => 'jelajahi-jakarta-angkot',
+                'excerpt' => 'Lupakan aplikasi ojek online sesaat. Rasakan pengalaman otentik berkeliling Jakarta dengan naik angkot dan bus kota. Ini panduannya!',
+                'content' => '<p>Berbeda dengan naik mobil pribadi, menggunakan angkutan umum seperti angkot dan bus TransJakarta memberikan Anda pengalaman yang jauh lebih otentik. Anda akan berdesak-desak dengan penumpang lain, menyaksikan kehidupan sehari-hari warga Jakarta, dan mungkin saja menemukan jalan pintas yang tidak ada di Google Maps. Meskipun terlihat menantang, artikel ini akan memberikan tips dan trik agar perjalanan Anda dengan angkot menjadi aman, nyaman, dan tentu saja, jauh lebih murah.</p>',
+                'featured_image' => 'images/blogs/blog-8.webp',
+                'author_id' => $authorId,
+                'category' => 'Destinasi',
+                'tags' => json_encode(['Jakarta', 'Angkot', 'Lokal']),
+                'is_published' => 1,
+                'published_at' => now()->subDays(3),
+                'view_count' => 3200,
+            ],
+            [
+                'title' => 'Jajanannya Bandung: Wisata Kuliner Ala Millennial',
+                'slug' => 'wisata-kuliner-bandung',
+                'excerpt' => 'Dari batagor hingga kopi susu, Bandung adalah surganya kuliner kekinian. Siapkan perut Anda dan ikuti kami berburu kuliner legendaris yang hits di media sosial.',
+                'content' => '<p>Bandung selalu berhasil membuat wisatawan tergoda dengan berbagai macam kulinernya. Kota ini tidak hanya terkenal dengan makanan berat, tetapi juga jajanan pasar dan kafe yang Instagram-able. Mulai dari mencicipi Seblak yang pedas, mencari Baso Tahu yang gurih, hingga nongkrong di kedai kopi susu yang legendaris. Artikel ini adalah daftar wajib bagi para foodies yang ingin menjelajahi Bandung melalui perutnya.</p>',
+                'featured_image' => 'images/blogs/blog-9.webp',
+                'author_id' => $authorId,
+                'category' => 'Kuliner',
+                'tags' => json_encode(['Bandung', 'Kuliner', 'Jajan']),
+                'is_published' => 1,
+                'published_at' => now()->subDays(10),
+                'view_count' => 5100,
+            ],
         ];
 
-        // Generate UUID dan slug untuk setiap blog
+        // Generate UUID dan timestamp untuk setiap blog
         foreach ($blogs as &$blog) {
             $blog['id'] = Str::uuid();
-            // Jika slug tidak ada, generate dari judul
-            if (!isset($blog['slug'])) {
-                $blog['slug'] = Str::slug($blog['title']);
-            }
             $blog['created_at'] = now();
             $blog['updated_at'] = now();
         }
 
         // Masukkan data ke dalam tabel
         DB::table('blogs')->insert($blogs);
+
+        $this->command->info('Berhasil menambahkan ' . count($blogs) . ' blog.');
     }
 }

@@ -18,6 +18,12 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AdminSeeder::class,
             UserSeeder::class,
+            CityCategorySeeder::class,
+            EbookCategorySeeder::class,
+            CitySeeder::class,
+            EbookSeeder::class,
+            EbookCategorySeeder::class,
+            CollectionEbookSeeder::class,
         ]);
     }
 }

@@ -28,7 +28,7 @@ Route::get('/pricing', function () {
 
 // Destinations Page
 Route::get('/destinations', [DestinationController::class, 'index'])->name('destinations');
-Route::get('/destination/{slug}', [DestinationController::class, 'show'])->name('destination.show');
+Route::get('/destinations/{slug}', [DestinationController::class, 'show'])->name('destination.show');
 
 // Promo Page
 Route::get('/promo', function () {
@@ -95,3 +95,19 @@ Route::get('/blogs/{slug}', [BlogController::class, 'show'])->name('blogs.show')
 Route::get('/ebooks/{slug}', [EbookController::class, 'show'])->name('ebooks.show');
 Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store')->middleware('auth');
 Route::get('/reader/{slug}', [ReaderController::class, 'show'])->name('reader.show')->middleware('premium');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
