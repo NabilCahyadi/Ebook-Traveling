@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\EbookCategory;
 use App\Models\City;
@@ -113,5 +114,15 @@ class Ebook extends Model
     {
         // Penting: Tentukan nama tabel dan foreign key secara manual
         return $this->belongsToMany(Category::class, 'ebook_categories', 'ebook_id', 'category_id');
+    }
+
+    /**
+     * Check apakah ebook download enabled secara global
+     */
+    public static function isDownloadEnabled()
+    {
+        return DB::table('system_settings')
+            ->where('key', 'ebook_download_enabled')
+            ->value('value') === '1';
     }
 }

@@ -48,6 +48,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('ebooks/{id}/reject', [\App\Http\Controllers\Admin\EbookController::class, 'reject'])->name('ebooks.reject');
     Route::resource('ebooks', \App\Http\Controllers\Admin\EbookController::class);
 
+    // System Settings
+    Route::post('system-settings/update', [\App\Http\Controllers\Admin\SystemSettingsController::class, 'update'])->name('system-settings.update');
+
     // Category Management
     Route::get('categories/trashed', [\App\Http\Controllers\Admin\CategoryController::class, 'trashed'])->name('categories.trashed');
     Route::patch('categories/{category}/restore', [\App\Http\Controllers\Admin\CategoryController::class, 'restore'])->name('categories.restore');
@@ -116,15 +119,13 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('promos', \App\Http\Controllers\Admin\PromoController::class);
     Route::post('promos/{id}/toggle-active', [\App\Http\Controllers\Admin\PromoController::class, 'toggleActive'])->name('promos.toggle-active');
 
-    // Website Management - Collection Order
-    Route::get('collection-order', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'collectionOrder'])->name('collection-order');
-    Route::post('collection-order/update', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'updateCollectionOrder'])->name('collection-order.update');
-    Route::post('collection/{id}/toggle-visibility', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'toggleCollectionVisibility'])->name('collection.toggle-visibility');
-
     // Website Management - Landing Page Sections
     Route::get('landing-sections', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'landingSections'])->name('landing-sections');
+    Route::get('landing-section/{id}/preview', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'previewSection'])->name('landing-section.preview');
     Route::post('landing-sections/update', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'updateLandingSections'])->name('landing-sections.update');
+    Route::post('landing-sections/add', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'addCollectionSection'])->name('landing-sections.add');
     Route::post('landing-section/{id}/toggle-visibility', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'toggleSectionVisibility'])->name('landing-section.toggle-visibility');
+    Route::delete('landing-section/{id}/delete', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'deleteCollectionSection'])->name('landing-section.delete');
 
     // FAQ Management
     // Route::resource('faqs', \App\Http\Controllers\Admin\FaqController::class);

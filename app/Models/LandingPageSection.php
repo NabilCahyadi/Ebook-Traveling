@@ -9,7 +9,10 @@ class LandingPageSection extends Model
     protected $fillable = [
         'section_type',
         'section_name',
+        'section_title',
         'reference_id',
+        'filter_config',
+        'card_template',
         'order',
         'is_visible',
         'config'
@@ -18,6 +21,7 @@ class LandingPageSection extends Model
     protected $casts = [
         'is_visible' => 'boolean',
         'config' => 'array',
+        'filter_config' => 'array',
         'order' => 'integer'
     ];
 

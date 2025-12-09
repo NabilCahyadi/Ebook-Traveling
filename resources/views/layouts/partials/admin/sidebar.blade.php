@@ -231,28 +231,11 @@
         </li>
 
         <!-- Website Management -->
-        <li
-            class="menu-item open {{ Request::is('admin/collection-order*') || Request::is('admin/landing-sections*') ? 'active' : '' }}">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <li class="menu-item {{ Request::is('admin/landing-sections*') ? 'active' : '' }}">
+            <a href="{{ route('admin.landing-sections') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-world"></i>
                 <div data-i18n="Website Management">Website Management</div>
             </a>
-            <ul class="menu-sub">
-                <!-- Landing Page Sections -->
-                <li class="menu-item {{ Request::is('admin/landing-sections*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.landing-sections') }}" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-layout-grid"></i>
-                        <div data-i18n="Landing Page Sections">Landing Page Sections</div>
-                    </a>
-                </li>
-                <!-- Collection Order -->
-                <li class="menu-item {{ Request::is('admin/collection-order*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.collection-order') }}" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-arrows-sort"></i>
-                        <div data-i18n="Collection Order">Collection Order</div>
-                    </a>
-                </li>
-            </ul>
         </li>
     </ul>
 </aside>
