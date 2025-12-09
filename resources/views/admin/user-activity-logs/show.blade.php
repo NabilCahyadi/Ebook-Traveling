@@ -86,7 +86,7 @@
                         <div class="row">
                             <div class="col-sm-3 fw-medium">Timestamp:</div>
                             <div class="col-sm-9">
-                                @if($log->created_at)
+                                @if ($log->created_at)
                                     {{ $log->created_at->format('d M Y, H:i:s') }}
                                     <small class="text-muted">({{ $log->created_at->diffForHumans() }})</small>
                                 @else

@@ -75,47 +75,47 @@ class SubscriptionPlanService
     public function deletePlan(string $id)
     {
         $plan = $this->getPlanById($id);
-        
+
         if (!$plan) {
             return false;
         }
-        
+
         return $plan->delete(); // Soft delete
     }
-    
+
     /**
      * Restore subscription plan
      */
     public function restorePlan(string $id)
     {
         $plan = \App\Models\SubscriptionPlan::onlyTrashed()->find($id);
-        
+
         if (!$plan) {
             return false;
         }
-        
+
         return $plan->restore();
     }
-    
+
     /**
      * Permanently delete subscription plan
      */
     public function forceDeletePlan(string $id)
     {
         $plan = \App\Models\SubscriptionPlan::onlyTrashed()->find($id);
-        
+
         if (!$plan) {
             return false;
         }
-        
+
         // Check if plan has active subscriptions
         if ($this->subscriptionPlanRepository->hasActiveSubscriptions($id)) {
             throw new \Exception('Cannot permanently delete plan with active subscriptions');
         }
-        
+
         return $plan->forceDelete();
     }
-    
+
     /**
      * Get trashed subscription plans
      */

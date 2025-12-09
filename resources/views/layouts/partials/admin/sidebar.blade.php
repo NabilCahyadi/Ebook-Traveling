@@ -204,17 +204,52 @@
         </li>
 
         <!-- Content Management -->
-        <li class="menu-item open {{ Request::is('admin/blogs*') ? 'active' : '' }}">
+        <li
+            class="menu-item open {{ Request::is('admin/blogs*') || Request::is('admin/blog-categories*') ? 'active' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-file-text"></i>
                 <div data-i18n="Content Management">Content Management</div>
             </a>
             <ul class="menu-sub">
                 <!-- Blogs -->
-                <li class="menu-item {{ Request::is('admin/blogs*') ? 'active' : '' }}">
+                <li
+                    class="menu-item {{ Request::is('admin/blogs*') && !Request::is('admin/blog-categories*') ? 'active' : '' }}">
                     <a href="{{ route('admin.blogs.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-article"></i>
                         <div data-i18n="Blogs">Blogs</div>
+                    </a>
+                </li>
+
+                <!-- Blog Categories -->
+                <li class="menu-item {{ Request::is('admin/blog-categories*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.blog-categories.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-category"></i>
+                        <div data-i18n="Blog Categories">Blog Categories</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <!-- Website Management -->
+        <li
+            class="menu-item open {{ Request::is('admin/collection-order*') || Request::is('admin/landing-sections*') ? 'active' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-world"></i>
+                <div data-i18n="Website Management">Website Management</div>
+            </a>
+            <ul class="menu-sub">
+                <!-- Landing Page Sections -->
+                <li class="menu-item {{ Request::is('admin/landing-sections*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.landing-sections') }}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-layout-grid"></i>
+                        <div data-i18n="Landing Page Sections">Landing Page Sections</div>
+                    </a>
+                </li>
+                <!-- Collection Order -->
+                <li class="menu-item {{ Request::is('admin/collection-order*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.collection-order') }}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-arrows-sort"></i>
+                        <div data-i18n="Collection Order">Collection Order</div>
                     </a>
                 </li>
             </ul>

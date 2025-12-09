@@ -187,7 +187,7 @@ class EbookController extends Controller
             return back()->with('error', 'Failed to delete ebook: ' . $e->getMessage());
         }
     }
-    
+
     /**
      * Display trashed ebooks.
      */
@@ -201,7 +201,7 @@ class EbookController extends Controller
                 ->with('error', 'Failed to load trashed ebooks: ' . $e->getMessage());
         }
     }
-    
+
     /**
      * Restore a soft deleted ebook.
      */
@@ -216,7 +216,7 @@ class EbookController extends Controller
                 ->with('error', 'Failed to restore ebook: ' . $e->getMessage());
         }
     }
-    
+
     /**
      * Permanently delete an ebook.
      */

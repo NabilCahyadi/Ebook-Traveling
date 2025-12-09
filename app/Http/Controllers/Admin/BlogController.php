@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\BlogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\BlogCategory;
 
 class BlogController extends Controller
 {
@@ -54,7 +55,8 @@ class BlogController extends Controller
      */
     public function create()
     {
-        return view('admin.blogs.create');
+        $categories = BlogCategory::active()->orderBy('name')->get();
+        return view('admin.blogs.create', compact('categories'));
     }
 
     /**
@@ -67,8 +69,7 @@ class BlogController extends Controller
             'content' => 'required|string',
             'excerpt' => 'nullable|string',
             'featured_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
-            'category' => 'nullable|string|max:100',
-            'tags' => 'nullable|string',
+            'blog_category_id' => 'nullable|exists:blog_categories,id',
             'status' => 'required|in:draft,published,unpublished,archived',
         ]);
 
@@ -105,7 +106,8 @@ class BlogController extends Controller
     public function edit(string $id)
     {
         $blog = $this->blogService->getBlogById($id);
-        return view('admin.blogs.edit', compact('blog'));
+        $categories = BlogCategory::active()->orderBy('name')->get();
+        return view('admin.blogs.edit', compact('blog', 'categories'));
     }
 
     /**
@@ -118,8 +120,7 @@ class BlogController extends Controller
             'content' => 'required|string',
             'excerpt' => 'nullable|string',
             'featured_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
-            'category' => 'nullable|string|max:100',
-            'tags' => 'nullable|string',
+            'blog_category_id' => 'nullable|exists:blog_categories,id',
             'status' => 'required|in:draft,published,unpublished,archived',
             'remove_image' => 'boolean',
         ]);
@@ -157,7 +158,7 @@ class BlogController extends Controller
                 ->with('error', 'Failed to delete blog: ' . $e->getMessage());
         }
     }
-    
+
     /**
      * Display trashed blogs.
      */
@@ -171,7 +172,7 @@ class BlogController extends Controller
                 ->with('error', 'Failed to load trashed blogs: ' . $e->getMessage());
         }
     }
-    
+
     /**
      * Restore a soft deleted blog.
      */
@@ -186,7 +187,7 @@ class BlogController extends Controller
                 ->with('error', 'Failed to restore blog: ' . $e->getMessage());
         }
     }
-    
+
     /**
      * Permanently delete a blog.
      */

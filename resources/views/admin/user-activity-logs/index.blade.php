@@ -93,7 +93,7 @@
                                 @foreach ($logs as $log)
                                     <tr>
                                         <td>
-                                            @if($log->created_at)
+                                            @if ($log->created_at)
                                                 <small>{{ $log->created_at->format('Y-m-d') }}</small><br>
                                                 <small class="text-muted">{{ $log->created_at->format('H:i:s') }}</small>
                                             @else
@@ -119,7 +119,8 @@
                                         </td>
                                         <td>
                                             @if ($log->user && $log->user->roles->isNotEmpty())
-                                                <span class="badge bg-label-info">{{ $log->user->roles->first()->name }}</span>
+                                                <span
+                                                    class="badge bg-label-info">{{ $log->user->roles->first()->name }}</span>
                                             @else
                                                 <span class="text-muted">-</span>
                                             @endif
@@ -138,12 +139,12 @@
                                                     'force_delete' => 'danger',
                                                 ];
                                                 $color = $actionColors[$log->action_type] ?? 'secondary';
-                                                
+
                                                 // Get detailed info from new_values
                                                 $detailInfo = '';
                                                 if ($log->new_values) {
                                                     $data = $log->new_values;
-                                                    
+
                                                     // For User actions
                                                     if (isset($data['target_user_name'])) {
                                                         $detailInfo = " → {$data['target_user_name']}";
@@ -175,13 +176,17 @@
                                                     elseif (isset($data['plan_name'])) {
                                                         $detailInfo = " → Plan: {$data['plan_name']}";
                                                         if (isset($data['plan_price'])) {
-                                                            $detailInfo .= " (Rp " . number_format($data['plan_price'], 0, ',', '.') . ")";
+                                                            $detailInfo .=
+                                                                ' (Rp ' .
+                                                                number_format($data['plan_price'], 0, ',', '.') .
+                                                                ')';
                                                         }
                                                     }
                                                 }
                                             @endphp
-                                            <span class="badge bg-label-{{ $color }}">{{ ucfirst(str_replace('_', ' ', $log->action_type)) }}</span>
-                                            @if($detailInfo)
+                                            <span
+                                                class="badge bg-label-{{ $color }}">{{ ucfirst(str_replace('_', ' ', $log->action_type)) }}</span>
+                                            @if ($detailInfo)
                                                 <br><small class="text-muted">{{ $detailInfo }}</small>
                                             @endif
                                         </td>

@@ -34,12 +34,12 @@ abstract class BaseObserver
     protected function getModelData(Model $model, array $excludeFields = ['id', 'created_at', 'updated_at'])
     {
         $data = $model->toArray();
-        
+
         // Remove excluded fields
         foreach ($excludeFields as $field) {
             unset($data[$field]);
         }
-        
+
         return $data;
     }
 

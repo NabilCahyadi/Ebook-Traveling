@@ -10,6 +10,13 @@ class UserRole extends Pivot
     use HasUuids;
 
     /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'user_roles';
+
+    /**
      * Indicates if the IDs are auto-incrementing.
      *
      * @var bool

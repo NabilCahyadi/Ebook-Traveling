@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 class CategoryController extends Controller
 {
     protected $categoryService;
-    
+
     public function __construct(CategoryService $categoryService)
     {
         $this->categoryService = $categoryService;
@@ -124,7 +124,7 @@ class CategoryController extends Controller
                 ->with('error', 'Failed to delete category: ' . $e->getMessage());
         }
     }
-    
+
     /**
      * Display trashed categories.
      */
@@ -138,7 +138,7 @@ class CategoryController extends Controller
                 ->with('error', 'Failed to load trashed categories: ' . $e->getMessage());
         }
     }
-    
+
     /**
      * Restore a soft deleted category.
      */
@@ -153,7 +153,7 @@ class CategoryController extends Controller
                 ->with('error', 'Failed to restore category: ' . $e->getMessage());
         }
     }
-    
+
     /**
      * Permanently delete a category.
      */

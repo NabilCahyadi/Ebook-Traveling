@@ -22,11 +22,11 @@ class RoleService
     public function getAllRoles(int $perPage = 10, ?string $search = null, bool $withTrashed = false)
     {
         $query = Role::query();
-        
+
         if ($withTrashed) {
             $query->withTrashed();
         }
-        
+
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
@@ -34,7 +34,7 @@ class RoleService
                     ->orWhere('description', 'like', '%' . $search . '%');
             });
         }
-        
+
         return $query->paginate($perPage);
     }
 
@@ -211,7 +211,7 @@ class RoleService
     public function getTrashedRoles(int $perPage = 10, ?string $search = null)
     {
         $query = Role::onlyTrashed();
-        
+
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
@@ -219,7 +219,7 @@ class RoleService
                     ->orWhere('description', 'like', '%' . $search . '%');
             });
         }
-        
+
         return $query->paginate($perPage);
     }
 }

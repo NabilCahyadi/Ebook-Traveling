@@ -94,6 +94,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::delete('blogs/{blog}/force-delete', [\App\Http\Controllers\Admin\BlogController::class, 'forceDelete'])->name('blogs.force-delete');
     Route::resource('blogs', \App\Http\Controllers\Admin\BlogController::class);
 
+    // Blog Category Management
+    Route::get('blog-categories/trashed', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'trashed'])->name('blog-categories.trashed');
+    Route::patch('blog-categories/{id}/restore', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'restore'])->name('blog-categories.restore');
+    Route::delete('blog-categories/{id}/force-delete', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'forceDelete'])->name('blog-categories.force-delete');
+    Route::resource('blog-categories', \App\Http\Controllers\Admin\BlogCategoryController::class);
+
     // System Settings
     // Route::get('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings');
     // Route::put('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('settings.update');
@@ -109,6 +115,16 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     // Promo Management (Subscription Promos)
     Route::resource('promos', \App\Http\Controllers\Admin\PromoController::class);
     Route::post('promos/{id}/toggle-active', [\App\Http\Controllers\Admin\PromoController::class, 'toggleActive'])->name('promos.toggle-active');
+
+    // Website Management - Collection Order
+    Route::get('collection-order', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'collectionOrder'])->name('collection-order');
+    Route::post('collection-order/update', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'updateCollectionOrder'])->name('collection-order.update');
+    Route::post('collection/{id}/toggle-visibility', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'toggleCollectionVisibility'])->name('collection.toggle-visibility');
+
+    // Website Management - Landing Page Sections
+    Route::get('landing-sections', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'landingSections'])->name('landing-sections');
+    Route::post('landing-sections/update', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'updateLandingSections'])->name('landing-sections.update');
+    Route::post('landing-section/{id}/toggle-visibility', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'toggleSectionVisibility'])->name('landing-section.toggle-visibility');
 
     // FAQ Management
     // Route::resource('faqs', \App\Http\Controllers\Admin\FaqController::class);

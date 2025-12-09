@@ -26,6 +26,8 @@ use App\Models\Banner;
 use App\Observers\BannerObserver;
 use App\Models\SubscriptionPlan;
 use App\Observers\SubscriptionPlanObserver;
+use App\Models\BlogCategory;
+use App\Observers\BlogCategoryObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -53,7 +55,8 @@ class AppServiceProvider extends ServiceProvider
         Category::observe(CategoryObserver::class);
         Banner::observe(BannerObserver::class);
         SubscriptionPlan::observe(SubscriptionPlanObserver::class);
-        
+        BlogCategory::observe(BlogCategoryObserver::class);
+
         Paginator::useBootstrapFive();
 
         // Register View Composer for sidebar

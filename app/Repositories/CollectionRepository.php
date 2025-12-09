@@ -20,7 +20,7 @@ class CollectionRepository implements CollectionRepositoryInterface
         }])
             ->select('collections.*') // Juga select collections
             ->active()
-            ->homepage()
+            ->visibleOnLanding()
             ->ordered()
             ->get();
     }

@@ -23,7 +23,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h4 class="fw-bold py-3 mb-2">
-                <span class="text-muted fw-light">Admin / User Management /</span> 
+                <span class="text-muted fw-light">Admin / User Management /</span>
                 <span class="text-danger">Trashed Users</span>
             </h4>
             <p class="text-muted mb-0">Users that have been soft deleted</p>
@@ -64,8 +64,7 @@
                 </div>
                 @if (isset($search) && $search)
                     <div class="col-12">
-                        <a href="{{ route('admin.users.trashed') }}"
-                            class="btn btn-sm btn-outline-secondary">
+                        <a href="{{ route('admin.users.trashed') }}" class="btn btn-sm btn-outline-secondary">
                             <i class="ti ti-x me-1"></i> Clear Filter
                         </a>
                         <span class="text-muted ms-2">Showing results for: <strong>"{{ $search }}"</strong></span>
@@ -126,7 +125,7 @@
                                     <td>
                                         <div>
                                             <div class="fw-medium">{{ $user->email }}</div>
-                                            @if($user->phone)
+                                            @if ($user->phone)
                                                 <small class="text-muted">{{ $user->phone }}</small>
                                             @endif
                                         </div>
@@ -160,8 +159,8 @@
                                                     <span>Restore User</span>
                                                 </a>
                                                 <form id="restore-form-{{ $user->id }}"
-                                                    action="{{ route('admin.users.restore', $user->id) }}"
-                                                    method="POST" style="display: none;">
+                                                    action="{{ route('admin.users.restore', $user->id) }}" method="POST"
+                                                    style="display: none;">
                                                     @csrf
                                                     @method('PATCH')
                                                 </form>

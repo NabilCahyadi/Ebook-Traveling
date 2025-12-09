@@ -29,13 +29,13 @@
                         {{ ucfirst(str_replace('-', ' ', $roleSlug)) }}
                     </span>
                 @endif
-                @if($showTrashed ?? false)
+                @if ($showTrashed ?? false)
                     <span class="badge bg-label-danger ms-2">Trashed Users</span>
                 @endif
             </h4>
         </div>
         <div>
-            @if($showTrashed ?? false)
+            @if ($showTrashed ?? false)
                 <a href="{{ route('admin.users.index') }}" class="btn btn-secondary me-2">
                     <i class="ti ti-arrow-left me-1"></i> Back to Active Users
                 </a>
@@ -106,10 +106,10 @@
                         </thead>
                         <tbody>
                             @foreach ($users as $user)
-                                <tr @if($user->trashed()) class="table-danger" @endif>
+                                <tr @if ($user->trashed()) class="table-danger" @endif>
                                     <td>
                                         <strong>#{{ $user->id }}</strong>
-                                        @if($user->trashed())
+                                        @if ($user->trashed())
                                             <span class="badge bg-label-danger ms-1">Deleted</span>
                                         @endif
                                     </td>
@@ -123,7 +123,7 @@
                                             <div>
                                                 <div class="fw-medium">
                                                     {{ $user->name }}
-                                                    @if($user->trashed())
+                                                    @if ($user->trashed())
                                                         <i class="ti ti-trash text-danger ms-1" title="Deleted"></i>
                                                     @endif
                                                 </div>
@@ -179,14 +179,15 @@
                                                 <i class="ti ti-dots-vertical"></i>
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-end">
-                                                @if(!$user->trashed())
+                                                @if (!$user->trashed())
                                                     {{-- Actions for active users --}}
                                                     <a class="dropdown-item" href="javascript:void(0);"
                                                         onclick="editUser('{{ $user->id }}', '{{ $user->name }}', '{{ $user->email }}')">
                                                         <i class="ti ti-pencil me-2"></i>
                                                         <span>Edit</span>
                                                     </a>
-                                                    <a class="dropdown-item" href="{{ route('admin.users.show', $user->id) }}">
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('admin.users.show', $user->id) }}">
                                                         <i class="ti ti-eye me-2"></i>
                                                         <span>View Details</span>
                                                     </a>

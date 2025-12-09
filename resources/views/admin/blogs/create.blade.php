@@ -126,28 +126,27 @@
 
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h5 class="mb-0">Categories & Tags</h5>
+                            <h5 class="mb-0">Category</h5>
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label class="form-label" for="category">Category</label>
-                                <input type="text" class="form-control @error('category') is-invalid @enderror"
-                                    id="category" name="category" value="{{ old('category') }}"
-                                    placeholder="e.g., Travel Tips">
-                                @error('category')
+                                <label class="form-label" for="blog_category_id">Blog Category</label>
+                                <select class="form-select @error('blog_category_id') is-invalid @enderror"
+                                    id="blog_category_id" name="blog_category_id">
+                                    <option value="">Select a category</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}" {{ old('blog_category_id') == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('blog_category_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label" for="tags">Tags</label>
-                                <input type="text" class="form-control @error('tags') is-invalid @enderror"
-                                    id="tags" name="tags" value="{{ old('tags') }}"
-                                    placeholder="travel, tips, guide">
-                                @error('tags')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                                <div class="form-text">Separate tags with commas</div>
+                                <div class="form-text">
+                                    Select a category for this blog post. 
+                                    <a href="{{ route('admin.blog-categories.create') }}" target="_blank">Add new category</a>
+                                </div>
                             </div>
                         </div>
                     </div>

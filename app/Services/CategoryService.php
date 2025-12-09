@@ -45,42 +45,42 @@ class CategoryService
     public function deleteCategory(string $id)
     {
         $category = $this->categoryRepository->find($id);
-        
+
         if (!$category) {
             return false;
         }
-        
+
         return $category->delete(); // Soft delete
     }
-    
+
     public function restoreCategory(string $id)
     {
         $category = \App\Models\Category::onlyTrashed()->find($id);
-        
+
         if (!$category) {
             return false;
         }
-        
+
         return $category->restore();
     }
-    
+
     public function forceDeleteCategory(string $id)
     {
         $category = \App\Models\Category::onlyTrashed()->find($id);
-        
+
         if (!$category) {
             return false;
         }
-        
+
         // Check if category has ebooks via pivot table
         $ebooksCount = $category->ebooks()->count();
         if ($ebooksCount > 0) {
             throw new \Exception('Cannot permanently delete category with existing ebooks!');
         }
-        
+
         return $category->forceDelete();
     }
-    
+
     public function getTrashedCategories(int $perPage = 10)
     {
         return \App\Models\Category::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate($perPage);

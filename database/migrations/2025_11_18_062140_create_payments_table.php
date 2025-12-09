@@ -30,8 +30,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
-            $table->foreign('subscription_id')->references('id')->on('subscriptions')->onDelete('cascade');
+            // Foreign key order_id dan subscription_id akan ditambahkan di migration terpisah untuk menghindari circular dependency
             $table->index('payment_code');
             $table->index('status');
             $table->index('user_id');

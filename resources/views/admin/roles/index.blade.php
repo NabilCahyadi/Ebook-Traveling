@@ -24,13 +24,13 @@
         <div>
             <h4 class="fw-bold py-3 mb-2">
                 <span class="text-muted fw-light">Admin /</span> Role Management
-                @if($showTrashed ?? false)
+                @if ($showTrashed ?? false)
                     <span class="badge bg-label-danger ms-2">Trashed Roles</span>
                 @endif
             </h4>
         </div>
         <div>
-            @if($showTrashed ?? false)
+            @if ($showTrashed ?? false)
                 <a href="{{ route('admin.roles.index') }}" class="btn btn-secondary me-2">
                     <i class="ti ti-arrow-left me-1"></i> Back to Active Roles
                 </a>
@@ -106,7 +106,7 @@
                                                 <i class="ti ti-dots-vertical"></i>
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-end">
-                                                @if(!$role->trashed())
+                                                @if (!$role->trashed())
                                                     {{-- Actions for active roles --}}
                                                     <a class="dropdown-item" href="javascript:void(0);"
                                                         onclick="editRole('{{ $role->id }}', '{{ $role->name }}', '{{ $role->slug }}', '{{ $role->description }}', {{ $role->is_active ? 'true' : 'false' }})">
@@ -120,8 +120,8 @@
                                                         <span>Move to Trash</span>
                                                     </a>
                                                     <form id="delete-form-{{ $role->id }}"
-                                                        action="{{ route('admin.roles.destroy', $role->id) }}" method="POST"
-                                                        style="display: none;">
+                                                        action="{{ route('admin.roles.destroy', $role->id) }}"
+                                                        method="POST" style="display: none;">
                                                         @csrf
                                                         @method('DELETE')
                                                     </form>

@@ -135,21 +135,21 @@ class EbookService
             throw $e;
         }
     }
-    
+
     /**
      * Restore ebook.
      */
     public function restoreEbook(string $id): bool
     {
         $ebook = \App\Models\Ebook::onlyTrashed()->find($id);
-        
+
         if (!$ebook) {
             return false;
         }
-        
+
         return $ebook->restore();
     }
-    
+
     /**
      * Permanently delete ebook.
      */
@@ -180,7 +180,7 @@ class EbookService
             throw $e;
         }
     }
-    
+
     /**
      * Get trashed ebooks.
      */

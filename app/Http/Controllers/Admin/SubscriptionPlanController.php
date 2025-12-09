@@ -149,7 +149,7 @@ class SubscriptionPlanController extends Controller
                 ->with('error', $e->getMessage());
         }
     }
-    
+
     /**
      * Display trashed subscription plans.
      */
@@ -163,7 +163,7 @@ class SubscriptionPlanController extends Controller
                 ->with('error', 'Failed to load trashed subscription plans: ' . $e->getMessage());
         }
     }
-    
+
     /**
      * Restore a soft deleted subscription plan.
      */
@@ -178,7 +178,7 @@ class SubscriptionPlanController extends Controller
                 ->with('error', 'Failed to restore subscription plan: ' . $e->getMessage());
         }
     }
-    
+
     /**
      * Permanently delete a subscription plan.
      */

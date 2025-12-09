@@ -19,19 +19,17 @@ class Blog extends Model
         'excerpt',
         'featured_image',
         'author_id',
+        'blog_category_id',
         'category',
-        'tags',
         'view_count',
         'is_published',
         'published_at',
     ];
 
     protected $casts = [
-        'tags' => 'array',
         'view_count' => 'integer',
         'is_published' => 'boolean',
         'published_at' => 'datetime',
-        'tags' => 'array',
     ];
 
     /**
@@ -40,6 +38,14 @@ class Blog extends Model
     public function author()
     {
         return $this->belongsTo(User::class, 'author_id');
+    }
+
+    /**
+     * Get the category of the blog.
+     */
+    public function blogCategory()
+    {
+        return $this->belongsTo(BlogCategory::class, 'blog_category_id');
     }
 
     /**

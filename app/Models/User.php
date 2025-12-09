@@ -101,8 +101,8 @@ class User extends Authenticatable
     public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'user_roles')
-                    ->using(UserRole::class)
-                    ->withTimestamps();
+            ->using(UserRole::class)
+            ->withTimestamps();
     }
 
     /**

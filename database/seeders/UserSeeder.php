@@ -17,33 +17,10 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Get roles
-        $adminRole = Role::where('slug', 'admin')->first();
         $creatorRole = Role::where('slug', 'creator')->first();
         $memberRole = Role::where('slug', 'member')->first();
 
-        // Create 1 Admin User
-        $admin = User::create([
-            'id' => Str::uuid(),
-            'name' => 'Admin Ebook Traveling',
-            'email' => 'admin@ebook.com',
-            'password' => Hash::make('password'),
-            'user_type' => 'admin',
-            'phone' => '+62812345678',
-            'status' => 'active',
-            'preferred_language' => 'id',
-            'email_verified_at' => now(),
-            'last_login_at' => now(),
-        ]);
-
-        // Assign admin role
-        if ($adminRole) {
-            UserRole::create([
-                'user_id' => $admin->id,
-                'role_id' => $adminRole->id,
-            ]);
-        }
-
-        $this->command->info('✅ 1 Admin created');
+        // Skip creating admin since AdminSeeder already creates one
 
         // Create 10 Creator Users
         for ($i = 1; $i <= 10; $i++) {
