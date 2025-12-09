@@ -8,4 +8,4 @@ cd /home/u778058510/domains/mappy.id/ebook_traveling_core
 /usr/bin/git reset --hard origin/main
 
 # Jalankan migrate fresh + seeder
-/usr/bin/php artisan migrate:fresh --seed
+/usr/bin/php artisan migrate:fresh --seed
