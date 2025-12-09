@@ -3,18 +3,47 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\EbookCategory;
+use App\Models\Category;
+use App\Services\CategoryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
+    protected $categoryService;
+
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $categories = EbookCategory::withCount('ebooks')->paginate(5);
+        $query = Category::withCount('ebooks');
+
+        // Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('slug', 'like', "%{$search}%");
+            });
+        }
+
+        // Sort
+        $sortBy = $request->get('sort_by', 'created_at');
+        $sortOrder = $request->get('sort_order', 'desc');
+
+        if ($sortBy === 'ebooks_count') {
+            $query->orderBy('ebooks_count', $sortOrder);
+        } else {
+            $query->orderBy($sortBy, $sortOrder);
+        }
+
+        $categories = $query->paginate(10);
+
         return view('admin.categories.index', compact('categories'));
     }
 
@@ -32,12 +61,13 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:ebook_categories,name',
+            'name' => 'required|string|max:255|unique:categories,name',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
+        $validated['id'] = Str::uuid();
 
-        EbookCategory::create($validated);
+        Category::create($validated);
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'Category created successfully!');
@@ -48,7 +78,7 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        $category = EbookCategory::withCount('ebooks')->findOrFail($id);
+        $category = Category::withCount('ebooks')->findOrFail($id);
         return view('admin.categories.show', compact('category'));
     }
 
@@ -57,7 +87,7 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        $category = EbookCategory::findOrFail($id);
+        $category = Category::findOrFail($id);
         return view('admin.categories.edit', compact('category'));
     }
 
@@ -66,10 +96,10 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $category = EbookCategory::findOrFail($id);
+        $category = Category::findOrFail($id);
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:ebook_categories,name,' . $id,
+            'name' => 'required|string|max:255|unique:categories,name,' . $id,
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
@@ -81,19 +111,61 @@ class CategoryController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from storage (soft delete).
      */
     public function destroy(string $id)
     {
-        $category = EbookCategory::findOrFail($id);
-
-        if ($category->ebooks()->count() > 0) {
-            return back()->with('error', 'Cannot delete category with existing ebooks!');
+        try {
+            $this->categoryService->deleteCategory($id);
+            return redirect()->route('admin.categories.index')
+                ->with('success', 'Category moved to trash successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to delete category: ' . $e->getMessage());
         }
+    }
 
-        $category->delete();
+    /**
+     * Display trashed categories.
+     */
+    public function trashed()
+    {
+        try {
+            $categories = $this->categoryService->getTrashedCategories(15);
+            return view('admin.categories.trashed', compact('categories'));
+        } catch (\Exception $e) {
+            return redirect()->route('admin.categories.index')
+                ->with('error', 'Failed to load trashed categories: ' . $e->getMessage());
+        }
+    }
 
-        return redirect()->route('admin.categories.index')
-            ->with('success', 'Category deleted successfully!');
+    /**
+     * Restore a soft deleted category.
+     */
+    public function restore(string $id)
+    {
+        try {
+            $this->categoryService->restoreCategory($id);
+            return redirect()->route('admin.categories.trashed')
+                ->with('success', 'Category restored successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to restore category: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Permanently delete a category.
+     */
+    public function forceDelete(string $id)
+    {
+        try {
+            $this->categoryService->forceDeleteCategory($id);
+            return redirect()->route('admin.categories.trashed')
+                ->with('success', 'Category permanently deleted!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to permanently delete category: ' . $e->getMessage());
+        }
     }
 }

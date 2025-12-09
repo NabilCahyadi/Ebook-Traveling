@@ -6,7 +6,6 @@ use App\Repositories\Interfaces\BlogRepositoryInterface;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Collection;
-use App\Models\Blog;
 
 class BlogService
 {
@@ -37,10 +36,10 @@ class BlogService
         return $this->blogRepository->getById($id);
     }
 
-    // public function getBlogBySlug(string $slug)
-    // {
-    //     return $this->blogRepository->getBySlug($slug);
-    // }
+    public function getBlogBySlug(string $slug)
+    {
+        return $this->blogRepository->getBySlug($slug);
+    }
 
     public function createBlog(array $data)
     {
@@ -58,17 +57,63 @@ class BlogService
     {
         $blog = $this->getBlogById($id);
 
+        if (!$blog) {
+            return false;
+        }
+
+        return $blog->delete(); // Soft delete
+    }
+
+    public function restoreBlog(string $id)
+    {
+        $blog = \App\Models\Blog::onlyTrashed()->find($id);
+
+        if (!$blog) {
+            return false;
+        }
+
+        return $blog->restore();
+    }
+
+    public function forceDeleteBlog(string $id)
+    {
+        $blog = \App\Models\Blog::onlyTrashed()->find($id);
+
+        if (!$blog) {
+            return false;
+        }
+
         // Delete featured image if exists
         if ($blog->featured_image) {
             Storage::disk('public')->delete($blog->featured_image);
         }
 
-        return $this->blogRepository->delete($id);
+        return $blog->forceDelete();
+    }
+
+    public function getTrashedBlogs(int $perPage = 10)
+    {
+        return \App\Models\Blog::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate($perPage);
     }
 
     public function incrementViewCount(string $id)
     {
         return $this->blogRepository->incrementViewCount($id);
+    }
+
+    public function getFilteredBlogs(array $filters, int $perPage = 15)
+    {
+        return $this->blogRepository->getFiltered($filters, $perPage);
+    }
+
+    public function getArchivedBlogs(?string $search = null, int $perPage = 15)
+    {
+        return $this->blogRepository->getArchived($search, $perPage);
+    }
+
+    public function getAllCategories()
+    {
+        return $this->blogRepository->getAllCategories();
     }
 
     protected function processData(array $data, ?string $id = null)
@@ -147,14 +192,5 @@ class BlogService
     public function getLatestForHomepage(int $limit = 4): Collection
     {
         return $this->blogRepository->getLatestPublished($limit);
-    }
-
-    /**
-     * Ambil blog berdasarkan slug beserta e-book terkaitnya.
-     */
-    public function getBlogBySlug($slug)
-    {
-        // Tambahkan 'ebooks' pada with() untuk eager loading
-        return Blog::with('ebooks')->where('slug', $slug)->firstOrFail();
     }
 }

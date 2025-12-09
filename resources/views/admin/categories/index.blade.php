@@ -34,6 +34,51 @@
             </div>
         </div>
 
+        <!-- Search and Filter -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form action="{{ route('admin.categories.index') }}" method="GET">
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <label for="search" class="form-label">Search</label>
+                            <input type="text" class="form-control" id="search" name="search"
+                                value="{{ request('search') }}" placeholder="Search by category name or slug...">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="sort_by" class="form-label">Sort By</label>
+                            <select class="form-select" id="sort_by" name="sort_by">
+                                <option value="created_at" {{ request('sort_by') == 'created_at' ? 'selected' : '' }}>Date
+                                    Created</option>
+                                <option value="name" {{ request('sort_by') == 'name' ? 'selected' : '' }}>Name</option>
+                                <option value="ebooks_count" {{ request('sort_by') == 'ebooks_count' ? 'selected' : '' }}>
+                                    Ebooks Count</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="sort_order" class="form-label">Order</label>
+                            <select class="form-select" id="sort_order" name="sort_order">
+                                <option value="asc" {{ request('sort_order') == 'asc' ? 'selected' : '' }}>Ascending
+                                </option>
+                                <option value="desc" {{ request('sort_order') == 'desc' ? 'selected' : '' }}>Descending
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end gap-2">
+                            <button type="submit" class="btn btn-primary flex-grow-1">
+                                <i class="ti ti-search"></i>
+                            </button>
+                            @if (request()->hasAny(['search', 'sort_by', 'sort_order']))
+                                <a href="{{ route('admin.categories.index') }}" class="btn btn-label-secondary"
+                                    title="Clear Filters">
+                                    <i class="ti ti-x"></i>
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- Categories Table -->
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
@@ -71,19 +116,32 @@
                                             <small class="text-muted">{{ $category->created_at->format('d M Y') }}</small>
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-sm btn-icon btn-primary"
-                                                onclick="editCategory({{ $category->id }}, '{{ $category->name }}')">
-                                                <i class="ti ti-pencil"></i>
-                                            </button>
-                                            <form action="{{ route('admin.categories.destroy', $category->id) }}"
-                                                method="POST" class="d-inline"
-                                                onsubmit="return confirm('Are you sure you want to delete this category?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-icon btn-danger">
-                                                    <i class="ti ti-trash"></i>
+                                            <div class="dropdown">
+                                                <button type="button"
+                                                    class="btn btn-sm btn-icon btn-text-secondary rounded-pill dropdown-toggle hide-arrow"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="ti ti-dots-vertical"></i>
                                                 </button>
-                                            </form>
+                                                <div class="dropdown-menu dropdown-menu-end">
+                                                    <a class="dropdown-item" href="javascript:void(0);"
+                                                        onclick="editCategory('{{ $category->id }}', '{{ $category->name }}')">
+                                                        <i class="ti ti-pencil me-2"></i>
+                                                        <span>Edit</span>
+                                                    </a>
+                                                    <div class="dropdown-divider"></div>
+                                                    <a class="dropdown-item text-danger" href="javascript:void(0);"
+                                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this category?')) document.getElementById('delete-category-{{ $category->id }}').submit();">
+                                                        <i class="ti ti-trash me-2"></i>
+                                                        <span>Delete</span>
+                                                    </a>
+                                                    <form id="delete-category-{{ $category->id }}"
+                                                        action="{{ route('admin.categories.destroy', $category->id) }}"
+                                                        method="POST" style="display: none;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                    </form>
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach

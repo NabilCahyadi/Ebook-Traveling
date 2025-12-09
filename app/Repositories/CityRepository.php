@@ -66,6 +66,7 @@ class CityRepository implements CityRepositoryInterface
     public function getPopularCities(int $limit = 10): Collection
     {
         return City::active()
+            ->withCount('ebooks')
             ->popular()
             ->ordered()
             ->limit($limit)

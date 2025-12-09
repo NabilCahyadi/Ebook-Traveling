@@ -96,7 +96,7 @@ class LoginController extends Controller
                 case 'admin':
                 case 'superadmin':
                     return 'admin.dashboard';
-                case 'customer':
+                case 'member':
                 case 'user':
                 default:
                     return 'home';

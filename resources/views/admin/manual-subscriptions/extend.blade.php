@@ -51,32 +51,59 @@
                             @csrf
 
                             <div class="mb-3">
-                                <label class="form-label" for="days">Extend by (days) <span
+                                <label class="form-label" for="subscription_plan_id">Select Subscription Plan <span
                                         class="text-danger">*</span></label>
-                                <input type="number" class="form-control @error('days') is-invalid @enderror"
-                                    id="days" name="days" min="1" max="365"
-                                    value="{{ old('days', 30) }}" required>
-                                @error('days')
+                                <select class="form-select @error('subscription_plan_id') is-invalid @enderror"
+                                    id="subscription_plan_id" name="subscription_plan_id" required>
+                                    <option value="">Choose a plan...</option>
+                                    @foreach ($plans as $plan)
+                                        <option value="{{ $plan->id }}" data-duration="{{ $plan->duration_days }}"
+                                            data-price="{{ $plan->price }}"
+                                            {{ old('subscription_plan_id') == $plan->id ? 'selected' : '' }}>
+                                            {{ $plan->name }} - {{ $plan->duration_days }} days (Rp
+                                            {{ number_format($plan->price, 0, ',', '.') }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('subscription_plan_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                <div class="form-text">Enter the number of days to extend (1-365 days)</div>
+                                <div class="form-text">Select the plan duration to extend</div>
                             </div>
 
-                            <div class="alert alert-warning" role="alert">
-                                <h6 class="alert-heading mb-2">
-                                    <i class="bx bx-bulb me-1"></i> Quick Options
-                                </h6>
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-sm btn-outline-primary"
-                                        onclick="document.getElementById('days').value = 7">7 days</button>
-                                    <button type="button" class="btn btn-sm btn-outline-primary"
-                                        onclick="document.getElementById('days').value = 30">30 days</button>
-                                    <button type="button" class="btn btn-sm btn-outline-primary"
-                                        onclick="document.getElementById('days').value = 90">90 days</button>
-                                    <button type="button" class="btn btn-sm btn-outline-primary"
-                                        onclick="document.getElementById('days').value = 180">180 days</button>
-                                    <button type="button" class="btn btn-sm btn-outline-primary"
-                                        onclick="document.getElementById('days').value = 365">365 days</button>
+                            <div class="mb-3">
+                                <label class="form-label" for="quantity">Quantity <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control @error('quantity') is-invalid @enderror"
+                                    id="quantity" name="quantity" min="1" max="12"
+                                    value="{{ old('quantity', 1) }}" required>
+                                @error('quantity')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <div class="form-text">Number of subscription periods (e.g., 2 for 2 months if plan is 1
+                                    month)</div>
+                            </div>
+
+                            <div class="card bg-light-info mb-3" id="extension-summary" style="display: none;">
+                                <div class="card-body">
+                                    <h6 class="card-title mb-2">Extension Summary</h6>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <small class="text-muted">Plan Duration:</small>
+                                            <div class="fw-semibold" id="ext-plan-duration">-</div>
+                                        </div>
+                                        <div class="col-6">
+                                            <small class="text-muted">Quantity:</small>
+                                            <div class="fw-semibold" id="ext-quantity">-</div>
+                                        </div>
+                                        <div class="col-6 mt-2">
+                                            <small class="text-muted">Total Extension:</small>
+                                            <div class="fw-bold text-primary" id="ext-total-days">-</div>
+                                        </div>
+                                        <div class="col-6 mt-2">
+                                            <small class="text-muted">Additional Amount:</small>
+                                            <div class="fw-bold text-success" id="ext-total-amount">-</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -105,12 +132,11 @@
                         </div>
                         <div class="mb-3">
                             <small class="text-muted d-block">Extension Days</small>
-                            <strong id="preview-days">30 days</strong>
+                            <strong id="preview-days">-</strong>
                         </div>
                         <div class="mb-3">
                             <small class="text-muted d-block">New End Date</small>
-                            <strong id="preview-new-end"
-                                class="text-primary">{{ $subscription->end_date->copy()->addDays(30)->format('d M Y') }}</strong>
+                            <strong id="preview-new-end" class="text-primary">-</strong>
                         </div>
                         <hr>
                         <div class="alert alert-success mb-0" role="alert">
@@ -129,27 +155,49 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const daysInput = document.getElementById('days');
+            const planSelect = document.getElementById('subscription_plan_id');
+            const quantityInput = document.getElementById('quantity');
             const currentEndDate = new Date('{{ $subscription->end_date->format('Y-m-d') }}');
 
             function updatePreview() {
-                const days = parseInt(daysInput.value) || 0;
-                document.getElementById('preview-days').textContent = days + ' days';
+                const selectedOption = planSelect.options[planSelect.selectedIndex];
+                const quantity = parseInt(quantityInput.value) || 0;
 
-                const newEndDate = new Date(currentEndDate);
-                newEndDate.setDate(newEndDate.getDate() + days);
+                if (selectedOption.value && quantity > 0) {
+                    const duration = parseInt(selectedOption.dataset.duration);
+                    const price = parseFloat(selectedOption.dataset.price);
+                    const totalDays = duration * quantity;
+                    const totalAmount = price * quantity;
 
-                const options = {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric'
-                };
-                document.getElementById('preview-new-end').textContent = newEndDate.toLocaleDateString('en-US',
-                    options);
+                    // Update summary card
+                    document.getElementById('ext-plan-duration').textContent = duration + ' days';
+                    document.getElementById('ext-quantity').textContent = quantity + 'x';
+                    document.getElementById('ext-total-days').textContent = totalDays + ' days';
+                    document.getElementById('ext-total-amount').textContent = 'Rp ' + new Intl.NumberFormat('id-ID')
+                        .format(totalAmount);
+                    document.getElementById('extension-summary').style.display = 'block';
+
+                    // Update preview
+                    document.getElementById('preview-days').textContent = totalDays + ' days';
+
+                    const newEndDate = new Date(currentEndDate);
+                    newEndDate.setDate(newEndDate.getDate() + totalDays);
+                    const options = {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    };
+                    document.getElementById('preview-new-end').textContent = newEndDate.toLocaleDateString('en-US',
+                        options);
+                } else {
+                    document.getElementById('extension-summary').style.display = 'none';
+                    document.getElementById('preview-days').textContent = '-';
+                    document.getElementById('preview-new-end').textContent = '-';
+                }
             }
 
-            daysInput.addEventListener('input', updatePreview);
-            daysInput.addEventListener('change', updatePreview);
+            planSelect.addEventListener('change', updatePreview);
+            quantityInput.addEventListener('input', updatePreview);
         });
     </script>
 @endpush

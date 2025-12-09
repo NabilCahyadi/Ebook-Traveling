@@ -14,7 +14,13 @@ return new class extends Migration
         Schema::create('promos', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
+            $table->string('code')->unique()->nullable();
             $table->text('description')->nullable();
+            $table->enum('type', ['percentage', 'fixed_amount', 'free_trial'])->nullable();
+            $table->decimal('value', 10, 2)->nullable();
+            $table->integer('max_usage')->nullable();
+            $table->integer('max_usage_per_user')->default(1);
+            $table->integer('current_usage')->default(0);
             $table->string('banner_image', 500)->nullable();
             $table->string('discount_type', 20); // percentage, fixed
             $table->decimal('discount_value', 10, 2);

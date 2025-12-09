@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Blog extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, SoftDeletes;
 
     protected $fillable = [
         'title',
@@ -18,19 +19,17 @@ class Blog extends Model
         'excerpt',
         'featured_image',
         'author_id',
+        'blog_category_id',
         'category',
-        'tags',
         'view_count',
         'is_published',
         'published_at',
     ];
 
     protected $casts = [
-        'tags' => 'array',
         'view_count' => 'integer',
         'is_published' => 'boolean',
         'published_at' => 'datetime',
-        'tags' => 'array',
     ];
 
     /**
@@ -39,6 +38,14 @@ class Blog extends Model
     public function author()
     {
         return $this->belongsTo(User::class, 'author_id');
+    }
+
+    /**
+     * Get the category of the blog.
+     */
+    public function blogCategory()
+    {
+        return $this->belongsTo(BlogCategory::class, 'blog_category_id');
     }
 
     /**

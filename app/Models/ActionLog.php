@@ -10,18 +10,42 @@ class ActionLog extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $fillable = [
-        'user_id',
-        'action',
-        'model_type',
-        'model_id',
-        'ip_address',
-        'user_agent',
-        'details',
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'action_logs';
+
+    /**
+     * Define the timestamps
+     *
+     * @var string
+     */
+    const UPDATED_AT = null; // Disable updated_at
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'created_at' => 'datetime',
+        'old_values' => 'array',
+        'new_values' => 'array',
     ];
 
-    protected $casts = [
-        'details' => 'array',
+    protected $fillable = [
+        'user_id',
+        'action_type',
+        'table_name',
+        'record_id',
+        'old_values',
+        'new_values',
+        'ip_address',
+        'user_agent',
+        'url',
+        'method',
     ];
 
     /**

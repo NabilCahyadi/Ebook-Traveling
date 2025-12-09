@@ -21,19 +21,11 @@ class ManualSubscriptionController extends Controller
     }
 
     /**
-     * Display a listing of subscriptions
+     * Redirect to create form (default page for manual subscriptions)
      */
-    public function index(Request $request)
+    public function index()
     {
-        $search = $request->get('search');
-
-        if ($search) {
-            $subscriptions = $this->subscriptionService->searchSubscriptions($search, 5);
-        } else {
-            $subscriptions = $this->subscriptionService->getAllSubscriptions(5);
-        }
-
-        return view('admin.manual-subscriptions.index', compact('subscriptions', 'search'));
+        return redirect()->route('admin.manual-subscriptions.create');
     }
 
     /**
@@ -55,6 +47,7 @@ class ManualSubscriptionController extends Controller
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'subscription_plan_id' => 'required|exists:subscription_plans,id',
+            'quantity' => 'required|integer|min:1|max:12',
         ]);
 
         try {
@@ -69,7 +62,7 @@ class ManualSubscriptionController extends Controller
 
             $this->subscriptionService->createManualSubscription($validated);
 
-            return redirect()->route('admin.manual-subscriptions.index')
+            return redirect()->route('admin.manual-subscriptions.create')
                 ->with('success', 'Manual subscription created successfully!');
         } catch (\Exception $e) {
             return back()
@@ -111,7 +104,8 @@ class ManualSubscriptionController extends Controller
                     ->with('error', 'Subscription not found.');
             }
 
-            return view('admin.manual-subscriptions.extend', compact('subscription'));
+            $plans = $this->subscriptionService->getActivePlans();
+            return view('admin.manual-subscriptions.extend', compact('subscription', 'plans'));
         } catch (\Exception $e) {
             return redirect()->route('admin.manual-subscriptions.index')
                 ->with('error', $e->getMessage());
@@ -124,14 +118,15 @@ class ManualSubscriptionController extends Controller
     public function processExtend(Request $request, string $id)
     {
         $validated = $request->validate([
-            'days' => 'required|integer|min:1|max:365',
+            'subscription_plan_id' => 'required|exists:subscription_plans,id',
+            'quantity' => 'required|integer|min:1|max:12',
         ]);
 
         try {
-            $this->subscriptionService->extendSubscription($id, $validated['days']);
+            $this->subscriptionService->extendSubscriptionByPlan($id, $validated['subscription_plan_id'], $validated['quantity']);
 
             return redirect()->route('admin.manual-subscriptions.show', $id)
-                ->with('success', 'Subscription extended successfully for ' . $validated['days'] . ' days!');
+                ->with('success', 'Subscription extended successfully!');
         } catch (\Exception $e) {
             return back()
                 ->withInput()
@@ -260,5 +255,38 @@ class ManualSubscriptionController extends Controller
         $paymentLinks = $query->orderBy('created_at', 'desc')->paginate(15);
 
         return view('admin.manual-subscriptions.payment-links-list', compact('paymentLinks', 'search'));
+    }
+
+    /**
+     * Search users for autocomplete (AJAX)
+     * Filter out admin users
+     */
+    public function searchUsers(Request $request)
+    {
+        $search = $request->get('q', '');
+
+        if (strlen($search) < 2) {
+            return response()->json([]);
+        }
+
+        // Get admin role IDs
+        $adminRoleIds = \App\Models\Role::where('name', 'admin')
+            ->orWhere('name', 'super_admin')
+            ->pluck('id');
+
+        // Get user IDs that have admin role
+        $adminUserIds = \App\Models\UserRole::whereIn('role_id', $adminRoleIds)
+            ->pluck('user_id');
+
+        // Search users excluding admins
+        $users = \App\Models\User::where(function ($query) use ($search) {
+            $query->where('name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%");
+        })
+            ->whereNotIn('id', $adminUserIds)
+            ->limit(10)
+            ->get(['id', 'name', 'email']);
+
+        return response()->json($users);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -25,7 +26,7 @@ use App\Models\ActionLog;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasUuids;
+    use HasFactory, Notifiable, HasUuids, SoftDeletes;
 
     /**
      * Indicates if the model's ID is auto-incrementing.
@@ -97,9 +98,19 @@ class User extends Authenticatable
     /**
      * Get the roles for the user.
      */
-    public function roles()
+    public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(Role::class, 'user_roles');
+        return $this->belongsToMany(Role::class, 'user_roles')
+            ->using(UserRole::class)
+            ->withTimestamps();
+    }
+
+    /**
+     * Get the first role for the user (for backward compatibility).
+     */
+    public function role()
+    {
+        return $this->roles()->first();
     }
 
     /**
@@ -235,11 +246,11 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if user is customer.
+     * Check if user is member.
      */
-    public function isCustomer()
+    public function isMember()
     {
-        return $this->user_type === 'customer';
+        return $this->user_type === 'member';
     }
 
     /**

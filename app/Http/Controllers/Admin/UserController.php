@@ -18,10 +18,19 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = $this->userService->getAllUsers(5);
-        return view('admin.users.index', compact('users'));
+        $roleSlug = $request->get('role');
+        $search = $request->get('search');
+        $showTrashed = $request->get('show_trashed', false);
+
+        if ($roleSlug && $roleSlug !== 'all') {
+            $users = $this->userService->getUsersByRole($roleSlug, 10, $search, $showTrashed);
+        } else {
+            $users = $this->userService->getAllUsers(10, $search, $showTrashed);
+        }
+
+        return view('admin.users.index', compact('users', 'roleSlug', 'search', 'showTrashed'));
     }
 
     /**
@@ -113,9 +122,50 @@ class UserController extends Controller
             $this->userService->deleteUser($id);
 
             return redirect()->route('admin.users.index')
-                ->with('success', 'User deleted successfully!');
+                ->with('success', 'User moved to trash successfully!');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
+    }
+
+    /**
+     * Restore the specified resource from trash.
+     */
+    public function restore(string $id)
+    {
+        try {
+            $this->userService->restoreUser($id);
+
+            return redirect()->route('admin.users.index')
+                ->with('success', 'User restored successfully!');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * Permanently delete the specified resource.
+     */
+    public function forceDelete(string $id)
+    {
+        try {
+            $this->userService->forceDeleteUser($id);
+
+            return redirect()->route('admin.users.index')
+                ->with('success', 'User permanently deleted!');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * Display trashed users.
+     */
+    public function trashed(Request $request)
+    {
+        $search = $request->get('search');
+        $users = $this->userService->getTrashedUsers(10, $search);
+
+        return view('admin.users.trashed', compact('users', 'search'));
     }
 }

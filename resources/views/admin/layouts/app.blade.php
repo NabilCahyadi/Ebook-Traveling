@@ -196,6 +196,21 @@
                             </li>
                         </ul>
                     </li>
+
+                    <!-- Website Management -->
+                    <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons ti ti-world"></i>
+                            <div data-i18n="Website Management">Website Management</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="{{ route('admin.website-management.collection-order') }}" class="menu-link">
+                                    <div data-i18n="Collection Order">Collection Order</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </aside>
             <!-- / Menu -->
@@ -270,7 +285,7 @@
                                         <div class="dropdown-divider"></div>
                                     </li>
                                     <li>
-                                        <form action="{{ route('logout') }}" method="POST">
+                                        <form action="{{ route('admin.logout') }}" method="POST">
                                             @csrf
                                             <button type="submit" class="dropdown-item">
                                                 <i class="ti ti-logout me-2 ti-sm"></i>

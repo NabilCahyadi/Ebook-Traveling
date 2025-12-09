@@ -10,6 +10,10 @@ use App\Repositories\Interfaces\CityRepositoryInterface;
 use App\Repositories\Interfaces\BlogRepositoryInterface;
 use App\Repositories\Interfaces\SubscriptionPlanRepositoryInterface;
 use App\Repositories\Interfaces\SubscriptionRepositoryInterface;
+use App\Repositories\Interfaces\SubscriberRepositoryInterface;
+use App\Repositories\Interfaces\RoleRepositoryInterface;
+use App\Repositories\Interfaces\PermissionRepositoryInterface;
+use App\Repositories\Interfaces\PromoRepositoryInterface;
 use App\Repositories\UserRepository;
 use App\Repositories\EbookRepository;
 use App\Repositories\CategoryRepository;
@@ -17,6 +21,10 @@ use App\Repositories\CityRepository;
 use App\Repositories\BlogRepository;
 use App\Repositories\SubscriptionPlanRepository;
 use App\Repositories\SubscriptionRepository;
+use App\Repositories\SubscriberRepository;
+use App\Repositories\RoleRepository;
+use App\Repositories\PermissionRepository;
+use App\Repositories\PromoRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -32,6 +40,10 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(BlogRepositoryInterface::class, BlogRepository::class);
         $this->app->bind(SubscriptionPlanRepositoryInterface::class, SubscriptionPlanRepository::class);
         $this->app->bind(SubscriptionRepositoryInterface::class, SubscriptionRepository::class);
+        $this->app->bind(SubscriberRepositoryInterface::class, SubscriberRepository::class);
+        $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
+        $this->app->bind(PermissionRepositoryInterface::class, PermissionRepository::class);
+        $this->app->bind(PromoRepositoryInterface::class, PromoRepository::class);
     }
 
     /**

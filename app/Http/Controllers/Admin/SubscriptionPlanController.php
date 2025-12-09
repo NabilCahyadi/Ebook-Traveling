@@ -44,10 +44,19 @@ class SubscriptionPlanController extends Controller
             'price' => 'required|numeric|min:0',
             'duration_days' => 'required|integer|min:1',
             'features' => 'nullable|string',
+            'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         // Set is_active
         $validated['is_active'] = $request->has('is_active');
+
+        // Handle banner image upload
+        if ($request->hasFile('banner_image')) {
+            $image = $request->file('banner_image');
+            $filename = 'banner_' . time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+            $path = $image->storeAs('subscription_banners', $filename, 'public');
+            $validated['banner_image'] = $path;
+        }
 
         try {
             $this->subscriptionPlanService->createPlan($validated);
@@ -92,10 +101,26 @@ class SubscriptionPlanController extends Controller
             'price' => 'required|numeric|min:0',
             'duration_days' => 'required|integer|min:1',
             'features' => 'nullable|string',
+            'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         // Set is_active
         $validated['is_active'] = $request->has('is_active');
+
+        // Handle banner image upload
+        if ($request->hasFile('banner_image')) {
+            $plan = $this->subscriptionPlanService->getPlanById($id);
+
+            // Delete old banner if exists
+            if ($plan->banner_image && \Storage::disk('public')->exists($plan->banner_image)) {
+                \Storage::disk('public')->delete($plan->banner_image);
+            }
+
+            $image = $request->file('banner_image');
+            $filename = 'banner_' . time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+            $path = $image->storeAs('subscription_banners', $filename, 'public');
+            $validated['banner_image'] = $path;
+        }
 
         try {
             $this->subscriptionPlanService->updatePlan($id, $validated);
@@ -110,7 +135,7 @@ class SubscriptionPlanController extends Controller
     }
 
     /**
-     * Remove the specified subscription plan.
+     * Remove the specified subscription plan (soft delete).
      */
     public function destroy(string $id)
     {
@@ -118,10 +143,54 @@ class SubscriptionPlanController extends Controller
             $this->subscriptionPlanService->deletePlan($id);
 
             return redirect()->route('admin.subscription-plans.index')
-                ->with('success', 'Subscription plan deleted successfully!');
+                ->with('success', 'Subscription plan moved to trash successfully!');
         } catch (\Exception $e) {
             return redirect()->route('admin.subscription-plans.index')
                 ->with('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * Display trashed subscription plans.
+     */
+    public function trashed()
+    {
+        try {
+            $plans = $this->subscriptionPlanService->getTrashedPlans(15);
+            return view('admin.subscription-plans.trashed', compact('plans'));
+        } catch (\Exception $e) {
+            return redirect()->route('admin.subscription-plans.index')
+                ->with('error', 'Failed to load trashed subscription plans: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Restore a soft deleted subscription plan.
+     */
+    public function restore(string $id)
+    {
+        try {
+            $this->subscriptionPlanService->restorePlan($id);
+            return redirect()->route('admin.subscription-plans.trashed')
+                ->with('success', 'Subscription plan restored successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to restore subscription plan: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Permanently delete a subscription plan.
+     */
+    public function forceDelete(string $id)
+    {
+        try {
+            $this->subscriptionPlanService->forceDeletePlan($id);
+            return redirect()->route('admin.subscription-plans.trashed')
+                ->with('success', 'Subscription plan permanently deleted!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to permanently delete subscription plan: ' . $e->getMessage());
         }
     }
 }

@@ -158,7 +158,6 @@
                             <a href="{{ route('admin.manual-subscriptions.index') }}" class="btn btn-outline-secondary">
                                 <i class="bx bx-arrow-back me-1"></i> Back to List
                             </a>
-
                             <hr>
 
                             <form action="{{ route('admin.manual-subscriptions.destroy', $subscription->id) }}"

@@ -14,7 +14,7 @@ class CollectionSeeder extends Seeder
      */
     public function run(): void
     {
-         $collections = [
+        $collections = [
             [
                 'id' => '3fd54895-cf23-11f0-9073-745d2258e25c',
                 'name' => 'Best Sellers',

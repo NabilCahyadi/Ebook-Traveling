@@ -32,7 +32,7 @@
                             @else
                                 <li><a href="{{ route('user.account') }}">{{ Auth::user()->name }}</a></li>
                                 <li>
-                                    <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                                    <form action="{{ route('user.logout') }}" method="POST" style="display: inline;">
                                         @csrf
                                         <a href="#"
                                             onclick="event.preventDefault(); this.closest('form').submit();">Logout</a>

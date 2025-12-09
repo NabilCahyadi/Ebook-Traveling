@@ -14,18 +14,17 @@ return new class extends Migration
         Schema::create('subscription_plans', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
+            $table->string('slug')->unique();
             $table->text('description')->nullable();
-            $table->decimal('price_monthly', 10, 2)->nullable();
-            $table->decimal('price_annual', 10, 2)->nullable();
+            $table->string('cover_image', 500)->nullable();
+            $table->decimal('price', 10, 2);
             $table->integer('duration_days');
             $table->json('features')->nullable();
-            $table->integer('max_books')->nullable();
             $table->boolean('is_active')->default(true);
-            $table->integer('order_index')->default(0);
             $table->timestamps();
 
             $table->index('is_active');
-            $table->index('order_index');
+            $table->index('slug');
         });
     }
 
