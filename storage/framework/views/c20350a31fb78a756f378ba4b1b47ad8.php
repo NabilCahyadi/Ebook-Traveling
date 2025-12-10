@@ -22,9 +22,9 @@
                     <div class="d-flex align-items-center gap-2 px-3 py-2 border rounded">
                         <span class="text-muted">Download All Ebooks:</span>
                         <div class="form-check form-switch mb-0">
-                            <input class="form-check-input" type="checkbox" id="globalDownloadToggle" 
+                            <input class="form-check-input" type="checkbox" id="globalDownloadToggle"
                                 <?php echo e($downloadEnabled ? 'checked' : ''); ?>>
-                            <label class="form-check-label fw-bold <?php echo e($downloadEnabled ? 'text-success' : 'text-danger'); ?>" 
+                            <label class="form-check-label fw-bold <?php echo e($downloadEnabled ? 'text-success' : 'text-danger'); ?>"
                                 id="downloadStatusLabel">
                                 <?php echo e($downloadEnabled ? 'ENABLED' : 'DISABLED'); ?>
 
@@ -247,8 +247,8 @@
                                                     <i class="ti ti-pencil me-2"></i> Edit
                                                 </a>
                                                 <div class="dropdown-divider"></div>
-                                                <a class="dropdown-item toggle-download" href="javascript:void(0);" 
-                                                    data-ebook-id="<?php echo e($ebook->id); ?>" 
+                                                <a class="dropdown-item toggle-download" href="javascript:void(0);"
+                                                    data-ebook-id="<?php echo e($ebook->id); ?>"
                                                     data-ebook-title="<?php echo e($ebook->title); ?>">
                                                     <i class="ti ti-download me-2"></i> Download Settings
                                                 </a>
@@ -300,8 +300,8 @@
                                                 <i class="ti ti-eye me-1"></i>
                                                 <span><?php echo e(number_format($ebook->view_count ?? 0)); ?> views</span>
                                             </div>
-                                            <button class="btn btn-sm btn-outline-primary toggle-download" 
-                                                data-ebook-id="<?php echo e($ebook->id); ?>" 
+                                            <button class="btn btn-sm btn-outline-primary toggle-download"
+                                                data-ebook-id="<?php echo e($ebook->id); ?>"
                                                 data-ebook-title="<?php echo e($ebook->title); ?>"
                                                 title="Download Settings">
                                                 <i class="ti ti-download"></i>
@@ -474,12 +474,12 @@
                 const isEnabled = this.checked;
                 const label = document.getElementById('downloadStatusLabel');
                 const toggle = this;
-                
+
                 if (!confirm(`Are you sure you want to ${isEnabled ? 'ENABLE' : 'DISABLE'} download for ALL ebooks?`)) {
                     toggle.checked = !isEnabled;
                     return;
                 }
-                
+
                 fetch('/admin/system-settings/update', {
                     method: 'POST',
                     headers: {
@@ -496,7 +496,7 @@
                     if (data.success) {
                         label.textContent = isEnabled ? 'ENABLED' : 'DISABLED';
                         label.className = 'form-check-label fw-bold ' + (isEnabled ? 'text-success' : 'text-danger');
-                        
+
                         const alertHtml = `
                             <div class="alert alert-success alert-dismissible" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 350px;">
                                 <strong>Success!</strong> Download has been ${isEnabled ? 'enabled' : 'disabled'} for all ebooks.
@@ -504,7 +504,7 @@
                             </div>
                         `;
                         document.body.insertAdjacentHTML('beforeend', alertHtml);
-                        
+
                         setTimeout(() => {
                             const alert = document.querySelector('.alert-success');
                             if (alert) alert.remove();

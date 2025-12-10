@@ -57,7 +57,6 @@ class EbookController extends Controller
                 'cover_image' => 'nullable|string', // Changed to string for base64
                 'file_url' => 'nullable|file|mimes:pdf|max:10240',
                 'status' => 'required|in:draft,published,unpublished,archived',
-                'page_count' => 'nullable|integer|min:1',
             ]);
 
             // Check if user is admin

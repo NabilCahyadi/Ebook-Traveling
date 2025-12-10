@@ -1,49 +1,49 @@
-@extends('layouts.auth')
+<?php $__env->startSection('title', 'Complete Registration'); ?>
 
-@section('title', 'Complete Registration')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <div class="container" id="container">
         <!-- Registration Form -->
         <div class="form-container sign-in-container">
-            <form method="POST" action="{{ route('register.google.complete') }}">
-                @csrf
+            <form method="POST" action="<?php echo e(route('register.google.complete')); ?>">
+                <?php echo csrf_field(); ?>
                 <h1>Complete Registration</h1>
 
-                @if (!session('google_user'))
+                <?php if(!session('google_user')): ?>
                     <div class="alert-message error">
-                        Session expired. <a href="{{ route('login.google') }}" style="color: #FF416C;">Login with Google
+                        Session expired. <a href="<?php echo e(route('login.google')); ?>" style="color: #FF416C;">Login with Google
                             again</a>
                     </div>
-                @else
-                    @if (session('info'))
+                <?php else: ?>
+                    <?php if(session('info')): ?>
                         <div class="alert-message info">
-                            {{ session('info') }}
-                        </div>
-                    @endif
+                            <?php echo e(session('info')); ?>
 
-                    @if (session('error'))
-                        <div class="alert-message error">
-                            {{ session('error') }}
                         </div>
-                    @endif
+                    <?php endif; ?>
 
-                    @if ($errors->any())
+                    <?php if(session('error')): ?>
                         <div class="alert-message error">
-                            @foreach ($errors->all() as $error)
-                                <div>{{ $error }}</div>
-                            @endforeach
+                            <?php echo e(session('error')); ?>
+
                         </div>
-                    @endif
+                    <?php endif; ?>
+
+                    <?php if($errors->any()): ?>
+                        <div class="alert-message error">
+                            <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <div><?php echo e($error); ?></div>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </div>
+                    <?php endif; ?>
 
                     <input type="text" name="name" placeholder="Full Name"
-                        value="{{ old('name', session('google_user.name')) }}" required />
+                        value="<?php echo e(old('name', session('google_user.name'))); ?>" required />
 
-                    <input type="email" placeholder="Email (from Google)" value="{{ session('google_user.email') }}"
+                    <input type="email" placeholder="Email (from Google)" value="<?php echo e(session('google_user.email')); ?>"
                         readonly style="background-color: #f0f0f0; cursor: not-allowed;" />
 
                     <input type="text" name="phone" placeholder="Phone Number (Optional)"
-                        value="{{ old('phone') }}" />
+                        value="<?php echo e(old('phone')); ?>" />
 
                     <input type="password" name="password" placeholder="Create Password" required />
 
@@ -55,8 +55,8 @@
 
                     <select name="language_pref"
                         style="width: 100%; padding: 12px 15px; margin: 8px 0; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;">
-                        <option value="en" {{ old('language_pref', 'en') == 'en' ? 'selected' : '' }}>English</option>
-                        <option value="id" {{ old('language_pref') == 'id' ? 'selected' : '' }}>Bahasa Indonesia
+                        <option value="en" <?php echo e(old('language_pref', 'en') == 'en' ? 'selected' : ''); ?>>English</option>
+                        <option value="id" <?php echo e(old('language_pref') == 'id' ? 'selected' : ''); ?>>Bahasa Indonesia
                         </option>
                     </select>
 
@@ -70,11 +70,11 @@
                     <button type="submit">Complete Registration</button>
 
                     <div style="margin-top: 15px;">
-                        <a href="{{ route('login') }}" style="color: #FF416C; text-decoration: none; font-size: 13px;">
+                        <a href="<?php echo e(route('login')); ?>" style="color: #FF416C; text-decoration: none; font-size: 13px;">
                             ← Back to login
                         </a>
                     </div>
-                @endif
+                <?php endif; ?>
             </form>
         </div>
 
@@ -89,15 +89,14 @@
         </div>
     </div>
 
-    @push('styles')
+    <?php $__env->startPush('styles'); ?>
         <style>
             body {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                min-height: 100vh;
+                height: 100vh;
                 margin: 0;
-                padding: 20px 0;
             }
 
             /* Container adjustments */
@@ -105,12 +104,11 @@
                 position: relative;
                 max-width: 1100px;
                 width: 90%;
-                min-height: 650px;
+                min-height: 600px;
                 box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-                border-radius: 10px;
-                overflow: hidden;
-                display: flex;
             }
+
+
 
             .alert-message {
                 width: 100%;
@@ -159,88 +157,21 @@
 
             /* Form container adjustments */
             .form-container {
-                position: absolute;
-                top: 0;
-                height: 100%;
-                transition: all 0.6s ease-in-out;
                 width: 50%;
                 z-index: 2;
-                background-color: #fff;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .form-container form {
-                background-color: #FFFFFF;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex-direction: column;
-                padding: 30px 40px;
-                height: 100%;
-                text-align: center;
-                width: 100%;
-                overflow-y: auto;
-            }
-
-            .form-container form h1 {
-                margin-bottom: 20px;
-            }
-
-            .form-container input,
-            .form-container select {
-                background-color: #eee;
-                border: none;
-                padding: 12px 15px;
-                margin: 8px 0;
-                width: 100%;
-                border-radius: 5px;
-            }
-
-            .form-container input[readonly] {
-                background-color: #f0f0f0;
-                cursor: not-allowed;
-            }
-
-            .form-container button {
-                border-radius: 20px;
-                border: 1px solid #FF416C;
-                background-color: #FF416C;
-                color: #FFFFFF;
-                font-size: 12px;
-                font-weight: bold;
-                padding: 12px 45px;
-                letter-spacing: 1px;
-                text-transform: uppercase;
-                transition: transform 80ms ease-in;
-                margin-top: 15px;
-                cursor: pointer;
-            }
-
-            .form-container button:active {
-                transform: scale(0.95);
-            }
-
-            .form-container button:hover {
-                background-color: #e03a5f;
             }
 
             .sign-in-container {
                 left: 0;
                 width: 50%;
                 z-index: 2;
+                transform: translateX(0);
             }
 
             .overlay-container {
-                position: absolute;
-                top: 0;
-                left: 50%;
                 width: 50%;
-                height: 100%;
+                left: 50%;
                 overflow: hidden;
-                transition: transform 0.6s ease-in-out;
-                z-index: 100;
             }
 
             .overlay {
@@ -252,9 +183,11 @@
                 background-position: 0 0;
                 color: #FFFFFF;
                 position: relative;
-                left: 0;
+                left: 0%;
                 height: 100%;
                 width: 100%;
+                transform: translateX(0);
+                transition: transform 0.6s ease-in-out;
             }
 
             .overlay-panel {
@@ -268,19 +201,13 @@
                 top: 0;
                 height: 100%;
                 width: 100%;
+                transform: translateX(0);
+                transition: transform 0.6s ease-in-out;
             }
 
-            .overlay-panel h1 {
-                font-size: 36px;
-                margin-bottom: 20px;
-            }
-
-            .overlay-panel p {
-                font-size: 16px;
-                font-weight: 100;
-                line-height: 20px;
-                letter-spacing: 0.5px;
-                margin: 20px 0 30px;
+            .overlay-right {
+                right: 0;
+                transform: translateX(0);
             }
 
             /* Hide Sign Up container */
@@ -290,28 +217,18 @@
 
             /* Make it responsive */
             @media (max-width: 768px) {
-                #container {
-                    flex-direction: column;
-                    min-height: auto;
-                }
-
                 .overlay-container {
                     display: none;
                 }
 
                 .form-container {
                     width: 100%;
-                    position: relative;
-                }
-
-                .sign-in-container {
-                    width: 100%;
                 }
             }
         </style>
-    @endpush
+    <?php $__env->stopPush(); ?>
 
-    @push('scripts')
+    <?php $__env->startPush('scripts'); ?>
         <script>
             // Disable the sliding functionality for this page
             document.addEventListener('DOMContentLoaded', function() {
@@ -322,5 +239,7 @@
                 if (signInButton) signInButton.remove();
             });
         </script>
-    @endpush
-@endsection
+    <?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.auth', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\ebook_traveling\resources\views/auth/register-google.blade.php ENDPATH**/ ?>

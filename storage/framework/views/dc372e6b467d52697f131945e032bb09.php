@@ -1,7 +1,7 @@
 <?php
     // Get collection from section
     $collection = $section->collection ?? null;
-    
+
     // Check if this is a custom filtered section
     $isCustomSection = isset($section->custom_ebooks);
     $ebooks = $isCustomSection ? $section->custom_ebooks : ($collection ? $collection->ebooks : collect());
