@@ -197,7 +197,7 @@ class LoginController extends Controller
         } catch (\Exception $e) {
             Log::error('Google OAuth Error: ' . $e->getMessage());
             return redirect()->route('login')
-                ->with('error', 'Unable to login with Google: ' . $e->getMessage());
+                ->with('error', 'Google sign-in failed. Please try again or use email/password login.');
         }
     }
 }
