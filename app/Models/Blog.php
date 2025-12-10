@@ -19,17 +19,19 @@ class Blog extends Model
         'excerpt',
         'featured_image',
         'author_id',
-        'blog_category_id',
         'category',
+        'tags',
         'view_count',
-        'is_published',
+        'status',
         'published_at',
     ];
 
     protected $casts = [
+        'tags' => 'array',
         'view_count' => 'integer',
-        'is_published' => 'boolean',
+        'status' => 'boolean',
         'published_at' => 'datetime',
+        'tags' => 'array',
     ];
 
     /**
@@ -41,19 +43,11 @@ class Blog extends Model
     }
 
     /**
-     * Get the category of the blog.
-     */
-    public function blogCategory()
-    {
-        return $this->belongsTo(BlogCategory::class, 'blog_category_id');
-    }
-
-    /**
      * Scope a query to only include published blogs.
      */
     public function scopePublished($query)
     {
-        return $query->where('is_published', true)
+        return $query->where('status', true)
             ->whereNotNull('published_at')
             ->where('published_at', '<=', now());
     }

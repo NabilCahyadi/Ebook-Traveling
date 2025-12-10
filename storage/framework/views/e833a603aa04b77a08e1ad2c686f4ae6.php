@@ -1,8 +1,6 @@
-@extends('layouts_lp.app')
+<?php $__env->startSection('title', $ebook->title); ?>
 
-@section('title', $ebook->title)
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <style>
     .ebook-cover-frame img {
         display: block;
@@ -96,18 +94,28 @@
 
     .avatar-container {
         width: 50px;
+        /* Atur ukuran lebar avatar */
         height: 50px;
+        /* Atur ukuran tinggi avatar */
         border-radius: 50%;
+        /* Membuat frame berbentuk lingkaran */
         overflow: hidden;
+        /* Sembunyikan bagian gambar yang melampaui frame */
         flex-shrink: 0;
+        /* Mencegah frame mengecil jika berada di dalam flexbox */
         background-color: #f0f0f0;
+        /* Warna background jika gambar transparan */
     }
 
     .user-avatar {
         width: 100%;
+        /* Gambar mengisi lebar container */
         height: 100%;
+        /* Gambar mengisi tinggi container */
         object-fit: contain;
+        /* <-- INI ADALAH SOLUSI UTAMANYA */
         display: block;
+        /* Menghilangkan spasi di bawah gambar */
     }
 
     .username {
@@ -298,10 +306,10 @@
     <div class="page-header breadcrumb-wrap">
         <div class="container">
             <div class="breadcrumb">
-                <a href="{{ route('home') }}" rel="nofollow"><i class="fi-rs-home mr-5"></i></a>
+                <a href="<?php echo e(route('home')); ?>" rel="nofollow"><i class="fi-rs-home mr-5"></i></a>
                 <span></span>
                 <a href="#">E-Books</a>
-                <span class="active">‎ ‎ {{ $ebook->title }}</span>
+                <span class="active">‎ ‎ <?php echo e($ebook->title); ?></span>
             </div>
         </div>
     </div>
@@ -314,59 +322,59 @@
                             <div class="detail-gallery">
                                 <!-- GAMBAR DIBUNGKUS DENGAN FRAME KHUSUS -->
                                 <div class="ebook-cover-frame">
-                                    <img src="{{ asset($ebook->cover_image) }}" alt="{{ $ebook->title }}" />
+                                    <img src="<?php echo e(asset($ebook->cover_image)); ?>" alt="<?php echo e($ebook->title); ?>" />
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-9 col-sm-12 col-xs-12">
                             <div class="detail-info pr-30 pl-30">
-                                @if($ebook->is_featured)
+                                <?php if($ebook->is_featured): ?>
                                 <span class="stock-status out-stock"> Featured </span>
-                                @endif
-                                <h2 class="title-detail">{{ $ebook->title }}</h2>
+                                <?php endif; ?>
+                                <h2 class="title-detail"><?php echo e($ebook->title); ?></h2>
                                 <div class="product-detail-rating">
                                     <div class="product-rate-cover text-end">
                                         <div class="product-rate-cover">
                                             <div class="product-rate d-inline-block">
-                                                {{-- HITUNG RATA-RATA LANGSUNG DARI TABEL ebook_ratings --}}
-                                                <div class="product-rating" style="width: {{ ($ebook->ratings()->avg('rating') / 5) * 100 }}%"></div>
+                                                
+                                                <div class="product-rating" style="width: <?php echo e(($ebook->ratings()->avg('rating') / 5) * 100); ?>%"></div>
                                             </div>
-                                            {{-- TAMPILKAN JUGA RATA-RATA YANG SAMA --}}
-                                            <span class="font-small ml-5 text-muted">({{ round($ebook->ratings()->avg('rating'), 2) }})</span>
+                                            
+                                            <span class="font-small ml-5 text-muted">(<?php echo e(round($ebook->ratings()->avg('rating'), 2)); ?>)</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="short-desc mb-30">
-                                    <p class="font-lg">{{ $ebook->description }}</p>
+                                    <p class="font-lg"><?php echo e($ebook->description); ?></p>
                                 </div>
                                 <div class="font-xs">
                                     <ul class="mr-50 float-start">
-                                        <li class="mb-5">Creator : <span class="text-brand">{{ $ebook->creator->pen_name ?? $ebook->author }}</span></li>
+                                        <li class="mb-5">Creator : <span class="text-brand"><?php echo e($ebook->creator->pen_name ?? $ebook->author); ?></span></li>
                                         <li class="mb-5">
                                             Language :
                                             <span class="text-brand">
-                                                @if($ebook->language === 'en')
+                                                <?php if($ebook->language === 'en'): ?>
                                                 English
-                                                @elseif($ebook->language === 'id')
+                                                <?php elseif($ebook->language === 'id'): ?>
                                                 Indonesian
-                                                @else
-                                                {{ $ebook->language }} {{-- Tampilkan kode asli jika tidak cocok --}}
-                                                @endif
+                                                <?php else: ?>
+                                                <?php echo e($ebook->language); ?> 
+                                                <?php endif; ?>
                                             </span>
                                         </li>
-                                        <li>Published : <span class="text-brand">{{ \Carbon\Carbon::parse($ebook->published_at)->format('d M Y') }}</span></li>
+                                        <li>Published : <span class="text-brand"><?php echo e(\Carbon\Carbon::parse($ebook->published_at)->format('d M Y')); ?></span></li>
                                         <li>
-                                            @if(auth()->check() && auth()->user()->hasActiveSubscription())
-                                            <a href="/reader/{{ $ebook->slug }}" class="action-btn btn-read-now">
+                                            <?php if(auth()->check() && auth()->user()->hasActiveSubscription()): ?>
+                                            <a href="/reader/<?php echo e($ebook->slug); ?>" class="action-btn btn-read-now">
                                                 <i class="fi-rs-book-open"></i>
                                                 <span>Read Now</span>
                                             </a>
-                                            @else
+                                            <?php else: ?>
                                             <a href="/pricing" class="action-btn btn-subscribe-now">
                                                 <i class="fi-rs-lock"></i>
                                                 <span>Subscribe to Read</span>
                                             </a>
-                                            @endif
+                                            <?php endif; ?>
                                         </li>
                                     </ul>
                                 </div>
@@ -379,39 +387,40 @@
                             <!-- BAGIAN KIRI: DAFTAR REVIEW -->
                             <div class="col-lg-8">
                                 <div class="review-container">
-                                    <h4 class="mb-10">Customer Reviews ( {{ $ratings->count() }} ) </h4>
-                                    <div class="showing-info">Showing {{ min(3, $ratings->count()) }} out of {{ $ratings->count() }} reviews</div>
+                                    <h4 class="mb-10">Customer Reviews ( <?php echo e($ratings->count()); ?> ) </h4>
+                                    <div class="showing-info">Showing <?php echo e(min(3, $ratings->count())); ?> out of <?php echo e($ratings->count()); ?> reviews</div>
 
                                     <div class="comment-list">
-                                        @forelse ($ratings as $rating)
+                                        <?php $__empty_1 = true; $__currentLoopData = $ratings; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $rating): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                         <div class="single-comment mb-30">
                                             <div class="review-header">
                                                 <div class="product-rate d-inline-block">
-                                                    <div class="product-rating" style="width: {{ ($rating->rating / 5) * 100 }}%"></div>
+                                                    <div class="product-rating" style="width: <?php echo e(($rating->rating / 5) * 100); ?>%"></div>
                                                 </div>
-                                                <div class="review-date">{{ $rating->created_at->format('F d, Y') }}</div>
+                                                <div class="review-date"><?php echo e($rating->created_at->format('F d, Y')); ?></div>
                                             </div>
                                             <div class="review-user">
                                                 <div class="avatar-container">
-                                                    <img src="{{ $rating->user->avatar ? asset('storage/' . $rating->user->avatar) : asset('images/user-avatar.png') }}" alt="{{ $rating->user->name }}" class="user-avatar" />
+                                                    <img src="<?php echo e($rating->user->avatar ? asset('storage/' . $rating->user->avatar) : asset('images/user-avatar.png')); ?>" alt="<?php echo e($rating->user->name); ?>" class="user-avatar" />
                                                 </div>
-                                                <a href="#" class="username ms-3">{{ $rating->user->name }}</a>
+                                                <a href="#" class="username ms-3"><?php echo e($rating->user->name); ?></a>
                                             </div>
-                                            <p class="review-text">{{ $rating->review_text }}</p>
+                                            <p class="review-text"><?php echo e($rating->review_text); ?></p>
                                         </div>
-                                        @empty
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                         <div class="single-comment mb-30">
                                             <p>Belum ada review untuk e-book ini.</p>
                                         </div>
-                                        @endforelse
+                                        <?php endif; ?>
                                     </div>
 
                                     <!-- PAGINASI -->
-                                    @if($ratings->hasPages())
+                                    <?php if($ratings->hasPages()): ?>
                                     <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
-                                        {{ $ratings->links('pagination::bootstrap-4') }}
+                                        <?php echo e($ratings->links('pagination::bootstrap-4')); ?>
+
                                     </div>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </div>
 
@@ -421,49 +430,49 @@
                                     <h4 class="mb-30">Average Rating</h4>
                                     <div class="d-flex mb-30">
                                         <div class="product-rate d-inline-block mr-15">
-                                            <div class="product-rating" style="width: {{ ($ebook->ratings()->avg('rating') / 5) * 100 }}%"></div>
+                                            <div class="product-rating" style="width: <?php echo e(($ebook->ratings()->avg('rating') / 5) * 100); ?>%"></div>
                                         </div>
-                                        <h6>{{ number_format($ebook->ratings()->avg('rating'), 1) }} out of 5</h6>
+                                        <h6><?php echo e(number_format($ebook->ratings()->avg('rating'), 1)); ?> out of 5</h6>
                                     </div>
 
-                                    {{-- GUNAKAN STRUKTUR INI --}}
+                                    
                                     <div class="d-flex align-items-center mb-15">
                                         <span class="me-3" style="width: 50px;">5 star</span>
                                         <div class="progress flex-grow-1">
-                                            <div class="progress-bar" role="progressbar" style="width: {{ ($ebook->total_reviews > 0) ? ($ratingDistribution[5] / $ebook->total_reviews) * 100 : 0 }}%" aria-valuenow="{{ ($ebook->total_reviews > 0) ? ($ratingDistribution[5] / $ebook->total_reviews) * 100 : 0 }}" aria-valuemin="0" aria-valuemax="100">
-                                                {{ ($ebook->total_reviews > 0) ? number_format(($ratingDistribution[5] / $ebook->total_reviews) * 100) : 0 }}%
+                                            <div class="progress-bar" role="progressbar" style="width: <?php echo e(($ebook->total_reviews > 0) ? ($ratingDistribution[5] / $ebook->total_reviews) * 100 : 0); ?>%" aria-valuenow="<?php echo e(($ebook->total_reviews > 0) ? ($ratingDistribution[5] / $ebook->total_reviews) * 100 : 0); ?>" aria-valuemin="0" aria-valuemax="100">
+                                                <?php echo e(($ebook->total_reviews > 0) ? number_format(($ratingDistribution[5] / $ebook->total_reviews) * 100) : 0); ?>%
                                             </div>
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-center mb-15">
                                         <span class="me-3" style="width: 50px;">4 star</span>
                                         <div class="progress flex-grow-1">
-                                            <div class="progress-bar" role="progressbar" style="width: {{ ($ebook->total_reviews > 0) ? ($ratingDistribution[4] / $ebook->total_reviews) * 100 : 0 }}%" aria-valuenow="{{ ($ebook->total_reviews > 0) ? ($ratingDistribution[4] / $ebook->total_reviews) * 100 : 0 }}" aria-valuemin="0" aria-valuemax="100">
-                                                {{ ($ebook->total_reviews > 0) ? number_format(($ratingDistribution[4] / $ebook->total_reviews) * 100) : 0 }}%
+                                            <div class="progress-bar" role="progressbar" style="width: <?php echo e(($ebook->total_reviews > 0) ? ($ratingDistribution[4] / $ebook->total_reviews) * 100 : 0); ?>%" aria-valuenow="<?php echo e(($ebook->total_reviews > 0) ? ($ratingDistribution[4] / $ebook->total_reviews) * 100 : 0); ?>" aria-valuemin="0" aria-valuemax="100">
+                                                <?php echo e(($ebook->total_reviews > 0) ? number_format(($ratingDistribution[4] / $ebook->total_reviews) * 100) : 0); ?>%
                                             </div>
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-center mb-15">
                                         <span class="me-3" style="width: 50px;">3 star</span>
                                         <div class="progress flex-grow-1">
-                                            <div class="progress-bar" role="progressbar" style="width: {{ ($ebook->total_reviews > 0) ? ($ratingDistribution[3] / $ebook->total_reviews) * 100 : 0 }}%" aria-valuenow="{{ ($ebook->total_reviews > 0) ? ($ratingDistribution[3] / $ebook->total_reviews) * 100 : 0 }}" aria-valuemin="0" aria-valuemax="100">
-                                                {{ ($ebook->total_reviews > 0) ? number_format(($ratingDistribution[3] / $ebook->total_reviews) * 100) : 0 }}%
+                                            <div class="progress-bar" role="progressbar" style="width: <?php echo e(($ebook->total_reviews > 0) ? ($ratingDistribution[3] / $ebook->total_reviews) * 100 : 0); ?>%" aria-valuenow="<?php echo e(($ebook->total_reviews > 0) ? ($ratingDistribution[3] / $ebook->total_reviews) * 100 : 0); ?>" aria-valuemin="0" aria-valuemax="100">
+                                                <?php echo e(($ebook->total_reviews > 0) ? number_format(($ratingDistribution[3] / $ebook->total_reviews) * 100) : 0); ?>%
                                             </div>
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-center mb-15">
                                         <span class="me-3" style="width: 50px;">2 star</span>
                                         <div class="progress flex-grow-1">
-                                            <div class="progress-bar" role="progressbar" style="width: {{ ($ebook->total_reviews > 0) ? ($ratingDistribution[2] / $ebook->total_reviews) * 100 : 0 }}%" aria-valuenow="{{ ($ebook->total_reviews > 0) ? ($ratingDistribution[2] / $ebook->total_reviews) * 100 : 0 }}" aria-valuemin="0" aria-valuemax="100">
-                                                {{ ($ebook->total_reviews > 0) ? number_format(($ratingDistribution[2] / $ebook->total_reviews) * 100) : 0 }}%
+                                            <div class="progress-bar" role="progressbar" style="width: <?php echo e(($ebook->total_reviews > 0) ? ($ratingDistribution[2] / $ebook->total_reviews) * 100 : 0); ?>%" aria-valuenow="<?php echo e(($ebook->total_reviews > 0) ? ($ratingDistribution[2] / $ebook->total_reviews) * 100 : 0); ?>" aria-valuemin="0" aria-valuemax="100">
+                                                <?php echo e(($ebook->total_reviews > 0) ? number_format(($ratingDistribution[2] / $ebook->total_reviews) * 100) : 0); ?>%
                                             </div>
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-center mb-30">
                                         <span class="me-3" style="width: 50px;">1 star</span>
                                         <div class="progress flex-grow-1">
-                                            <div class="progress-bar" role="progressbar" style="width: {{ ($ebook->total_reviews > 0) ? ($ratingDistribution[1] / $ebook->total_reviews) * 100 : 0 }}%" aria-valuenow="{{ ($ebook->total_reviews > 0) ? ($ratingDistribution[1] / $ebook->total_reviews) * 100 : 0 }}" aria-valuemin="0" aria-valuemax="100">
-                                                {{ ($ebook->total_reviews > 0) ? number_format(($ratingDistribution[1] / $ebook->total_reviews) * 100) : 0 }}%
+                                            <div class="progress-bar" role="progressbar" style="width: <?php echo e(($ebook->total_reviews > 0) ? ($ratingDistribution[1] / $ebook->total_reviews) * 100 : 0); ?>%" aria-valuenow="<?php echo e(($ebook->total_reviews > 0) ? ($ratingDistribution[1] / $ebook->total_reviews) * 100 : 0); ?>" aria-valuemin="0" aria-valuemax="100">
+                                                <?php echo e(($ebook->total_reviews > 0) ? number_format(($ratingDistribution[1] / $ebook->total_reviews) * 100) : 0); ?>%
                                             </div>
                                         </div>
                                     </div>
@@ -472,22 +481,22 @@
                         </div>
                     </div>
 
-                    {{-- FORM UNTUK MENAMBAH REVIEW --}}
+                    
                     <div class="comment-form">
                         <h4 class="mb-15">Add a review</h4>
 
-                        {{-- CEK: Apakah user sudah login? --}}
-                        @if(auth()->check())
+                        
+                        <?php if(auth()->check()): ?>
 
-                        {{-- Jika login, CEK: Apakah user sudah premium? --}}
-                        @if(auth()->user()->hasActiveSubscription())
+                        
+                        <?php if(auth()->user()->hasActiveSubscription()): ?>
 
-                        {{-- Jika premium, CEK: Apakah sudah pernah review? --}}
-                        @if (!$hasReviewed)
-                        {{-- BELUM REVIEW: Tampilkan form --}}
-                        <form class="form-contact comment_form" action="{{ route('ratings.store') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="ebook_id" value="{{ $ebook->id }}">
+                        
+                        <?php if(!$hasReviewed): ?>
+                        
+                        <form class="form-contact comment_form" action="<?php echo e(route('ratings.store')); ?>" method="POST">
+                            <?php echo csrf_field(); ?>
+                            <input type="hidden" name="ebook_id" value="<?php echo e($ebook->id); ?>">
                             <div class="row">
                                 <div class="col-12">
                                     <div class="form-group">
@@ -496,12 +505,12 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <input class="form-control" name="name" id="name" type="text" placeholder="Name" value="{{ auth()->user()->name }}" required />
+                                        <input class="form-control" name="name" id="name" type="text" placeholder="Name" value="<?php echo e(auth()->user()->name); ?>" required />
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <input class="form-control" name="email" id="email" type="email" placeholder="Email" value="{{ auth()->user()->email }}" required />
+                                        <input class="form-control" name="email" id="email" type="email" placeholder="Email" value="<?php echo e(auth()->user()->email); ?>" required />
                                     </div>
                                 </div>
                                 <div class="col-12">
@@ -522,24 +531,24 @@
                             </div>
                         </form>
 
-                        @else
-                        {{-- SUDAH REVIEW: Tampilkan pesan --}}
+                        <?php else: ?>
+                        
                         <div class="alert alert-success">
                             <p>You have already submitted a review for this ebook.</p>
                         </div>
-                        @endif
+                        <?php endif; ?>
 
-                        @else
-                        {{-- BELUM PREMIUM: Tampilkan pesan untuk upgrade --}}
+                        <?php else: ?>
+                        
                         <div class="alert alert-warning">
                             <h5 style="margin-bottom: 10px;">Premium Feature</h5>
                             <p style="margin-bottom: 10px;">To give a rating and review, you need to upgrade your account to Premium.</p>
-                            <a href="{{ route('pricing') }}" class="btn btn-warning">Subscribe Now</a>
+                            <a href="<?php echo e(route('pricing')); ?>" class="btn btn-warning">Subscribe Now</a>
                         </div>
-                        @endif
+                        <?php endif; ?>
 
-                        @else
-                        {{-- BELUM LOGIN: Tampilkan peringatan untuk login --}}
+                        <?php else: ?>
+                        
                         <div class="alert alert-custom-info d-flex align-items-center" role="alert">
                             <div class="flex-shrink-0">
                                 <i class="fi fi-rr-lock large-icon"></i>
@@ -547,55 +556,55 @@
                             <div class="flex-grow-1 ms-3">
                                 <p class="mb-3">Sign in or create a free account to share your thoughts about this book.</p>
                                 <div>
-                                    <a href="{{ route('login') }}" class="btn btn-primary btn-sm me-2">
+                                    <a href="<?php echo e(route('login')); ?>" class="btn btn-primary btn-sm me-2">
                                         <i class="fi fi-rr-sign-in-alt me-1"></i> Login
                                     </a>
-                                    <a href="{{ route('login') }}?form=register" class="btn btn-sm">
+                                    <a href="<?php echo e(route('login')); ?>?form=register" class="btn btn-sm">
                                         <i class="fi fi-rr-user-add me-1"></i> Register
                                     </a>
                                 </div>
                             </div>
                         </div>
-                        @endif
+                        <?php endif; ?>
                     </div>
                 </div>
 
-                {{-- WIDGET More options for you --}}
+                
                 <div class="row mt-60">
                     <div class="col-12">
-                        {{-- 1. JUDUL DIUBAH --}}
+                        
                         <h2 class="section-title style-1 mb-30">More options for you</h2>
                     </div>
                     <div class="col-12">
                         <div class="row related-products">
-                            {{-- 2. QUERY DIUBAH: Ambil buku secara acak dari semua buku --}}
-                            @php
+                            
+                            <?php
                             $moreOptionsEbooks = App\Models\Ebook::inRandomOrder()->get();
-                            @endphp
+                            ?>
 
-                            @forelse($moreOptionsEbooks as $ebook)
-                            {{-- Kartu ebook yang sama seperti sebelumnya --}}
+                            <?php $__empty_1 = true; $__currentLoopData = $moreOptionsEbooks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ebook): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                            
                             <div class="col-lg-3 col-md-4 col-12 col-sm-6">
-                                <div class="product-cart-wrap mb-30 hover-up wow animate__animated animate__fadeIn" data-wow-delay="{{ ($loop->index + 1) * 0.1 }}s">
+                                <div class="product-cart-wrap mb-30 hover-up wow animate__animated animate__fadeIn" data-wow-delay="<?php echo e(($loop->index + 1) * 0.1); ?>s">
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
-                                            <a href="{{ route('ebooks.show', $ebook->slug) }}">
-                                                <img class="default-img" src="{{ $ebook->cover_image ?: 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg' }}" alt="{{ $ebook->title }}" />
+                                            <a href="<?php echo e(route('ebooks.show', $ebook->slug)); ?>">
+                                                <img class="default-img" src="<?php echo e($ebook->cover_image ?: 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg'); ?>" alt="<?php echo e($ebook->title); ?>" />
                                             </a>
                                         </div>
                                         <div class="product-badges product-badges-position product-badges-mrg">
-                                            <span class="badge-language hot">{{ strtoupper($ebook->language) }}</span>
+                                            <span class="badge-language hot"><?php echo e(strtoupper($ebook->language)); ?></span>
                                         </div>
                                     </div>
                                     <div class="product-content-wrap">
-                                        <h2 style="margin-top:15px;"><a href="{{ route('ebooks.show', $ebook->slug) }}">{{ Str::limit($ebook->title, 40) }}</a></h2>
+                                        <h2 style="margin-top:15px;"><a href="<?php echo e(route('ebooks.show', $ebook->slug)); ?>"><?php echo e(Str::limit($ebook->title, 40)); ?></a></h2>
 
                                         <div class="product-author" style="margin-bottom:-4px;">
-                                            @if($ebook->creator)
-                                            <span>by {{ $ebook->creator->pen_name ?? $ebook->creator->user->name }}</span>
-                                            @else
+                                            <?php if($ebook->creator): ?>
+                                            <span>by <?php echo e($ebook->creator->pen_name ?? $ebook->creator->user->name); ?></span>
+                                            <?php else: ?>
                                             <span>by Unknown Author</span>
-                                            @endif
+                                            <?php endif; ?>
                                         </div>
 
                                         <div class="product-meta">
@@ -603,18 +612,18 @@
                                                 <div class="product-rate-cover text-end">
                                                     <div class="product-rate-cover">
                                                         <div class="product-rate d-inline-block">
-                                                            {{-- HITUNG RATA-RATA LANGSUNG DARI TABEL ebook_ratings --}}
-                                                            <div class="product-rating" style="width: {{ ($ebook->ratings()->avg('rating') / 5) * 100 }}%"></div>
+                                                            
+                                                            <div class="product-rating" style="width: <?php echo e(($ebook->ratings()->avg('rating') / 5) * 100); ?>%"></div>
                                                         </div>
-                                                        {{-- TAMPILKAN JUGA RATA-RATA YANG SAMA --}}
-                                                        <span class="font-small ml-5 text-muted">({{ round($ebook->ratings()->avg('rating'), 2) }})</span>
+                                                        
+                                                        <span class="font-small ml-5 text-muted">(<?php echo e(round($ebook->ratings()->avg('rating'), 2)); ?>)</span>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="read-count">
                                                 <i class="fi-rs-eye align-middle"></i>
                                                 <span class="post-on">
-                                                    @php
+                                                    <?php
                                                     $views = $ebook->view_count;
                                                     if ($views >= 1000000000) {
                                                     $formattedViews = number_format($views / 1000000000, 1) . 'B';
@@ -625,32 +634,33 @@
                                                     } else {
                                                     $formattedViews = $views;
                                                     }
-                                                    @endphp
-                                                    {{ $formattedViews }}
+                                                    ?>
+                                                    <?php echo e($formattedViews); ?>
+
                                                 </span>
                                             </div>
                                         </div>
 
-                                        <p class="product-description">{{ $ebook->short_description }}</p>
+                                        <p class="product-description"><?php echo e($ebook->short_description); ?></p>
 
-                                        {{-- LOGIKA HANYA PADA TOMBOL AKSI --}}
-                                        @if(auth()->check() && auth()->user()->hasActiveSubscription())
-                                        <a href="/reader/{{ $ebook->slug }}" class="action-btn btn-read-now">
+                                        
+                                        <?php if(auth()->check() && auth()->user()->hasActiveSubscription()): ?>
+                                        <a href="/reader/<?php echo e($ebook->slug); ?>" class="action-btn btn-read-now">
                                             <i class="fi-rs-book-open"></i>
                                             <span>Read Now</span>
                                         </a>
-                                        @else
+                                        <?php else: ?>
                                         <a href="/pricing" class="action-btn btn-subscribe-now">
                                             <i class="fi-rs-lock"></i>
                                             <span>Subscribe to Read</span>
                                         </a>
-                                        @endif
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
-                            @empty
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <p>Belum ada e-book lain untuk saat ini.</p>
-                            @endforelse
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -658,4 +668,5 @@
         </div>
     </div>
 </main>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts_lp.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\PROJEK PROJEK\Ebook-Traveling\resources\views/ebooks-detail.blade.php ENDPATH**/ ?>

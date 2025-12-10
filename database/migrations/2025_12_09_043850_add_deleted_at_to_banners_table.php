@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // TIDAK melakukan apa-apa.
-        // Migrasi ini dinonaktifkan karena kita ingin mempertahankan kolom 'tags'.
-        // Kolom 'blog_category_id' akan ditangani oleh migrasi lain jika diperlukan.
+        Schema::table('banners', function (Blueprint $table) {
+            //
+        });
     }
 
     /**
@@ -21,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // TIDAK melakukan apa-apa.
+        Schema::table('banners', function (Blueprint $table) {
+            $table->timestamp('deleted_at')->nullable(); // Menambahkan kolom deleted_at
+        });
     }
 };

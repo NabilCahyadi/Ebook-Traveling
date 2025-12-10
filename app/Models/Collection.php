@@ -34,9 +34,9 @@ class Collection extends Model
 
     public function ebooks(): BelongsToMany
     {
-        return $this->belongsToMany(Ebook::class, 'collection_ebooks')
+        return $this->belongsToMany(Ebook::class, 'collection_ebook')
             ->withPivot('order_index')
-            ->orderBy('collection_ebooks.order_index', 'asc')
+            ->orderBy('collection_ebook.order_index', 'asc')
             ->withTimestamps();
     }
 

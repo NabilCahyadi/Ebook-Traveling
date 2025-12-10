@@ -144,9 +144,9 @@
                 <div class="col-xl-3 col-lg-4">
                     <div class="header-info">
                         <ul>
-                            <li><a href="{{route('about-us')}}">About Us</a></li>
+                            <li><a href="<?php echo e(route('about-us')); ?>">About Us</a></li>
                             <!-- <li><a href="page-account.html">Promo</a></li> -->
-                            <li><a href="{{route('contact')}}">Customer Service</a></li>
+                            <li><a href="<?php echo e(route('contact')); ?>">Customer Service</a></li>
                             <li><a href="#">E-book</a></li>
                         </ul>
                     </div>
@@ -166,7 +166,7 @@
                 <div class="col-xl-3 col-lg-4">
                     <div class="header-info header-info-right">
                         <ul>
-                            <li>Need help ? Visit<strong>‎ <a href="{{route('help-center')}}" class="text-brand">Help Center</a></strong></li>
+                            <li>Need help ? Visit<strong>‎ <a href="<?php echo e(route('help-center')); ?>" class="text-brand">Help Center</a></strong></li>
                             <li>
                                 <a class="language-dropdown-active" href="#">English <i class="fi-rs-angle-small-down"></i></a>
                                 <ul class="language-dropdown">
@@ -296,27 +296,27 @@
                                     </div>
                                 </div>
                             </div>
-                            {{-- AUTH SECTION --}}
-                            @if(auth()->check())
+                            
+                            <?php if(auth()->check()): ?>
                             <div class="header-action-icon-2">
-                                <a href="{{ route('page-account') }}">
+                                <a href="<?php echo e(route('page-account')); ?>">
                                     <img class="svgInject" alt="Nest" src="/assets-nest/nest-fe/imgs/theme/icons/icon-user.svg" />
                                 </a>
                                 <div class="cart-dropdown-wrap cart-dropdown-hm2 account-dropdown">
                                     <ul>
                                         <li>
-                                            <a href="{{ route('page-account') }}"><i class="fi fi-rs-user mr-10"></i>Account</a>
+                                            <a href="<?php echo e(route('page-account')); ?>"><i class="fi fi-rs-user mr-10"></i>Account</a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('page-account') }}?tab=orders"><i class="fi fi-rs-label mr-10"></i>Wishlist</a>
+                                            <a href="<?php echo e(route('page-account')); ?>?tab=orders"><i class="fi fi-rs-label mr-10"></i>Wishlist</a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('page-account') }}?tab=creator"><i class="fi-rs-edit mr-10"></i>Creator</a>
+                                            <a href="<?php echo e(route('page-account')); ?>?tab=creator"><i class="fi-rs-edit mr-10"></i>Creator</a>
                                         </li>
                                         <li>
-                                            {{-- FORM LOGOUT USER --}}
-                                            <form method="POST" action="{{ route('user.logout') }}" id="logout-form" style="display: none;">
-                                                @csrf
+                                            
+                                            <form method="POST" action="<?php echo e(route('user.logout')); ?>" id="logout-form" style="display: none;">
+                                                <?php echo csrf_field(); ?>
                                             </form>
                                             <a onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                                 <i class="fi fi-rs-sign-out mr-10"></i>Sign out
@@ -325,18 +325,18 @@
                                     </ul>
                                 </div>
                             </div>
-                            @else
+                            <?php else: ?>
                             <div class="header-action-icon-2">
-                                <a href="{{ route('login') }}" class="btn-simple" style="padding: 8px 20px; background: transparent; color: #FF4C61; border-radius: 25px; text-decoration: none; font-size: 14px; border: 1.5px solid #FF4C61; transition: all 0.3s ease;">
+                                <a href="<?php echo e(route('login')); ?>" class="btn-simple" style="padding: 8px 20px; background: transparent; color: #FF4C61; border-radius: 25px; text-decoration: none; font-size: 14px; border: 1.5px solid #FF4C61; transition: all 0.3s ease;">
                                     Sign In
                                 </a>
                             </div>
                             <div class="header-action-icon-2">
-                                <a href="{{ route('login') }}?form=register" class="btn-simple" style="padding: 8px 20px; background: #FF4C61; color: white; border-radius: 25px; text-decoration: none; font-size: 14px; border: 1.5px solid #FF4C61; transition: all 0.3s ease;">
+                                <a href="<?php echo e(route('login')); ?>?form=register" class="btn-simple" style="padding: 8px 20px; background: #FF4C61; color: white; border-radius: 25px; text-decoration: none; font-size: 14px; border: 1.5px solid #FF4C61; transition: all 0.3s ease;">
                                     Sign Up
                                 </a>
                             </div>
-                            @endif
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -418,20 +418,20 @@
                     <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block font-heading">
                         <nav>
                             <ul>
-                                <li class="{{ request()->routeIs('home') ? 'active' : '' }}">
+                                <li class="<?php echo e(request()->routeIs('home') ? 'active' : ''); ?>">
                                     <a href="/">Home</a>
                                 </li>
-                                <li class="{{ request()->routeIs('destinations*') ? 'active' : '' }}">
-                                    <a href="{{ route('destinations') }}">Destinations</a>
+                                <li class="<?php echo e(request()->routeIs('destinations*') ? 'active' : ''); ?>">
+                                    <a href="<?php echo e(route('destinations')); ?>">Destinations</a>
                                 </li>
-                                <li class="{{ request()->routeIs('blogs.*') ? 'active' : '' }}">
-                                    <a href="{{ route('blogs.index') }}">Blog</a>
+                                <li class="<?php echo e(request()->routeIs('blogs.*') ? 'active' : ''); ?>">
+                                    <a href="<?php echo e(route('blogs.index')); ?>">Blog</a>
                                 </li>
-                                <li class="{{ request()->routeIs('pricing') ? 'active' : '' }}">
-                                    <a href="{{ route('pricing') }}">Pricing</a>
+                                <li class="<?php echo e(request()->routeIs('pricing') ? 'active' : ''); ?>">
+                                    <a href="<?php echo e(route('pricing')); ?>">Pricing</a>
                                 </li>
-                                <li class="{{ request()->routeIs('promo') ? 'active' : '' }}">
-                                    <a href="{{ route('promo') }}">Promo</a>
+                                <li class="<?php echo e(request()->routeIs('promo') ? 'active' : ''); ?>">
+                                    <a href="<?php echo e(route('promo')); ?>">Promo</a>
                                 </li>
                             </ul>
                         </nav>
@@ -686,4 +686,4 @@
             <div class="site-copyright">Copyright 2022 © Nest. All rights reserved. Powered by AliThemes.</div>
         </div>
     </div>
-</div>
+</div><?php /**PATH D:\PROJEK PROJEK\Ebook-Traveling\resources\views/layouts_lp/components/header.blade.php ENDPATH**/ ?>

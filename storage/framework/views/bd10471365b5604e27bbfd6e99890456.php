@@ -1,14 +1,14 @@
-@php
+<?php
 // Pastikan $collections selalu ada
 if (!isset($collections)) {
 $collections = collect();
 }
-@endphp
+?>
 
-@extends('layouts_lp.app')
-@section('title', 'Home - MeatMap')
 
-@section('content')
+<?php $__env->startSection('title', 'Home - MeatMap'); ?>
+
+<?php $__env->startSection('content'); ?>
 <style>
     /* Scroll Container Styles */
     .products-scroll-container {
@@ -491,8 +491,8 @@ $collections = collect();
             <div class="home-slide-cover mt-30">
                 <div class="hero-slider-1 style-4 dot-style-1 dot-style-1-position-1 temp-hidden">
 
-                    {{-- FALLBACK SOLUTION --}}
-                    @php
+                    
+                    <?php
                     // Jika $homeSliders tidak ada, buat data default
                     if (!isset($homeSliders)) {
                     $homeSliders = collect([
@@ -510,15 +510,15 @@ $collections = collect();
                     ]
                     ]);
                     }
-                    @endphp
+                    ?>
 
-                    @foreach($homeSliders as $slider)
-                    <div class="single-hero-slider single-animation-wrap" style="background-image: url({{ asset($slider->image) }})">
-                        <a href="{{ $slider->target_url }}" style="display: block; height: 100%; text-decoration: none;">
+                    <?php $__currentLoopData = $homeSliders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $slider): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <div class="single-hero-slider single-animation-wrap" style="background-image: url(<?php echo e(asset($slider->image)); ?>)">
+                        <a href="<?php echo e($slider->target_url); ?>" style="display: block; height: 100%; text-decoration: none;">
                             <div class="slider-content">
                                 <h1 class="slider-title mb-40">
-                                    {{-- Pisahkan judul setiap 23 karakter --}}
-                                    @php
+                                    
+                                    <?php
                                     $title = $slider->title;
                                     $words = explode(' ', $title);
                                     $currentLine = '';
@@ -554,18 +554,18 @@ $collections = collect();
                                         ];
                                         }
                                         }
-                                        @endphp
+                                        ?>
 
-                                        {{-- Tampilkan judul dengan line break --}}
-                                        @foreach($lines as $line)
-                                        {{ $line }}@if(!$loop->last)<br>@endif
-                                        @endforeach
+                                        
+                                        <?php $__currentLoopData = $lines; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $line): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <?php echo e($line); ?><?php if(!$loop->last): ?><br><?php endif; ?>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </h1>
-                                <p class="slider-description mb-65">{{ $slider->description }}</p>
+                                <p class="slider-description mb-65"><?php echo e($slider->description); ?></p>
                             </div>
                         </a>
                     </div>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                 </div>
                 <div class="slider-arrow hero-slider-1-arrow"></div>
@@ -585,21 +585,22 @@ $collections = collect();
             <div class="carausel-10-columns-cover position-relative">
                 <div class="carausel-10-columns" id="carausel-10-columns">
 
-                    {{-- SEKARANG LEBIH SEDERHANA - Fallback sudah di Service --}}
-                    @foreach($topCities as $index => $city)
-                    <div class="card-2 bg-12 wow animate__animated animate__fadeInUp" data-wow-delay="{{ ($index + 1) * 0.1 }}s">
+                    
+                    <?php $__currentLoopData = $topCities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $city): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <div class="card-2 bg-12 wow animate__animated animate__fadeInUp" data-wow-delay="<?php echo e(($index + 1) * 0.1); ?>s">
                         <figure class="img-hover-scale overflow-hidden" style="width: 100px; height: 120px; margin: 0 auto 10px; border-radius: 8px;">
-                            <a href="/destinations/{{ $city->slug }}">
-                                <img src="{{ asset($city->image) }}" alt="{{ $city->name }}" style="width: 100%; height: 100%; object-fit: cover;" />
+                            <a href="/destinations/<?php echo e($city->slug); ?>">
+                                <img src="<?php echo e(asset($city->image)); ?>" alt="<?php echo e($city->name); ?>" style="width: 100%; height: 100%; object-fit: cover;" />
                             </a>
                         </figure>
                         <h6>
-                            <a href="/destinations/{{ $city->slug }}" class="{{ str_word_count($city->name) > 1 ? 'city-name-long' : '' }}">
-                                {{ $city->name }}
+                            <a href="/destinations/<?php echo e($city->slug); ?>" class="<?php echo e(str_word_count($city->name) > 1 ? 'city-name-long' : ''); ?>">
+                                <?php echo e($city->name); ?>
+
                             </a>
                         </h6>
                     </div>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                 </div>
             </div>
@@ -614,85 +615,85 @@ $collections = collect();
                     <div class="title">
                         <h3>Subscription Plans</h3>
                     </div>
-                    <a href="{{ route('pricing') }}" class="show-all">View All</a>
+                    <a href="<?php echo e(route('pricing')); ?>" class="show-all">View All</a>
                 </div>
 
-                @php
+                <?php
                 // Fallback jika $subscriptionPlans tidak ada
                 if (!isset($subscriptionPlans)) {
                 $subscriptionPlans = app(\App\Services\SubscriptionPlanService::class)->getHomepagePlans(3);
                 }
-                @endphp
+                ?>
 
-                @foreach($subscriptionPlans as $index => $plan)
-                @php
+                <?php $__currentLoopData = $subscriptionPlans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $plan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php
                 // Tentukan class col untuk responsive design
                 $colClass = 'col-lg-4 ';
                 $colClass .= ($index == 2) ? 'd-md-none d-lg-flex' : 'col-md-6';
 
                 // Tentukan delay untuk animation
                 $delay = $index * 0.2;
-                @endphp
+                ?>
 
-                <div class="{{ $colClass }}">
-                    <div class="banner-img wow animate__animated animate__fadeInUp" data-wow-delay="{{ $delay }}s">
-                        <a href="{{ route('pricing') }}">
-                            <img src="{{ asset($plan->image) }}" alt="{{ $plan->name }}" />
+                <div class="<?php echo e($colClass); ?>">
+                    <div class="banner-img wow animate__animated animate__fadeInUp" data-wow-delay="<?php echo e($delay); ?>s">
+                        <a href="<?php echo e(route('pricing')); ?>">
+                            <img src="<?php echo e(asset($plan->image)); ?>" alt="<?php echo e($plan->name); ?>" />
                         </a>
                     </div>
                 </div>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
             </div>
         </div>
     </section>
     <!--End banners-->
     <!-- collection -->
-    @if($collections->isNotEmpty())
-    @foreach($collections as $collection)
+    <?php if($collections->isNotEmpty()): ?>
+    <?php $__currentLoopData = $collections; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $collection): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
     <section class="product-tabs section-padding position-relative">
         <div class="container">
-            {{-- ... Bagian Judul Koleksi dan Tombol Navigasi Tetap Sama ... --}}
+            
             <div class="section-title style-2 wow animate__animated animate__fadeIn">
-                <h3>{{ $collection->name }}</h3>
-                <a href="/collections/{{ $collection->slug }}" class="show-all">View All</a>
+                <h3><?php echo e($collection->name); ?></h3>
+                <a href="/collections/<?php echo e($collection->slug); ?>" class="show-all">View All</a>
             </div>
             <button class="scroll-btn scroll-left"><i class="fi-rs-angle-left"></i></button>
             <button class="scroll-btn scroll-right"><i class="fi-rs-angle-right"></i></button>
 
             <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="{{ $collection->slug }}" role="tabpanel">
+                <div class="tab-pane fade show active" id="<?php echo e($collection->slug); ?>" role="tabpanel">
                     <div class="products-scroll-container">
                         <div class="row product-grid-4 scroll-wrapper">
 
-                            @if($collection->ebooks->isNotEmpty())
-                            @foreach($collection->ebooks as $index => $ebook)
+                            <?php if($collection->ebooks->isNotEmpty()): ?>
+                            <?php $__currentLoopData = $collection->ebooks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $ebook): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <div class="col-lg-1-5 col-md-4 col-12 col-sm-6 scroll-item">
 
-                                {{-- ========== KARTU EBOOK YANG SAMA UNTUK SEMUA USER ========== --}}
-                                <div class="product-cart-wrap mb-30 wow animate__animated animate__fadeIn" data-wow-delay="{{ ($index + 1) * 0.1 }}s">
+                                
+                                <div class="product-cart-wrap mb-30 wow animate__animated animate__fadeIn" data-wow-delay="<?php echo e(($index + 1) * 0.1); ?>s">
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
-                                            <a href="/ebooks/{{ $ebook->slug }}">
-                                                <img class="default-img" src="{{ $ebook->cover_image ?: 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg' }}" alt="{{ $ebook->title }}" />
+                                            <a href="/ebooks/<?php echo e($ebook->slug); ?>">
+                                                <img class="default-img" src="<?php echo e($ebook->cover_image ?: 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg'); ?>" alt="<?php echo e($ebook->title); ?>" />
                                             </a>
                                         </div>
                                         <div class="product-badges product-badges-position product-badges-mrg">
-                                            <!-- @if($ebook->is_featured)
+                                            <!-- <?php if($ebook->is_featured): ?>
                                             <span class="hot">Featured</span>
-                                            @endif -->
-                                            <span class="badge-language hot">{{ strtoupper($ebook->language) }}</span>
+                                            <?php endif; ?> -->
+                                            <span class="badge-language hot"><?php echo e(strtoupper($ebook->language)); ?></span>
                                         </div>
                                     </div>
                                     <div class="product-content-wrap">
-                                        <h2 style="margin-top:15px;"><a href="/ebooks/{{ $ebook->slug }}">{{ Str::limit($ebook->title, 40) }}</a></h2>
+                                        <h2 style="margin-top:15px;"><a href="/ebooks/<?php echo e($ebook->slug); ?>"><?php echo e(Str::limit($ebook->title, 40)); ?></a></h2>
 
                                         <div class="product-author" style="margin-bottom:-12px;">
-                                            @if($ebook->creator)
-                                            <span>by {{ $ebook->creator->pen_name ?? $ebook->creator->user->name }}</span>
-                                            @else
+                                            <?php if($ebook->creator): ?>
+                                            <span>by <?php echo e($ebook->creator->pen_name ?? $ebook->creator->user->name); ?></span>
+                                            <?php else: ?>
                                             <span>by Unknown Author</span>
-                                            @endif
+                                            <?php endif; ?>
                                         </div>
 
                                         <div class="product-meta">
@@ -700,18 +701,18 @@ $collections = collect();
                                                 <div class="product-rate-cover text-end">
                                                     <div class="product-rate-cover">
                                                         <div class="product-rate d-inline-block">
-                                                            {{-- HITUNG RATA-RATA LANGSUNG DARI TABEL ebook_ratings --}}
-                                                            <div class="product-rating" style="width: {{ ($ebook->ratings()->avg('rating') / 5) * 100 }}%"></div>
+                                                            
+                                                            <div class="product-rating" style="width: <?php echo e(($ebook->ratings()->avg('rating') / 5) * 100); ?>%"></div>
                                                         </div>
-                                                        {{-- TAMPILKAN JUGA RATA-RATA YANG SAMA --}}
-                                                        <span class="font-small ml-5 text-muted">({{ round($ebook->ratings()->avg('rating'), 2) }})</span>
+                                                        
+                                                        <span class="font-small ml-5 text-muted">(<?php echo e(round($ebook->ratings()->avg('rating'), 2)); ?>)</span>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="read-count">
-                                                <i class="fi-rs-eye align-middle"></i><!--  {{ number_format($ebook->view_count) }} -->
+                                                <i class="fi-rs-eye align-middle"></i><!--  <?php echo e(number_format($ebook->view_count)); ?> -->
                                                 <span class="post-on">
-                                                    @php
+                                                    <?php
                                                     $views = $ebook->view_count;
                                                     if ($views >= 1000000000) { // 1 Miliar
                                                     $formattedViews = number_format($views / 1000000000, 1) . 'B';
@@ -722,47 +723,49 @@ $collections = collect();
                                                     } else {
                                                     $formattedViews = $views;
                                                     }
-                                                    @endphp
-                                                    {{ $formattedViews }}
+                                                    ?>
+                                                    <?php echo e($formattedViews); ?>
+
                                                 </span>
                                             </div>
                                         </div>
 
-                                        <!-- <p class="product-description">{{ Str::limit($ebook->short_description ?? $ebook->description, 80) }}</p> -->
-                                        @php
+                                        <!-- <p class="product-description"><?php echo e(Str::limit($ebook->short_description ?? $ebook->description, 80)); ?></p> -->
+                                        <?php
                                         // Ambil teks deskripsi
                                         $descriptionText = $ebook->short_description ?? $ebook->description;
 
                                         // Cek apakah teks pendek (kira-kira 1 baris). Sesuaikan angka 40 jika perlu.
                                         $isSingleLine = strlen($descriptionText) <= 29;
-                                            @endphp
+                                            ?>
 
-                                            <p class="product-description {{ $isSingleLine ? 'single-line' : '' }}">
-                                            {{ Str::limit($descriptionText, 75) }}
+                                            <p class="product-description <?php echo e($isSingleLine ? 'single-line' : ''); ?>">
+                                            <?php echo e(Str::limit($descriptionText, 75)); ?>
+
                                             </p>
 
-                                            {{-- LOGIKA HANYA PADA TOMBOL AKSI --}}
-                                            @if(auth()->check() && auth()->user()->hasActiveSubscription())
-                                            <a href="/reader/{{ $ebook->slug }}" class="action-btn btn-read-now">
+                                            
+                                            <?php if(auth()->check() && auth()->user()->hasActiveSubscription()): ?>
+                                            <a href="/reader/<?php echo e($ebook->slug); ?>" class="action-btn btn-read-now">
                                                 <i class="fi-rs-book-open"></i>
                                                 <span>Read Now</span>
                                             </a>
-                                            @else
+                                            <?php else: ?>
                                             <a href="/pricing" class="action-btn btn-subscribe-now">
                                                 <i class="fi-rs-lock"></i>
                                                 <span>Subscribe to Read</span>
                                             </a>
-                                            @endif
+                                            <?php endif; ?>
                                     </div>
                                 </div>
 
                             </div>
-                            @endforeach
-                            @else
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            <?php else: ?>
                             <div class="col-12 text-center py-5">
                                 <p class="text-muted">No ebooks available in this collection yet.</p>
                             </div>
-                            @endif
+                            <?php endif; ?>
 
                         </div>
                     </div>
@@ -770,8 +773,8 @@ $collections = collect();
             </div>
         </div>
     </section>
-    @endforeach
-    @endif
+    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    <?php endif; ?>
     <!-- blogs -->
     <section class="section-padding pb-5">
         <div class="container mb-30">
@@ -779,28 +782,28 @@ $collections = collect();
                 <div class="title">
                     <h3>Latest Blog</h3>
                 </div>
-                <a href="{{ route('blogs.index') }}" class="show-all">View All</a>
+                <a href="<?php echo e(route('blogs.index')); ?>" class="show-all">View All</a>
             </div>
             <div class="loop-grid">
                 <div class="row">
-                    @forelse ($latestBlogs as $blog)
+                    <?php $__empty_1 = true; $__currentLoopData = $latestBlogs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $blog): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
                         <div class="post-thumb">
-                            <a href="{{ route('blogs.show', $blog->slug) }}">
-                                <img class="border-radius-15" src="{{ $blog->featured_image ?: asset('images/blog-placeholder.webp') }}" alt="{{ $blog->title }}" />
+                            <a href="<?php echo e(route('blogs.show', $blog->slug)); ?>">
+                                <img class="border-radius-15" src="<?php echo e($blog->featured_image ?: asset('images/blog-placeholder.webp')); ?>" alt="<?php echo e($blog->title); ?>" />
                             </a>
                         </div>
                         <div class="entry-content-2">
-                            <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="#">{{ $blog->category }}</a></h6>
+                            <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="#"><?php echo e($blog->category); ?></a></h6>
                             <h4 class="post-title mb-15">
-                                <a href="{{ route('blogs.show', $blog->slug) }}">{{ Str::limit($blog->title, 60) }}</a>
+                                <a href="<?php echo e(route('blogs.show', $blog->slug)); ?>"><?php echo e(Str::limit($blog->title, 60)); ?></a>
                             </h4>
                             <div class="entry-meta font-xs color-grey mt-10 pb-10">
                                 <div>
-                                    <!-- <span class="post-on mr-10">{{ $blog->published_at->format('d F Y') }}</span> -->
-                                    <span class="post-on mr-10">{{ \Carbon\Carbon::parse($blog->published_at)->diffInHours() < 24 ? $blog->published_at->diffForHumans() : $blog->published_at->format('d M Y') }}</span>
+                                    <!-- <span class="post-on mr-10"><?php echo e($blog->published_at->format('d F Y')); ?></span> -->
+                                    <span class="post-on mr-10"><?php echo e(\Carbon\Carbon::parse($blog->published_at)->diffInHours() < 24 ? $blog->published_at->diffForHumans() : $blog->published_at->format('d M Y')); ?></span>
                                     <span class="post-on has-dot">
-                                        @php
+                                        <?php
                                         $views = $blog->view_count;
                                         if ($views >= 1000000000) { // 1 Miliar
                                         $formattedViews = number_format($views / 1000000000, 1) . 'B';
@@ -811,20 +814,20 @@ $collections = collect();
                                         } else {
                                         $formattedViews = $views;
                                         }
-                                        @endphp
-                                        {{ $formattedViews }} Views
+                                        ?>
+                                        <?php echo e($formattedViews); ?> Views
                                     </span>
-                                    {{-- Jika Anda menambah kolom read_time (dalam menit) --}}
-                                    {{--<span class="hit-count has-dot">{{ $blog->read_time }} mins read</span>--}}
+                                    
+                                    
                                 </div>
                             </div>
                         </div>
                     </article>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <div class="col-12 text-center py-5">
                         <p class="text-muted">No blog posts available yet.</p>
                     </div>
-                    @endforelse
+                    <?php endif; ?>
                 </div>
             </div>
             <!-- </div> -->
@@ -971,4 +974,5 @@ $collections = collect();
         });
     });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts_lp.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\PROJEK PROJEK\Ebook-Traveling\resources\views/index.blade.php ENDPATH**/ ?>

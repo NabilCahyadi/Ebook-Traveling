@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\SubscriptionPlan;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class SubscriptionPlanSeeder extends Seeder
 {
@@ -12,69 +13,63 @@ class SubscriptionPlanSeeder extends Seeder
     {
         $plans = [
             [
-                'name' => 'Basic Plan',
-                'slug' => 'basic-plan',
-                'description' => 'Perfect for casual readers and occasional travelers. Access to essential travel guides with basic features.',
-                'price' => 9.99,
-                'duration_days' => 30,
-                'cover_image' => 'images/banner-subs-1.webp',
+                'id' => Str::uuid(),
+                'name' => 'Free Plan',
+                'slug' => 'free-plan',
+                'description' => 'Akses terbatas ke beberapa e-book gratis.',
+                'cover_image' => 'banner-subs-1.webp', // Cover Image ditambahkan
+                'price' => 0.00,
+                'duration_days' => 0, // 0 berarti tidak ada batas waktu
                 'features' => json_encode([
-                    'Access to 100+ travel guides',
-                    'Basic customer support',
-                    'Mobile app access',
-                    'Regular content updates',
-                    'Email support',
-                    '1 device at a time'
+                    'Akses 5 e-book gratis per bulan',
+                    'Iklan akan ditampilkan',
+                    'Dukungan standar'
                 ]),
                 'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-                'name' => 'Premium Plan',
-                'slug' => 'premium-plan',
-                'description' => 'For avid travelers and frequent readers. Get access to exclusive city guides and advanced features.',
-                'price' => 19.99,
+                'id' => Str::uuid(),
+                'name' => 'Monthly Explorer',
+                'slug' => 'monthly-explorer',
+                'description' => 'Akses tidak terbatas ke semua e-book selama sebulan.',
+                'cover_image' => 'banner-subs-2.webp', // Cover Image ditambahkan
+                'price' => 49000.00,
                 'duration_days' => 30,
-                'cover_image' => 'images/banner-subs-2.webp',
                 'features' => json_encode([
-                    'Access to 500+ travel guides',
-                    'Priority customer support',
-                    'Offline reading',
-                    'Exclusive city guides',
-                    'Travel itinerary planner',
-                    'Download up to 50 guides',
-                    '3 devices at a time',
-                    'Advanced search filters'
+                    'Akses tidak terbatas ke semua e-book',
+                    'Unduh 10 e-book per bulan',
+                    'Tanpa iklan',
+                    'Dukungan prioritas'
                 ]),
                 'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-                'name' => 'Pro Plan',
-                'slug' => 'pro-plan',
-                'description' => 'Ultimate travel experience with exclusive benefits. Perfect for travel enthusiasts and professionals.',
-                'price' => 29.99,
-                'duration_days' => 30,
-                'cover_image' => 'images/banner-subs-3.webp',
+                'id' => Str::uuid(),
+                'name' => 'Yearly Voyager',
+                'slug' => 'yearly-voyager',
+                'description' => 'Akses tidak terbatas sepanjang tahun dengan harga terbaik.',
+                'cover_image' => 'banner-subs-3.webp', // Cover Image ditambahkan
+                'price' => 499000.00,
+                'duration_days' => 365,
                 'features' => json_encode([
-                    'Unlimited travel guides',
-                    '24/7 premium support',
-                    'Offline download all guides',
-                    'Exclusive destination content',
-                    'Early access to new guides',
-                    'Personal travel consultant',
-                    'Custom travel plans',
-                    '5 devices at a time',
-                    'Priority feature requests',
-                    'Monthly newsletter with tips'
+                    'Akses tidak terbatas ke semua e-book',
+                    'Unduh tidak terbatas',
+                    'Tanpa iklan',
+                    'Akses konten eksklusif',
+                    'Dukungan prioritas 24/7'
                 ]),
                 'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
         ];
 
-        foreach ($plans as $plan) {
-            SubscriptionPlan::create($plan);
-        }
+        DB::table('subscription_plans')->insert($plans);
 
-        $this->command->info('✅ Subscription plans seeded successfully!');
-        $this->command->info('💰 Total: ' . count($plans) . ' subscription plans created');
+        $this->command->info('Subscription Plans created successfully!');
     }
 }

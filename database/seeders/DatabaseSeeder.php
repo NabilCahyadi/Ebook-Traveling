@@ -17,11 +17,19 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             RoleSeeder::class,
-            AdminSeeder::class,
+            CityCategorySeeder::class,
+            CollectionSeeder::class,
             UserSeeder::class,
+            AdminSeeder::class,
             CitySeeder::class,
-            CategorySeeder::class,
-            LandingPageSectionsSeeder::class,
+            EbookSeeder::class,
+            BannerSeeder::class,
+            EbookCategorySeeder::class,
+            CollectionEbookSeeder::class,
+            SubscriptionPlanSeeder::class,
+            SubscriptionSeeder::class,
+            BlogSeeder::class,
+            PremiumUserSeeder::class,
         ]);
     }
 }

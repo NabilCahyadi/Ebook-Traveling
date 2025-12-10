@@ -10,6 +10,7 @@ class Rating extends Model
     protected $table = 'ebook_ratings';
 
     protected $fillable = [
+        'id',
         'user_id',
         'ebook_id',
         'rating',

@@ -31,14 +31,35 @@ class BlogService
         return $this->blogRepository->getPublished($perPage);
     }
 
-    public function getBlogById(string $id)
-    {
-        return $this->blogRepository->getById($id);
-    }
-
+    // --- PERBAIKAN: Gunakan repository ---
     public function getBlogBySlug(string $slug)
     {
         return $this->blogRepository->getBySlug($slug);
+    }
+
+    // --- TAMBAHKAN METHOD INI ---
+    public function getAllPublishedTags()
+    {
+        // Bisa langsung di service atau lewat repository
+        return Blog::where('status', 'published')
+            ->pluck('tags')
+            ->flatten()
+            ->unique();
+    }
+
+    // --- TAMBAHKAN METHOD INI ---
+    public function getPublishedBlogsByTag(string $tag, int $perPage = 10)
+    {
+        // Bisa langsung di service atau lewat repository
+        return Blog::where('status', 'published')
+            ->whereJsonContains('tags', $tag)
+            ->orderBy('published_at', 'desc')
+            ->paginate($perPage);
+    }
+
+    public function getBlogById(string $id)
+    {
+        return $this->blogRepository->getById($id);
     }
 
     public function createBlog(array $data)
@@ -166,7 +187,7 @@ class BlogService
         }
 
         // Set published_at if publishing
-        if (isset($data['is_published']) && $data['is_published'] && !isset($data['published_at'])) {
+        if (isset($data['status']) && $data['status'] && !isset($data['published_at'])) {
             $data['published_at'] = now();
         }
 

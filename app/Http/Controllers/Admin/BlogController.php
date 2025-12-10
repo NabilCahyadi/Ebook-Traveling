@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\BlogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\BlogCategory;
+// use App\Models\BlogCategory;
 
 class BlogController extends Controller
 {
