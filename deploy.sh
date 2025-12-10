@@ -19,6 +19,5 @@ $PHP_BIN artisan migrate --force
 # Jalankan seeder otomatis
 $PHP_BIN artisan db:seed --force
 
-
 # Clear optimize (cache, config, view, route, dll)
 $PHP_BIN artisan optimize:clear
