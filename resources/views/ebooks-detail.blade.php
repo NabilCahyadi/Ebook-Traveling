@@ -101,10 +101,13 @@
         overflow: hidden;
         flex-shrink: 0;
         background-color: #f0f0f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .user-avatar {
-        width: 100%;
+        width: auto;
         height: 100%;
         object-fit: contain;
         display: block;
@@ -292,6 +295,22 @@
         color: #FF4C61;
         background-color: #fff;
     }
+
+    /* --- CSS untuk Read More/Less Link --- */
+    .review-text-container .read-more-link {
+        color: #FF4C61;
+        /* Warna link biru, bisa disesuaikan */
+        font-weight: bold;
+        font-size: 0.9em;
+        cursor: pointer;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .review-text-container .read-more-link:hover {
+        color: #df1e35ff;
+        text-decoration: underline;
+    }
 </style>
 
 <main class="main">
@@ -300,7 +319,7 @@
             <div class="breadcrumb">
                 <a href="{{ route('home') }}" rel="nofollow"><i class="fi-rs-home mr-5"></i></a>
                 <span></span>
-                <a href="#">E-Books</a>
+                <a href="/">E-Books</a>
                 <span class="active">‎ ‎ {{ $ebook->title }}</span>
             </div>
         </div>
@@ -379,8 +398,8 @@
                             <!-- BAGIAN KIRI: DAFTAR REVIEW -->
                             <div class="col-lg-8">
                                 <div class="review-container">
-                                    <h4 class="mb-10">Customer Reviews ( {{ $ratings->count() }} ) </h4>
-                                    <div class="showing-info">Showing {{ min(3, $ratings->count()) }} out of {{ $ratings->count() }} reviews</div>
+                                    <h4 class="mb-10">Customer Reviews ( {{ $ratings->total() }} ) </h4>
+                                    <div class="showing-info">Showing {{ $ratings->firstItem() }} to {{ $ratings->lastItem() }} of {{ $ratings->total() }} reviews</div>
 
                                     <div class="comment-list">
                                         @forelse ($ratings as $rating)
@@ -395,13 +414,24 @@
                                                 <div class="avatar-container">
                                                     <img src="{{ $rating->user->avatar ? asset('storage/' . $rating->user->avatar) : asset('images/user-avatar.png') }}" alt="{{ $rating->user->name }}" class="user-avatar" />
                                                 </div>
-                                                <a href="#" class="username ms-3">{{ $rating->user->name }}</a>
+                                                <a href="" class="username ms-3">{{ $rating->user->name }}</a>
                                             </div>
-                                            <p class="review-text">{{ $rating->review_text }}</p>
+                                            <div class="review-text-container">
+                                                {{-- Teks yang dipotong (akan muncul pertama kali) --}}
+                                                <p class="truncated-text">{{ Str::limit($rating->review_text, 180) }}</p>
+
+                                                {{-- Teks lengkap (awalnya disembunyikan) --}}
+                                                <p class="full-text" style="display: none;">{{ $rating->review_text }}</p>
+
+                                                {{-- Link "more" / "less" --}}
+                                                @if (Str::length($rating->review_text) > 150)
+                                                <a href="#" class="read-more-link">more</a>
+                                                @endif
+                                            </div>
                                         </div>
                                         @empty
                                         <div class="single-comment mb-30">
-                                            <p>Belum ada review untuk e-book ini.</p>
+                                            <p>There are no reviews for this e-book yet.</p>
                                         </div>
                                         @endforelse
                                     </div>
@@ -494,16 +524,16 @@
                                         <textarea class="form-control w-100" name="review_text" id="comment" cols="30" rows="9" placeholder="Write Comment" required></textarea>
                                     </div>
                                 </div>
-                                <div class="col-sm-6">
+                                <!-- <div class="col-sm-6">
                                     <div class="form-group">
-                                        <input class="form-control" name="name" id="name" type="text" placeholder="Name" value="{{ auth()->user()->name }}" required />
+                                        <input class="form-control" name="name" id="name" type="text" placeholder="Name" value="{{ auth()->user()->name }}" disabled />
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <input class="form-control" name="email" id="email" type="email" placeholder="Email" value="{{ auth()->user()->email }}" required />
+                                        <input class="form-control" name="email" id="email" type="email" placeholder="Email" value="{{ auth()->user()->email }}" disabled />
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label>Rating</label>
@@ -658,4 +688,32 @@
         </div>
     </div>
 </main>
+<!-- Tambahkan ini sebelum </body> -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const readMoreLinks = document.querySelectorAll('.read-more-link');
+
+        readMoreLinks.forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault(); // Mencegah link meloncat ke atas
+
+                const container = this.closest('.review-text-container');
+                const fullText = container.querySelector('.full-text');
+                const truncatedText = container.querySelector('.truncated-text');
+
+                if (fullText.style.display === 'none') {
+                    // Jika teks lengkap tersembunyi, tampilkan
+                    fullText.style.display = 'block';
+                    truncatedText.style.display = 'none';
+                    this.textContent = 'less'; // Ubah teks link menjadi "less"
+                } else {
+                    // Jika teks lengkap terlihat, sembunyikan kembali
+                    fullText.style.display = 'none';
+                    truncatedText.style.display = 'block';
+                    this.textContent = 'more'; // Ubah teks link menjadi "more"
+                }
+            });
+        });
+    });
+</script>
 @endsection

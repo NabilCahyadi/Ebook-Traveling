@@ -22,6 +22,7 @@ class BlogController extends Controller
     {
         $blogs = $this->blogService->getPublishedBlogs(10);
         $allTags = $this->blogService->getAllPublishedTags();
+        // $popularTags = $this->blogService->getPopularTags(10);
 
         return view('blogs', compact('blogs', 'allTags'));
     }
@@ -44,7 +45,8 @@ class BlogController extends Controller
     {
         $blogs = $this->blogService->getPublishedBlogsByTag($tag, 10);
         $allTags = $this->blogService->getAllPublishedTags();
+        $popularTags = $this->blogService->getPopularTags(10);
 
-        return view('blogs', compact('blogs', 'tag', 'allTags'));
+        return view('blogs-index', compact('blogs', 'tag', 'allTags','popularTags'));
     }
 }

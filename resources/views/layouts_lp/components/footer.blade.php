@@ -26,7 +26,7 @@
                             <p class="font-lg text-heading">The Most Comprehensive Indonesia Destination Guide</p>
                         </div>
                         <ul class="contact-infor">
-                            <li><img src="assets/imgs/theme/icons/icon-location.svg" alt="" /><strong>Address : </strong> <span>Perumahan Jati Indah, Jl. Otista No.57 Blok. B, Panyingkiran, Kec. Ciamis, Kabupaten Ciamis, Jawa Barat 46211</span></li>
+                            <li><img src="assets/imgs/theme/icons/icon-location.svg" alt="" /><strong>Address : </strong> <span>Perumahan Jati Indah, Jl. Otista No.57 Blok. B, Panyingkiran, Kab. Ciamis, Jawa Barat</span></li>
                             <li><img src="assets/imgs/theme/icons/icon-contact.svg" alt="" /><strong>Call Us :</strong><span>(+62) - 540-025-124553</span></li>
                             <li><img src="assets/imgs/theme/icons/icon-email-2.svg" alt="" /><strong>Email :</strong><span>smactactic@gmail.com</span></li>
                             <li><img src="assets/imgs/theme/icons/icon-clock.svg" alt="" /><strong>Hours :</strong><span>08:00 - 16:30, EveryDay</span></li>
