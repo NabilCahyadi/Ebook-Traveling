@@ -26,8 +26,9 @@ use App\Models\Banner;
 use App\Observers\BannerObserver;
 use App\Models\SubscriptionPlan;
 use App\Observers\SubscriptionPlanObserver;
-use App\Models\BlogCategory;
-use App\Observers\BlogCategoryObserver;
+use App\Repositories\Interfaces\RatingRepositoryInterface;
+use App\Repositories\RatingRepository;
+use App\Services\RatingService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -39,6 +40,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(BannerRepository::class);
         $this->app->bind(BannerService::class);
         $this->app->bind(CollectionRepositoryInterface::class, CollectionRepository::class);
+        $this->app->bind(RatingRepositoryInterface::class, RatingRepository::class);
+        $this->app->singleton(RatingService::class, function ($app) {
+            return new RatingService($app->make(RatingRepositoryInterface::class));
+        });
     }
 
     /**
@@ -55,7 +60,6 @@ class AppServiceProvider extends ServiceProvider
         Category::observe(CategoryObserver::class);
         Banner::observe(BannerObserver::class);
         SubscriptionPlan::observe(SubscriptionPlanObserver::class);
-        BlogCategory::observe(BlogCategoryObserver::class);
 
         Paginator::useBootstrapFive();
 

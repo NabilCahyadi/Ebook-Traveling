@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('collection_ebooks', function (Blueprint $table) {
+        Schema::create('collection_ebook', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('collection_id');
             $table->uuid('ebook_id');
@@ -41,6 +41,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('collection_ebooks');
+        Schema::dropIfExists('collection_ebook');
     }
 };

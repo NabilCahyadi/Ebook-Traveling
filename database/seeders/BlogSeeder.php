@@ -7,182 +7,174 @@ use App\Models\Blog;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use App\Models\Ebook;
 
 class BlogSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
-    public function run(): void
+     function run(): void
     {
-        // Get admin user as author
-        $admin = User::where('email', 'admin@ebook.com')
-            ->orWhere('email', 'nabilcahyadi155@gmail.com')
-            ->first();
+        // Ambil user yang bisa menjadi author (admin dan creator)
+        $authors = User::whereHas('roles', function ($query) {
+            $query->whereIn('name', ['admin', 'creator']);
+        })->pluck('id')->toArray();
 
-        if (!$admin) {
-            $admin = User::first();
-        }
+        // Ambil ID dari beberapa e-book yang sudah dipublish
+        $ebookIds = Ebook::where('status', 'published')->pluck('id')->toArray();
 
-        if (!$admin) {
-            $this->command->error('No users found. Please run UserSeeder first.');
+        if (empty($authors) || empty($ebookIds)) {
+            $this->command->error('Tidak ada author atau e-book yang ditemukan. Jalankan UserSeeder dan EbookSeeder terlebih dahulu!');
             return;
         }
 
-        $authorId = $admin->id;
-
+        // --- 10 Artikel Blog Spesifik ---
         $blogs = [
-            // Data lama
             [
-                'title' => 'Liburan Hemat Budget: Cara Menghemat Jutaan Rupiah Tanpa Mengorbankan Kenyamanan',
-                'slug' => 'liburan-hemat-budget-' . Str::random(5),
-                'excerpt' => 'Panduan lengkap untuk merencanakan liburan dengan budget terbatas namun tetap menyenangkan. Tips praktis dari para travel expert.',
-                'content' => '<p>Traveling tidak harus mahal! Dengan perencanaan yang tepat, Anda bisa menikmati liburan impian tanpa menguras tabungan. Berikut adalah strategi terbaik untuk menghemat biaya perjalanan Anda.</p><h2>1. Pesan Tiket Jauh-Jauh Hari</h2><p>Booking tiket pesawat 2-3 bulan sebelum keberangkatan bisa menghemat hingga 50% biaya transportasi. Gunakan aplikasi pembanding harga untuk mendapatkan deal terbaik.</p><h2>2. Pilih Akomodasi Alternatif</h2><p>Hostel, guesthouse, atau homestay sering kali lebih murah dan menawarkan pengalaman lokal yang autentik. Pertimbangkan juga opsi seperti Airbnb atau house sitting.</p>',
-                'category' => 'Budget Travel',
+                'title' => 'Menjelajahi Keajaiban Raja Ampat: Surga Tersembunyi di Timur Indonesia',
+                'excerpt' => 'Raja Ampat bukan sekadar destinasi, itu adalah sebuah pengalaman spiritual. Temukan kekayaan bawah lautnya yang memukau dan pemandangan dari atas bukit yang akan mencuri napas Anda.',
+                'content' => 'Terletak di ujung barat Papua, Raja Ampat adalah sebuah kepulauan yang menjadi surga bagi penyelam dan pecinta alam. Dengan lebih dari 75% spesies karang dunia dan 1.500 spesies ikan, kawasan ini menawarkan pengalaman bawah laut yang tak tertandingi. Artikel ini akan membawa Anda menyusuri Wayag, Piaynemo, dan spot-spot tersembunyi lainnya.',
                 'status' => 'published',
-                'view_count' => rand(5000, 15000),
-                'author_id' => $authorId,
-                'published_at' => now()->subDays(60),
-                'tags' => json_encode(['budget', 'tips', 'hemat', 'traveling']),
+                'category' => 'Travel',
+                'tags' => json_encode(['travel', 'raja-ampat', 'papua', 'diving', 'indonesia']),
+                'featured_image' => '/images/blogs/1.webp',
             ],
             [
-                'title' => '7 Rute Rahasia Indonesia yang Tidak Ada di Peta Wisatawan Biasa (Panduan Eksklusif)',
-                'slug' => '7-rute-rahasia-indonesia-' . Str::random(5),
-                'excerpt' => 'Jelajahi destinasi tersembunyi Indonesia yang belum terjamah wisatawan massal. Panduan eksklusif ke tempat-tempat menakjubkan.',
-                'content' => '<p>Indonesia memiliki ribuan destinasi yang belum banyak diketahui wisatawan. Berikut adalah 7 rute rahasia yang wajib Anda kunjungi untuk pengalaman traveling yang unik.</p><h2>1. Desa Wae Rebo - Flores</h2><p>Desa tradisional di atas awan dengan rumah khas berbentuk kerucut. Akses menantang namun pemandangan sangat memukau.</p><h2>2. Danau Labuan Cermin - Kalimantan</h2><p>Danau dua rasa dengan air tawar dan air asin yang tidak bercampur. Kejernihan air mencapai 5-6 meter!</p>',
-                'category' => 'Hidden Gems',
+                'title' => 'Tips dan Trik Fotografi Landscape untuk Pemula',
+                'excerpt' => 'Ingin menghasilkan foto landscape yang Instagramable? Mulai dari memilih waktu hingga komposisi, simak panduan lengkapnya di sini.',
+                'content' => 'Fotografi landscape adalah seni menangkap keindahan alam. Untuk pemula, memulainya bisa terasa membingungkan. Kami akan membagikan tips dasar seperti pentingnya "Golden Hour", aturan komposisi sepertiga (rule of thirds), dan perlengkapan minimal yang harus Anda bawa untuk mendapatkan foto yang memukau.',
                 'status' => 'published',
-                'view_count' => rand(8000, 20000),
-                'author_id' => $authorId,
-                'published_at' => now()->subDays(45),
-                'tags' => json_encode(['destinasi', 'hidden gems', 'indonesia', 'adventure']),
+                'category' => 'Tips & Trick',
+                'tags' => json_encode(['fotografi', 'landscape', 'tips', 'pemula', 'kamera']),
+                'featured_image' => '/images/blogs/2.webp',
             ],
             [
-                'title' => 'Beyond Bali: 5 Destinasi Budaya Terbaik di Indonesia untuk Pecinta Sejarah',
-                'slug' => 'beyond-bali-destinasi-budaya-' . Str::random(5),
-                'excerpt' => 'Indonesia kaya akan warisan budaya dan sejarah. Temukan 5 destinasi yang menawarkan pengalaman budaya mendalam di luar Bali.',
-                'content' => '<p>Selain Bali, Indonesia memiliki banyak destinasi dengan kekayaan budaya dan sejarah yang luar biasa. Mari jelajahi 5 tempat terbaik untuk pecinta sejarah.</p><h2>1. Yogyakarta - Jantung Budaya Jawa</h2><p>Dari Candi Borobudur hingga Keraton, Yogyakarta adalah surga bagi pencinta budaya. Jangan lewatkan pertunjukan wayang kulit dan batik traditional.</p><h2>2. Toraja - Sulawesi Selatan</h2><p>Budaya unik dengan upacara pemakaman yang spektakuler. Rumah Tongkonan yang ikonik dan pemandangan alam yang memukau.</p>',
-                'category' => 'Cultural Travel',
+                'title' => 'Kuliner Nusantara: 5 Makanan Pedas yang Wajib Dicoba',
+                'excerpt' => 'Bagi Anda pecinta makanan pedas, Indonesia adalah surga. Ini dia 5 makanan pedas legendaris dari berbagai penjuru negeri yang siap menggoyang lidah Anda.',
+                'content' => 'Dari cabai rawit hijau khas Padang hingga sambal terasi ala Jawa Timur, kekayaan rasa pedas di Indonesia sangat beragam. Artikel ini mengulas 5 hidangan pedas yang wajib ada dalam daftar kuliner Anda, seperti Ayam Penyet Rica-rica, Seblak Bandung, dan Ceker Setan.',
                 'status' => 'published',
-                'view_count' => rand(6000, 18000),
-                'author_id' => $authorId,
-                'published_at' => now()->subDays(30),
-                'tags' => json_encode(['budaya', 'sejarah', 'cultural', 'heritage']),
+                'category' => 'Food & Culture',
+                'tags' => json_encode(['kuliner', 'makanan-pedas', 'indonesia', 'food', 'travel']),
+                'featured_image' => '/images/blogs/3.webp',
             ],
             [
-                'title' => 'Jangan Sampai Salah! Ini 10 Kesalahan Fatal Saat Traveling ke Pedalaman',
-                'slug' => '10-kesalahan-fatal-traveling-' . Str::random(5),
-                'excerpt' => 'Hindari kesalahan umum yang bisa membahayakan perjalanan Anda ke pedalaman. Panduan safety dan persiapan yang wajib diketahui.',
-                'content' => '<p>Traveling ke pedalaman membutuhkan persiapan khusus. Berikut adalah 10 kesalahan yang harus Anda hindari untuk memastikan perjalanan aman dan menyenangkan.</p><h2>1. Tidak Membawa Perlengkapan P3K</h2><p>Di pedalaman, akses ke fasilitas kesehatan sangat terbatas. Selalu bawa kotak P3K lengkap dengan obat-obatan dasar.</p><h2>2. Mengabaikan Cuaca Lokal</h2><p>Cuaca di pedalaman bisa berubah drastis. Selalu cek prakiraan cuaca dan bawa pakaian berlapis serta jas hujan.</p><h2>3. Tidak Memberitahu Itinerary ke Keluarga</h2><p>Selalu informasikan rencana perjalanan Anda ke keluarga atau teman. Ini penting untuk keamanan jika terjadi keadaan darurat.</p>',
-                'category' => 'Travel Tips',
+                'title' => 'Misteri Candi Borobudur: Kisah di Balik Reliefnya',
+                'excerpt' => 'Borobudur lebih dari sekadar tumpukan batu. Setiap relief menceritakan sebuah kisah. Mari kita gali lebih dalam makna filosofis yang tersimpan di dalamnya.',
+                'content' => 'Sebagai salah satu situs warisan dunia, Candi Borobudur menyimpan ribuan cerita dalam reliefnya. Dari kisah Karmawibhangga hingga perjalanan Sang Buddha, setiap panel adalah sebuah jendela menuju peradaban masa lalu. Kami akan mengajak Anda memahami simbolisme dan filosofi di balik ukiran yang megah ini.',
                 'status' => 'published',
-                'view_count' => rand(7000, 16000),
-                'author_id' => $authorId,
-                'published_at' => now()->subDays(15),
-                'tags' => json_encode(['tips', 'safety', 'adventure', 'pedalaman']),
+                'category' => 'Culture & History',
+                'tags' => json_encode(['borobudur', 'sejarah', 'budaya', 'yogyakarta', 'heritage']),
+                'featured_image' => '/images/blogs/4.webp',
             ],
             [
-                'title' => 'Pantai Tersembunyi di Jawa Timur: 5 Spot Instagrammable yang Belum Banyak Diketahui',
-                'slug' => 'pantai-tersembunyi-jawa-timur-' . Str::random(5),
-                'excerpt' => 'Jawa Timur menyimpan pantai-pantai cantik yang masih sepi pengunjung. Perfect untuk konten Instagram dan quality time.',
-                'content' => '<p>Jawa Timur tidak hanya tentang Bromo dan Ijen. Ada banyak pantai tersembunyi yang menawarkan keindahan luar biasa dan sangat instagrammable!</p><h2>1. Pantai Watu Leter - Malang</h2><p>Pantai dengan formasi batu karang unik yang membentuk kolam alami. Sangat fotogenik saat sunset!</p><h2>2. Pantai Goa Cina - Malang</h2><p>Pantai eksotis dengan goa alami di tengah tebing. Ombak yang tenang cocok untuk berenang.</p>',
-                'category' => 'Beach & Nature',
+                'title' => 'Panduan Lengkap Mendaki Gunung Rinjani untuk Pertama Kali',
+                'excerpt' => 'Mendaki Rinjani adalah sebuah tantangan. Bagi Anda yang pertama kali, panduan ini akan mempersiapkan Anda dari awal hingga akhir petualangan.',
+                'content' => 'Gunung Rinjani di Lombok menawarkan lebih dari sekadar puncak. Danau Segara Anak yang indah, pemandangan matahari terbit, dan sensasi berada di ketinggian adalah impiannya. Artikel ini memberikan panduan rute, persiapan fisik, perlengkapan wajib, dan tips keselamatan selama pendakian.',
+                'status' => 'draft',
+                'category' => 'Travel & Adventure',
+                'tags' => json_encode(['rinjani', 'pendakian', 'lombok', 'adventure', 'gunung']),
+                'featured_image' => '/images/blogs/5.webp',
+            ],
+            [
+                'title' => 'Review Aplikasi Travel Terbaik yang Wajib Ada di Smartphone-mu',
+                'excerpt' => 'Dari mencari tiket pesawat murah hingga menemukan penginapan unik, 5 aplikasi ini akan menjadi sahabat setia perjalanan Anda.',
+                'content' => 'Di era digital, merencanakan perjalanan menjadi jauh lebih mudah. Kami telah merangkum 5 aplikasi travel terbaik yang bisa membantu Anda, seperti Skyscanner untuk tiket, Airbnb untuk akomodasi, dan Maps.me untuk navigasi offline. Simak review lengkap dan keunggulan masing-masing.',
                 'status' => 'published',
-                'view_count' => rand(5000, 14000),
-                'author_id' => $authorId,
-                'published_at' => now()->subDays(8),
-                'tags' => json_encode(['pantai', 'jawa timur', 'photography', 'instagram']),
+                'category' => 'Review & Tech',
+                'tags' => json_encode(['aplikasi', 'travel', 'review', 'smartphone', 'teknologi']),
+                'featured_image' => '/images/blogs/6.webp',
             ],
             [
-                'title' => 'Kuliner Nusantara: 15 Makanan Khas yang Wajib Dicoba di Setiap Pulau',
-                'slug' => 'kuliner-nusantara-15-makanan-' . Str::random(5),
-                'excerpt' => 'Perjalanan kuliner melintasi Indonesia. Dari Sabang sampai Merauke, temukan cita rasa otentik setiap daerah.',
-                'content' => '<p>Indonesia adalah surga kuliner dengan ribuan jenis makanan khas. Mari kita jelajahi 15 makanan wajib coba dari berbagai pulau di Indonesia.</p><h2>Sumatra</h2><p><strong>1. Rendang Padang</strong> - Raja dari segala masakan Indonesia. Daging yang dimasak berjam-jam dengan santan dan rempah khas.</p><h2>Jawa</h2><p><strong>2. Gudeg Yogyakarta</strong> - Nangka muda yang dimasak manis dengan santan. Biasanya disajikan dengan ayam kampung, telur, dan krecek.</p>',
-                'category' => 'Food & Culinary',
+                'title' => 'Sejarah Kerajaan Majapahit: Kejayaan di Ujung Tenggara',
+                'excerpt' => 'Majapahit adalah salah satu kerajaan maritim terbesar di Asia Tenggara. Mari kita telusuri jejak kejayaan dan warisan yang ditinggalkannya.',
+                'content' => 'Pada puncak kejayaannya di abad ke-14, Majapahit menguasai wilayah yang luas, mulai dari Indonesia hingga Malaysia dan Filipina. Artikel ini akan mengupas sejarah berdirinya kerajaan ini, tokoh-tokoh penting seperti Gajah Mada, dan peninggalan sejarah yang bisa kita lihat hari ini.',
                 'status' => 'published',
-                'view_count' => rand(9000, 22000),
-                'author_id' => $authorId,
-                'published_at' => now()->subDays(4),
-                'tags' => json_encode(['kuliner', 'makanan', 'food', 'traditional']),
-            ],
-            // --- 5 DATA BLOG BARU ---
-            [
-                'title' => 'Liburan Seru Tanpa Bikin Kantong Bolong',
-                'slug' => 'liburan-budget-minim',
-                'excerpt' => 'Siapa bilang liburan harus mahal? Simak 7 tips jitu untuk menikmati perjalanan impian Anda tanpa harus menguras tabungan.',
-                'content' => '<p>Liburan adalah hak semua orang, bukan hanya mereka yang punya budget besar. Dengan perencanaan yang matang, Anda bisa menjelajahi tempat-tempat indah tanpa harus khawatir soal keuangan. Artikel ini membagikan rahasia liburan hemat, mulai dari memanfaatkan promo tiket pesawat, memilih penginapan yang ramah di kantong, hingga cara cerdas mengatur alokasi dana selama perjalanan. Siap untuk petualangan tak terlupakan yang tetap terjangkau?</p>',
-                'featured_image' => 'images/blogs/blog-5.webp',
-                'author_id' => $authorId,
-                'category' => 'Tips Traveling',
-                'tags' => json_encode(['Budget', 'Tips', 'Hemat']),
-                'is_published' => 1,
-                'published_at' => now()->subDays(8),
-                'view_count' => 4100,
+                'category' => 'Culture & History',
+                'tags' => json_encode(['majapahit', 'sejarah-indonesia', 'kerajaan', 'nusantara', 'heritage']),
+                'featured_image' => '/images/blogs/7.webp',
             ],
             [
-                'title' => 'Tips Fotografi Traveling Ala Influencer',
-                'slug' => 'tips-fotografi-traveling',
-                'excerpt' => 'Abadikan setiap momen perjalanan Anda seperti seorang profesional. Pelajari komposisi, lighting, dan editing ponsel untuk hasil foto yang Instagram-able.',
-                'content' => '<p>Foto adalah kenangan abadi. Di era media sosial, kemampuan mengambil foto traveling yang bagus adalah sebuah keharusan. Anda tidak perlu kamera mahal untuk mendapatkan hasil yang memukau. Artikel ini akan mengajarkan Anda teknik-teknik dasar fotografi, seperti aturan sepertiga, memanfaatkan golden hour, hingga penggunaan aplikasi editing di ponsel untuk membuat foto Anda terlihat seperti hasil jepretan profesional.</p>',
-                'featured_image' => 'images/blogs/blog-6.webp',
-                'author_id' => $authorId,
-                'category' => 'Tips Traveling',
-                'tags' => json_encode(['Fotografi', 'Tips', 'Editing']),
-                'is_published' => 1,
-                'published_at' => now()->subDays(15),
-                'view_count' => 6200,
+                'title' => 'Cara Menemukan Tiket Pesawat Murah: Rahasia yang Jarang Diketahui',
+                'excerpt' => 'Jangan bayar lebih mahal untuk tiket pesawat! Pelajari trik dan waktu yang tepat untuk mendapatkan harga terbaik untuk perjalanan Anda.',
+                'content' => 'Harga tiket pesawat bisa berfluktuasi secara drastis. Tapi jangan khawatir, ada beberapa trik yang bisa Anda lakukan. Kami akan membagikan rahasia seperti menggunakan fitur incognito, membeli tiket pada hari tertentu, dan memanfaatkan transit untuk mendapatkan harga yang jauh lebih murah.',
+                'status' => 'published',
+                'category' => 'Tips & Trick',
+                'tags' => json_encode(['tiket-pesawat', 'tips-travel', 'hemat', 'penerbangan', 'travel']),
+                'featured_image' => '/images/blogs/8.webp',
             ],
             [
-                'title' => 'Menemukan Surga Tersembunyi di Bali',
-                'slug' => 'surga-tersembunyi-bali',
-                'excerpt' => 'Selain Kuta dan Seminyak, Bali punya surga tersembunyi yang menenangkan. Yuk, jelajahi Nusa Penida, Munduk, dan destinasi lain yang masih perawan.',
-                'content' => '<p>Bali memang tak ada matinya. Namun, di balik keramaian Kuta dan Seminyak, tersimpan pesona alam yang masih alami dan menenangkan. Pulau-pulau kecil seperti Nusa Penida dan Nusa Lembongan menawarkan pemandangan tebing yang dramatis dan air laut yang jernih. Sementara itu, daerah seperti Munduk dan Sidemen menawarkan pengalaman pedesaan yang autentik. Artikel ini akan menjadi panduan Anda untuk menjelajahi sisi lain dari Bali yang lebih tenang dan jauh dari hiruk pikuk.</p>',
-                'featured_image' => 'images/blogs/blog-7.webp',
-                'author_id' => $authorId,
-                'category' => 'Destinasi',
-                'tags' => json_encode(['Bali', 'Nusa Penida', 'Alam']),
-                'is_published' => 1,
-                'published_at' => now()->subDays(22),
-                'view_count' => 7800,
+                'title' => 'Menyelami Keindahan Bawah Laut Taman Nasional Bunaken',
+                'excerpt' => 'Bunaken adalah surga bagi penyelam. Terumbu karangnya yang masih terjaga dan biota lautnya yang beragam menawarkan pengalaman tak terlupakan.',
+                'content' => 'Terletak di Sulawesi Utara, Taman Nasional Bunaken memiliki dinding bawah laut (drop-off) yang spektakuler. Anda bisa bertemu dengan ikan-ikan warna-warni, penyu hijau, dan bahkan hiu karang yang jinak. Artikel ini adalah panduan Anda untuk menjelajahi spot-spot diving terbaik di sana.',
+                'status' => 'published',
+                'category' => 'Travel & Nature',
+                'tags' => json_encode(['bunaken', 'diving', 'sulawesi-utara', 'alam', 'snorkeling']),
+                'featured_image' => '/images/blogs/9.webp',
             ],
             [
-                'title' => 'Naik Angkot, Jelajahi Jakarta Seperti Lokal',
-                'slug' => 'jelajahi-jakarta-angkot',
-                'excerpt' => 'Lupakan aplikasi ojek online sesaat. Rasakan pengalaman otentik berkeliling Jakarta dengan naik angkot dan bus kota. Ini panduannya!',
-                'content' => '<p>Berbeda dengan naik mobil pribadi, menggunakan angkutan umum seperti angkot dan bus TransJakarta memberikan Anda pengalaman yang jauh lebih otentik. Anda akan berdesak-desak dengan penumpang lain, menyaksikan kehidupan sehari-hari warga Jakarta, dan mungkin saja menemukan jalan pintas yang tidak ada di Google Maps. Meskipun terlihat menantang, artikel ini akan memberikan tips dan trik agar perjalanan Anda dengan angkot menjadi aman, nyaman, dan tentu saja, jauh lebih murah.</p>',
-                'featured_image' => 'images/blogs/blog-8.webp',
-                'author_id' => $authorId,
-                'category' => 'Destinasi',
-                'tags' => json_encode(['Jakarta', 'Angkot', 'Lokal']),
-                'is_published' => 1,
-                'published_at' => now()->subDays(3),
-                'view_count' => 3200,
-            ],
-            [
-                'title' => 'Jajanannya Bandung: Wisata Kuliner Ala Millennial',
-                'slug' => 'wisata-kuliner-bandung',
-                'excerpt' => 'Dari batagor hingga kopi susu, Bandung adalah surganya kuliner kekinian. Siapkan perut Anda dan ikuti kami berburu kuliner legendaris yang hits di media sosial.',
-                'content' => '<p>Bandung selalu berhasil membuat wisatawan tergoda dengan berbagai macam kulinernya. Kota ini tidak hanya terkenal dengan makanan berat, tetapi juga jajanan pasar dan kafe yang Instagram-able. Mulai dari mencicipi Seblak yang pedas, mencari Baso Tahu yang gurih, hingga nongkrong di kedai kopi susu yang legendaris. Artikel ini adalah daftar wajib bagi para foodies yang ingin menjelajahi Bandung melalui perutnya.</p>',
-                'featured_image' => 'images/blogs/blog-9.webp',
-                'author_id' => $authorId,
-                'category' => 'Kuliner',
-                'tags' => json_encode(['Bandung', 'Kuliner', 'Jajan']),
-                'is_published' => 1,
-                'published_at' => now()->subDays(10),
-                'view_count' => 5100,
+                'title' => 'Mengenal Lebih Dekat Seni Tari Tradisional Bali',
+                'excerpt' => 'Bali tidak hanya indah, tapi juga kaya akan seni dan budaya. Salah satunya adalah tari tradisional yang penuh makna dan filosofi.',
+                'content' => 'Tari Kecak, Tari Barong, dan Tari Legong adalah beberapa contoh seni tari Bali yang terkenal. Setiap tarian menceritakan sebuah kisah, baik itu dari epos Ramayana atau cerita rakyat lokal. Mari kita pelajari sejarah, kostum, dan makna di balik gerakan-gerakan yang anggun tersebut.',
+                'status' => 'published',
+                'category' => 'Culture & Art',
+                'tags' => json_encode(['bali', 'tari-tradisional', 'seni', 'budaya', 'indonesia']),
+                'featured_image' => '/images/blogs/10.webp',
             ],
         ];
 
-        // Generate UUID dan timestamp untuk setiap blog
-        foreach ($blogs as &$blog) {
-            $blog['id'] = Str::uuid();
-            $blog['created_at'] = now();
-            $blog['updated_at'] = now();
+        $blogsToInsert = [];
+        $blogEbookPivotToInsert = [];
+
+        foreach ($blogs as $index => $blogData) {
+            $blogId = Str::uuid();
+            $publishedAt = $blogData['status'] === 'published' ? now()->subDays(rand(1, 90)) : null;
+
+            // Gunakan featured_image dari array, jika tidak ada gunakan default
+            $featuredImage = $blogData['featured_image'] ?? 'https://via.placeholder.com/800x500.png?text=' . urlencode($blogData['title']);
+
+            $blogsToInsert[] = [
+                'id' => $blogId,
+                'title' => $blogData['title'],
+                'slug' => Str::slug($blogData['title']),
+                'excerpt' => $blogData['excerpt'],
+                'content' => $blogData['content'],
+                'status' => $blogData['status'],
+                'featured_image' => $featuredImage,
+                'author_id' => $authors[array_rand($authors)],
+                'category' => $blogData['category'],
+                'tags' => $blogData['tags'],
+                'published_at' => $publishedAt,
+                'view_count' => rand(50, 5000),
+                'meta_title' => $blogData['title'],
+                'meta_description' => $blogData['excerpt'],
+                'created_at' => $publishedAt ?? now(),
+                'updated_at' => $publishedAt ?? now(),
+            ];
+
+            // Hubungkan blog dengan 1-4 e-book secara acak
+            $numEbooksToLink = rand(1, 4);
+            if ($numEbooksToLink > 0) {
+                $randomEbookIds = array_rand($ebookIds, $numEbooksToLink);
+                if (!is_array($randomEbookIds)) {
+                    $randomEbookIds = [$randomEbookIds];
+                }
+
+                foreach ($randomEbookIds as $ebookIdIndex) {
+                    $blogEbookPivotToInsert[] = [
+                        'blog_id' => $blogId,
+                        'ebook_id' => $ebookIds[$ebookIdIndex],
+                    ];
+                }
+            }
         }
 
-        // Masukkan data ke dalam tabel
-        DB::table('blogs')->insert($blogs);
+        DB::table('blogs')->insert($blogsToInsert);
+        $this->command->info(count($blogsToInsert) . ' Blogs created successfully!');
 
-        $this->command->info('Berhasil menambahkan ' . count($blogs) . ' blog.');
+        if (!empty($blogEbookPivotToInsert)) {
+            DB::table('blog_ebook')->insert($blogEbookPivotToInsert);
+            $this->command->info('Blog-Ebook relationships created successfully!');
+        }
     }
 }

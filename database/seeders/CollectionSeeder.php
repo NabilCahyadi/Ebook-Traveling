@@ -6,6 +6,8 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
+use App\Models\Collection;
 
 class CollectionSeeder extends Seeder
 {
@@ -16,32 +18,43 @@ class CollectionSeeder extends Seeder
     {
         $collections = [
             [
-                'id' => '3fd54895-cf23-11f0-9073-745d2258e25c',
-                'name' => 'Best Sellers',
-                'slug' => 'best-sellers',
-                'description' => 'Buku-buku terlaris pilihan pembaca',
+                'name' => 'Best Seller',
+                'slug' => 'best-seller',
+                'description' => 'Koleksi ebook paling laris dan populer.',
+                'order' => 1,
+                'is_visible_on_landing' => 1,
+                'order_index' => 1,
+                'is_active' => 1,
+                'show_in_homepage' => 1,
+            ],
+            [
+                'name' => 'Featured Collection',
+                'slug' => 'featured-collection',
+                'description' => 'Koleksi pilihan dari tim editorial kami yang wajib dibaca.',
+                'order' => 2,
+                'is_visible_on_landing' => 1,
                 'order_index' => 2,
                 'is_active' => 1,
                 'show_in_homepage' => 1,
-                'created_at' => Carbon::create(2025, 12, 2, 9, 4, 34),
-                'updated_at' => Carbon::create(2025, 12, 2, 9, 4, 34),
             ],
             [
-                'id' => '3fd5579a-cf23-11f0-9073-745d2258e25c',
-                'name' => 'Featured Collection',
-                'slug' => 'featured-collection',
-                'description' => 'Koleksi pilihan editor bulan ini',
-                'order_index' => 8,
+                'name' => 'Latest',
+                'slug' => 'latest',
+                'description' => 'Koleksi ebook terbaru yang baru saja rilis.',
+                'order' => 3,
+                'is_visible_on_landing' => 1,
+                'order_index' => 3,
                 'is_active' => 1,
                 'show_in_homepage' => 1,
-                'created_at' => Carbon::create(2025, 12, 2, 9, 4, 34),
-                'updated_at' => Carbon::create(2025, 12, 2, 9, 4, 34),
             ],
         ];
 
-        // Menggunakan insertOrIgnore untuk mencegah error duplikat jika dijalankan ulang
-        DB::table('collections')->insertOrIgnore($collections);
-
-        $this->command->info('Berhasil menambahkan ' . count($collections) . ' koleksi.');
+        // Gunakan firstOrCreate untuk setiap koleksi
+        foreach ($collections as $collectionData) {
+            Collection::firstOrCreate(
+                ['slug' => $collectionData['slug']], // Atribut untuk mencari
+                $collectionData // Atribut untuk dibuat jika tidak ditemukan
+            );
+        }
     }
 }

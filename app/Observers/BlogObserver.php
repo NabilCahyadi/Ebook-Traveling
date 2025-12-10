@@ -14,7 +14,7 @@ class BlogObserver extends BaseObserver
         $this->logActivity('create', $this->getTableName($blog), $blog->id, [
             'blog_title' => $blog->title,
             'blog_slug' => $blog->slug,
-            'is_published' => $blog->is_published,
+            'status' => $blog->status,
             'data' => $this->getModelData($blog)
         ]);
     }
@@ -27,7 +27,7 @@ class BlogObserver extends BaseObserver
         $this->logActivity('update', $this->getTableName($blog), $blog->id, [
             'blog_title' => $blog->title,
             'blog_slug' => $blog->slug,
-            'is_published' => $blog->is_published,
+            'status' => $blog->status,
             'changes' => $blog->getChanges(),
             'data' => $this->getModelData($blog)
         ]);
@@ -41,7 +41,7 @@ class BlogObserver extends BaseObserver
         $this->logActivity('delete', $this->getTableName($blog), $blog->id, [
             'blog_title' => $blog->title,
             'blog_slug' => $blog->slug,
-            'is_published' => $blog->is_published,
+            'status' => $blog->status,
             'soft_delete' => true,
             'data' => $this->getModelData($blog)
         ]);
@@ -55,7 +55,7 @@ class BlogObserver extends BaseObserver
         $this->logActivity('restore', $this->getTableName($blog), $blog->id, [
             'blog_title' => $blog->title,
             'blog_slug' => $blog->slug,
-            'is_published' => $blog->is_published,
+            'status' => $blog->status,
             'data' => $this->getModelData($blog)
         ]);
     }
@@ -68,7 +68,7 @@ class BlogObserver extends BaseObserver
         $this->logActivity('force_delete', $this->getTableName($blog), $blog->id, [
             'blog_title' => $blog->title,
             'blog_slug' => $blog->slug,
-            'is_published' => $blog->is_published,
+            'status' => $blog->status,
             'force_delete' => true,
             'data' => $this->getModelData($blog)
         ]);

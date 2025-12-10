@@ -122,7 +122,7 @@
                                             <td>{{ $blog->title }}</td>
                                             <td>{{ $blog->author ?? '-' }}</td>
                                             <td>
-                                                @if ($blog->is_published)
+                                                @if ($blog->status)
                                                     <span class="badge bg-success">Published</span>
                                                 @else
                                                     <span class="badge bg-warning">Draft</span>

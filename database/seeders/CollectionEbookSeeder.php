@@ -6,6 +6,8 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use App\Models\Collection;
+use App\Models\Ebook;
 
 class CollectionEbookSeeder extends Seeder
 {
@@ -15,62 +17,67 @@ class CollectionEbookSeeder extends Seeder
     public function run(): void
     {
         // Ambil ID koleksi berdasarkan slug agar lebih robust
-        $bestSellersCollection = DB::table('collections')->where('slug', 'best-sellers')->first();
-        $featuredCollection = DB::table('collections')->where('slug', 'featured-collection')->first();
+        $bestSellersCollection = Collection::where('slug', 'best-seller')->first();
+        $featuredCollection = Collection::where('slug', 'featured-collection')->first();
+        $latestCollection = Collection::where('slug', 'latest')->first();
 
-        if (!$bestSellersCollection || !$featuredCollection) {
-            $this->command->warn('Tidak menemukan koleksi "Best Sellers" atau "Featured Collection". Jalankan CollectionSeeder terlebih dahulu!');
+        if (!$bestSellersCollection || !$featuredCollection || !$latestCollection) {
+            $this->command->error('Tidak menemukan koleksi. Jalankan CollectionSeeder terlebih dahulu!');
             return;
         }
 
-        // --- Definisikan e-book untuk setiap koleksi ---
+        // --- Definisikan e-book untuk setiap koleksi secara DINAMIS ---
 
-        // E-book untuk "Best Sellers" (dipilih berdasarkan read_count dan total_reviews tinggi)
-        $bestSellersEbookIds = [
-            'ab450e38-cf2e-11f0-9073-745d2258e25c', // Laskar Pelangi
-            'ab4503f6-cf2e-11f0-9073-745d2258e25c', // Sapiens
-            'ab44d6ec-cf2e-11f0-9073-745d2258e25c', // The Subtle Art of Not Giving a F*ck
-            'ab44d460-cf2e-11f0-9073-745d2258e25c', // How to Win Friends and Influence People
-            '44f9495b-cee0-11f0-b8a8-745d2258e25c', // Atomic Habits
-            'ab44ce24-cf2e-11f0-9073-745d2258e25c', // Rich Dad Poor Dad
-        ];
+        // 8 buku untuk "Best Seller" (dipilih berdasarkan read_count tertinggi)
+        $bestSellerEbooks = Ebook::orderBy('read_count', 'desc')->take(8)->pluck('id');
 
-        // E-book untuk "Featured Collection" (pilihan editor, campuran buku is_featured dan klasik)
-        $featuredEbookIds = [
-            '44f72995-cee0-11f0-b8a8-745d2258e25c', // Clean Code
-            '44f9495b-cee0-11f0-b8a8-745d2258e25c', // Atomic Habits (bisa ada di dua koleksi)
-            '44f94d4f-cee0-11f0-b8a8-745d2258e25c', // The Pragmatic Programmer
-            '44f95374-cee0-11f0-b8a8-745d2258e25c', // Laut Bercerita
-            '44f96c10-cee0-11f0-b8a8-745d2258e25c', // The Design of Everyday Things
-            'ab44fe95-cf2e-11f0-9073-745d2258e25c', // Introduction to Algorithms
-            'ab44bf32-cf2e-11f0-9073-745d2258e25c', // 1984
-        ];
+        // 10 buku untuk "Featured Collection" (dipilih secara acak dari buku dengan rating tinggi)
+        $featuredEbooks = Ebook::where('average_rating', '>=', 4.7)->inRandomOrder()->take(10)->pluck('id');
 
-        // Siapkan data untuk di-insert
+        // 7 buku untuk "Latest" (dipilih berdasarkan published_at terbaru)
+        $latestEbooks = Ebook::orderBy('published_at', 'desc')->take(7)->pluck('id');
+
+        // Siapkan data untuk di-insert ke tabel pivot `collection_ebook`
         $dataToInsert = [];
 
         // Proses Best Sellers
-        foreach ($bestSellersEbookIds as $ebookId) {
+        foreach ($bestSellerEbooks as $index => $ebookId) {
             $dataToInsert[] = [
-                'id'             => Str::uuid(),
-                'collection_id'  => $bestSellersCollection->id,
-                'ebook_id'       => $ebookId,
-                'created_at'     => now(),
+                'id' => (string) Str::uuid(),
+                'collection_id' => $bestSellersCollection->id,
+                'ebook_id' => $ebookId,
+                'order_index' => $index,
+                'created_at' => now(),
+                'updated_at' => now(),
             ];
         }
 
         // Proses Featured Collection
-        foreach ($featuredEbookIds as $ebookId) {
+        foreach ($featuredEbooks as $index => $ebookId) {
             $dataToInsert[] = [
-                'id'             => Str::uuid(),
-                'collection_id'  => $featuredCollection->id,
-                'ebook_id'       => $ebookId,
-                'created_at'     => now(),
+                'id' => (string) Str::uuid(),
+                'collection_id' => $featuredCollection->id,
+                'ebook_id' => $ebookId,
+                'order_index' => $index,
+                'created_at' => now(),
+                'updated_at' => now(),
             ];
         }
 
-        // Masukkan ke tabel pivot `collection_ebook`
-        DB::table('collection_ebooks')->insert($dataToInsert);
+        // Proses Latest
+        foreach ($latestEbooks as $index => $ebookId) {
+            $dataToInsert[] = [
+                'id' => (string) Str::uuid(),
+                'collection_id' => $latestCollection->id,
+                'ebook_id' => $ebookId,
+                'order_index' => $index,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        // Masukkan ke tabel pivot
+        DB::table('collection_ebook')->insert($dataToInsert);
 
         $this->command->info('Berhasil menghubungkan ' . count($dataToInsert) . ' e-book ke koleksi.');
     }

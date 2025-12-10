@@ -2,11 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\RatingService;
 use Illuminate\Http\Request;
-use App\Models\Rating;
+
 
 class RatingController extends Controller
 {
+    protected $ratingService;
+
+    public function __construct(RatingService $ratingService)
+    {
+        $this->ratingService = $ratingService;
+        // Baris 16 ada di bawah, ini yang menyebabkan error
+        // $this->middleware('auth');
+    }
+
     /**
      * Menyimpan rating dan review baru untuk e-book.
      */
@@ -16,36 +26,21 @@ class RatingController extends Controller
         $validated = $request->validate([
             'ebook_id' => 'required|exists:ebooks,id',
             'rating'   => 'required|integer|min:1|max:5',
-            'review_text' => 'nullable|string', // Gunakan nama kolom yang benar
+            'review_text' => 'nullable|string',
         ]);
 
-        // 2. Cek apakah user sudah login dan premium
-        // Middleware 'auth' sudah menjamin user login, tapi kita cek status premium
-        if (!auth()->user()->hasActiveSubscription()) {
-            return redirect()->route('pricing')
-                ->with('error', 'Fitur ini hanya tersedia untuk pengguna Premium.');
-        }
+        // 2. Panggil service untuk memproses logika bisnis
+        // auth()->id() sekarang akan aman karena middleware sudah dijalankan di route
+        $result = $this->ratingService->submitRating($validated, auth()->id());
 
-        // 3. Cek apakah user sudah pernah memberi rating untuk e-book ini
-        $existingRating = Rating::where('user_id', auth()->id())
-            ->where('ebook_id', $validated['ebook_id'])
-            ->first();
-
-        if ($existingRating) {
-            // 4a. Jika sudah ada, update rating yang lama
-            $existingRating->update($request->only('rating', 'review_text'));
+        // 3. Redirect berdasarkan hasil dari service
+        if ($result['success']) {
+            return redirect()->back()->with('success', $result['message']);
         } else {
-            // 4b. Jika belum ada, buat rating baru
-            Rating::create([
-                'user_id'    => auth()->id(),
-                'ebook_id'   => $validated['ebook_id'],
-                'rating'     => $validated['rating'],
-                'review_text' => $validated['review_text'],
-            ]);
+            if (isset($result['redirect_route'])) {
+                return redirect()->route($result['redirect_route'])->with('error', $result['message']);
+            }
+            return redirect()->back()->with('error', $result['message']);
         }
-        
-        // 5. Redirect kembali dengan pesan sukses
-        return redirect()->back()
-            ->with('success', 'You\'re welcome! Your rating and review have been successfully submitted!');
     }
 }

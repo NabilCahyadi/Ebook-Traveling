@@ -306,7 +306,7 @@ class UserService
             // Creator data jika user adalah creator
             if ($user->isCreator()) {
                 $data['createdEbooks'] = $user->createdEbooks()->with('categories')->get();
-                $data['creatorBlogs'] = $user->blogs()->where('is_published', true)->get();
+                $data['creatorBlogs'] = $user->blogs()->where('status', true)->get();
             }
         }
 

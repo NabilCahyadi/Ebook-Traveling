@@ -14,7 +14,7 @@ class EbookObserver extends BaseObserver
         $this->logActivity('create', $this->getTableName($ebook), $ebook->id, [
             'ebook_title' => $ebook->title,
             'ebook_slug' => $ebook->slug,
-            'is_published' => $ebook->is_published,
+            'status' => $ebook->status,
             'data' => $this->getModelData($ebook)
         ]);
     }
@@ -27,7 +27,7 @@ class EbookObserver extends BaseObserver
         $this->logActivity('update', $this->getTableName($ebook), $ebook->id, [
             'ebook_title' => $ebook->title,
             'ebook_slug' => $ebook->slug,
-            'is_published' => $ebook->is_published,
+            'status' => $ebook->status,
             'changes' => $ebook->getChanges(),
             'data' => $this->getModelData($ebook)
         ]);
@@ -41,7 +41,7 @@ class EbookObserver extends BaseObserver
         $this->logActivity('delete', $this->getTableName($ebook), $ebook->id, [
             'ebook_title' => $ebook->title,
             'ebook_slug' => $ebook->slug,
-            'is_published' => $ebook->is_published,
+            'status' => $ebook->status,
             'soft_delete' => true,
             'data' => $this->getModelData($ebook)
         ]);
@@ -55,7 +55,7 @@ class EbookObserver extends BaseObserver
         $this->logActivity('restore', $this->getTableName($ebook), $ebook->id, [
             'ebook_title' => $ebook->title,
             'ebook_slug' => $ebook->slug,
-            'is_published' => $ebook->is_published,
+            'status' => $ebook->status,
             'data' => $this->getModelData($ebook)
         ]);
     }
@@ -68,7 +68,7 @@ class EbookObserver extends BaseObserver
         $this->logActivity('force_delete', $this->getTableName($ebook), $ebook->id, [
             'ebook_title' => $ebook->title,
             'ebook_slug' => $ebook->slug,
-            'is_published' => $ebook->is_published,
+            'status' => $ebook->status,
             'force_delete' => true,
             'data' => $this->getModelData($ebook)
         ]);
