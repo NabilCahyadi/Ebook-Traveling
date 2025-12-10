@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('promo_conditions', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->uuid('promo_id');
             $table->string('condition_type', 50); // new_user, first_subscription, subscription_type, min_price
             $table->string('condition_value')->nullable(); // value for the condition
