@@ -78,6 +78,7 @@ class Ebook extends Model
         $index = 1;
 
         while (true) {
+            // Query tanpa withTrashed() untuk hanya cek ebook yang aktif (non-deleted)
             $query = static::where('slug', $slug);
 
             if ($ignoreId) {

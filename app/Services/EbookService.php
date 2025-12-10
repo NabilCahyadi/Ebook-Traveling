@@ -91,13 +91,15 @@ class EbookService
                 throw new \Exception('Ebook not found');
             }
 
-            // Handle file uploads
-            if (isset($data['cover_image'])) {
+            // Handle cover image
+            // Cover image sudah diproses di controller sebagai string (path dari base64)
+            // Jadi hanya perlu delete old cover jika ada cover baru
+            if (isset($data['cover_image']) && !empty($data['cover_image'])) {
                 // Delete old cover
-                if ($ebook->cover_image) {
+                if ($ebook->cover_image && $ebook->cover_image !== $data['cover_image']) {
                     Storage::disk('public')->delete($ebook->cover_image);
                 }
-                $data['cover_image'] = $data['cover_image']->store('ebooks/covers', 'public');
+                // $data['cover_image'] sudah berisi path string, tidak perlu store lagi
             }
 
             if (isset($data['file_url'])) {
