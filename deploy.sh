@@ -19,6 +19,7 @@ cd $PROJECT_PATH
 # Jalankan migrate (HANYA untuk setup awal, ganti setelah ada data production!)
 $PHP_BIN artisan migrate --force
 
+
 # Create storage symlink (PENTING untuk akses file dari public)
 $PHP_BIN artisan storage:link
 

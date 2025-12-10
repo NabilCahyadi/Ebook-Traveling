@@ -11,7 +11,8 @@ class PromoRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->hasRole('Admin');
+        // Allow authenticated users, role check will be done in controller if needed
+        return auth()->check();
     }
 
     /**

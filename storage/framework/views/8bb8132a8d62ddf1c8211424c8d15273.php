@@ -1,5 +1,9 @@
 <?php $__env->startSection('title', 'Cities Management'); ?>
 
+<?php
+    use Illuminate\Support\Facades\Storage;
+?>
+
 <?php $__env->startSection('content'); ?>
     <div class="container-xxl flex-grow-1 container-p-y">
 
@@ -128,7 +132,7 @@
                                         <ul class="dropdown-menu dropdown-menu-end">
                                             <li>
                                                 <a class="dropdown-item" href="javascript:void(0);"
-                                                    onclick="editCity('<?php echo e($city->id); ?>', '<?php echo e($city->name); ?>', '<?php echo e($city->province); ?>', '<?php echo e($city->image ? asset($city->image) : ''); ?>')">
+                                                    onclick="editCity('<?php echo e($city->id); ?>', '<?php echo e($city->name); ?>', '<?php echo e($city->province); ?>', '<?php echo e($city->image ? Storage::url($city->image) : ''); ?>')">
                                                     <i class="ti ti-pencil me-2"></i> Edit
                                                 </a>
                                             </li>
@@ -151,7 +155,7 @@
                                 </div>
                                 <!-- City Image -->
                                 <?php if($city->image): ?>
-                                    <img src="<?php echo e(asset($city->image)); ?>" alt="<?php echo e($city->name); ?>"
+                                    <img src="<?php echo e(Storage::url($city->image)); ?>" alt="<?php echo e($city->name); ?>"
                                         style="width: 100%; height: 100%; object-fit: cover;">
                                 <?php else: ?>
                                     <div class="d-flex align-items-center justify-content-center h-100">
@@ -204,7 +208,7 @@
                                             <div class="d-flex align-items-center">
                                                 <?php if($city->image): ?>
                                                     <div class="avatar avatar-sm me-2">
-                                                        <img src="<?php echo e(asset($city->image)); ?>" alt="<?php echo e($city->name); ?>"
+                                                        <img src="<?php echo e(Storage::url($city->image)); ?>" alt="<?php echo e($city->name); ?>"
                                                             class="rounded"
                                                             style="width: 38px; height: 38px; object-fit: cover;">
                                                     </div>
@@ -236,7 +240,7 @@
                                                 </button>
                                                 <div class="dropdown-menu dropdown-menu-end">
                                                     <a class="dropdown-item" href="javascript:void(0);"
-                                                        onclick="editCity('<?php echo e($city->id); ?>', '<?php echo e($city->name); ?>', '<?php echo e($city->province); ?>', '<?php echo e($city->image ? asset($city->image) : ''); ?>')">
+                                                        onclick="editCity('<?php echo e($city->id); ?>', '<?php echo e($city->name); ?>', '<?php echo e($city->province); ?>', '<?php echo e($city->image ? Storage::url($city->image) : ''); ?>')">
                                                         <i class="ti ti-pencil me-2"></i> Edit
                                                     </a>
                                                     <div class="dropdown-divider"></div>

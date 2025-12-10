@@ -1,14 +1,12 @@
-@extends('layouts.admin')
+<?php $__env->startSection('title', 'Create New Promo'); ?>
 
-@section('title', 'Create New Promo')
-
-@push('styles')
+<?php $__env->startPush('styles'); ?>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
         rel="stylesheet" />
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <div class="container-fluid">
         <!-- Page Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -16,36 +14,37 @@
                 <h4 class="mb-1">Create New Promo</h4>
                 <p class="text-muted mb-0">Create a new subscription promo code</p>
             </div>
-            <a href="{{ route('admin.promos.index') }}" class="btn btn-label-secondary">
+            <a href="<?php echo e(route('admin.promos.index')); ?>" class="btn btn-label-secondary">
                 <i class="ti ti-arrow-left me-1"></i> Back to List
             </a>
         </div>
 
         <!-- Error Messages -->
-        @if (session('error'))
+        <?php if(session('error')): ?>
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Error!</strong> {{ session('error') }}
+                <strong>Error!</strong> <?php echo e(session('error')); ?>
+
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-        @endif
+        <?php endif; ?>
 
-        @if ($errors->any())
+        <?php if($errors->any()): ?>
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <strong>Validation Error!</strong>
                 <ul class="mb-0">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
+                    <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <li><?php echo e($error); ?></li>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </ul>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-        @endif
+        <?php endif; ?>
 
         <!-- Form Card -->
         <div class="row">
             <div class="col-lg-8">
-                <form action="{{ route('admin.promos.store') }}" method="POST" id="promoForm">
-                    @csrf
+                <form action="<?php echo e(route('admin.promos.store')); ?>" method="POST" id="promoForm">
+                    <?php echo csrf_field(); ?>
 
                     <div class="card mb-4">
                         <div class="card-header">
@@ -55,38 +54,80 @@
                             <!-- Name -->
                             <div class="form-group">
                                 <label for="name">Promo Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                    id="name" name="name" value="{{ old('name') }}"
+                                <input type="text" class="form-control <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                                    id="name" name="name" value="<?php echo e(old('name')); ?>"
                                     placeholder="e.g., Welcome Discount 50%" required>
-                                @error('name')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </div>
 
                             <!-- Code -->
                             <div class="form-group">
                                 <label for="code">Promo Code</label>
-                                <input type="text" class="form-control @error('code') is-invalid @enderror"
-                                    id="code" name="code" value="{{ old('code') }}"
+                                <input type="text" class="form-control <?php $__errorArgs = ['code'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                                    id="code" name="code" value="<?php echo e(old('code')); ?>"
                                     placeholder="e.g., WELCOME50 (leave empty for auto-apply)"
                                     style="text-transform: uppercase;">
                                 <small class="form-text text-muted">
                                     Leave empty for automatic discount. Use uppercase letters, numbers, underscore, and
                                     hyphen only.
                                 </small>
-                                @error('code')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['code'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </div>
 
                             <!-- Description -->
                             <div class="form-group">
                                 <label for="description">Description</label>
-                                <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
-                                    rows="3" placeholder="Describe this promo...">{{ old('description') }}</textarea>
-                                @error('description')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <textarea class="form-control <?php $__errorArgs = ['description'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="description" name="description"
+                                    rows="3" placeholder="Describe this promo..."><?php echo e(old('description')); ?></textarea>
+                                <?php $__errorArgs = ['description'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </div>
                         </div>
                     </div>
@@ -100,19 +141,33 @@
                             <!-- Type -->
                             <div class="form-group">
                                 <label for="type">Discount Type <span class="text-danger">*</span></label>
-                                <select class="form-control @error('type') is-invalid @enderror" id="type"
+                                <select class="form-control <?php $__errorArgs = ['type'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="type"
                                     name="type" required>
                                     <option value="">-- Select Type --</option>
-                                    <option value="percentage" {{ old('type') === 'percentage' ? 'selected' : '' }}>
+                                    <option value="percentage" <?php echo e(old('type') === 'percentage' ? 'selected' : ''); ?>>
                                         Percentage Discount</option>
-                                    <option value="fixed_amount" {{ old('type') === 'fixed_amount' ? 'selected' : '' }}>
+                                    <option value="fixed_amount" <?php echo e(old('type') === 'fixed_amount' ? 'selected' : ''); ?>>
                                         Fixed Amount Discount</option>
-                                    <option value="free_trial" {{ old('type') === 'free_trial' ? 'selected' : '' }}>Free
+                                    <option value="free_trial" <?php echo e(old('type') === 'free_trial' ? 'selected' : ''); ?>>Free
                                         Trial</option>
                                 </select>
-                                @error('type')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['type'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </div>
 
                             <!-- Value -->
@@ -121,17 +176,31 @@
                                     <span id="valueLabel">Discount Value</span> <span class="text-danger">*</span>
                                 </label>
                                 <div class="input-group">
-                                    <input type="number" class="form-control @error('value') is-invalid @enderror"
-                                        id="value" name="value" value="{{ old('value') }}" step="0.01"
+                                    <input type="number" class="form-control <?php $__errorArgs = ['value'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                                        id="value" name="value" value="<?php echo e(old('value')); ?>" step="0.01"
                                         min="0" placeholder="Enter value" required>
                                     <div class="input-group-append">
                                         <span class="input-group-text" id="valueUnit">
                                             <span id="unitLabel">%</span>
                                         </span>
                                     </div>
-                                    @error('value')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['value'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                                 <small class="form-text text-muted" id="valueHint">
                                     Enter the discount percentage (e.g., 50 for 50% off)
@@ -150,22 +219,50 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="start_date">Start Date <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control @error('start_date') is-invalid @enderror"
+                                        <input type="date" class="form-control <?php $__errorArgs = ['start_date'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                                             id="start_date" name="start_date"
-                                            value="{{ old('start_date', now()->format('Y-m-d')) }}" required>
-                                        @error('start_date')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                            value="<?php echo e(old('start_date', now()->format('Y-m-d'))); ?>" required>
+                                        <?php $__errorArgs = ['start_date'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="end_date">End Date <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control @error('end_date') is-invalid @enderror"
-                                            id="end_date" name="end_date" value="{{ old('end_date') }}" required>
-                                        @error('end_date')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                        <input type="date" class="form-control <?php $__errorArgs = ['end_date'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                                            id="end_date" name="end_date" value="<?php echo e(old('end_date')); ?>" required>
+                                        <?php $__errorArgs = ['end_date'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                     </div>
                                 </div>
                             </div>
@@ -175,14 +272,28 @@
                                     <div class="form-group">
                                         <label for="max_usage">Maximum Total Usage</label>
                                         <input type="number"
-                                            class="form-control @error('max_usage') is-invalid @enderror" id="max_usage"
-                                            name="max_usage" value="{{ old('max_usage') }}" min="1"
+                                            class="form-control <?php $__errorArgs = ['max_usage'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="max_usage"
+                                            name="max_usage" value="<?php echo e(old('max_usage')); ?>" min="1"
                                             placeholder="Leave empty for unlimited">
                                         <small class="form-text text-muted">Total times this promo can be used by all
                                             users</small>
-                                        @error('max_usage')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                        <?php $__errorArgs = ['max_usage'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -190,14 +301,28 @@
                                         <label for="max_usage_per_user">Max Usage Per User <span
                                                 class="text-danger">*</span></label>
                                         <input type="number"
-                                            class="form-control @error('max_usage_per_user') is-invalid @enderror"
+                                            class="form-control <?php $__errorArgs = ['max_usage_per_user'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                                             id="max_usage_per_user" name="max_usage_per_user"
-                                            value="{{ old('max_usage_per_user', 1) }}" min="1" required>
+                                            value="<?php echo e(old('max_usage_per_user', 1)); ?>" min="1" required>
                                         <small class="form-text text-muted">How many times each user can use this
                                             promo</small>
-                                        @error('max_usage_per_user')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                        <?php $__errorArgs = ['max_usage_per_user'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                     </div>
                                 </div>
                             </div>
@@ -206,7 +331,7 @@
                             <div class="form-group">
                                 <div class="custom-control custom-switch">
                                     <input type="checkbox" class="custom-control-input" id="is_active" name="is_active"
-                                        value="1" {{ old('is_active', true) ? 'checked' : '' }}>
+                                        value="1" <?php echo e(old('is_active', true) ? 'checked' : ''); ?>>
                                     <label class="custom-control-label" for="is_active">
                                         <strong>Active</strong> - Promo is available for use
                                     </label>
@@ -227,46 +352,46 @@
                             <p class="text-muted mb-3">Add conditions to restrict who can use this promo</p>
 
                             <div id="conditionsContainer">
-                                @if (old('conditions'))
-                                    @foreach (old('conditions') as $index => $condition)
+                                <?php if(old('conditions')): ?>
+                                    <?php $__currentLoopData = old('conditions'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $condition): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <div class="condition-row card mb-3">
                                             <div class="card-body">
                                                 <div class="row">
                                                     <div class="col-md-5">
                                                         <label>Condition Type</label>
                                                         <select class="form-control condition-type"
-                                                            name="conditions[{{ $index }}][condition_type]">
+                                                            name="conditions[<?php echo e($index); ?>][condition_type]">
                                                             <option value="">-- Select Type --</option>
                                                             <option value="new_user"
-                                                                {{ $condition['condition_type'] === 'new_user' ? 'selected' : '' }}>
+                                                                <?php echo e($condition['condition_type'] === 'new_user' ? 'selected' : ''); ?>>
                                                                 New User Only</option>
                                                             <option value="first_subscription"
-                                                                {{ $condition['condition_type'] === 'first_subscription' ? 'selected' : '' }}>
+                                                                <?php echo e($condition['condition_type'] === 'first_subscription' ? 'selected' : ''); ?>>
                                                                 First Subscription Only</option>
                                                             <option value="subscription_type"
-                                                                {{ $condition['condition_type'] === 'subscription_type' ? 'selected' : '' }}>
+                                                                <?php echo e($condition['condition_type'] === 'subscription_type' ? 'selected' : ''); ?>>
                                                                 Specific Subscription Type</option>
                                                             <option value="min_price"
-                                                                {{ $condition['condition_type'] === 'min_price' ? 'selected' : '' }}>
+                                                                <?php echo e($condition['condition_type'] === 'min_price' ? 'selected' : ''); ?>>
                                                                 Minimum Price</option>
                                                         </select>
                                                     </div>
                                                     <div class="col-md-6 condition-value-wrapper"
-                                                        style="{{ in_array($condition['condition_type'], ['new_user', 'first_subscription']) ? 'display:none;' : '' }}">
+                                                        style="<?php echo e(in_array($condition['condition_type'], ['new_user', 'first_subscription']) ? 'display:none;' : ''); ?>">
                                                         <label>Value <span class="value-required text-danger"
-                                                                style="{{ in_array($condition['condition_type'], ['subscription_type', 'min_price']) ? '' : 'display:none;' }}">*</span></label>
+                                                                style="<?php echo e(in_array($condition['condition_type'], ['subscription_type', 'min_price']) ? '' : 'display:none;'); ?>">*</span></label>
                                                         <input type="number"
                                                             class="form-control condition-value condition-value-text"
-                                                            name="conditions[{{ $index }}][condition_value_text]"
-                                                            value="{{ $condition['condition_type'] === 'min_price' ? $condition['condition_value'] ?? '' : '' }}"
+                                                            name="conditions[<?php echo e($index); ?>][condition_value_text]"
+                                                            value="<?php echo e($condition['condition_type'] === 'min_price' ? $condition['condition_value'] ?? '' : ''); ?>"
                                                             step="0.01" placeholder="Enter value"
-                                                            style="{{ $condition['condition_type'] !== 'min_price' ? 'display:none;' : '' }}">
+                                                            style="<?php echo e($condition['condition_type'] !== 'min_price' ? 'display:none;' : ''); ?>">
                                                         <select class="form-select condition-value condition-value-select"
-                                                            name="conditions[{{ $index }}][condition_value_select]"
+                                                            name="conditions[<?php echo e($index); ?>][condition_value_select]"
                                                             multiple
-                                                            style="{{ $condition['condition_type'] !== 'subscription_type' ? 'display:none;' : '' }}">
-                                                            @foreach ($subscriptionPlans as $plan)
-                                                                @php
+                                                            style="<?php echo e($condition['condition_type'] !== 'subscription_type' ? 'display:none;' : ''); ?>">
+                                                            <?php $__currentLoopData = $subscriptionPlans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $plan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <?php
                                                                     $selectedPlans =
                                                                         $condition['condition_type'] ===
                                                                             'subscription_type' &&
@@ -276,13 +401,14 @@
                                                                                 $condition['condition_value'],
                                                                             )
                                                                             : [];
-                                                                @endphp
-                                                                <option value="{{ $plan->name }}"
-                                                                    {{ in_array($plan->name, $selectedPlans) ? 'selected' : '' }}>
-                                                                    {{ $plan->name }} - Rp
-                                                                    {{ number_format($plan->price, 0, ',', '.') }}
+                                                                ?>
+                                                                <option value="<?php echo e($plan->name); ?>"
+                                                                    <?php echo e(in_array($plan->name, $selectedPlans) ? 'selected' : ''); ?>>
+                                                                    <?php echo e($plan->name); ?> - Rp
+                                                                    <?php echo e(number_format($plan->price, 0, ',', '.')); ?>
+
                                                                 </option>
-                                                            @endforeach
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                         </select>
                                                         <small class="form-text text-muted condition-hint"></small>
                                                     </div>
@@ -295,12 +421,12 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    @endforeach
-                                @endif
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <?php endif; ?>
                             </div>
 
                             <div id="noConditions" class="text-center text-muted py-3"
-                                style="{{ old('conditions') ? 'display:none;' : '' }}">
+                                style="<?php echo e(old('conditions') ? 'display:none;' : ''); ?>">
                                 <i class="fas fa-info-circle"></i> No conditions added. Click "Add Condition" to set
                                 restrictions.
                             </div>
@@ -311,7 +437,7 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
-                                <a href="{{ route('admin.promos.index') }}" class="btn btn-label-secondary">
+                                <a href="<?php echo e(route('admin.promos.index')); ?>" class="btn btn-label-secondary">
                                     <i class="ti ti-x me-1"></i> Cancel
                                 </a>
                                 <button type="submit" class="btn btn-primary">
@@ -366,10 +492,10 @@
         </div>
     </div>
 
-    @push('scripts')
+    <?php $__env->startPush('scripts'); ?>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script>
-            let conditionIndex = {{ old('conditions') ? count(old('conditions')) : 0 }};
+            let conditionIndex = <?php echo e(old('conditions') ? count(old('conditions')) : 0); ?>;
 
             // Update value field based on type selection
             $('#type').on('change', function() {
@@ -443,9 +569,9 @@
                                 name="conditions[${conditionIndex}][condition_value_select]"
                                 multiple
                                 style="display:none;">
-                            @foreach ($subscriptionPlans as $plan)
-                                <option value="{{ $plan->name }}">{{ $plan->name }} - Rp {{ number_format($plan->price, 0, ',', '.') }}</option>
-                            @endforeach
+                            <?php $__currentLoopData = $subscriptionPlans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $plan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($plan->name); ?>"><?php echo e($plan->name); ?> - Rp <?php echo e(number_format($plan->price, 0, ',', '.')); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </select>
                         <small class="form-text text-muted condition-hint"></small>
                     </div>
@@ -608,5 +734,7 @@
                 });
             });
         </script>
-    @endpush
-@endsection
+    <?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\ebook_traveling\resources\views/admin/promos/create.blade.php ENDPATH**/ ?>
