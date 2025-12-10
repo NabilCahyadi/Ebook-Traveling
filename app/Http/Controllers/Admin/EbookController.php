@@ -54,10 +54,9 @@ class EbookController extends Controller
                 'title' => 'required|string|max:255',
                 'author' => 'required|string|max:255',
                 'description' => 'required|string',
-                'cover_image' => 'nullable|string', // Changed to string for base64
-                'file_url' => 'nullable|file|mimes:pdf|max:10240',
+                'cover_image_cropped' => 'nullable|string', // base64 dari auto crop
+                'pdf_file' => 'nullable|file|mimes:pdf|max:10240',
                 'status' => 'required|in:draft,published,unpublished,archived',
-                'page_count' => 'nullable|integer|min:1',
             ]);
 
             // Check if user is admin
@@ -72,14 +71,15 @@ class EbookController extends Controller
             // Set creator_id
             $validated['creator_id'] = $user->id;
 
-            // Handle base64 cover image
-            if ($request->has('cover_image') && !empty($request->cover_image)) {
-                $validated['cover_image'] = $this->saveBase64Image($request->cover_image);
+            // Handle base64 cover image (dari hidden input hasil auto crop)
+            if ($request->has('cover_image_cropped') && !empty($request->cover_image_cropped)) {
+                $validated['cover_image'] = $this->saveBase64Image($request->cover_image_cropped);
+                unset($validated['cover_image_cropped']); // Remove temporary field
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Ebook Validation Error:', [
                 'errors' => $e->errors(),
-                'input' => $request->except(['cover_image', 'file_url', 'pdf_file'])
+                'input' => $request->except(['cover_image', 'pdf_file'])
             ]);
             return back()->withErrors($e->errors())->withInput();
         }
@@ -149,7 +149,9 @@ class EbookController extends Controller
     public function edit($id)
     {
         $ebook = $this->ebookService->getEbookById($id);
-        return view('admin.ebooks.edit', compact('ebook'));
+        $categories = \App\Models\Category::all();
+        $cities = \App\Models\City::all();
+        return view('admin.ebooks.edit', compact('ebook', 'categories', 'cities'));
     }
 
     /**
@@ -159,15 +161,22 @@ class EbookController extends Controller
     {
         $validated = $request->validate([
             'category_id' => 'required|exists:categories,id',
-            'city_id' => 'required|exists:cities,id',
+            'city_id' => 'nullable|exists:cities,id',
             'title' => 'required|string|max:255',
             'author' => 'required|string|max:255',
             'description' => 'required|string',
-            'cover_image' => 'nullable|image|max:2048',
-            'file_url' => 'nullable|file|mimes:pdf|max:10240',
+            'cover_image_cropped' => 'nullable|string', // base64 dari auto crop
+            'pdf_file' => 'nullable|file|mimes:pdf|max:10240',
+            'status' => 'required|in:draft,published,unpublished,archived',
         ]);
 
         try {
+            // Handle base64 cover image (dari hidden input hasil auto crop)
+            if ($request->has('cover_image_cropped') && !empty($request->cover_image_cropped)) {
+                $validated['cover_image'] = $this->saveBase64Image($request->cover_image_cropped);
+                unset($validated['cover_image_cropped']); // Remove temporary field
+            }
+
             $this->ebookService->updateEbook($id, $validated);
             return redirect()->route('admin.ebooks.index')->with('success', 'Ebook updated successfully!');
         } catch (\Exception $e) {

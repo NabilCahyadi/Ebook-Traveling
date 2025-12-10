@@ -91,7 +91,6 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
                                     <th>Name</th>
                                     <th>Slug</th>
                                     <th>Total Ebooks</th>
@@ -102,7 +101,6 @@
                             <tbody>
                                 @foreach ($categories as $category)
                                     <tr>
-                                        <td><strong>#{{ $category->id }}</strong></td>
                                         <td>
                                             <div class="fw-medium">{{ $category->name }}</div>
                                         </td>

@@ -127,7 +127,7 @@
                                         <ul class="dropdown-menu dropdown-menu-end">
                                             <li>
                                                 <a class="dropdown-item" href="javascript:void(0);"
-                                                    onclick="editCity('{{ $city->id }}', '{{ $city->name }}', '{{ $city->province }}')">
+                                                    onclick="editCity('{{ $city->id }}', '{{ $city->name }}', '{{ $city->province }}', '{{ $city->image ? asset($city->image) : '' }}')">
                                                     <i class="ti ti-pencil me-2"></i> Edit
                                                 </a>
                                             </li>
@@ -149,8 +149,8 @@
                                     </div>
                                 </div>
                                 <!-- City Image -->
-                                @if($city->image)
-                                    <img src="{{ asset($city->image) }}" alt="{{ $city->name }}" 
+                                @if ($city->image)
+                                    <img src="{{ asset($city->image) }}" alt="{{ $city->name }}"
                                         style="width: 100%; height: 100%; object-fit: cover;">
                                 @else
                                     <div class="d-flex align-items-center justify-content-center h-100">
@@ -187,7 +187,6 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
                                     <th>City Name</th>
                                     <th>Province</th>
                                     <th>Created</th>
@@ -197,13 +196,13 @@
                             <tbody>
                                 @foreach ($cities as $city)
                                     <tr>
-                                        <td><strong>#{{ $city->id }}</strong></td>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                @if($city->image)
+                                                @if ($city->image)
                                                     <div class="avatar avatar-sm me-2">
-                                                        <img src="{{ asset($city->image) }}" alt="{{ $city->name }}" 
-                                                            class="rounded" style="width: 38px; height: 38px; object-fit: cover;">
+                                                        <img src="{{ asset($city->image) }}" alt="{{ $city->name }}"
+                                                            class="rounded"
+                                                            style="width: 38px; height: 38px; object-fit: cover;">
                                                     </div>
                                                 @else
                                                     <div class="avatar avatar-sm me-2"
@@ -233,7 +232,7 @@
                                                 </button>
                                                 <div class="dropdown-menu dropdown-menu-end">
                                                     <a class="dropdown-item" href="javascript:void(0);"
-                                                        onclick="editCity('{{ $city->id }}', '{{ $city->name }}', '{{ $city->province }}')">
+                                                        onclick="editCity('{{ $city->id }}', '{{ $city->name }}', '{{ $city->province }}', '{{ $city->image ? asset($city->image) : '' }}')">
                                                         <i class="ti ti-pencil me-2"></i> Edit
                                                     </a>
                                                     <div class="dropdown-divider"></div>
@@ -281,7 +280,7 @@
     <div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form action="{{ route('admin.cities.store') }}" method="POST">
+                <form action="{{ route('admin.cities.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title">Create New City</h5>
@@ -305,6 +304,32 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+                        <div class="mb-3">
+                            <label for="cityImageInput" class="form-label">City Image (Ratio 4:3)</label>
+                            <input type="file" class="form-control @error('image') is-invalid @enderror"
+                                id="cityImageInput" name="image" accept="image/*">
+                            <small class="text-muted">Gambar akan otomatis di-crop ke rasio 4:3 (980x735px). Max
+                                2MB.</small>
+                            @error('image')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Preview Area Create -->
+                        <div id="cityPreviewArea" style="display: none;" class="mb-3">
+                            <label class="form-label">Preview (Auto-cropped)</label>
+                            <div style="max-width: 300px;">
+                                <img id="cityPreviewImage" src="" alt="Preview"
+                                    style="width: 100%; border: 2px solid #ddd; border-radius: 8px;">
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary mt-2"
+                                onclick="resetCityImage()">
+                                <i class="ti ti-x me-1"></i> Hapus
+                            </button>
+                        </div>
+
+                        <!-- Hidden input untuk menyimpan hasil crop -->
+                        <input type="hidden" name="city_image_cropped" id="cityCroppedImageData">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -321,7 +346,7 @@
     <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form id="editForm" method="POST">
+                <form id="editForm" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="modal-header">
@@ -341,6 +366,35 @@
                             <input type="text" class="form-control" id="edit_province" name="province"
                                 placeholder="e.g. Jawa Barat" required>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label">Current Image</label>
+                            <div id="edit_current_image" class="mb-2">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editCityImageInput" class="form-label">Change City Image (Ratio 4:3)</label>
+                            <input type="file" class="form-control" id="editCityImageInput" name="image"
+                                accept="image/*">
+                            <small class="text-muted">Gambar akan otomatis di-crop ke rasio 4:3 (980x735px). Max
+                                2MB.</small>
+                        </div>
+
+                        <!-- Preview Area Edit -->
+                        <div id="editCityPreviewArea" style="display: none;" class="mb-3">
+                            <label class="form-label">Preview (Auto-cropped)</label>
+                            <div style="max-width: 300px;">
+                                <img id="editCityPreviewImage" src="" alt="Preview"
+                                    style="width: 100%; border: 2px solid #ddd; border-radius: 8px;">
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary mt-2"
+                                onclick="resetEditCityImage()">
+                                <i class="ti ti-x me-1"></i> Hapus
+                            </button>
+                        </div>
+
+                        <!-- Hidden input untuk menyimpan hasil crop -->
+                        <input type="hidden" name="city_image_cropped" id="editCityCroppedImageData">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -380,10 +434,25 @@
                 switchView(currentView);
             });
 
-            function editCity(id, name, province) {
+            function editCity(id, name, province, image = null) {
                 document.getElementById('editForm').action = '/admin/cities/' + id;
                 document.getElementById('edit_name').value = name;
                 document.getElementById('edit_province').value = province;
+
+                // Display current image
+                const imageContainer = document.getElementById('edit_current_image');
+                if (image) {
+                    imageContainer.innerHTML = `
+                        <img src="${image}" alt="${name}" style="max-width: 150px; border-radius: 8px; border: 2px solid #ddd;">
+                    `;
+                } else {
+                    imageContainer.innerHTML = `
+                        <div class="bg-label-secondary rounded d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                            <i class="ti ti-map-pin" style="font-size: 48px;"></i>
+                        </div>
+                    `;
+                }
+
                 new bootstrap.Modal(document.getElementById('editModal')).show();
             }
 
@@ -391,6 +460,161 @@
             @if ($errors->any())
                 new bootstrap.Modal(document.getElementById('createModal')).show();
             @endif
+
+            // ========================================
+            // AUTO CROP FOR CITY IMAGES - RATIO 4:3 (980x735px)
+            // ========================================
+            (function() {
+                const CITY_CROP_CONFIG = {
+                    ratioWidth: 4,
+                    ratioHeight: 3,
+                    minWidth: 600,
+                    minHeight: 450,
+                    maxFileSize: 2 * 1024 * 1024,
+                    outputWidth: 980,
+                    outputHeight: 735,
+                    quality: 0.90,
+                    outputFormat: 'image/jpeg'
+                };
+
+                // CREATE MODAL - Auto Crop
+                const cityImageInput = document.getElementById('cityImageInput');
+                const cityCroppedImageData = document.getElementById('cityCroppedImageData');
+                const cityPreviewArea = document.getElementById('cityPreviewArea');
+                const cityPreviewImage = document.getElementById('cityPreviewImage');
+
+                if (cityImageInput && cityCroppedImageData) {
+                    cityImageInput.addEventListener('change', function(e) {
+                        const file = e.target.files[0];
+                        if (!file) return;
+
+                        if (file.size > CITY_CROP_CONFIG.maxFileSize) {
+                            alert('File terlalu besar. Maksimal 2MB.');
+                            cityImageInput.value = '';
+                            return;
+                        }
+
+                        if (!file.type.match('image.*')) {
+                            alert('File harus berupa gambar (JPG, PNG, atau WEBP)');
+                            cityImageInput.value = '';
+                            return;
+                        }
+
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            const img = new Image();
+                            img.onload = function() {
+                                autoCropCityImage(img, cityCroppedImageData, cityPreviewImage,
+                                    cityPreviewArea);
+                            };
+                            img.src = event.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                }
+
+                // EDIT MODAL - Auto Crop
+                const editCityImageInput = document.getElementById('editCityImageInput');
+                const editCityCroppedImageData = document.getElementById('editCityCroppedImageData');
+                const editCityPreviewArea = document.getElementById('editCityPreviewArea');
+                const editCityPreviewImage = document.getElementById('editCityPreviewImage');
+
+                if (editCityImageInput && editCityCroppedImageData) {
+                    editCityImageInput.addEventListener('change', function(e) {
+                        const file = e.target.files[0];
+                        if (!file) return;
+
+                        if (file.size > CITY_CROP_CONFIG.maxFileSize) {
+                            alert('File terlalu besar. Maksimal 2MB.');
+                            editCityImageInput.value = '';
+                            return;
+                        }
+
+                        if (!file.type.match('image.*')) {
+                            alert('File harus berupa gambar (JPG, PNG, atau WEBP)');
+                            editCityImageInput.value = '';
+                            return;
+                        }
+
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            const img = new Image();
+                            img.onload = function() {
+                                autoCropCityImage(img, editCityCroppedImageData, editCityPreviewImage,
+                                    editCityPreviewArea);
+                            };
+                            img.src = event.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                }
+
+                function autoCropCityImage(image, croppedDataElement, previewElement, previewAreaElement) {
+                    const targetRatio = CITY_CROP_CONFIG.ratioWidth / CITY_CROP_CONFIG.ratioHeight;
+                    const sourceWidth = image.width;
+                    const sourceHeight = image.height;
+                    const sourceRatio = sourceWidth / sourceHeight;
+
+                    let cropWidth, cropHeight, cropX, cropY;
+
+                    if (sourceRatio > targetRatio) {
+                        // Image lebih lebar - crop width
+                        cropHeight = sourceHeight;
+                        cropWidth = sourceHeight * targetRatio;
+                        cropX = (sourceWidth - cropWidth) / 2;
+                        cropY = 0;
+                    } else {
+                        // Image lebih tinggi - crop height
+                        cropWidth = sourceWidth;
+                        cropHeight = sourceWidth / targetRatio;
+                        cropX = 0;
+                        cropY = (sourceHeight - cropHeight) / 2;
+                    }
+
+                    // TIDAK ada minimum size - gambar kecil akan diperbesar, besar akan dikompres
+                    // Semua akan di-resize ke 980x735px
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = CITY_CROP_CONFIG.outputWidth;
+                    canvas.height = CITY_CROP_CONFIG.outputHeight;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+
+                    ctx.drawImage(
+                        image,
+                        cropX, cropY, cropWidth, cropHeight,
+                        0, 0, CITY_CROP_CONFIG.outputWidth, CITY_CROP_CONFIG.outputHeight
+                    );
+
+                    canvas.toBlob(function(blob) {
+                        const reader = new FileReader();
+                        reader.onloadend = function() {
+                            const base64Data = reader.result;
+                            croppedDataElement.value = base64Data;
+
+                            previewElement.src = base64Data;
+                            previewAreaElement.style.display = 'block';
+
+                            console.log('City image cropped to 980x735px (4:3 ratio)');
+                        };
+                        reader.readAsDataURL(blob);
+                    }, CITY_CROP_CONFIG.outputFormat, CITY_CROP_CONFIG.quality);
+                }
+
+                window.resetCityImage = function() {
+                    cityImageInput.value = '';
+                    cityCroppedImageData.value = '';
+                    cityPreviewArea.style.display = 'none';
+                };
+
+                window.resetEditCityImage = function() {
+                    editCityImageInput.value = '';
+                    editCityCroppedImageData.value = '';
+                    editCityPreviewArea.style.display = 'none';
+                };
+            })();
         </script>
     @endpush
 

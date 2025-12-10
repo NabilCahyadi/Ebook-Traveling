@@ -57,13 +57,13 @@ class UserController extends Controller
         try {
             // Get role information
             $role = \App\Models\Role::where('slug', $validated['role'])->first();
-            
+
             // Set user_type based on role
             $validated['user_type'] = $role->slug === 'admin' ? 'admin' : 'user';
-            
+
             // Create user
             $user = $this->userService->createUser($validated);
-            
+
             // Assign role to user
             if ($role) {
                 $user->roles()->sync([$role->id]);

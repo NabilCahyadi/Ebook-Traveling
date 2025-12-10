@@ -49,6 +49,53 @@ class Ebook extends Model
     ];
 
     /**
+     * Boot method untuk handle auto-slug generation dengan unique index
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($ebook) {
+            if (empty($ebook->slug) && !empty($ebook->title)) {
+                $ebook->slug = static::generateUniqueSlug($ebook->title);
+            }
+        });
+
+        static::updating(function ($ebook) {
+            if ($ebook->isDirty('title') && !$ebook->isDirty('slug')) {
+                $ebook->slug = static::generateUniqueSlug($ebook->title, $ebook->id);
+            }
+        });
+    }
+
+    /**
+     * Generate unique slug with index if duplicate exists
+     */
+    protected static function generateUniqueSlug($title, $ignoreId = null)
+    {
+        $slug = \Illuminate\Support\Str::slug($title);
+        $originalSlug = $slug;
+        $index = 1;
+
+        while (true) {
+            $query = static::where('slug', $slug);
+
+            if ($ignoreId) {
+                $query->where('id', '!=', $ignoreId);
+            }
+
+            if (!$query->exists()) {
+                break;
+            }
+
+            $slug = $originalSlug . '-' . $index;
+            $index++;
+        }
+
+        return $slug;
+    }
+
+    /**
      * Get the category that owns the ebook.
      */
     public function category(): BelongsTo

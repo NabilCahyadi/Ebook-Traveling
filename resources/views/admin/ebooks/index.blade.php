@@ -2,6 +2,10 @@
 
 @section('title', 'Manage Ebooks')
 
+@php
+    use Illuminate\Support\Facades\Storage;
+@endphp
+
 @section('content')
 
     <style>
@@ -103,11 +107,10 @@
                     <thead>
                         <tr>
                             <th style="width: 80px;">Cover</th>
-                            <th style="width: 30%;">Title</th>
-                            <th style="width: 15%;">Author</th>
-                            <th style="width: 8%;">Pages</th>
-                            <th style="width: 10%;">Status</th>
-                            <th style="width: 10%;">Views</th>
+                            <th style="width: 35%;">Title</th>
+                            <th style="width: 20%;">Author</th>
+                            <th style="width: 12%;">Status</th>
+                            <th style="width: 12%;">Views</th>
                             <th style="width: 100px;">Actions</th>
                         </tr>
                     </thead>
@@ -115,9 +118,14 @@
                         @forelse($ebooks as $ebook)
                             <tr data-status="{{ $ebook->status }}">
                                 <td>
-                                    @if ($ebook->cover_image)
+                                    @if ($ebook->cover_image && file_exists(public_path('storage/' . $ebook->cover_image)))
                                         <img src="{{ asset('storage/' . $ebook->cover_image) }}" alt="{{ $ebook->title }}"
-                                            class="rounded" style="width: 50px; height: 70px; object-fit: cover;">
+                                            class="rounded" style="width: 50px; height: 70px; object-fit: cover;"
+                                            onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                        <div class="bg-label-secondary rounded align-items-center justify-content-center"
+                                            style="width: 50px; height: 70px; display: none;">
+                                            <i class="ti ti-book" style="font-size: 24px;"></i>
+                                        </div>
                                     @else
                                         <div class="bg-label-secondary rounded d-flex align-items-center justify-content-center"
                                             style="width: 50px; height: 70px;">
@@ -126,17 +134,18 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <div>
+                                    <div style="max-width: 300px;">
                                         <strong class="d-block mb-1"
-                                            style="font-size: 0.9375rem;">{{ $ebook->title }}</strong>
-                                        <small class="text-muted"
-                                            style="font-size: 0.8125rem;">{{ Str::limit(strip_tags($ebook->description), 60) }}</small>
+                                            style="font-size: 0.9375rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                                            title="{{ $ebook->title }}">{{ $ebook->title }}</strong>
+                                        <small class="text-muted d-block"
+                                            style="font-size: 0.8125rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                                            title="{{ strip_tags($ebook->description) }}">{{ strip_tags($ebook->description) }}</small>
                                     </div>
                                 </td>
-                                <td style="font-size: 0.875rem;">{{ $ebook->author ?? '-' }}</td>
                                 <td>
-                                    <span class="badge bg-label-info"
-                                        style="font-size: 0.8125rem;">{{ $ebook->page_count ?? 0 }}</span>
+                                    <div style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.875rem;"
+                                        title="{{ $ebook->author ?? '-' }}">{{ $ebook->author ?? '-' }}</div>
                                 </td>
                                 <td>
                                     @if ($ebook->status === 'published')
@@ -182,7 +191,7 @@
                             </tr>
                         @empty
                             <tr id="noDataRow">
-                                <td colspan="8" class="text-center py-5">
+                                <td colspan="6" class="text-center py-5">
                                     <i class="ti ti-book" style="font-size: 48px; color: #ddd;"></i>
                                     <p class="mt-2 text-muted">No ebooks found</p>
                                     <a href="{{ route('admin.ebooks.create') }}" class="btn btn-sm btn-primary">Add Your
@@ -200,9 +209,14 @@
                     @forelse($ebooks as $ebook)
                         <div class="col-md-6 col-lg-4 col-xl-3 ebook-card" data-status="{{ $ebook->status }}">
                             <div class="card h-100 shadow-sm d-flex flex-column">
-                                @if ($ebook->cover_image)
+                                @if ($ebook->cover_image && file_exists(public_path('storage/' . $ebook->cover_image)))
                                     <img src="{{ asset('storage/' . $ebook->cover_image) }}" class="card-img-top"
-                                        alt="{{ $ebook->title }}" style="height: 250px; object-fit: cover;">
+                                        alt="{{ $ebook->title }}" style="height: 250px; object-fit: cover;"
+                                        onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="bg-label-secondary align-items-center justify-content-center"
+                                        style="height: 250px; display: none;">
+                                        <i class="ti ti-book" style="font-size: 72px;"></i>
+                                    </div>
                                 @else
                                     <div class="bg-label-secondary d-flex align-items-center justify-content-center"
                                         style="height: 250px;">

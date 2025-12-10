@@ -50,13 +50,12 @@ class EbookRepository implements EbookRepositoryInterface
 
     /**
      * Create a new ebook.
+     * Slug akan di-generate otomatis oleh Model Ebook dengan unique index
      */
     public function create(array $data): Ebook
     {
-        if (!isset($data['slug']) && isset($data['title'])) {
-            $data['slug'] = Str::slug($data['title']);
-        }
-
+        // Hapus slug manual, biarkan model yang handle dengan boot() method
+        // untuk memastikan unique slug dengan index
         return Ebook::create($data);
     }
 

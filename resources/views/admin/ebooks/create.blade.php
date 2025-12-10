@@ -4,167 +4,10 @@
 
 @section('styles')
     <style>
-        /* Vuexy Style Auto Crop UI */
-        .auto-crop-container {
-            background: linear-gradient(135deg, rgba(105, 108, 255, 0.05) 0%, rgba(115, 103, 240, 0.03) 100%);
-            border: 2px dashed rgba(105, 108, 255, 0.3);
-            border-radius: 0.5rem;
-            padding: 2rem;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .auto-crop-container:hover {
-            border-color: rgba(105, 108, 255, 0.5);
-            background: linear-gradient(135deg, rgba(105, 108, 255, 0.08) 0%, rgba(115, 103, 240, 0.05) 100%);
-        }
-
-        .auto-crop-container.processing {
-            border-style: solid;
-            border-color: #696cff;
-            background: rgba(105, 108, 255, 0.1);
-        }
-
-        .crop-preview-card {
-            background: #fff;
-            border: 2px solid rgba(75, 70, 92, 0.08);
-            border-radius: 0.5rem;
-            padding: 1.25rem;
-            min-height: 200px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0.125rem 0.5rem rgba(75, 70, 92, 0.08);
-            transition: all 0.3s ease;
-        }
-
-        .crop-preview-card.has-image {
-            border-color: rgba(105, 108, 255, 0.3);
-            background: linear-gradient(135deg, #fff 0%, rgba(105, 108, 255, 0.02) 100%);
-        }
-
-        /* ============================================
-           EBOOK COVER PREVIEW BOX - FIXED SIZE
-           Anti-override dari Vuexy/Bootstrap
-           ============================================ */
-        .ebook-cover-preview-box {
-            max-width: 300px !important;
-            width: 100%;
-            aspect-ratio: 1 / 1.6; /* Portrait ratio 1:1.6 */
-            overflow: hidden !important;
-            border-radius: 0.5rem;
-            border: 2px solid rgba(105, 108, 255, 0.2);
-            background: #f8f9fa;
-            margin: 0 auto; /* Center alignment */
-            position: relative;
-            box-shadow: 0 0.25rem 1rem rgba(75, 70, 92, 0.15);
-        }
-
-        /* Prevent Vuexy/Bootstrap img overrides */
-        .ebook-cover-preview-box img {
-            width: 100% !important;
-            height: 100% !important;
-            max-width: none !important;
-            max-height: none !important;
-            object-fit: cover !important;
-            object-position: center !important;
-            display: block !important;
-            border-radius: 0 !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
-        /* Override .img-fluid if accidentally applied */
-        .ebook-cover-preview-box img.img-fluid {
-            max-width: none !important;
-            height: 100% !important;
-        }
-
-        /* Override .w-100 if accidentally applied */
-        .ebook-cover-preview-box img.w-100 {
-            width: 100% !important;
-            height: 100% !important;
-        }
-
-        /* Responsive adjustment for small screens */
-        @media (max-width: 576px) {
-            .ebook-cover-preview-box {
-                max-width: 250px !important;
-            }
-        }
-
-        .crop-info-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: linear-gradient(72deg, #696cff 0%, #7367f0 100%);
-            color: #fff;
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            box-shadow: 0 0.125rem 0.5rem rgba(105, 108, 255, 0.4);
-            margin-bottom: 1rem;
-        }
-
-        .upload-icon {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, #696cff 0%, #7367f0 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            box-shadow: 0 0.25rem 0.75rem rgba(105, 108, 255, 0.3);
-        }
-
-        .upload-icon i {
-            font-size: 2rem;
-            color: #fff;
-        }
-
-        .processing-spinner {
-            display: inline-block;
-            width: 1rem;
-            height: 1rem;
-            border: 2px solid rgba(105, 108, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: #696cff;
-            animation: spin 0.6s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* PDF loading spinner */
-        .ti-spin {
-            animation: spin 1s linear infinite;
-        }
-
-        .crop-result-info {
-            background: rgba(40, 199, 111, 0.08);
-            border: 1px solid rgba(40, 199, 111, 0.2);
-            border-radius: 0.375rem;
-            padding: 0.75rem 1rem;
-            margin-top: 1rem;
-            font-size: 0.875rem;
-            color: #28c76f;
-        }
-
-        .crop-error-info {
-            background: rgba(234, 84, 85, 0.08);
-            border: 1px solid rgba(234, 84, 85, 0.2);
-            border-radius: 0.375rem;
-            padding: 0.75rem 1rem;
-            margin-top: 1rem;
-            font-size: 0.875rem;
-            color: #ea5455;
-        }
+        /* Simple native CSS only */
+    </style>
+    color: #ea5455;
+    }
     </style>
 @endsection
 
@@ -288,28 +131,18 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="page_count" class="form-label">
-                                    Page Count
-                                    <span class="text-muted small">(Auto dari PDF)</span>
-                                </label>
-                                <input type="number" class="form-control @error('page_count') is-invalid @enderror"
-                                    id="page_count" name="page_count" value="{{ old('page_count') }}"
-                                    placeholder="Otomatis terisi dari PDF" min="1" readonly>
-                                <small class="text-muted">Upload PDF untuk auto-fill</small>
-                                @error('page_count')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-12 mb-3">
                                 <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
                                 <select class="form-select @error('status') is-invalid @enderror" id="status"
                                     name="status" required>
-                                    <option value="draft" {{ old('status', 'draft') == 'draft' ? 'selected' : '' }}>Draft</option>
-                                    <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>Published</option>
-                                    <option value="unpublished" {{ old('status') == 'unpublished' ? 'selected' : '' }}>Unpublished</option>
-                                    <option value="archived" {{ old('status') == 'archived' ? 'selected' : '' }}>Archived</option>
+                                    <option value="draft" {{ old('status', 'draft') == 'draft' ? 'selected' : '' }}>Draft
+                                    </option>
+                                    <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>
+                                        Published</option>
+                                    <option value="unpublished" {{ old('status') == 'unpublished' ? 'selected' : '' }}>
+                                        Unpublished</option>
+                                    <option value="archived" {{ old('status') == 'archived' ? 'selected' : '' }}>Archived
+                                    </option>
                                 </select>
                                 <small class="text-muted">Admin dapat langsung publish tanpa approval</small>
                                 @error('status')
@@ -330,63 +163,31 @@
                             <i class="ti ti-photo"></i> Cover Image
                         </h5>
 
-                        <div class="crop-info-badge">
-                            <i class="ti ti-aspect-ratio"></i>
-                            <span>Auto Crop: Rasio 1:1.6 (Portrait)</span>
-                        </div>
-
-                        <!-- Upload Area -->
-                        <div class="auto-crop-container" id="uploadArea">
-                            <div class="upload-icon">
-                                <i class="ti ti-cloud-upload"></i>
-                            </div>
-                            <h6 class="mb-2">Upload Cover Image</h6>
-                            <p class="text-muted small mb-3">Click atau drag gambar ke sini</p>
+                        <div class="mb-3">
+                            <label class="form-label">Cover Image (Ratio 1:1.6)</label>
                             <input type="file" class="form-control @error('cover_image') is-invalid @enderror"
-                                id="coverImageInput" accept="image/*" style="display: none;">
-                            <button type="button" class="btn btn-primary btn-sm"
-                                onclick="document.getElementById('coverImageInput').click()">
-                                <i class="ti ti-upload me-1"></i> Pilih Gambar
-                            </button>
-                            <p class="text-muted small mt-2 mb-0">Max 2MB. JPG, PNG, atau WEBP</p>
+                                id="coverImageInput" name="cover_image" accept="image/*">
+                            <small class="text-muted">Gambar akan otomatis di-crop ke rasio 1:1.6 (contoh: 650x965px). Max
+                                2MB.</small>
                             @error('cover_image')
-                                <div class="text-danger small mt-2">{{ $message }}</div>
+                                <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <!-- Hidden input untuk menyimpan hasil crop -->
-                        <input type="hidden" name="cover_image" id="croppedImageData">
-
                         <!-- Preview Area -->
                         <div id="previewArea" style="display: none;" class="mt-3">
-                            <div class="crop-preview-card has-image">
-                                <!-- Fixed Size Preview Box -->
-                                <div class="ebook-cover-preview-box">
-                                    <img id="previewImage" src="" alt="Preview">
-                                </div>
-
-                                <div class="crop-result-info mt-3 w-100" id="cropResultInfo">
-                                    <i class="ti ti-check-circle me-1"></i>
-                                    <span id="cropResultText"></span>
-                                </div>
-                                <button type="button" class="btn btn-sm btn-outline-primary mt-2 w-100"
-                                    onclick="resetCrop()">
-                                    <i class="ti ti-refresh me-1"></i> Ganti Gambar
-                                </button>
+                            <label class="form-label">Preview (Auto-cropped)</label>
+                            <div style="max-width: 200px;">
+                                <img id="previewImage" src="" alt="Preview"
+                                    style="width: 100%; border: 2px solid #ddd; border-radius: 8px;">
                             </div>
-                        </div>
-
-                        <!-- Error Message Area -->
-                        <div id="errorArea" style="display: none;" class="mt-3">
-                            <div class="crop-error-info">
-                                <i class="ti ti-alert-circle me-1"></i>
-                                <span id="errorText"></span>
-                            </div>
-                            <button type="button" class="btn btn-sm btn-outline-secondary mt-2 w-100"
-                                onclick="resetCrop()">
-                                <i class="ti ti-upload me-1"></i> Coba Lagi
+                            <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="resetCrop()">
+                                <i class="ti ti-x me-1"></i> Hapus
                             </button>
                         </div>
+
+                        <!-- Hidden input untuk menyimpan hasil crop -->
+                        <input type="hidden" name="cover_image_cropped" id="croppedImageData">
                     </div>
                 </div>
 
@@ -395,8 +196,8 @@
                     <div class="card-body">
                         <h5 class="card-title mb-3">PDF File</h5>
                         <div class="mb-0">
-                            <input type="file" class="form-control @error('file_url') is-invalid @enderror"
-                                id="file_url" name="file_url" accept=".pdf">
+                            <input type="file" class="form-control @error('pdf_file') is-invalid @enderror"
+                                id="pdf_file" name="pdf_file" accept=".pdf">
                             <small class="text-muted">Max 10MB. PDF format only</small>
                             <div id="pdfLoadingInfo" class="mt-2" style="display: none;">
                                 <small class="text-info">
@@ -409,7 +210,7 @@
                                     <span id="pdfPageCount"></span> halaman terdeteksi
                                 </small>
                             </div>
-                            @error('file_url')
+                            @error('pdf_file')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -433,365 +234,149 @@
 
 @push('scripts')
     <script>
-        /**
-         * AUTO CROP IMAGE TO 1:1.6 RATIO (PORTRAIT)
-         * - Fully automatic cropping without manual adjustment
-         * - Center-based cropping (symmetric from center)
-         * - Error handling for images too small
-         * - Preview display with Vuexy styling
-         */
-
-        // Configuration
+        (function() {
+            // Configuration untuk auto crop
             const CROP_CONFIG = {
                 ratioWidth: 1,
                 ratioHeight: 1.6,
-                minWidth: 250, // Minimum width in pixels
-                minHeight: 400, // Minimum height in pixels (250*1.6 = 400)
+                minWidth: 400,
+                minHeight: 640,
                 maxFileSize: 2 * 1024 * 1024, // 2MB
-                maxOutputHeight: 400, // Maximum output height (will be 500x800)
-                quality: 0.85, // JPEG quality (reduced for smaller file size)
+                outputWidth: 650,
+                outputHeight: 1040, // 650 * 1.6
+                quality: 0.90,
                 outputFormat: 'image/jpeg'
             };
 
-        // DOM Elements
-        const coverImageInput = document.getElementById('coverImageInput');
-        const croppedImageData = document.getElementById('croppedImageData');
-        const uploadArea = document.getElementById('uploadArea');
-        const previewArea = document.getElementById('previewArea');
-        const previewImage = document.getElementById('previewImage');
-        const errorArea = document.getElementById('errorArea');
-        const errorText = document.getElementById('errorText');
-        const cropResultText = document.getElementById('cropResultText');
+            const coverImageInput = document.getElementById('coverImageInput');
+            const croppedImageData = document.getElementById('croppedImageData');
+            const previewArea = document.getElementById('previewArea');
+            const previewImage = document.getElementById('previewImage');
 
-        // Event Listener
-        coverImageInput.addEventListener('change', handleImageUpload);
-
-        // Drag & Drop Support
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.style.borderColor = '#696cff';
-            uploadArea.style.backgroundColor = 'rgba(105,108,255,0.15)';
-        });
-
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.style.borderColor = '';
-            uploadArea.style.backgroundColor = '';
-        });
-
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.style.borderColor = '';
-            uploadArea.style.backgroundColor = '';
-
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                coverImageInput.files = files;
-                handleImageUpload({
-                    target: {
-                        files: files
-                    }
-                });
-            }
-        });
-
-        /**
-         * Handle image upload and trigger auto crop
-         */
-        function handleImageUpload(event) {
-            const file = event.target.files[0];
-
-            if (!file) return;
-
-            // Validate file type
-            if (!file.type.match('image.*')) {
-                showError('File harus berupa gambar (JPG, PNG, WEBP)');
+            if (!coverImageInput || !croppedImageData) {
+                console.error('Required elements not found');
                 return;
             }
 
-            // Validate file size
-            if (file.size > CROP_CONFIG.maxFileSize) {
-                showError('Ukuran file maksimal 2MB');
-                return;
-            }
+            coverImageInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
 
-            // Show processing state
-            uploadArea.classList.add('processing');
-            uploadArea.innerHTML = `
-        <div class="upload-icon">
-            <div class="processing-spinner"></div>
-        </div>
-        <h6 class="mb-2">Memproses gambar...</h6>
-        <p class="text-muted small mb-0">Sedang melakukan auto crop ke rasio 1.6:1</p>
-    `;
-
-            // Read and process image
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => {
-                    autoCropToRatio(img, file.name);
-                };
-                img.onerror = () => {
-                    showError('Gagal memuat gambar. Silakan coba file lain.');
-                };
-                img.src = e.target.result;
-            };
-            reader.onerror = () => {
-                showError('Gagal membaca file gambar.');
-            };
-            reader.readAsDataURL(file);
-        }
-
-        /**
-         * Auto crop image to specified ratio (1.6:1)
-         * Center-based cropping with symmetric cutting
-         */
-        function autoCropToRatio(image, fileName) {
-            const targetRatio = CROP_CONFIG.ratioWidth / CROP_CONFIG.ratioHeight;
-            const sourceWidth = image.width;
-            const sourceHeight = image.height;
-            const sourceRatio = sourceWidth / sourceHeight;
-
-            // Calculate crop dimensions
-            let cropWidth, cropHeight, cropX, cropY;
-
-            if (sourceRatio > targetRatio) {
-                // Image is wider than target ratio - crop width
-                cropHeight = sourceHeight;
-                cropWidth = sourceHeight * targetRatio;
-                cropX = (sourceWidth - cropWidth) / 2; // Center horizontally
-                cropY = 0;
-            } else {
-                // Image is taller than target ratio - crop height
-                cropWidth = sourceWidth;
-                cropHeight = sourceWidth / targetRatio;
-                cropX = 0;
-                cropY = (sourceHeight - cropHeight) / 2; // Center vertically
-            }
-
-            // Validate minimum dimensions
-            if (cropWidth < CROP_CONFIG.minWidth || cropHeight < CROP_CONFIG.minHeight) {
-                showError(
-                    `Gambar terlalu kecil untuk dicrop ke rasio 1:1.6. Minimal ${CROP_CONFIG.minWidth}x${CROP_CONFIG.minHeight} pixels.`
-                );
-                resetUploadArea();
-                return;
-            }
-
-            // Calculate output dimensions (maintain quality but compress)
-            let outputWidth, outputHeight;
-            if (cropHeight > CROP_CONFIG.maxOutputHeight) {
-                // Scale down proportionally
-                outputHeight = CROP_CONFIG.maxOutputHeight;
-                outputWidth = Math.round(outputHeight / CROP_CONFIG.ratioHeight * CROP_CONFIG.ratioWidth);
-            } else {
-                outputWidth = Math.round(cropWidth);
-                outputHeight = Math.round(cropHeight);
-            }
-
-            // Create canvas and perform crop
-            const canvas = document.createElement('canvas');
-            canvas.width = outputWidth;
-            canvas.height = outputHeight;
-
-            const ctx = canvas.getContext('2d');
-
-            // Enable image smoothing for better quality
-            ctx.imageSmoothingEnabled = true;
-            ctx.imageSmoothingQuality = 'high';
-
-            // Draw cropped image to canvas
-            ctx.drawImage(
-                image,
-                cropX, cropY, cropWidth, cropHeight, // Source crop area
-                0, 0, outputWidth, outputHeight // Destination
-            );
-
-            // Convert to base64
-            canvas.toBlob((blob) => {
-                if (!blob) {
-                    showError('Gagal memproses gambar. Silakan coba lagi.');
-                    resetUploadArea();
+                // Validate file size
+                if (file.size > CROP_CONFIG.maxFileSize) {
+                    alert('File terlalu besar. Maksimal 2MB.');
+                    coverImageInput.value = '';
                     return;
                 }
 
-                // Convert blob to base64
+                // Validate file type
+                if (!file.type.match('image.*')) {
+                    alert('File harus berupa gambar (JPG, PNG, atau WEBP)');
+                    coverImageInput.value = '';
+                    return;
+                }
+
+                // Read and process image
                 const reader = new FileReader();
-                reader.onload = (e) => {
-                    const base64Data = e.target.result;
-
-                    // Save to hidden input
-                    croppedImageData.value = base64Data;
-
-                    // Show preview
-                    showPreview(base64Data, outputWidth, outputHeight, fileName);
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.onload = function() {
+                        autoCropImage(img);
+                    };
+                    img.src = event.target.result;
                 };
-                reader.readAsDataURL(blob);
-            }, CROP_CONFIG.outputFormat, CROP_CONFIG.quality);
-        }
+                reader.readAsDataURL(file);
+            });
 
-        /**
-         * Show preview of cropped image
-         */
-        function showPreview(base64Data, width, height, fileName) {
-            // Hide upload and error areas
-            uploadArea.style.display = 'none';
-            errorArea.style.display = 'none';
+            function autoCropImage(image) {
+                const targetRatio = CROP_CONFIG.ratioWidth / CROP_CONFIG.ratioHeight;
+                const sourceWidth = image.width;
+                const sourceHeight = image.height;
+                const sourceRatio = sourceWidth / sourceHeight;
 
-            // Show preview
-            previewImage.src = base64Data;
-            previewArea.style.display = 'block';
+                let cropWidth, cropHeight, cropX, cropY;
 
-            // Update result info
-            const fileSize = Math.round((base64Data.length * 3) / 4 / 1024); // Approximate KB
-            cropResultText.textContent = `Crop berhasil! ${width}x${height}px (${fileSize}KB) - Rasio 1:1.6`;
-        }
+                if (sourceRatio > targetRatio) {
+                    // Crop width (gambar terlalu lebar)
+                    cropHeight = sourceHeight;
+                    cropWidth = sourceHeight * targetRatio;
+                    cropX = (sourceWidth - cropWidth) / 2;
+                    cropY = 0;
+                } else {
+                    // Crop height (gambar terlalu tinggi)
+                    cropWidth = sourceWidth;
+                    cropHeight = sourceWidth / targetRatio;
+                    cropX = 0;
+                    cropY = (sourceHeight - cropHeight) / 2;
+                }
 
-        /**
-         * Show error message
-         */
-        function showError(message) {
-            uploadArea.style.display = 'none';
-            previewArea.style.display = 'none';
-            errorArea.style.display = 'block';
-            errorText.textContent = message;
+                // TIDAK ada minimum size - gambar kecil akan diperbesar, besar akan dikompres
+                // Semua akan di-resize ke 650x1040px
 
-            // Clear input and hidden data
-            coverImageInput.value = '';
-            croppedImageData.value = '';
-        }
+                // Create canvas
+                const canvas = document.createElement('canvas');
+                canvas.width = CROP_CONFIG.outputWidth;
+                canvas.height = CROP_CONFIG.outputHeight;
 
-        /**
-         * Reset crop and show upload area again
-         */
-        function resetCrop() {
-            coverImageInput.value = '';
-            croppedImageData.value = '';
+                const ctx = canvas.getContext('2d');
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
 
-            previewArea.style.display = 'none';
-            errorArea.style.display = 'none';
+                // Draw cropped image
+                ctx.drawImage(
+                    image,
+                    cropX, cropY, cropWidth, cropHeight,
+                    0, 0, CROP_CONFIG.outputWidth, CROP_CONFIG.outputHeight
+                );
 
-            resetUploadArea();
-        }
+                // Convert to base64
+                canvas.toBlob(function(blob) {
+                    const reader = new FileReader();
+                    reader.onloadend = function() {
+                        const base64Data = reader.result;
+                        croppedImageData.value = base64Data;
 
-        /**
-         * Reset upload area to initial state
-         */
-        function resetUploadArea() {
-            uploadArea.classList.remove('processing');
-            uploadArea.style.display = 'block';
-            uploadArea.innerHTML = `
-        <div class="upload-icon">
-            <i class="ti ti-cloud-upload"></i>
-        </div>
-        <h6 class="mb-2">Upload Cover Image</h6>
-        <p class="text-muted small mb-3">Click atau drag gambar ke sini</p>
-        <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('coverImageInput').click()">
-            <i class="ti ti-upload me-1"></i> Pilih Gambar
-        </button>
-        <p class="text-muted small mt-2 mb-0">Max 2MB. JPG, PNG, atau WEBP</p>
-    `;
-        }
+                        // Show preview
+                        previewImage.src = base64Data;
+                        previewArea.style.display = 'block';
 
-        // Form validation before submit
-        document.querySelector('form').addEventListener('submit', function(e) {
-            if (!croppedImageData.value) {
-                e.preventDefault();
-                alert('Silakan upload cover image terlebih dahulu');
-                return false;
+                        console.log('Image cropped and saved to hidden input');
+                    };
+                    reader.readAsDataURL(blob);
+                }, CROP_CONFIG.outputFormat, CROP_CONFIG.quality);
             }
-        });
 
-        /**
-         * ============================================
-         * AUTO-FILL PAGE COUNT FROM PDF
-         * ============================================
-         */
-        const pdfInput = document.getElementById('file_url');
-        const pageCountInput = document.getElementById('page_count');
-        const pdfLoadingInfo = document.getElementById('pdfLoadingInfo');
-        const pdfPageInfo = document.getElementById('pdfPageInfo');
-        const pdfPageCountText = document.getElementById('pdfPageCount');
+            // Reset function
+            window.resetCrop = function() {
+                coverImageInput.value = '';
+                croppedImageData.value = '';
+                previewArea.style.display = 'none';
+            };
 
-        pdfInput.addEventListener('change', async function(e) {
+        })();
+    </script>
+
+    <!-- PDF validation script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        const pdfInput = document.getElementById('pdf_file');
+        pdfInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
+            if (!file) return;
 
-            if (!file) {
-                pageCountInput.value = '';
-                pdfPageInfo.style.display = 'none';
-                return;
-            }
-
-            // Validate file type
             if (file.type !== 'application/pdf') {
                 alert('File harus berformat PDF');
                 pdfInput.value = '';
                 return;
             }
 
-            // Validate file size (10MB)
             if (file.size > 10 * 1024 * 1024) {
                 alert('Ukuran file maksimal 10MB');
                 pdfInput.value = '';
                 return;
             }
-
-            // Show loading
-            pdfLoadingInfo.style.display = 'block';
-            pdfPageInfo.style.display = 'none';
-            pageCountInput.value = '';
-
-            try {
-                // Read PDF file
-                const arrayBuffer = await file.arrayBuffer();
-
-                // Load PDF.js library from CDN if not loaded
-                if (typeof pdfjsLib === 'undefined') {
-                    await loadPdfJs();
-                }
-
-                // Load PDF document
-                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-                const pageCount = pdf.numPages;
-
-                // Update page count input
-                pageCountInput.value = pageCount;
-
-                // Show success message
-                pdfLoadingInfo.style.display = 'none';
-                pdfPageInfo.style.display = 'block';
-                pdfPageCountText.textContent = pageCount;
-
-            } catch (error) {
-                console.error('Error reading PDF:', error);
-                pdfLoadingInfo.style.display = 'none';
-                alert('Gagal membaca file PDF. Page count tetap readonly.');
-            }
         });
-
-        /**
-         * Load PDF.js library dynamically
-         */
-        function loadPdfJs() {
-            return new Promise((resolve, reject) => {
-                // Check if already loaded
-                if (typeof pdfjsLib !== 'undefined') {
-                    resolve();
-                    return;
-                }
-
-                // Load PDF.js from CDN
-                const script = document.createElement('script');
-                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
-                script.onload = () => {
-                    // Set worker path
-                    pdfjsLib.GlobalWorkerOptions.workerSrc =
-                        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-                    resolve();
-                };
-                script.onerror = reject;
-                document.head.appendChild(script);
-            });
-        }
     </script>
 @endpush

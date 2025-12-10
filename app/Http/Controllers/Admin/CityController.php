@@ -18,9 +18,9 @@ class CityController extends Controller
         // Search
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('province', 'like', "%{$search}%");
+                    ->orWhere('province', 'like', "%{$search}%");
             });
         }
 
@@ -35,7 +35,7 @@ class CityController extends Controller
         $query->orderBy($sortBy, $sortOrder);
 
         $cities = $query->paginate(8)->withQueryString();
-        
+
         // Get unique provinces for filter dropdown
         $provinces = City::select('province')->distinct()->orderBy('province')->pluck('province');
 
@@ -58,7 +58,26 @@ class CityController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'province' => 'required|string|max:255',
+            'city_image_cropped' => 'nullable|string',
         ]);
+
+        // Handle base64 cropped image from JavaScript (ratio 4:3, 980x735px)
+        if ($request->has('city_image_cropped') && !empty($request->city_image_cropped)) {
+            $base64Image = $request->city_image_cropped;
+
+            // Extract base64 data
+            if (preg_match('/^data:image\/(\w+);base64,/', $base64Image, $type)) {
+                $base64Image = substr($base64Image, strpos($base64Image, ',') + 1);
+                $imageData = base64_decode($base64Image);
+
+                $filename = 'city_' . time() . '_' . uniqid() . '.jpg';
+                $path = public_path('images/' . $filename);
+                file_put_contents($path, $imageData);
+
+                $validated['image'] = '/images/' . $filename;
+            }
+            unset($validated['city_image_cropped']);
+        }
 
         City::create($validated);
 
@@ -94,7 +113,31 @@ class CityController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'province' => 'required|string|max:255',
+            'city_image_cropped' => 'nullable|string',
         ]);
+
+        // Handle base64 cropped image from JavaScript (ratio 4:3, 980x735px)
+        if ($request->has('city_image_cropped') && !empty($request->city_image_cropped)) {
+            // Delete old image if exists
+            if ($city->image && file_exists(public_path($city->image))) {
+                unlink(public_path($city->image));
+            }
+
+            $base64Image = $request->city_image_cropped;
+
+            // Extract base64 data
+            if (preg_match('/^data:image\/(\w+);base64,/', $base64Image, $type)) {
+                $base64Image = substr($base64Image, strpos($base64Image, ',') + 1);
+                $imageData = base64_decode($base64Image);
+
+                $filename = 'city_' . time() . '_' . uniqid() . '.jpg';
+                $path = public_path('images/' . $filename);
+                file_put_contents($path, $imageData);
+
+                $validated['image'] = '/images/' . $filename;
+            }
+            unset($validated['city_image_cropped']);
+        }
 
         $city->update($validated);
 
