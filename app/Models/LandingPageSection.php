@@ -10,7 +10,9 @@ class LandingPageSection extends Model
         'section_type',
         'section_name',
         'section_title',
+        'section_data',
         'reference_id',
+        'collection_id',
         'filter_config',
         'card_template',
         'order',
@@ -21,6 +23,7 @@ class LandingPageSection extends Model
     protected $casts = [
         'is_visible' => 'boolean',
         'config' => 'array',
+        'section_data' => 'array',
         'filter_config' => 'array',
         'order' => 'integer'
     ];

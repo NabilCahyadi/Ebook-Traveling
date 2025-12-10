@@ -307,8 +307,8 @@
         }
 
         /* ==========================================================================
-        Kustomisasi Tampilan E-book (Satu Kartu, Tombol Berbeda)
-       ========================================================================== */
+            Kustomisasi Tampilan E-book (Satu Kartu, Tombol Berbeda)
+           ========================================================================== */
 
         .product-cart-wrap {
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -480,6 +480,42 @@
             @switch($section->section_type)
                 @case('hero_banner')
                     @include('components.landing.hero-banner')
+                @break
+
+                @case('hero')
+                    @include('components.landing.hero', ['section' => $section])
+                @break
+
+                @case('about')
+                    @include('components.landing.about', ['section' => $section])
+                @break
+
+                @case('features')
+                    @include('components.landing.features', ['section' => $section])
+                @break
+
+                @case('services')
+                    @include('components.landing.services', ['section' => $section])
+                @break
+
+                @case('testimonial')
+                    @include('components.landing.testimonial', ['section' => $section])
+                @break
+
+                @case('cta')
+                    @include('components.landing.cta', ['section' => $section])
+                @break
+
+                @case('faq')
+                    @include('components.landing.faq', ['section' => $section])
+                @break
+
+                @case('gallery')
+                    @include('components.landing.gallery', ['section' => $section])
+                @break
+
+                @case('contact')
+                    @include('components.landing.contact', ['section' => $section])
                 @break
 
                 @case('top_cities')

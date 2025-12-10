@@ -482,6 +482,42 @@
                     <?php echo $__env->make('components.landing.hero-banner', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
                 <?php break; ?>
 
+                <?php case ('hero'): ?>
+                    <?php echo $__env->make('components.landing.hero', ['section' => $section], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                <?php break; ?>
+
+                <?php case ('about'): ?>
+                    <?php echo $__env->make('components.landing.about', ['section' => $section], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                <?php break; ?>
+
+                <?php case ('features'): ?>
+                    <?php echo $__env->make('components.landing.features', ['section' => $section], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                <?php break; ?>
+
+                <?php case ('services'): ?>
+                    <?php echo $__env->make('components.landing.services', ['section' => $section], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                <?php break; ?>
+
+                <?php case ('testimonial'): ?>
+                    <?php echo $__env->make('components.landing.testimonial', ['section' => $section], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                <?php break; ?>
+
+                <?php case ('cta'): ?>
+                    <?php echo $__env->make('components.landing.cta', ['section' => $section], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                <?php break; ?>
+
+                <?php case ('faq'): ?>
+                    <?php echo $__env->make('components.landing.faq', ['section' => $section], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                <?php break; ?>
+
+                <?php case ('gallery'): ?>
+                    <?php echo $__env->make('components.landing.gallery', ['section' => $section], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                <?php break; ?>
+
+                <?php case ('contact'): ?>
+                    <?php echo $__env->make('components.landing.contact', ['section' => $section], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                <?php break; ?>
+
                 <?php case ('top_cities'): ?>
                     <?php echo $__env->make('components.landing.top-cities', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
                 <?php break; ?>

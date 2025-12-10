@@ -39,9 +39,9 @@
             <p class="mb-0">Atur urutan dan visibility semua section di landing page</p>
         </div>
         <div>
-            <button type="button" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#addSectionModal">
-                <i class="ti ti-plus me-1"></i> Add Collection Section
-            </button>
+            <a href="{{ route('admin.landing-section.create') }}" class="btn btn-success me-2">
+                <i class="ti ti-plus me-1"></i> Add New Section
+            </a>
             <button type="button" class="btn btn-primary" id="saveOrder">
                 <i class="ti ti-device-floppy me-1"></i> Save Changes
             </button>
@@ -155,15 +155,18 @@
                                         </div>
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ route('admin.landing-section.preview', $section->id) }}" target="_blank" class="btn btn-sm btn-icon btn-text-primary"
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Preview Section">
+                                        <button type="button" class="btn btn-sm btn-icon btn-text-primary preview-section"
+                                            data-id="{{ $section->id }}" data-bs-toggle="tooltip" data-bs-placement="top"
+                                            title="Preview Section">
                                             <i class="ti ti-eye"></i>
-                                        </a>
-                                        @if($section->section_type === 'collection')
-                                        <button type="button" class="btn btn-sm btn-icon btn-text-danger delete-section"
-                                            data-id="{{ $section->id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Section">
-                                            <i class="ti ti-trash"></i>
                                         </button>
+                                        @if ($section->section_type === 'collection')
+                                            <button type="button"
+                                                class="btn btn-sm btn-icon btn-text-danger delete-section"
+                                                data-id="{{ $section->id }}" data-bs-toggle="tooltip"
+                                                data-bs-placement="top" title="Delete Section">
+                                                <i class="ti ti-trash"></i>
+                                            </button>
                                         @endif
                                     </td>
                                 </tr>
@@ -186,8 +189,10 @@
                 <div class="modal-body">
                     <!-- Section Title -->
                     <div class="mb-3">
-                        <label for="sectionTitle" class="form-label">Section Title <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="sectionTitle" placeholder="e.g., Best Seller Ebooks, New Releases">
+                        <label for="sectionTitle" class="form-label">Section Title <span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="sectionTitle"
+                            placeholder="e.g., Best Seller Ebooks, New Releases">
                         <div class="form-text">Judul yang akan ditampilkan di landing page</div>
                     </div>
 
@@ -207,8 +212,8 @@
                         <label for="collectionSelect" class="form-label">Select Collection</label>
                         <select class="form-select" id="collectionSelect">
                             <option value="">-- Choose Collection --</option>
-                            @foreach($collections as $collection)
-                            <option value="{{ $collection->id }}">{{ $collection->name }}</option>
+                            @foreach ($collections as $collection)
+                                <option value="{{ $collection->id }}">{{ $collection->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -232,7 +237,8 @@
                             <!-- Limit -->
                             <div class="col-md-6 mb-3">
                                 <label for="ebookLimit" class="form-label">Number of Ebooks</label>
-                                <input type="number" class="form-control" id="ebookLimit" value="10" min="1" max="50">
+                                <input type="number" class="form-control" id="ebookLimit" value="10"
+                                    min="1" max="50">
                             </div>
                         </div>
 
@@ -241,8 +247,8 @@
                             <label for="categoryFilter" class="form-label">Select Category</label>
                             <select class="form-select" id="categoryFilter">
                                 <option value="">-- Choose Category --</option>
-                                @foreach(\App\Models\Category::where('is_active', true)->orderBy('name')->get() as $category)
-                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @foreach (\App\Models\Category::where('is_active', true)->orderBy('name')->get() as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -252,8 +258,8 @@
                             <label for="cityFilter" class="form-label">Select City</label>
                             <select class="form-select" id="cityFilter">
                                 <option value="">-- Choose City --</option>
-                                @foreach(\App\Models\City::where('is_active', true)->orderBy('name')->get() as $city)
-                                <option value="{{ $city->id }}">{{ $city->name }}</option>
+                                @foreach (\App\Models\City::where('is_active', true)->orderBy('name')->get() as $city)
+                                    <option value="{{ $city->id }}">{{ $city->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -270,9 +276,11 @@
 
                         <!-- Card Template Selection -->
                         <div class="mb-3">
-                            <label for="cardTemplate" class="form-label">Card Template <span class="text-danger">*</span></label>
+                            <label for="cardTemplate" class="form-label">Card Template <span
+                                    class="text-danger">*</span></label>
                             <select class="form-select" id="cardTemplate">
-                                <option value="default" selected>Default - Standard card dengan gambar & info lengkap</option>
+                                <option value="default" selected>Default - Standard card dengan gambar & info lengkap
+                                </option>
                                 <option value="compact">Compact - Card lebih kecil untuk tampilan padat</option>
                                 <option value="grid">Grid - Layout grid 3 kolom dengan emphasis pada cover</option>
                                 <option value="list">List - Tampilan list horizontal dengan detail lengkap</option>
@@ -286,6 +294,28 @@
                     <button type="button" class="btn btn-primary" id="addSectionBtn">
                         <i class="ti ti-plus me-1"></i> Add Section
                     </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="previewModalLabel">
+                        <i class="ti ti-eye me-2"></i>Section Preview
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0" id="previewContent">
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-3 text-muted">Loading preview...</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -370,6 +400,58 @@
                         });
                 });
             }
+
+            // Preview section handler
+            document.querySelectorAll('.preview-section').forEach(button => {
+                button.addEventListener('click', function() {
+                    const sectionId = this.dataset.id;
+                    const previewModal = new bootstrap.Modal(document.getElementById(
+                        'previewModal'));
+                    const previewContent = document.getElementById('previewContent');
+
+                    // Reset content with loading state
+                    previewContent.innerHTML = `
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-3 text-muted">Loading preview...</p>
+                        </div>
+                    `;
+
+                    // Show modal
+                    previewModal.show();
+
+                    // Load preview content with AJAX headers
+                    fetch(`{{ url('/admin/landing-section') }}/${sectionId}/preview`, {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'text/html'
+                            }
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            return response.text();
+                        })
+                        .then(html => {
+                            previewContent.innerHTML = html;
+                        })
+                        .catch(error => {
+                            console.error('Preview error:', error);
+                            previewContent.innerHTML = `
+                                <div class="text-center py-5">
+                                    <i class="ti ti-alert-circle display-4 text-danger"></i>
+                                    <p class="mt-3 text-danger">Failed to load preview: ${error.message}</p>
+                                    <button class="btn btn-sm btn-primary" onclick="location.reload()">
+                                        <i class="ti ti-refresh me-1"></i>Retry
+                                    </button>
+                                </div>
+                            `;
+                        });
+                });
+            });
 
             // Toggle visibility
             const visibilityToggles = document.querySelectorAll('.visibility-toggle');
@@ -515,7 +597,7 @@
                     addSectionBtn.innerHTML =
                         '<span class="spinner-border spinner-border-sm me-1"></span> Adding...';
 
-                    fetch('{{ route("admin.landing-sections.add") }}', {
+                    fetch('{{ route('admin.landing-sections.add') }}', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -546,7 +628,8 @@
             // Delete collection section
             document.addEventListener('click', function(e) {
                 if (e.target.classList.contains('delete-section') || e.target.closest('.delete-section')) {
-                    const button = e.target.classList.contains('delete-section') ? e.target : e.target.closest('.delete-section');
+                    const button = e.target.classList.contains('delete-section') ? e.target : e.target
+                        .closest('.delete-section');
                     const sectionId = button.dataset.id;
 
                     if (!confirm('Are you sure you want to delete this collection section?')) {

@@ -121,6 +121,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     // Website Management - Landing Page Sections
     Route::get('landing-sections', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'landingSections'])->name('landing-sections');
+    Route::get('landing-section/create', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'createSection'])->name('landing-section.create');
+    Route::post('landing-section/store', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'storeSection'])->name('landing-section.store');
     Route::get('landing-section/{id}/preview', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'previewSection'])->name('landing-section.preview');
     Route::post('landing-sections/update', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'updateLandingSections'])->name('landing-sections.update');
     Route::post('landing-sections/add', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'addCollectionSection'])->name('landing-sections.add');
