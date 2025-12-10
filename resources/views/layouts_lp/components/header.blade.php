@@ -155,7 +155,7 @@
                     <div class="text-center">
                         <div id="news-flash" class="d-inline-block">
                             <ul>
-                                <!-- max 56 char -->
+                                <!-- max 55 char -->
                                 <li>Instant Access : Travel E-books World-wide</li>
                                 <li>Flash Sale : Get 30% Off Destination Guides</li>
                                 <li>Top Guides : Don't Miss Secret Travel Maps</li>
