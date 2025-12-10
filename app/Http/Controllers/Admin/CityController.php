@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\City;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CityController extends Controller
 {
@@ -71,10 +72,12 @@ class CityController extends Controller
                 $imageData = base64_decode($base64Image);
 
                 $filename = 'city_' . time() . '_' . uniqid() . '.jpg';
-                $path = public_path('images/' . $filename);
-                file_put_contents($path, $imageData);
+                $path = 'cities/' . $filename;
+                
+                // Save to Laravel storage (storage/app/public/cities/)
+                Storage::disk('public')->put($path, $imageData);
 
-                $validated['image'] = '/images/' . $filename;
+                $validated['image'] = $path;
             }
             unset($validated['city_image_cropped']);
         }
@@ -119,8 +122,8 @@ class CityController extends Controller
         // Handle base64 cropped image from JavaScript (ratio 4:3, 980x735px)
         if ($request->has('city_image_cropped') && !empty($request->city_image_cropped)) {
             // Delete old image if exists
-            if ($city->image && file_exists(public_path($city->image))) {
-                unlink(public_path($city->image));
+            if ($city->image && Storage::disk('public')->exists($city->image)) {
+                Storage::disk('public')->delete($city->image);
             }
 
             $base64Image = $request->city_image_cropped;
@@ -131,10 +134,12 @@ class CityController extends Controller
                 $imageData = base64_decode($base64Image);
 
                 $filename = 'city_' . time() . '_' . uniqid() . '.jpg';
-                $path = public_path('images/' . $filename);
-                file_put_contents($path, $imageData);
+                $path = 'cities/' . $filename;
+                
+                // Save to Laravel storage (storage/app/public/cities/)
+                Storage::disk('public')->put($path, $imageData);
 
-                $validated['image'] = '/images/' . $filename;
+                $validated['image'] = $path;
             }
             unset($validated['city_image_cropped']);
         }

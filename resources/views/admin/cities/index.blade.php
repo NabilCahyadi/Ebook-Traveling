@@ -2,6 +2,10 @@
 
 @section('title', 'Cities Management')
 
+@php
+    use Illuminate\Support\Facades\Storage;
+@endphp
+
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
 
@@ -127,7 +131,7 @@
                                         <ul class="dropdown-menu dropdown-menu-end">
                                             <li>
                                                 <a class="dropdown-item" href="javascript:void(0);"
-                                                    onclick="editCity('{{ $city->id }}', '{{ $city->name }}', '{{ $city->province }}', '{{ $city->image ? asset($city->image) : '' }}')">
+                                                    onclick="editCity('{{ $city->id }}', '{{ $city->name }}', '{{ $city->province }}', '{{ $city->image ? Storage::url($city->image) : '' }}')">
                                                     <i class="ti ti-pencil me-2"></i> Edit
                                                 </a>
                                             </li>
@@ -150,7 +154,7 @@
                                 </div>
                                 <!-- City Image -->
                                 @if ($city->image)
-                                    <img src="{{ asset($city->image) }}" alt="{{ $city->name }}"
+                                    <img src="{{ Storage::url($city->image) }}" alt="{{ $city->name }}"
                                         style="width: 100%; height: 100%; object-fit: cover;">
                                 @else
                                     <div class="d-flex align-items-center justify-content-center h-100">
@@ -200,7 +204,7 @@
                                             <div class="d-flex align-items-center">
                                                 @if ($city->image)
                                                     <div class="avatar avatar-sm me-2">
-                                                        <img src="{{ asset($city->image) }}" alt="{{ $city->name }}"
+                                                        <img src="{{ Storage::url($city->image) }}" alt="{{ $city->name }}"
                                                             class="rounded"
                                                             style="width: 38px; height: 38px; object-fit: cover;">
                                                     </div>
@@ -232,7 +236,7 @@
                                                 </button>
                                                 <div class="dropdown-menu dropdown-menu-end">
                                                     <a class="dropdown-item" href="javascript:void(0);"
-                                                        onclick="editCity('{{ $city->id }}', '{{ $city->name }}', '{{ $city->province }}', '{{ $city->image ? asset($city->image) : '' }}')">
+                                                        onclick="editCity('{{ $city->id }}', '{{ $city->name }}', '{{ $city->province }}', '{{ $city->image ? Storage::url($city->image) : '' }}')">
                                                         <i class="ti ti-pencil me-2"></i> Edit
                                                     </a>
                                                     <div class="dropdown-divider"></div>
