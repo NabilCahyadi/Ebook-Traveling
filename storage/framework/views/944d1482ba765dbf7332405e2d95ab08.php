@@ -92,7 +92,6 @@
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>Slug</th>
                                     <th>Total Ebooks</th>
                                     <th>Created</th>
                                     <th>Actions</th>
@@ -103,9 +102,6 @@
                                     <tr>
                                         <td>
                                             <div class="fw-medium"><?php echo e($category->name); ?></div>
-                                        </td>
-                                        <td>
-                                            <code><?php echo e($category->slug); ?></code>
                                         </td>
                                         <td>
                                             <span class="badge bg-label-info"><?php echo e($category->ebooks_count); ?> ebooks</span>

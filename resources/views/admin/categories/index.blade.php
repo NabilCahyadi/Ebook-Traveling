@@ -92,7 +92,6 @@
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>Slug</th>
                                     <th>Total Ebooks</th>
                                     <th>Created</th>
                                     <th>Actions</th>
@@ -103,9 +102,6 @@
                                     <tr>
                                         <td>
                                             <div class="fw-medium">{{ $category->name }}</div>
-                                        </td>
-                                        <td>
-                                            <code>{{ $category->slug }}</code>
                                         </td>
                                         <td>
                                             <span class="badge bg-label-info">{{ $category->ebooks_count }} ebooks</span>
