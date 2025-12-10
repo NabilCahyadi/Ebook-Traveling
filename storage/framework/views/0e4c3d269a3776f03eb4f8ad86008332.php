@@ -32,4 +32,4 @@
         </div>
     </body>
 </html>
-<?php /**PATH D:\PROJEK PROJEK\Ebook-Traveling\vendor\laravel\framework\src\Illuminate\Foundation\Exceptions/views/minimal.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\laragon\www\ebook_traveling\vendor\laravel\framework\src\Illuminate\Foundation\Exceptions/views/minimal.blade.php ENDPATH**/ ?>

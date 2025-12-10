@@ -49,14 +49,28 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
+            'phone' => 'nullable|string|max:20',
             'password' => 'required|string|min:8|confirmed',
+            'role' => 'required|string|exists:roles,slug',
         ]);
 
         try {
-            $this->userService->createUser($validated);
+            // Get role information
+            $role = \App\Models\Role::where('slug', $validated['role'])->first();
+            
+            // Set user_type based on role
+            $validated['user_type'] = $role->slug === 'admin' ? 'admin' : 'user';
+            
+            // Create user
+            $user = $this->userService->createUser($validated);
+            
+            // Assign role to user
+            if ($role) {
+                $user->roles()->sync([$role->id]);
+            }
 
             return redirect()->route('admin.users.index')
-                ->with('success', 'User created successfully!');
+                ->with('success', 'User created successfully with role: ' . $role->name);
         } catch (\Exception $e) {
             return back()->withInput()
                 ->with('error', 'Failed to create user: ' . $e->getMessage());

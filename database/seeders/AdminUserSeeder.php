@@ -25,22 +25,22 @@ class AdminUserSeeder extends Seeder
         );
 
         // Create admin user if not exists
-        $admin = User::firstOrCreate(
+        $admin = User::updateOrCreate(
             ['email' => 'admin@gmail.com'],
             [
                 'name' => 'Admin',
                 'password' => Hash::make('123123123'),
+                'user_type' => 'admin',
                 'email_verified_at' => now(),
             ]
         );
 
-        // Assign admin role
-        if (!$admin->roles()->where('role_id', $adminRole->id)->exists()) {
-            $admin->roles()->attach($adminRole->id);
-        }
+        // Sync admin role (akan replace role yang ada atau tambah baru)
+        $admin->roles()->sync([$adminRole->id]);
 
-        $this->command->info('Admin user created successfully!');
+        $this->command->info('Admin user created/updated successfully!');
         $this->command->info('Email: admin@gmail.com');
         $this->command->info('Password: 123123123');
+        $this->command->info('Role: Admin');
     }
 }

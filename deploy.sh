@@ -14,7 +14,7 @@ cd $PROJECT_PATH
 /usr/bin/git reset --hard origin/main
 
 # Jalankan migrate fresh dengan seeder (HANYA untuk setup awal, ganti setelah ada data production!)
-$PHP_BIN artisan migrate:fresh --seed --force
+$PHP_BIN artisan migrate --force
 
 # Clear optimize (cache, config, view, route, dll)
 $PHP_BIN artisan optimize:clear
