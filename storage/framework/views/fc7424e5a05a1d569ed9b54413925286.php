@@ -515,10 +515,10 @@ unset($__errorArgs, $__bag); ?>
                         break;
                     case 'fixed_amount':
                         valueLabel.text('Discount Amount');
-                        unitLabel.text('$');
+                        unitLabel.text('Rp');
                         valueInput.removeAttr('max');
-                        valueInput.attr('placeholder', 'Enter amount (e.g., 10.00)');
-                        valueHint.text('Enter the discount amount in dollars. Example: 10 for $10 off');
+                        valueInput.attr('placeholder', 'Enter amount (e.g., 10000)');
+                        valueHint.text('Enter the discount amount in rupiah. Example: 10000 for Rp 10.000 off');
                         break;
                     case 'free_trial':
                         valueLabel.text('Trial Days');
@@ -642,9 +642,9 @@ unset($__errorArgs, $__bag); ?>
                         valueWrapper.show();
                         textInput.show().prop('required', true);
                         selectInput.hide();
-                        textInput.attr('type', 'number').attr('step', '0.01').attr('placeholder', 'e.g., 9.99');
+                        textInput.attr('type', 'number').attr('step', '1').attr('placeholder', 'e.g., 99000');
                         valueRequired.show();
-                        hint.text('Enter minimum price in rupiah');
+                        hint.text('Enter minimum price in rupiah (e.g., 99000)');
                         break;
                     default:
                         valueWrapper.show();

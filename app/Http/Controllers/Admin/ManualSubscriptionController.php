@@ -55,11 +55,25 @@ class ManualSubscriptionController extends Controller
             $existingSubscription = $this->subscriptionService->getUserActiveSubscription($validated['user_id']);
 
             if ($existingSubscription) {
-                return back()
-                    ->withInput()
-                    ->with('error', 'User already has an active subscription. Please cancel or wait for it to expire first.');
+                // If existing subscription has the SAME plan, extend/stack it
+                if ($existingSubscription->subscription_plan_id === $validated['subscription_plan_id']) {
+                    $this->subscriptionService->extendSubscriptionByPlan(
+                        $existingSubscription->id,
+                        $validated['subscription_plan_id'],
+                        $validated['quantity']
+                    );
+
+                    return redirect()->route('admin.manual-subscriptions.create')
+                        ->with('success', 'Subscription extended/stacked successfully! New duration added to existing subscription.');
+                } else {
+                    // Different plan - show error
+                    return back()
+                        ->withInput()
+                        ->with('error', 'User already has an active subscription with a different plan. Please cancel the current subscription or wait for it to expire first.');
+                }
             }
 
+            // No existing subscription - create new one
             $this->subscriptionService->createManualSubscription($validated);
 
             return redirect()->route('admin.manual-subscriptions.create')
