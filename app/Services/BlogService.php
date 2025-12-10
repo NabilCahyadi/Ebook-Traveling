@@ -6,6 +6,7 @@ use App\Repositories\Interfaces\BlogRepositoryInterface;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Collection;
+use App\Models\Blog;
 
 class BlogService
 {
@@ -28,7 +29,10 @@ class BlogService
 
     public function getPublishedBlogs(int $perPage = 10)
     {
-        return $this->blogRepository->getPublished($perPage);
+        // return $this->blogRepository->getPublished($perPage);
+        return \App\Models\Blog::where('status', 'published')
+            ->orderBy('published_at', 'desc')
+            ->paginate($perPage);
     }
 
     // --- PERBAIKAN: Gunakan repository ---
@@ -135,6 +139,38 @@ class BlogService
     public function getAllCategories()
     {
         return $this->blogRepository->getAllCategories();
+    }
+
+    /**
+     * Mendapatkan tag-tag yang paling populer dari blog-blog yang paling banyak dilihat.
+     */
+    public function getPopularTags(int $limit = 10)
+    {
+        // 1. Ambil 50 blog dengan view_count tertinggi YANG PASTI MEMILIKI TAG
+        $popularBlogs = Blog::where('status', 'published')
+            ->whereNotNull('tags') // <-- HANYA AMBIL YANG TAG-NYA TIDAK NULL
+            ->where('tags', '!=', '[]') // DAN JUGA YANG BUKAN ARRAY KOSONG
+            ->orderBy('view_count', 'desc')
+            ->limit(50)
+            ->get();
+
+        if ($popularBlogs->isEmpty()) {
+            return collect(); // Kembalikan collection kosong jika tidak ada blog populer
+        }
+
+        // 2. Dapatkan semua tag, lalu hitung frekuensinya
+        $tagCounts = $popularBlogs
+            ->pluck('tags')
+            ->flatten()
+            ->countBy();
+
+        // 3. Urutkan tag berdasarkan frekuensi dan ambil sesuai limit
+        $sortedTags = $tagCounts
+            ->sortDesc()
+            ->take($limit)
+            ->keys();
+
+        return $sortedTags;
     }
 
     protected function processData(array $data, ?string $id = null)

@@ -94,28 +94,21 @@
 
     .avatar-container {
         width: 50px;
-        /* Atur ukuran lebar avatar */
         height: 50px;
-        /* Atur ukuran tinggi avatar */
         border-radius: 50%;
-        /* Membuat frame berbentuk lingkaran */
         overflow: hidden;
-        /* Sembunyikan bagian gambar yang melampaui frame */
         flex-shrink: 0;
-        /* Mencegah frame mengecil jika berada di dalam flexbox */
         background-color: #f0f0f0;
-        /* Warna background jika gambar transparan */
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .user-avatar {
-        width: 100%;
-        /* Gambar mengisi lebar container */
+        width: auto;
         height: 100%;
-        /* Gambar mengisi tinggi container */
         object-fit: contain;
-        /* <-- INI ADALAH SOLUSI UTAMANYA */
         display: block;
-        /* Menghilangkan spasi di bawah gambar */
     }
 
     .username {
@@ -300,6 +293,22 @@
         color: #FF4C61;
         background-color: #fff;
     }
+
+    /* --- CSS untuk Read More/Less Link --- */
+    .review-text-container .read-more-link {
+        color: #FF4C61;
+        /* Warna link biru, bisa disesuaikan */
+        font-weight: bold;
+        font-size: 0.9em;
+        cursor: pointer;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .review-text-container .read-more-link:hover {
+        color: #df1e35ff;
+        text-decoration: underline;
+    }
 </style>
 
 <main class="main">
@@ -308,7 +317,7 @@
             <div class="breadcrumb">
                 <a href="<?php echo e(route('home')); ?>" rel="nofollow"><i class="fi-rs-home mr-5"></i></a>
                 <span></span>
-                <a href="#">E-Books</a>
+                <a href="/">E-Books</a>
                 <span class="active">‎ ‎ <?php echo e($ebook->title); ?></span>
             </div>
         </div>
@@ -387,8 +396,8 @@
                             <!-- BAGIAN KIRI: DAFTAR REVIEW -->
                             <div class="col-lg-8">
                                 <div class="review-container">
-                                    <h4 class="mb-10">Customer Reviews ( <?php echo e($ratings->count()); ?> ) </h4>
-                                    <div class="showing-info">Showing <?php echo e(min(3, $ratings->count())); ?> out of <?php echo e($ratings->count()); ?> reviews</div>
+                                    <h4 class="mb-10">Customer Reviews ( <?php echo e($ratings->total()); ?> ) </h4>
+                                    <div class="showing-info">Showing <?php echo e($ratings->firstItem()); ?> to <?php echo e($ratings->lastItem()); ?> of <?php echo e($ratings->total()); ?> reviews</div>
 
                                     <div class="comment-list">
                                         <?php $__empty_1 = true; $__currentLoopData = $ratings; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $rating): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
@@ -403,13 +412,24 @@
                                                 <div class="avatar-container">
                                                     <img src="<?php echo e($rating->user->avatar ? asset('storage/' . $rating->user->avatar) : asset('images/user-avatar.png')); ?>" alt="<?php echo e($rating->user->name); ?>" class="user-avatar" />
                                                 </div>
-                                                <a href="#" class="username ms-3"><?php echo e($rating->user->name); ?></a>
+                                                <a href="" class="username ms-3"><?php echo e($rating->user->name); ?></a>
                                             </div>
-                                            <p class="review-text"><?php echo e($rating->review_text); ?></p>
+                                            <div class="review-text-container">
+                                                
+                                                <p class="truncated-text"><?php echo e(Str::limit($rating->review_text, 180)); ?></p>
+
+                                                
+                                                <p class="full-text" style="display: none;"><?php echo e($rating->review_text); ?></p>
+
+                                                
+                                                <?php if(Str::length($rating->review_text) > 150): ?>
+                                                <a href="#" class="read-more-link">more</a>
+                                                <?php endif; ?>
+                                            </div>
                                         </div>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                         <div class="single-comment mb-30">
-                                            <p>Belum ada review untuk e-book ini.</p>
+                                            <p>There are no reviews for this e-book yet.</p>
                                         </div>
                                         <?php endif; ?>
                                     </div>
@@ -503,16 +523,16 @@
                                         <textarea class="form-control w-100" name="review_text" id="comment" cols="30" rows="9" placeholder="Write Comment" required></textarea>
                                     </div>
                                 </div>
-                                <div class="col-sm-6">
+                                <!-- <div class="col-sm-6">
                                     <div class="form-group">
-                                        <input class="form-control" name="name" id="name" type="text" placeholder="Name" value="<?php echo e(auth()->user()->name); ?>" required />
+                                        <input class="form-control" name="name" id="name" type="text" placeholder="Name" value="<?php echo e(auth()->user()->name); ?>" disabled />
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <input class="form-control" name="email" id="email" type="email" placeholder="Email" value="<?php echo e(auth()->user()->email); ?>" required />
+                                        <input class="form-control" name="email" id="email" type="email" placeholder="Email" value="<?php echo e(auth()->user()->email); ?>" disabled />
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label>Rating</label>
@@ -668,5 +688,33 @@
         </div>
     </div>
 </main>
+<!-- Tambahkan ini sebelum </body> -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const readMoreLinks = document.querySelectorAll('.read-more-link');
+
+        readMoreLinks.forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault(); // Mencegah link meloncat ke atas
+
+                const container = this.closest('.review-text-container');
+                const fullText = container.querySelector('.full-text');
+                const truncatedText = container.querySelector('.truncated-text');
+
+                if (fullText.style.display === 'none') {
+                    // Jika teks lengkap tersembunyi, tampilkan
+                    fullText.style.display = 'block';
+                    truncatedText.style.display = 'none';
+                    this.textContent = 'less'; // Ubah teks link menjadi "less"
+                } else {
+                    // Jika teks lengkap terlihat, sembunyikan kembali
+                    fullText.style.display = 'none';
+                    truncatedText.style.display = 'block';
+                    this.textContent = 'more'; // Ubah teks link menjadi "more"
+                }
+            });
+        });
+    });
+</script>
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts_lp.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\PROJEK PROJEK\Ebook-Traveling\resources\views/ebooks-detail.blade.php ENDPATH**/ ?>
