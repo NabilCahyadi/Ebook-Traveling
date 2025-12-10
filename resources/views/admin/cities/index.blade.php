@@ -148,16 +148,21 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <!-- Placeholder Image/Icon -->
-                                <div class="d-flex align-items-center justify-content-center h-100">
-                                    <div class="text-center text-white">
-                                        <i class="ti ti-map-pin" style="font-size: 64px; opacity: 0.3;"></i>
-                                        <div class="mt-2"
-                                            style="font-size: 24px; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-                                            foto
+                                <!-- City Image -->
+                                @if($city->image)
+                                    <img src="{{ asset($city->image) }}" alt="{{ $city->name }}" 
+                                        style="width: 100%; height: 100%; object-fit: cover;">
+                                @else
+                                    <div class="d-flex align-items-center justify-content-center h-100">
+                                        <div class="text-center text-white">
+                                            <i class="ti ti-map-pin" style="font-size: 64px; opacity: 0.3;"></i>
+                                            <div class="mt-2"
+                                                style="font-size: 24px; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                                                {{ $city->name }}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                @endif
                             </div>
 
                             <!-- Card Body -->
@@ -195,12 +200,19 @@
                                         <td><strong>#{{ $city->id }}</strong></td>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <div class="avatar avatar-sm me-2"
-                                                    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                                                    <span class="avatar-initial rounded">
-                                                        <i class="ti ti-map-pin text-white"></i>
-                                                    </span>
-                                                </div>
+                                                @if($city->image)
+                                                    <div class="avatar avatar-sm me-2">
+                                                        <img src="{{ asset($city->image) }}" alt="{{ $city->name }}" 
+                                                            class="rounded" style="width: 38px; height: 38px; object-fit: cover;">
+                                                    </div>
+                                                @else
+                                                    <div class="avatar avatar-sm me-2"
+                                                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                                        <span class="avatar-initial rounded">
+                                                            <i class="ti ti-map-pin text-white"></i>
+                                                        </span>
+                                                    </div>
+                                                @endif
                                                 <div>
                                                     <div class="fw-medium">{{ $city->name }}</div>
                                                 </div>
