@@ -109,9 +109,16 @@ class Ebook extends Model
     /**
      * Kategori yang dimiliki oleh e-book ini.
      */
+    // public function categories()
+    // {
+    //     // Penting: Tentukan nama tabel dan foreign key secara manual
+    //     return $this->belongsToMany(Category::class, 'ebook_categories', 'ebook_id', 'category_id');
+    // }
+
     public function categories()
     {
-        // Penting: Tentukan nama tabel dan foreign key secara manual
-        return $this->belongsToMany(Category::class, 'ebook_categories', 'ebook_id', 'category_id');
+        return $this->belongsToMany(Category::class)
+            ->using(EbookCategory::class)
+            ->withPivot('created_at');
     }
 }

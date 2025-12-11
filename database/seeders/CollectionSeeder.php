@@ -34,7 +34,7 @@ class CollectionSeeder extends Seeder
                 'order' => 2,
                 'is_visible_on_landing' => 1,
                 'order_index' => 2,
-                'is_active' => 1,
+                'is_active' => 0,
                 'show_in_homepage' => 1,
             ],
             [

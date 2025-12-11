@@ -4,10 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Ebook;
 
 class City extends Model
 {
+    use HasUuids;
+
     protected $fillable = [
         'name',
         'slug',
@@ -24,6 +28,7 @@ class City extends Model
     protected $casts = [
         'is_active' => 'boolean',
         'is_popular' => 'boolean',
+        'id' => 'string',
     ];
 
     public function ebooks(): HasMany

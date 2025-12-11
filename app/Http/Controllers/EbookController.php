@@ -48,7 +48,7 @@ class EbookController extends Controller
             ->paginate(3);
 
         // Ambil semua rating untuk ditampilkan
-        $ratings = $ebook->ratings()->latest()->paginate(10);
+        $ratings = $ebook->ratings()->latest()->paginate(3);
 
         // TAMBAHKAN BARIS INI: Tambah 1 ke view_count
         $ebook->increment('view_count');
