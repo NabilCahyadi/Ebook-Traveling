@@ -1,8 +1,6 @@
-@extends('layouts_lp.app')
+<?php $__env->startSection('title', 'My Account - MeatMap'); ?>
 
-@section('title', 'My Account - MeatMap')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <main class="main pages">
     <div class="page-header mt-30 mb-30">
         <div class="container">
@@ -26,123 +24,123 @@
                 <div class="col-md-3">
                     <div class="dashboard-menu">
                         <ul class="nav flex-column" role="tablist">
-                            @if(auth()->user()->hasActiveSubscription())
+                            <?php if(auth()->user()->hasActiveSubscription()): ?>
                             <!-- ========== PREMIUM MEMBER MENU ========== -->
                             <!-- DASHBOARD -->
                             <li class="nav-item">
-                                <a class="nav-link {{ request('tab', 'dashboard') == 'dashboard' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=dashboard">
+                                <a class="nav-link <?php echo e(request('tab', 'dashboard') == 'dashboard' ? 'active' : ''); ?>"
+                                    href="<?php echo e(route('page-account')); ?>?tab=dashboard">
                                     <i class="fi-rs-settings-sliders mr-10"></i>Dashboard Member
                                 </a>
                             </li>
 
                             <!-- WISHLIST -->
                             <li class="nav-item">
-                                <a class="nav-link {{ request('tab') == 'orders' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=orders">
+                                <a class="nav-link <?php echo e(request('tab') == 'orders' ? 'active' : ''); ?>"
+                                    href="<?php echo e(route('page-account')); ?>?tab=orders">
                                     <i class="fi fi-rs-heart mr-10"></i>Wishlist
-                                    @if($wishlistCount > 0)
-                                    <span class="badge bg-primary ms-1">{{ $wishlistCount }}</span>
-                                    @endif
+                                    <?php if($wishlistCount > 0): ?>
+                                    <span class="badge bg-primary ms-1"><?php echo e($wishlistCount); ?></span>
+                                    <?php endif; ?>
                                 </a>
                             </li>
 
                             <!-- MY LIBRARY -->
                             <li class="nav-item">
-                                <a class="nav-link {{ request('tab') == 'library' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=library">
+                                <a class="nav-link <?php echo e(request('tab') == 'library' ? 'active' : ''); ?>"
+                                    href="<?php echo e(route('page-account')); ?>?tab=library">
                                     <i class="fi-rs-book mr-10"></i>My Library
                                 </a>
                             </li>
 
                             <!-- READING HISTORY -->
                             <li class="nav-item">
-                                <a class="nav-link {{ request('tab') == 'reading-history' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=reading-history">
+                                <a class="nav-link <?php echo e(request('tab') == 'reading-history' ? 'active' : ''); ?>"
+                                    href="<?php echo e(route('page-account')); ?>?tab=reading-history">
                                     <i class="bi-clock-history mr-10"></i>Reading History
                                 </a>
                             </li>
 
                             <!-- MY REVIEWS -->
                             <li class="nav-item">
-                                <a class="nav-link {{ request('tab') == 'reviews' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=reviews">
+                                <a class="nav-link <?php echo e(request('tab') == 'reviews' ? 'active' : ''); ?>"
+                                    href="<?php echo e(route('page-account')); ?>?tab=reviews">
                                     <i class="fi-rs-star mr-10"></i>My Reviews
                                 </a>
                             </li>
 
                             <!-- MY SUBSCRIPTION -->
                             <li class="nav-item">
-                                <a class="nav-link {{ request('tab') == 'subscription' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=subscription">
+                                <a class="nav-link <?php echo e(request('tab') == 'subscription' ? 'active' : ''); ?>"
+                                    href="<?php echo e(route('page-account')); ?>?tab=subscription">
                                     <i class="fi-rs-crown mr-10"></i>My Subscription
                                 </a>
                             </li>
 
                             <!-- HELP CENTER -->
                             <li class="nav-item">
-                                <a class="nav-link {{ request('tab') == 'help' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=help">
+                                <a class="nav-link <?php echo e(request('tab') == 'help' ? 'active' : ''); ?>"
+                                    href="<?php echo e(route('page-account')); ?>?tab=help">
                                     <i class="fi-rs-interactive mr-10"></i>Help Center
                                 </a>
                             </li>
-                            @else
+                            <?php else: ?>
                             <!-- ========== FREE USER MENU ========== -->
                             <!-- DASHBOARD -->
                             <li class="nav-item">
-                                <a class="nav-link {{ request('tab', 'dashboard') == 'dashboard' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=dashboard">
+                                <a class="nav-link <?php echo e(request('tab', 'dashboard') == 'dashboard' ? 'active' : ''); ?>"
+                                    href="<?php echo e(route('page-account')); ?>?tab=dashboard">
                                     <i class="fi-rs-settings-sliders mr-10"></i>Dashboard Member
                                 </a>
                             </li>
 
                             <!-- WISHLIST -->
                             <li class="nav-item">
-                                <a class="nav-link {{ request('tab') == 'orders' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=orders">
+                                <a class="nav-link <?php echo e(request('tab') == 'orders' ? 'active' : ''); ?>"
+                                    href="<?php echo e(route('page-account')); ?>?tab=orders">
                                     <i class="fi fi-rs-heart mr-10"></i>Wishlist
-                                    @if($wishlistCount > 0)
-                                    <span class="badge bg-primary ms-1">{{ $wishlistCount }}</span>
-                                    @endif
+                                    <?php if($wishlistCount > 0): ?>
+                                    <span class="badge bg-primary ms-1"><?php echo e($wishlistCount); ?></span>
+                                    <?php endif; ?>
                                 </a>
                             </li>
 
-                            @endif
+                            <?php endif; ?>
 
                             <!-- ========== MENU UNTUK SEMUA USER ========== -->
 
                             <!-- CREATOR (UNTUK SEMUA USER) -->
                             <li class="nav-item">
-                                <a class="nav-link {{ request('tab') == 'creator' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=creator">
+                                <a class="nav-link <?php echo e(request('tab') == 'creator' ? 'active' : ''); ?>"
+                                    href="<?php echo e(route('page-account')); ?>?tab=creator">
                                     <i class="fi-rs-edit mr-10"></i>Creator
                                 </a>
                             </li>
 
                             <!-- PROFILE SETTINGS (UNTUK SEMUA USER) -->
                             <li class="nav-item">
-                                <a class="nav-link {{ request('tab') == 'account-detail' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=account-detail">
+                                <a class="nav-link <?php echo e(request('tab') == 'account-detail' ? 'active' : ''); ?>"
+                                    href="<?php echo e(route('page-account')); ?>?tab=account-detail">
                                     <i class="fi-rs-user mr-10"></i>Profile Settings
                                 </a>
                             </li>
 
                             <!-- PAYMENT HISTORY (UNTUK SEMUA USER) -->
                             <li class="nav-item">
-                                <a class="nav-link {{ request('tab') == 'payment' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=payment">
+                                <a class="nav-link <?php echo e(request('tab') == 'payment' ? 'active' : ''); ?>"
+                                    href="<?php echo e(route('page-account')); ?>?tab=payment">
                                     <i class="fi-rs-credit-card mr-10"></i>Payment History
-                                    @if($ordersCount > 0)
-                                    <span class="badge bg-success ms-1">{{ $ordersCount }}</span>
-                                    @endif
+                                    <?php if($ordersCount > 0): ?>
+                                    <span class="badge bg-success ms-1"><?php echo e($ordersCount); ?></span>
+                                    <?php endif; ?>
                                 </a>
                             </li>
 
                             <!-- LOGOUT (SAMA UNTUK KEDUANYA) -->
                             <li class="nav-item">
-                                <form method="POST" action="{{ route('user.logout') }}" id="nav-logout-form"
+                                <form method="POST" action="<?php echo e(route('user.logout')); ?>" id="nav-logout-form"
                                     style="display: none;">
-                                    @csrf
+                                    <?php echo csrf_field(); ?>
                                 </form>
                                 <a class="nav-link"
                                     onclick="event.preventDefault(); document.getElementById('nav-logout-form').submit();">
@@ -155,78 +153,78 @@
                 <div class="col-md-9">
                     <div class="tab-content account dashboard-content pl-50">
                         <!-- DASHBOARD TAB -->
-                        <div class="tab-pane fade {{ request('tab', 'dashboard') == 'dashboard' ? 'active show' : '' }}"
+                        <div class="tab-pane fade <?php echo e(request('tab', 'dashboard') == 'dashboard' ? 'active show' : ''); ?>"
                             id="dashboard" role="tabpanel">
-                            @if(auth()->user()->hasActiveSubscription())
+                            <?php if(auth()->user()->hasActiveSubscription()): ?>
                             <!-- TAMPILAN UNTUK USER PREMIUM -->
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="mb-0">Hello {{ auth()->user()->name }}!</h3>
-                                    <small>Premium Member since {{ auth()->user()->created_at->format('M Y') }}</small>
+                                    <h3 class="mb-0">Hello <?php echo e(auth()->user()->name); ?>!</h3>
+                                    <small>Premium Member since <?php echo e(auth()->user()->created_at->format('M Y')); ?></small>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-4 mb-3">
                                             <div class="stat-card text-center p-3 border rounded">
-                                                <h4 class="text-primary">{{ $ordersCount }}</h4>
+                                                <h4 class="text-primary"><?php echo e($ordersCount); ?></h4>
                                                 <p class="mb-0">Total Orders</p>
                                             </div>
                                         </div>
                                         <div class="col-md-4 mb-3">
                                             <div class="stat-card text-center p-3 border rounded">
-                                                <h4 class="text-success">{{ $wishlistCount }}</h4>
+                                                <h4 class="text-success"><?php echo e($wishlistCount); ?></h4>
                                                 <p class="mb-0">Saved Books</p>
                                             </div>
                                         </div>
                                         <div class="col-md-4 mb-3">
                                             <div class="stat-card text-center p-3 border rounded">
-                                                <h4 class="text-info">{{ $readingProgressCount }}</h4>
+                                                <h4 class="text-info"><?php echo e($readingProgressCount); ?></h4>
                                                 <p class="mb-0">Reading Progress</p>
                                             </div>
                                         </div>
                                     </div>
                                     <p class="mt-3">
                                         From your account dashboard. you can easily check &amp; view your <a
-                                            href="{{ route('page-account') }}?tab=orders">recent orders</a>,<br />
-                                        manage your <a href="{{ route('page-account') }}?tab=account-detail">profile
+                                            href="<?php echo e(route('page-account')); ?>?tab=orders">recent orders</a>,<br />
+                                        manage your <a href="<?php echo e(route('page-account')); ?>?tab=account-detail">profile
                                             settings</a> and edit your account details.
                                     </p>
                                 </div>
                             </div>
-                            @else
+                            <?php else: ?>
                             <!-- TAMPILAN UNTUK USER NON-PREMIUM -->
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="mb-0">Hello {{ auth()->user()->name }}! 👋</h3>
+                                    <h3 class="mb-0">Hello <?php echo e(auth()->user()->name); ?>! 👋</h3>
                                     <small class="text-muted">Member since
-                                        {{ auth()->user()->created_at->format('M Y') }}</small>
+                                        <?php echo e(auth()->user()->created_at->format('M Y')); ?></small>
                                 </div>
                                 <div class="card-body">
                                     <div class="alert alert-info border-0"
                                         style="background: #e3f2fd; border-left: 4px solid #2196F3;">
                                         <h5 class="alert-heading">Upgrade to Premium!</h5>
                                         <p class="mt-4">Unlock exclusive features and access our complete ebook library
-                                            by subscribing to our <u><a href="{{route('pricing')}}">premium
+                                            by subscribing to our <u><a href="<?php echo e(route('pricing')); ?>">premium
                                                     plan</a>.</u>
                                             Get unlimited access to all ebooks, advanced features, and priority support.
-                                            Enjoy a limited-time <u><a href="{{route('promo')}}">exclusive offer</a></u>
+                                            Enjoy a limited-time <u><a href="<?php echo e(route('promo')); ?>">exclusive offer</a></u>
                                             <strong>don't miss out!</strong>
                                         </p>
                                     </div>
                                 </div>
                             </div>
-                            @endif
+                            <?php endif; ?>
                         </div>
 
                         <!-- WISHLIST TAB -->
-                        <div class="tab-pane fade {{ request('tab') == 'orders' ? 'active show' : '' }}" id="orders"
+                        <div class="tab-pane fade <?php echo e(request('tab') == 'orders' ? 'active show' : ''); ?>" id="orders"
                             role="tabpanel">
                             <div class="card">
                                 <div class="card-header">
                                     <h5 class="mb-0">Your Wishlist</h5>
                                 </div>
                                 <div class="card-body">
-                                    @if($wishlistItems->count() > 0)
+                                    <?php if($wishlistItems->count() > 0): ?>
                                     <div class="table-responsive">
                                         <table class="table">
                                             <thead>
@@ -238,91 +236,93 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($wishlistItems as $item)
+                                                <?php $__currentLoopData = $wishlistItems; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <tr>
-                                                    <td>{{ $item->ebook->title ?? 'Unknown Book' }}</td>
+                                                    <td><?php echo e($item->ebook->title ?? 'Unknown Book'); ?></td>
                                                     <td>
-                                                        @if(isset($item->ebook->categories) &&
-                                                        $item->ebook->categories->count() > 0)
-                                                        @foreach($item->ebook->categories as $category)
-                                                        <span class="badge bg-secondary">{{ $category->name }}</span>
-                                                        @endforeach
-                                                        @else
+                                                        <?php if(isset($item->ebook->categories) &&
+                                                        $item->ebook->categories->count() > 0): ?>
+                                                        <?php $__currentLoopData = $item->ebook->categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <span class="badge bg-secondary"><?php echo e($category->name); ?></span>
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                        <?php else: ?>
                                                         <span class="text-muted">No category</span>
-                                                        @endif
+                                                        <?php endif; ?>
                                                     </td>
                                                     <td>
-                                                        @if(isset($item->ebook->price))
-                                                        @if($item->ebook->price == 0)
+                                                        <?php if(isset($item->ebook->price)): ?>
+                                                        <?php if($item->ebook->price == 0): ?>
                                                         <span class="text-success">Free</span>
-                                                        @else
-                                                        ${{ number_format($item->ebook->price, 2) }}
-                                                        @endif
-                                                        @else
+                                                        <?php else: ?>
+                                                        $<?php echo e(number_format($item->ebook->price, 2)); ?>
+
+                                                        <?php endif; ?>
+                                                        <?php else: ?>
                                                         <span class="text-muted">N/A</span>
-                                                        @endif
+                                                        <?php endif; ?>
                                                     </td>
                                                     <td>
-                                                        @if(isset($item->ebook->price) && $item->ebook->price == 0)
+                                                        <?php if(isset($item->ebook->price) && $item->ebook->price == 0): ?>
                                                         <a href="#" class="btn-small d-block">Read Now</a>
-                                                        @else
+                                                        <?php else: ?>
                                                         <a href="#" class="btn-small d-block">Buy Now</a>
-                                                        @endif
+                                                        <?php endif; ?>
                                                     </td>
                                                 </tr>
-                                                @endforeach
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </tbody>
                                         </table>
                                     </div>
-                                    @else
+                                    <?php else: ?>
                                     <div class="text-center py-4">
                                         <i class="fi fi-rs-heart text-muted" style="font-size: 48px;"></i>
                                         <h5 class="mt-3">No saved books yet</h5>
                                         <p class="text-muted">Start exploring our ebooks and add them to your wishlist!
                                         </p>
-                                        <a href="{{ route('destinations') }}" class="btn btn-primary btn-custom">Browse
+                                        <a href="<?php echo e(route('destinations')); ?>" class="btn btn-primary btn-custom">Browse
                                             Ebooks</a>
                                     </div>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
 
                         <!-- PROFILE SETTINGS TAB -->
-                        <div class="tab-pane fade {{ request('tab') == 'account-detail' ? 'active show' : '' }}"
+                        <div class="tab-pane fade <?php echo e(request('tab') == 'account-detail' ? 'active show' : ''); ?>"
                             id="account-detail" role="tabpanel">
-                            {{-- Tambahkan ini di bagian atas untuk debugging --}}
-                            @if($errors->any())
+                            
+                            <?php if($errors->any()): ?>
                             <div class="alert alert-danger">
                                 <strong>Ada kesalahan:</strong>
                                 <ul>
-                                    @foreach($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                    @endforeach
+                                    <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <li><?php echo e($error); ?></li>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </ul>
                             </div>
-                            @endif
+                            <?php endif; ?>
 
-                            {{-- AWAL: FORM UNTUK UPDATE AVATAR --}}
+                            
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <h5>Profile Picture</h5>
                                 </div>
                                 <div class="card-body">
-                                    @if(session('avatar_success'))
+                                    <?php if(session('avatar_success')): ?>
                                     <div class="alert alert-success">
-                                        {{ session('avatar_success') }}
-                                    </div>
-                                    @endif
+                                        <?php echo e(session('avatar_success')); ?>
 
-                                    <form method="POST" action="{{ route('account.update.avatar') }}" enctype="multipart/form-data">
-                                        @csrf
+                                    </div>
+                                    <?php endif; ?>
+
+                                    <form method="POST" action="<?php echo e(route('account.update.avatar')); ?>" enctype="multipart/form-data">
+                                        <?php echo csrf_field(); ?>
                                         <div class="row align-items-center">
                                             <div class="col-md-3 text-center">
                                                 <label for="avatar_input" style="cursor: pointer;">
-                                                    {{-- SOLUSI CACHE-BUSTING: Tambahkan ?t={{ time() }} --}}
+                                                    
                                                     <img id="avatar-preview"
-                                                        src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) . '?t=' . auth()->user()->updated_at->timestamp : asset('/images/user-avatar.png') }}"
+                                                        src="<?php echo e(auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) . '?t=' . auth()->user()->updated_at->timestamp : asset('/images/user-avatar.png')); ?>"
                                                         alt="Avatar Preview"
                                                         class="img-fluid rounded-circle"
                                                         style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #e9ecef;">
@@ -340,69 +340,70 @@
                                     </form>
                                 </div>
                             </div>
-                            {{-- AKHIR: FORM UNTUK UPDATE AVATAR --}}
+                            
 
 
-                            {{-- FORM LAMA UNTUK DETAIL PROFIL --}}
+                            
                             <div class="card">
                                 <div class="card-header">
                                     <h5>Profile Settings</h5>
                                 </div>
                                 <div class="card-body">
-                                    @if(session('success'))
+                                    <?php if(session('success')): ?>
                                     <div class="alert alert-success">
-                                        {{ session('success') }}
-                                    </div>
-                                    @endif
+                                        <?php echo e(session('success')); ?>
 
-                                    @if($errors->any())
+                                    </div>
+                                    <?php endif; ?>
+
+                                    <?php if($errors->any()): ?>
                                     <div class="alert alert-danger">
                                         <ul class="mb-0">
-                                            @foreach($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                            @endforeach
+                                            <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <li><?php echo e($error); ?></li>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </ul>
                                     </div>
-                                    @endif
+                                    <?php endif; ?>
 
-                                    <form method="post" action="{{ route('profile.update') }}">
-                                        @csrf
-                                        @method('PUT')
+                                    <form method="post" action="<?php echo e(route('profile.update')); ?>">
+                                        <?php echo csrf_field(); ?>
+                                        <?php echo method_field('PUT'); ?>
                                         <div class="row">
                                             <div class="form-group col-md-6">
                                                 <label>Full Name <span class="required">*</span></label>
                                                 <input required class="form-control" name="name" type="text"
-                                                    value="{{ old('name', auth()->user()->name) }}" />
+                                                    value="<?php echo e(old('name', auth()->user()->name)); ?>" />
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <label>Phone Number</label>
                                                 <input class="form-control" name="phone"
-                                                    value="{{ old('phone', auth()->user()->phone) }}" />
+                                                    value="<?php echo e(old('phone', auth()->user()->phone)); ?>" />
                                             </div>
                                             <div class="form-group col-md-12">
                                                 <label>Email Address <span class="required">*</span></label>
                                                 <input required class="form-control" name="email" type="email"
-                                                    value="{{ old('email', auth()->user()->email) }}" readonly />
+                                                    value="<?php echo e(old('email', auth()->user()->email)); ?>" readonly />
                                                 <small class="text-muted">Email cannot be changed</small>
                                             </div>
                                             <div class="form-group col-md-12">
                                                 <label>Bio</label>
                                                 <textarea class="form-control" name="bio" rows="3"
-                                                    placeholder="Tell us about yourself...">{{ old('bio', auth()->user()->profile->bio ?? '') }}</textarea>
+                                                    placeholder="Tell us about yourself..."><?php echo e(old('bio', auth()->user()->profile->bio ?? '')); ?></textarea>
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <label>Country</label>
                                                 <input class="form-control" name="country"
-                                                    value="{{ old('country', auth()->user()->profile->country ?? '') }}" />
+                                                    value="<?php echo e(old('country', auth()->user()->profile->country ?? '')); ?>" />
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <label>Preferred Language</label>
                                                 <select class="form-control" name="preferred_language">
                                                     <option value="id"
-                                                        {{ (old('preferred_language', auth()->user()->preferred_language) == 'id') ? 'selected' : '' }}>
+                                                        <?php echo e((old('preferred_language', auth()->user()->preferred_language) == 'id') ? 'selected' : ''); ?>>
                                                         Indonesian</option>
                                                     <option value="en"
-                                                        {{ (old('preferred_language', auth()->user()->preferred_language) == 'en') ? 'selected' : '' }}>
+                                                        <?php echo e((old('preferred_language', auth()->user()->preferred_language) == 'en') ? 'selected' : ''); ?>>
                                                         English</option>
                                                 </select>
                                             </div>
@@ -429,14 +430,14 @@
                         </div>
 
                         <!-- PAYMENT HISTORY TAB -->
-                        <div class="tab-pane fade {{ request('tab') == 'payment' ? 'active show' : '' }}" id="payment"
+                        <div class="tab-pane fade <?php echo e(request('tab') == 'payment' ? 'active show' : ''); ?>" id="payment"
                             role="tabpanel">
                             <div class="card">
                                 <div class="card-header">
                                     <h5>Payment History</h5>
                                 </div>
                                 <div class="card-body">
-                                    @if($orders->count() > 0)
+                                    <?php if($orders->count() > 0): ?>
                                     <div class="table-responsive">
                                         <table class="table">
                                             <thead>
@@ -449,61 +450,62 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($orders as $order)
+                                                <?php $__currentLoopData = $orders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <tr>
-                                                    <td>#{{ $order->order_code ?? $order->id }}</td>
-                                                    <td>{{ $order->created_at->format('M d, Y') }}</td>
-                                                    <td>${{ number_format($order->total_amount, 2) }}</td>
+                                                    <td>#<?php echo e($order->order_code ?? $order->id); ?></td>
+                                                    <td><?php echo e($order->created_at->format('M d, Y')); ?></td>
+                                                    <td>$<?php echo e(number_format($order->total_amount, 2)); ?></td>
                                                     <td>
-                                                        @if($order->status == 'completed')
+                                                        <?php if($order->status == 'completed'): ?>
                                                         <span class="badge bg-success">Paid</span>
-                                                        @elseif($order->status == 'pending')
+                                                        <?php elseif($order->status == 'pending'): ?>
                                                         <span class="badge bg-warning">Pending</span>
-                                                        @else
+                                                        <?php else: ?>
                                                         <span
-                                                            class="badge bg-secondary">{{ ucfirst($order->status) }}</span>
-                                                        @endif
+                                                            class="badge bg-secondary"><?php echo e(ucfirst($order->status)); ?></span>
+                                                        <?php endif; ?>
                                                     </td>
                                                     <td><a href="#" class="btn-small d-block">View Details</a></td>
                                                 </tr>
-                                                @endforeach
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </tbody>
                                         </table>
                                     </div>
-                                    @else
+                                    <?php else: ?>
                                     <div class="text-center py-4">
                                         <i class="fi-rs-credit-card text-muted" style="font-size: 48px;"></i>
                                         <h5 class="mt-3">No payment history yet</h5>
                                         <p class="text-muted">Your payment history will appear here after you make a
                                             purchase.</p>
-                                        <a href="{{ route('destinations') }}" class="btn btn-primary btn-custom">Browse
+                                        <a href="<?php echo e(route('destinations')); ?>" class="btn btn-primary btn-custom">Browse
                                             Ebooks</a>
                                     </div>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
                         <!-- ========== PREMIUM ONLY TABS ========== -->
 
                         <!-- MY LIBRARY TAB -->
-                        <div class="tab-pane fade {{ request('tab') == 'library' ? 'active show' : '' }}" id="library"
+                        <div class="tab-pane fade <?php echo e(request('tab') == 'library' ? 'active show' : ''); ?>" id="library"
                             role="tabpanel">
                             <div class="card">
                                 <div class="card-header">
                                     <h5 class="mb-0">My Library</h5>
                                 </div>
                                 <div class="card-body">
-                                    @if(isset($purchasedEbooks) && $purchasedEbooks->count() > 0)
+                                    <?php if(isset($purchasedEbooks) && $purchasedEbooks->count() > 0): ?>
                                     <div class="row mb-4">
                                         <div class="col-md-3 mb-3">
                                             <div class="text-center p-3 border rounded">
-                                                <h4 class="text-primary">{{ $purchasedEbooks->count() }}</h4>
+                                                <h4 class="text-primary"><?php echo e($purchasedEbooks->count()); ?></h4>
                                                 <p class="mb-0">Total Books</p>
                                             </div>
                                         </div>
                                         <div class="col-md-3 mb-3">
                                             <div class="text-center p-3 border rounded">
-                                                <h4 class="text-success">{{ $readingStats['total_books_read'] ?? 0 }}
+                                                <h4 class="text-success"><?php echo e($readingStats['total_books_read'] ?? 0); ?>
+
                                                 </h4>
                                                 <p class="mb-0">Completed</p>
                                             </div>
@@ -511,7 +513,8 @@
                                         <div class="col-md-3 mb-3">
                                             <div class="text-center p-3 border rounded">
                                                 <h4 class="text-warning">
-                                                    {{ $readingStats['currently_reading']->count() ?? 0 }}
+                                                    <?php echo e($readingStats['currently_reading']->count() ?? 0); ?>
+
                                                 </h4>
                                                 <p class="mb-0">In Progress</p>
                                             </div>
@@ -519,7 +522,8 @@
                                         <div class="col-md-3 mb-3">
                                             <div class="text-center p-3 border rounded">
                                                 <h4 class="text-info">
-                                                    {{ $purchasedEbooks->count() - ($readingStats['total_books_read'] ?? 0) }}
+                                                    <?php echo e($purchasedEbooks->count() - ($readingStats['total_books_read'] ?? 0)); ?>
+
                                                 </h4>
                                                 <p class="mb-0">Not Started</p>
                                             </div>
@@ -527,30 +531,30 @@
                                     </div>
 
                                     <div class="row">
-                                        @foreach($purchasedEbooks as $ebook)
+                                        <?php $__currentLoopData = $purchasedEbooks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ebook): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <div class="col-md-4 mb-4">
                                             <div class="card h-100">
-                                                <img src="{{ $ebook->cover_image ?? '/images/ebook-placeholder.jpg' }}"
-                                                    class="card-img-top" alt="{{ $ebook->title }}"
+                                                <img src="<?php echo e($ebook->cover_image ?? '/images/ebook-placeholder.jpg'); ?>"
+                                                    class="card-img-top" alt="<?php echo e($ebook->title); ?>"
                                                     style="height: 200px; object-fit: cover;">
                                                 <div class="card-body">
-                                                    <h6 class="card-title">{{ $ebook->title }}</h6>
-                                                    <p class="card-text small text-muted">by {{ $ebook->author }}</p>
+                                                    <h6 class="card-title"><?php echo e($ebook->title); ?></h6>
+                                                    <p class="card-text small text-muted">by <?php echo e($ebook->author); ?></p>
                                                     <div class="mb-2">
-                                                        @foreach($ebook->categories as $category)
-                                                        <span class="badge bg-secondary">{{ $category->name }}</span>
-                                                        @endforeach
+                                                        <?php $__currentLoopData = $ebook->categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <span class="badge bg-secondary"><?php echo e($category->name); ?></span>
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                     </div>
-                                                    @php
+                                                    <?php
                                                     $reading = $userReadings->where('ebook_id', $ebook->id)->first();
-                                                    @endphp
-                                                    @if($reading)
+                                                    ?>
+                                                    <?php if($reading): ?>
                                                     <div class="progress mb-2" style="height: 8px;">
                                                         <div class="progress-bar" role="progressbar"
-                                                            style="width: {{ $reading->progress_percentage }}%"></div>
+                                                            style="width: <?php echo e($reading->progress_percentage); ?>%"></div>
                                                     </div>
-                                                    <small>Progress: {{ $reading->progress_percentage }}%</small>
-                                                    @endif
+                                                    <small>Progress: <?php echo e($reading->progress_percentage); ?>%</small>
+                                                    <?php endif; ?>
                                                 </div>
                                                 <div class="card-footer bg-transparent">
                                                     <a href="#" class="btn btn-primary btn-sm w-100">Continue
@@ -558,29 +562,29 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        @endforeach
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </div>
-                                    @else
+                                    <?php else: ?>
                                     <div class="text-center py-4">
                                         <i class="fi-rs-book text-muted" style="font-size: 48px;"></i>
                                         <h5 class="mt-3">Your Library is Empty</h5>
                                         <p class="text-muted">Start building your library by purchasing ebooks</p>
-                                        <a href="{{ route('destinations') }}" class="btn btn-primary">Browse Ebooks</a>
+                                        <a href="<?php echo e(route('destinations')); ?>" class="btn btn-primary">Browse Ebooks</a>
                                     </div>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
 
                         <!-- READING HISTORY TAB -->
-                        <div class="tab-pane fade {{ request('tab') == 'reading-history' ? 'active show' : '' }}"
+                        <div class="tab-pane fade <?php echo e(request('tab') == 'reading-history' ? 'active show' : ''); ?>"
                             id="reading-history" role="tabpanel">
                             <div class="card">
                                 <div class="card-header">
                                     <h5 class="mb-0">Reading History</h5>
                                 </div>
                                 <div class="card-body">
-                                    @if($userReadings->count() > 0)
+                                    <?php if($userReadings->count() > 0): ?>
                                     <div class="table-responsive">
                                         <table class="table">
                                             <thead>
@@ -593,78 +597,81 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($userReadings as $reading)
+                                                <?php $__currentLoopData = $userReadings; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $reading): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <tr>
                                                     <td>
-                                                        <strong>{{ $reading->ebook->title ?? 'Unknown Book' }}</strong><br>
+                                                        <strong><?php echo e($reading->ebook->title ?? 'Unknown Book'); ?></strong><br>
                                                         <small class="text-muted">by
-                                                            {{ $reading->ebook->author ?? 'Unknown Author' }}</small>
+                                                            <?php echo e($reading->ebook->author ?? 'Unknown Author'); ?></small>
                                                     </td>
-                                                    <td>{{ $reading->last_read_at ? $reading->last_read_at->format('M d, Y H:i') : 'Never' }}
+                                                    <td><?php echo e($reading->last_read_at ? $reading->last_read_at->format('M d, Y H:i') : 'Never'); ?>
+
                                                     </td>
                                                     <td>
                                                         <div class="progress" style="height: 8px; width: 100px;">
                                                             <div class="progress-bar" role="progressbar"
-                                                                style="width: {{ $reading->progress_percentage }}%">
+                                                                style="width: <?php echo e($reading->progress_percentage); ?>%">
                                                             </div>
                                                         </div>
-                                                        <small>{{ $reading->progress_percentage }}%</small>
+                                                        <small><?php echo e($reading->progress_percentage); ?>%</small>
                                                     </td>
-                                                    <td>Page {{ $reading->last_page }}</td>
+                                                    <td>Page <?php echo e($reading->last_page); ?></td>
                                                     <td>
                                                         <a href="#" class="btn-small d-block">Continue</a>
                                                     </td>
                                                 </tr>
-                                                @endforeach
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </tbody>
                                         </table>
                                     </div>
-                                    @else
+                                    <?php else: ?>
                                     <div class="text-center py-4">
                                         <i class="fi-rs-history text-muted" style="font-size: 48px;"></i>
                                         <h5 class="mt-3">No Reading History Yet</h5>
                                         <p class="text-muted">Start reading ebooks to build your reading history</p>
-                                        <a href="{{ route('destinations') }}" class="btn btn-primary">Start Reading</a>
+                                        <a href="<?php echo e(route('destinations')); ?>" class="btn btn-primary">Start Reading</a>
                                     </div>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
 
                         <!-- MY REVIEWS TAB -->
-                        <div class="tab-pane fade {{ request('tab') == 'reviews' ? 'active show' : '' }}" id="reviews"
+                        <div class="tab-pane fade <?php echo e(request('tab') == 'reviews' ? 'active show' : ''); ?>" id="reviews"
                             role="tabpanel">
                             <div class="card">
                                 <div class="card-header">
                                     <h5 class="mb-0">My Reviews</h5>
                                 </div>
                                 <div class="card-body">
-                                    @if($userRatings->count() > 0)
+                                    <?php if($userRatings->count() > 0): ?>
                                     <div class="row">
-                                        @foreach($userRatings as $rating)
+                                        <?php $__currentLoopData = $userRatings; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $rating): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <div class="col-md-6 mb-4">
                                             <div class="card h-100">
                                                 <div class="card-body">
                                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                                         <h6 class="card-title mb-0">
-                                                            {{ $rating->ebook->title ?? 'Unknown Book' }}
+                                                            <?php echo e($rating->ebook->title ?? 'Unknown Book'); ?>
+
                                                         </h6>
                                                         <div class="rating">
-                                                            @for($i = 1; $i <= 5; $i++) <i
-                                                                class="fi-rs-star{{ $i <= $rating->rating ? ' text-warning' : '' }}">
+                                                            <?php for($i = 1; $i <= 5; $i++): ?> <i
+                                                                class="fi-rs-star<?php echo e($i <= $rating->rating ? ' text-warning' : ''); ?>">
                                                                 </i>
-                                                                @endfor
+                                                                <?php endfor; ?>
                                                         </div>
                                                     </div>
                                                     <p class="card-text small text-muted">by
-                                                        {{ $rating->ebook->author ?? 'Unknown Author' }}
+                                                        <?php echo e($rating->ebook->author ?? 'Unknown Author'); ?>
+
                                                     </p>
-                                                    @if($rating->review_title)
-                                                    <h6 class="text-dark">{{ $rating->review_title }}</h6>
-                                                    @endif
-                                                    <p class="card-text">{{ $rating->review_text }}</p>
+                                                    <?php if($rating->review_title): ?>
+                                                    <h6 class="text-dark"><?php echo e($rating->review_title); ?></h6>
+                                                    <?php endif; ?>
+                                                    <p class="card-text"><?php echo e($rating->review_text); ?></p>
                                                     <small class="text-muted">Reviewed on
-                                                        {{ $rating->created_at->format('M d, Y') }}</small>
+                                                        <?php echo e($rating->created_at->format('M d, Y')); ?></small>
                                                 </div>
                                                 <div class="card-footer bg-transparent">
                                                     <div class="d-flex gap-2">
@@ -674,41 +681,42 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        @endforeach
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </div>
-                                    @else
+                                    <?php else: ?>
                                     <div class="text-center py-4">
                                         <i class="fi-rs-star text-muted" style="font-size: 48px;"></i>
                                         <h5 class="mt-3">No Reviews Yet</h5>
                                         <p class="text-muted">Share your thoughts by reviewing ebooks you've read</p>
-                                        <a href="{{ route('destinations') }}" class="btn btn-primary">Browse Ebooks</a>
+                                        <a href="<?php echo e(route('destinations')); ?>" class="btn btn-primary">Browse Ebooks</a>
                                     </div>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
 
                         <!-- MY SUBSCRIPTION TAB -->
-                        <div class="tab-pane fade {{ request('tab') == 'subscription' ? 'active show' : '' }}"
+                        <div class="tab-pane fade <?php echo e(request('tab') == 'subscription' ? 'active show' : ''); ?>"
                             id="subscription" role="tabpanel">
                             <div class="card">
                                 <div class="card-header">
                                     <h5 class="mb-0">My Subscription</h5>
                                 </div>
                                 <div class="card-body">
-                                    @if(isset($activeSubscription) && $activeSubscription)
+                                    <?php if(isset($activeSubscription) && $activeSubscription): ?>
                                     <div class="alert alert-success">
                                         <h6>🎉 Premium Member</h6>
                                         <p class="mb-1">
                                             You are subscribed to
-                                            <strong>{{ $activeSubscription->plan->name ?? 'Premium Plan' }}</strong>
+                                            <strong><?php echo e($activeSubscription->plan->name ?? 'Premium Plan'); ?></strong>
                                         </p>
                                         <p class="mb-0">
-                                            @if($activeSubscription->end_date)
-                                            Next billing date : {{ $activeSubscription->end_date->format('M d, Y') }}
-                                            @else
+                                            <?php if($activeSubscription->end_date): ?>
+                                            Next billing date : <?php echo e($activeSubscription->end_date->format('M d, Y')); ?>
+
+                                            <?php else: ?>
                                             Subscription is active
-                                            @endif
+                                            <?php endif; ?>
                                         </p>
                                     </div>
 
@@ -716,51 +724,51 @@
                                         <button class="btn btn-outline-danger">Cancel Subscription</button>
                                         <button class="btn btn-primary">Upgrade Plan</button>
                                     </div>
-                                    @else
+                                    <?php else: ?>
                                     <div class="alert alert-warning">
                                         <h6>No Active Subscription</h6>
                                         <p>You don't have an active subscription. Upgrade to unlock premium features.
                                         </p>
                                     </div>
-                                    <a href="{{ route('page-account') }}?tab=dashboard" class="btn btn-primary">View
+                                    <a href="<?php echo e(route('page-account')); ?>?tab=dashboard" class="btn btn-primary">View
                                         Subscription Plans</a>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
 
                         <!-- CREATOR TAB -->
-                        <div class="tab-pane fade {{ request('tab') == 'creator' ? 'active show' : '' }}" id="creator"
+                        <div class="tab-pane fade <?php echo e(request('tab') == 'creator' ? 'active show' : ''); ?>" id="creator"
                             role="tabpanel">
                             <div class="card">
                                 <div class="card-header">
                                     <h5 class="mb-0">Creator Dashboard</h5>
                                 </div>
                                 <div class="card-body">
-                                    @if(auth()->user()->isCreator())
-                                    @if(isset($createdEbooks) && $createdEbooks->count() > 0)
+                                    <?php if(auth()->user()->isCreator()): ?>
+                                    <?php if(isset($createdEbooks) && $createdEbooks->count() > 0): ?>
                                     <div class="row mb-4">
                                         <div class="col-md-3 mb-3">
                                             <div class="text-center p-3 border rounded">
-                                                <h4 class="text-primary">{{ $createdEbooks->count() }}</h4>
+                                                <h4 class="text-primary"><?php echo e($createdEbooks->count()); ?></h4>
                                                 <p class="mb-0">Published Ebooks</p>
                                             </div>
                                         </div>
                                         <div class="col-md-3 mb-3">
                                             <div class="text-center p-3 border rounded">
-                                                <h4 class="text-success">{{ $createdEbooks->sum('view_count') }}</h4>
+                                                <h4 class="text-success"><?php echo e($createdEbooks->sum('view_count')); ?></h4>
                                                 <p class="mb-0">Total Views</p>
                                             </div>
                                         </div>
                                         <div class="col-md-3 mb-3">
                                             <div class="text-center p-3 border rounded">
-                                                <h4 class="text-warning">{{ $createdEbooks->sum('read_count') }}</h4>
+                                                <h4 class="text-warning"><?php echo e($createdEbooks->sum('read_count')); ?></h4>
                                                 <p class="mb-0">Total Reads</p>
                                             </div>
                                         </div>
                                         <div class="col-md-3 mb-3">
                                             <div class="text-center p-3 border rounded">
-                                                <h4 class="text-info">{{ $createdEbooks->sum('total_reviews') }}</h4>
+                                                <h4 class="text-info"><?php echo e($createdEbooks->sum('total_reviews')); ?></h4>
                                                 <p class="mb-0">Total Reviews</p>
                                             </div>
                                         </div>
@@ -768,26 +776,27 @@
 
                                     <h6>Your Published Ebooks</h6>
                                     <div class="row">
-                                        @foreach($createdEbooks as $ebook)
+                                        <?php $__currentLoopData = $createdEbooks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ebook): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <div class="col-md-4 mb-4">
                                             <div class="card h-100">
-                                                <img src="{{ $ebook->cover_image ?? '/images/ebook-placeholder.jpg' }}"
-                                                    class="card-img-top" alt="{{ $ebook->title }}"
+                                                <img src="<?php echo e($ebook->cover_image ?? '/images/ebook-placeholder.jpg'); ?>"
+                                                    class="card-img-top" alt="<?php echo e($ebook->title); ?>"
                                                     style="height: 200px; object-fit: cover;">
                                                 <div class="card-body">
-                                                    <h6 class="card-title">{{ $ebook->title }}</h6>
+                                                    <h6 class="card-title"><?php echo e($ebook->title); ?></h6>
                                                     <p class="card-text small text-muted">
-                                                        {{ $ebook->short_description }}
+                                                        <?php echo e($ebook->short_description); ?>
+
                                                     </p>
                                                     <div class="mb-2">
-                                                        @foreach($ebook->categories as $category)
-                                                        <span class="badge bg-secondary">{{ $category->name }}</span>
-                                                        @endforeach
+                                                        <?php $__currentLoopData = $ebook->categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <span class="badge bg-secondary"><?php echo e($category->name); ?></span>
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                     </div>
                                                     <div class="d-flex justify-content-between small text-muted">
-                                                        <span>Views: {{ $ebook->view_count }}</span>
-                                                        <span>Reads: {{ $ebook->read_count }}</span>
-                                                        <span>Rating: {{ $ebook->average_rating }}/5</span>
+                                                        <span>Views: <?php echo e($ebook->view_count); ?></span>
+                                                        <span>Reads: <?php echo e($ebook->read_count); ?></span>
+                                                        <span>Rating: <?php echo e($ebook->average_rating); ?>/5</span>
                                                     </div>
                                                 </div>
                                                 <div class="card-footer bg-transparent">
@@ -798,30 +807,30 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        @endforeach
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </div>
-                                    @else
+                                    <?php else: ?>
                                     <div class="text-center py-4">
                                         <i class="fi-rs-edit text-muted" style="font-size: 48px;"></i>
                                         <h5 class="mt-3">No Published Ebooks Yet</h5>
                                         <p class="text-muted">Start creating and publishing your ebooks</p>
                                         <button class="btn btn-primary">Create Your First Ebook</button>
                                     </div>
-                                    @endif
-                                    @else
+                                    <?php endif; ?>
+                                    <?php else: ?>
                                     <div class="text-center py-4">
                                         <i class="fi-rs-edit text-muted" style="font-size: 48px;"></i>
                                         <h5 class="mt-3">Become a Creator</h5>
                                         <p class="text-muted">Start sharing your knowledge by creating ebooks</p>
                                         <button class="btn btn-primary">Apply as Creator</button>
                                     </div>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
 
                         <!-- HELP CENTER TAB -->
-                        <div class="tab-pane fade {{ request('tab') == 'help' ? 'active show' : '' }}" id="help"
+                        <div class="tab-pane fade <?php echo e(request('tab') == 'help' ? 'active show' : ''); ?>" id="help"
                             role="tabpanel">
                             <div class="card">
                                 <div class="card-header">
@@ -863,7 +872,7 @@
                                     </div>
                                 </div>
                                 <p class="">Need more help? Visit our full
-                                    <a href="{{ route('help-center') }}" class="text-primary font-weight-bold">Help
+                                    <a href="<?php echo e(route('help-center')); ?>" class="text-primary font-weight-bold">Help
                                         Center</a>.
                                 </p>
                             </div>
@@ -888,9 +897,9 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>
-            <form method="POST" action="{{ route('password.update') }}">
-                @csrf
-                @method('PUT')
+            <form method="POST" action="<?php echo e(route('password.update')); ?>">
+                <?php echo csrf_field(); ?>
+                <?php echo method_field('PUT'); ?>
                 <div class="modal-body p-4">
                     <div class="form-group mb-3">
                         <label class="form-label fw-semibold">Current Password <span
@@ -928,9 +937,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-{{-- SOLUSI PREVIEW: JavaScript yang lebih andal --}}
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const avatarInput = document.getElementById('avatar_input');
@@ -972,9 +981,9 @@
     });
 </script>
 
-{{-- STYLES UNTUK CUSTOM CSS --}}
 
-@push('styles')
+
+<?php $__env->startPush('styles'); ?>
 <style>
     .btn-custom {
         margin-top: 7px;
@@ -1015,4 +1024,5 @@
         transition: opacity 0.5s ease-out;
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('layouts_lp.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\PROJEK PROJEK\Ebook-Traveling\resources\views/page-account.blade.php ENDPATH**/ ?>
