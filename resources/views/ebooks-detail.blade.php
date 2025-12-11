@@ -412,7 +412,7 @@
                                             </div>
                                             <div class="review-user">
                                                 <div class="avatar-container">
-                                                    <img src="{{ $rating->user->avatar ? asset('storage/' . $rating->user->avatar) : asset('images/user-avatar.png') }}" alt="{{ $rating->user->name }}" class="user-avatar" />
+                                                    <img src="{{ $rating->user->avatar ? asset('storage/' . $rating->user->avatar) : asset('/images/user-avatar.png') }}" alt="{{ $rating->user->name }}" class="user-avatar" />
                                                 </div>
                                                 <a href="" class="username ms-3">{{ $rating->user->name }}</a>
                                             </div>
