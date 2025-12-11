@@ -178,61 +178,61 @@ class CityService
             [
                 'name' => 'Bandung',
                 'slug' => 'bandung',
-                'image' => 'images/ach.jpg',
+                'image' => '/images/ach.jpg',
                 'items_count' => 26
             ],
             [
                 'name' => 'Surabaya',
                 'slug' => 'surabaya',
-                'image' => 'images/mdn.jpg',
+                'image' => '/images/mdn.jpg',
                 'items_count' => 28
             ],
             [
                 'name' => 'Semarang',
                 'slug' => 'semarang',
-                'image' => 'images/pdg.jpg',
+                'image' => '/images/pdg.jpg',
                 'items_count' => 14
             ],
             [
                 'name' => 'Jakarta',
                 'slug' => 'jakarta',
-                'image' => 'images/jkt.jpg',
+                'image' => '/images/jkt.jpg',
                 'items_count' => 54
             ],
             [
                 'name' => 'Serang',
                 'slug' => 'serang',
-                'image' => 'images/ach.jpg',
+                'image' => '/images/ach.jpg',
                 'items_count' => 56
             ],
             [
                 'name' => 'Medan',
                 'slug' => 'medan',
-                'image' => 'images/mdn.jpg',
+                'image' => '/images/mdn.jpg',
                 'items_count' => 72
             ],
             [
                 'name' => 'Makassar',
                 'slug' => 'makassar',
-                'image' => 'images/pdg.jpg',
+                'image' => '/images/pdg.jpg',
                 'items_count' => 36
             ],
             [
                 'name' => 'Yogyakarta',
                 'slug' => 'yogyakarta',
-                'image' => 'images/jkt.jpg',
+                'image' => '/images/jkt.jpg',
                 'items_count' => 123
             ],
             [
                 'name' => 'Bandar Lampung',
                 'slug' => 'bandar-lampung',
-                'image' => 'images/ach.jpg',
+                'image' => '/images/ach.jpg',
                 'items_count' => 34
             ],
             [
                 'name' => 'Denpasar',
                 'slug' => 'denpasar',
-                'image' => 'images/mdn.jpg',
+                'image' => '/images/mdn.jpg',
                 'items_count' => 89
             ]
         ])->map(function ($item) {
