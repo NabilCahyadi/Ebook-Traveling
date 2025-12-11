@@ -308,7 +308,7 @@
                             <div class="product-cart-wrap mb-30">
                                 <div class="product-img-action-wrap">
                                     <div class="product-img product-img-zoom">
-                                        <a href="/ebook/{{ $ebook->slug }}">
+                                        <a href="/ebooks/{{ $ebook->slug }}">
                                             <img class="default-img" src="{{ $ebook->cover_image ?: 'https://via.placeholder.com/300x400.png?text=No+Cover' }}" alt="{{ $ebook->title }}" />
                                         </a>
                                     </div>
@@ -317,7 +317,7 @@
                                     </div>
                                 </div>
                                 <div class="product-content-wrap">
-                                    <h2><a href="/ebook/{{ $ebook->slug }}">{{ Str::limit($ebook->title, 40) }}</a></h2>
+                                    <h2><a href="/ebooks/{{ $ebook->slug }}">{{ Str::limit($ebook->title, 40) }}</a></h2>
                                     <div class="product-author">
                                         @if($ebook->creator)
                                         <span>by {{ $ebook->creator->pen_name ?? $ebook->creator->name }}</span>
