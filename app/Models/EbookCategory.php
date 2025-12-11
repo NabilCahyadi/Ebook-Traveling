@@ -2,21 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
-class EbookCategory extends Model
+class EbookCategory extends Pivot
 {
-    protected $fillable = [
-        'name',
-        'slug',
-    ];
+    use HasUuids;
 
-    /**
-     * Get the ebooks for the category.
-     */
-    public function ebooks(): HasMany
-    {
-        return $this->hasMany(Ebook::class, 'category_id');
-    }
+    protected $keyType = 'string';
+    public $incrementing = false;
+    public $timestamps = false;
 }

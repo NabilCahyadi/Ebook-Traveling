@@ -52,8 +52,15 @@ class Category extends Model
     /**
      * E-book yang ada di kategori ini.
      */
+    // public function ebooks()
+    // {
+    //     return $this->belongsToMany(Ebook::class, 'ebook_categories', 'category_id', 'ebook_id');
+    // }
+
     public function ebooks()
     {
-        return $this->belongsToMany(Ebook::class, 'ebook_categories', 'category_id', 'ebook_id');
+        return $this->belongsToMany(Ebook::class)
+            ->using(EbookCategory::class)
+            ->withPivot('created_at');
     }
 }

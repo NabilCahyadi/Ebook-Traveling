@@ -31,8 +31,9 @@ class CollectionEbookSeeder extends Seeder
         // 8 buku untuk "Best Seller" (dipilih berdasarkan read_count tertinggi)
         $bestSellerEbooks = Ebook::orderBy('read_count', 'desc')->take(8)->pluck('id');
 
-        // 10 buku untuk "Featured Collection" (dipilih secara acak dari buku dengan rating tinggi)
-        $featuredEbooks = Ebook::where('average_rating', '>=', 4.7)->inRandomOrder()->take(10)->pluck('id');
+        // 10 buku untuk "Featured Collection" (diambil secara acak dari semua ebook)
+        // Menghapus kondisi rating dan hanya mengambil ebook secara acak
+        $featuredEbooks = Ebook::inRandomOrder()->take(10)->pluck('id');
 
         // 7 buku untuk "Latest" (dipilih berdasarkan published_at terbaru)
         $latestEbooks = Ebook::orderBy('published_at', 'desc')->take(7)->pluck('id');

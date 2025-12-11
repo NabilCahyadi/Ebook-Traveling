@@ -332,7 +332,7 @@
                                             </div>
                                             <div class="col-md-9">
                                                 <p class="mb-2">Upload a new profile photo. Supported formats: JPEG, PNG, JPG, GIF. Maximum size: 2MB.</p>
-                                                <button type="submit" class="btn btn-primary">
+                                                <button type="submit" class="btn">
                                                     <i class="fi-rs-camera mr-5"></i> Update Picture
                                                 </button>
                                             </div>

@@ -16,21 +16,35 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            RoleSeeder::class,
-            AdminUserSeeder::class,
-            CityCategorySeeder::class,
-            CollectionSeeder::class,
-            UserSeeder::class,
-            AdminSeeder::class,
-            CitySeeder::class,
-            EbookSeeder::class,
-            BannerSeeder::class,
-            EbookCategorySeeder::class,
-            CollectionEbookSeeder::class,
-            SubscriptionPlanSeeder::class,
-            SubscriptionSeeder::class,
-            BlogSeeder::class,
-            PremiumUserSeeder::class,
+
+            // 1. DATA DASAR (Tidak ada ketergantungan)
+            // Seeder ini harus dijalankan pertama karena data lain akan membutuhkannya.
+            RoleSeeder::class,           // Membuat role (admin, creator, member)
+            CategorySeeder::class,       // Membuat kategori (kuliner, wisata-alam, dll)
+            CitySeeder::class,           // Membuat kota (surabaya, jakarta, dll)
+            CollectionSeeder::class,     // Membuat koleksi (best-seller, featured, dll)
+            SubscriptionPlanSeeder::class, // Membuat paket berlangganan (basic, premium)
+
+            // 2. DATA PENGGUNA (Bergantung pada RoleSeeder)
+            // Membuat pengguna setelah role tersedia.
+            UserSeeder::class,           // Membuat user (creator, member)
+            AdminSeeder::class,          // Membuat user admin khusus
+
+            // 3. DATA KONTEN UTAMA (Bergantung pada data dasar & pengguna)
+            // Membuat konten setelah kategori, kota, dan creator tersedia.
+            EbookSeeder::class,         // Membuat data ebook (BUTUH: Category, City, User)
+            BlogSeeder::class,           // Membuat data blog (BUTUH: Category, User)
+
+            // 4. TABEL HUBUNGAN / PIVOT (Bergantung pada data konten)
+            // Menghubungkan konten setelah konten itu sendiri dibuat.
+            EbookCategorySeeder::class, // Menghubungkan ebook ke kategori (BUTUH: Ebook, Category)
+            CollectionEbookSeeder::class, // Menghubungkan ebook ke koleksi (BUTUH: Ebook, Collection)
+
+            // 5. DATA TAMBAHAN & LAINNYA
+            // Seeder yang tidak terlalu kritis atau bergantung pada data sebelumnya.
+            BannerSeeder::class,         // Membuat banner di homepage
+            SubscriptionSeeder::class,   // Menghubungkan user ke paket berlangganan (BUTUH: User, Plan)
+            PremiumUserSeeder::class,   // Membuat user premium (BUTUH: User, Subscription)
         ]);
     }
 }
