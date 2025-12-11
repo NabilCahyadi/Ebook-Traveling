@@ -212,7 +212,7 @@ unset($__defined_vars, $__key, $__value); ?>
                             <div class="product-cart-wrap mb-30 wow animate__animated animate__fadeIn" data-wow-delay="<?php echo e(($index + 1) * 0.1); ?>s">
                                 <div class="product-img-action-wrap">
                                     <div class="product-img product-img-zoom">
-                                        <a href="/ebook/<?php echo e($ebook->slug); ?>">
+                                        <a href="/ebooks/<?php echo e($ebook->slug); ?>">
                                             <img class="default-img" src="<?php echo e($ebook->cover_image ?: 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg'); ?>" alt="<?php echo e($ebook->title); ?>" />
                                         </a>
                                     </div>

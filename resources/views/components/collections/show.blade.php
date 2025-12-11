@@ -156,7 +156,7 @@
                             <div class="product-cart-wrap mb-30 wow animate__animated animate__fadeIn" data-wow-delay="{{ ($index + 1) * 0.1 }}s">
                                 <div class="product-img-action-wrap">
                                     <div class="product-img product-img-zoom">
-                                        <a href="/ebook/{{ $ebook->slug }}">
+                                        <a href="/ebooks/{{ $ebook->slug }}">
                                             <img class="default-img" src="{{ $ebook->cover_image ?: 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg' }}" alt="{{ $ebook->title }}" />
                                         </a>
                                     </div>
@@ -165,7 +165,7 @@
                                     </div>
                                 </div>
                                 <div class="product-content-wrap">
-                                    <h2 style="margin-top:15px;"><a href="/ebook/{{ $ebook->slug }}">{{ Str::limit($ebook->title, 40) }}</a></h2>
+                                    <h2 style="margin-top:15px;"><a href="/ebooks/{{ $ebook->slug }}">{{ Str::limit($ebook->title, 40) }}</a></h2>
 
                                     <div class="product-author" style="margin-bottom:-4px;">
                                         @if($ebook->creator)
