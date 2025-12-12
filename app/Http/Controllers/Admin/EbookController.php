@@ -39,7 +39,8 @@ class EbookController extends Controller
     {
         $categories = \App\Models\Category::all();
         $cities = \App\Models\City::all();
-        return view('admin.ebooks.create', compact('categories', 'cities'));
+        $creators = \App\Models\User::where('user_type', 'creator')->get();
+        return view('admin.ebooks.create', compact('categories', 'cities', 'creators'));
     }
 
     /**
@@ -49,10 +50,11 @@ class EbookController extends Controller
     {
         try {
             $validated = $request->validate([
-                'category_id' => 'required|exists:categories,id',
+                'category_ids' => 'required|array|min:1',
+                'category_ids.*' => 'exists:categories,id',
                 'city_id' => 'required|exists:cities,id',
+                'creator_id' => 'required|exists:users,id',
                 'title' => 'required|string|max:255',
-                'author' => 'required|string|max:255',
                 'description' => 'required|string',
                 'cover_image_cropped' => 'nullable|string', // base64 dari auto crop
                 'pdf_file' => 'nullable|file|mimes:pdf|max:10240',
@@ -71,6 +73,10 @@ class EbookController extends Controller
             // Set creator_id
             $validated['creator_id'] = $user->id;
 
+            // Extract category_ids for pivot table attachment
+            $categoryIds = $validated['category_ids'];
+            unset($validated['category_ids']);
+
             // Handle base64 cover image (dari hidden input hasil auto crop)
             if ($request->has('cover_image_cropped') && !empty($request->cover_image_cropped)) {
                 $validated['cover_image'] = $this->saveBase64Image($request->cover_image_cropped);
@@ -87,6 +93,10 @@ class EbookController extends Controller
         try {
             Log::info('Creating ebook with data:', $validated);
             $ebook = $this->ebookService->createEbook($validated);
+            
+            // Attach categories to ebook (many-to-many)
+            $ebook->categories()->attach($categoryIds);
+            
             Log::info('Ebook created successfully:', ['id' => $ebook->id]);
 
             $message = 'Ebook created successfully!';
@@ -151,7 +161,8 @@ class EbookController extends Controller
         $ebook = $this->ebookService->getEbookById($id);
         $categories = \App\Models\Category::all();
         $cities = \App\Models\City::all();
-        return view('admin.ebooks.edit', compact('ebook', 'categories', 'cities'));
+        $creators = \App\Models\User::where('user_type', 'creator')->get();
+        return view('admin.ebooks.edit', compact('ebook', 'categories', 'cities', 'creators'));
     }
 
     /**
@@ -160,10 +171,11 @@ class EbookController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'category_id' => 'required|exists:categories,id',
+            'category_ids' => 'required|array|min:1',
+            'category_ids.*' => 'exists:categories,id',
             'city_id' => 'nullable|exists:cities,id',
+            'creator_id' => 'required|exists:users,id',
             'title' => 'required|string|max:255',
-            'author' => 'required|string|max:255',
             'description' => 'required|string',
             'cover_image_cropped' => 'nullable|string', // base64 dari auto crop
             'pdf_file' => 'nullable|file|mimes:pdf|max:10240',
@@ -171,6 +183,10 @@ class EbookController extends Controller
         ]);
 
         try {
+            // Extract category_ids for pivot table sync
+            $categoryIds = $validated['category_ids'];
+            unset($validated['category_ids']);
+
             // Handle base64 cover image (dari hidden input hasil auto crop)
             if ($request->has('cover_image_cropped') && !empty($request->cover_image_cropped)) {
                 $validated['cover_image'] = $this->saveBase64Image($request->cover_image_cropped);
@@ -178,6 +194,11 @@ class EbookController extends Controller
             }
 
             $this->ebookService->updateEbook($id, $validated);
+            
+            // Sync categories (replaces old with new)
+            $ebook = $this->ebookService->getEbookById($id);
+            $ebook->categories()->sync($categoryIds);
+            
             return redirect()->route('admin.ebooks.index')->with('success', 'Ebook updated successfully!');
         } catch (\Exception $e) {
             return back()->with('error', 'Failed to update ebook: ' . $e->getMessage())->withInput();

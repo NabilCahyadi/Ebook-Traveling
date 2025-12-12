@@ -6,11 +6,42 @@
     use Illuminate\Support\Facades\Storage;
 @endphp
 
-@section('styles')
-    <style>
-        /* Simple native CSS only */
-    </style>
-@endsection
+@push('styles')
+<style>
+    /* Category Badge Styles - Override Vuexy */
+    .category-badge {
+        display: inline-flex !important;
+        align-items: center !important;
+        padding: 0.5rem 0.75rem !important;
+        margin: 0.25rem 0.25rem 0.25rem 0 !important;
+        font-size: 0.875rem !important;
+        font-weight: 500 !important;
+        line-height: 1.5 !important;
+        color: #7367f0 !important;
+        background-color: #f8f7ff !important;
+        border: 2px solid #7367f0 !important;
+        border-radius: 0.5rem !important;
+        box-shadow: 0 2px 6px rgba(115, 103, 240, 0.15) !important;
+    }
+    
+    .remove-category {
+        margin-left: 0.5rem !important;
+        cursor: pointer !important;
+        font-size: 1rem !important;
+        line-height: 1 !important;
+        opacity: 0.8 !important;
+        color: #7367f0 !important;
+    }
+    
+    .remove-category:hover {
+        opacity: 1 !important;
+    }
+    
+    #selected-categories {
+        min-height: 20px !important;
+    }
+</style>
+@endpush
 
 @section('content')
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -72,31 +103,51 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="author" class="form-label">Author <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('author') is-invalid @enderror" id="author"
-                                name="author" value="{{ old('author', $ebook->author) }}" placeholder="Nama penulis"
-                                required>
-                            @error('author')
+                            <label for="creator_id" class="form-label">Creator <span class="text-danger">*</span></label>
+                            <select class="form-select @error('creator_id') is-invalid @enderror" id="creator_id"
+                                name="creator_id" required>
+                                <option value="">Pilih Creator</option>
+                                @if (isset($creators))
+                                    @foreach ($creators as $creator)
+                                        <option value="{{ $creator->id }}"
+                                            {{ old('creator_id', $ebook->creator_id) == $creator->id ? 'selected' : '' }}>
+                                            {{ $creator->name }} ({{ $creator->id }})
+                                        </option>
+                                    @endforeach
+                                @endif
+                            </select>
+                            @error('creator_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="category_id" class="form-label">Category <span
+                                <label for="category_selector" class="form-label">Category <span
                                         class="text-danger">*</span></label>
-                                <select class="form-select @error('category_id') is-invalid @enderror" id="category_id"
-                                    name="category_id" required>
+                                <select class="form-select @error('category_ids') is-invalid @enderror" 
+                                    id="category_selector">
                                     <option value="">Pilih Kategori</option>
                                     @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}"
-                                            {{ old('category_id', $ebook->category_id) == $category->id ? 'selected' : '' }}>
+                                        <option value="{{ $category->id }}" data-name="{{ $category->name }}">
                                             {{ $category->name }}
                                         </option>
                                     @endforeach
                                 </select>
-                                @error('category_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
+                                
+                                <!-- Selected Categories Display -->
+                                <div id="selected-categories" class="mt-2">
+                                    <!-- Badges will appear here -->
+                                </div>
+                                
+                                <!-- Hidden inputs for form submission -->
+                                <div id="category-inputs"></div>
+                                
+                                @error('category_ids')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                                @error('category_ids.*')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
 
@@ -401,5 +452,71 @@
                 }
             });
         }
+
+        
+        // Category Selection Handler
+        $(document).ready(function() {
+            const selectedCategories = new Map();
+            const categorySelector = $('#category_selector');
+            const selectedContainer = $('#selected-categories');
+            const inputsContainer = $('#category-inputs');
+            
+            // Load existing categories from ebook
+            @if(old('category_ids'))
+                const existingCategories = @json(old('category_ids'));
+            @else
+                const existingCategories = @json($ebook->categories->pluck('id')->toArray());
+            @endif
+            
+            categorySelector.find('option').each(function() {
+                const optionValue = $(this).val();
+                const optionName = $(this).data('name');
+                if (existingCategories.includes(optionValue)) {
+                    selectedCategories.set(optionValue, optionName);
+                }
+            });
+            updateDisplay();
+            
+            // Handle category selection
+            categorySelector.on('change', function() {
+                const selectedValue = $(this).val();
+                const selectedText = $(this).find('option:selected').data('name');
+                
+                if (selectedValue && !selectedCategories.has(selectedValue)) {
+                    selectedCategories.set(selectedValue, selectedText);
+                    updateDisplay();
+                    $(this).val(''); // Reset selector
+                }
+            });
+            
+            // Update display and hidden inputs
+            function updateDisplay() {
+                // Clear existing badges
+                selectedContainer.empty();
+                inputsContainer.empty();
+                
+                // Create badges for each selected category
+                selectedCategories.forEach((name, id) => {
+                    // Create badge
+                    const badge = $('<span class="category-badge"></span>');
+                    badge.text(name);
+                    
+                    // Create remove button
+                    const removeBtn = $('<span class="remove-category">&times;</span>');
+                    removeBtn.on('click', function() {
+                        selectedCategories.delete(id);
+                        updateDisplay();
+                    });
+                    
+                    badge.append(removeBtn);
+                    selectedContainer.append(badge);
+                    
+                    // Create hidden input
+                    const input = $('<input type="hidden" name="category_ids[]">');
+                    input.val(id);
+                    inputsContainer.append(input);
+                });
+            }
+        });
     </script>
 @endpush

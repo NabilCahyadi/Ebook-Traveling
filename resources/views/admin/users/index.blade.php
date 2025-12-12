@@ -44,8 +44,13 @@
                     <i class="ti ti-trash me-1"></i> View Trashed Users
                 </a>
             @endif
-            <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
-                <i class="ti ti-plus me-1"></i> Add New User
+            <a href="{{ route('admin.users.create', ['role' => $roleSlug ?? '']) }}" class="btn btn-primary">
+                <i class="ti ti-plus me-1"></i> Add New 
+                @if (isset($roleSlug) && $roleSlug && $roleSlug !== 'all')
+                    {{ ucfirst($roleSlug) }}
+                @else
+                    User
+                @endif
             </a>
         </div>
     </div>
@@ -251,10 +256,14 @@
                     <i class="ti ti-users-off ti-xl text-muted mb-3"></i>
                     <h5 class="text-muted">No users found</h5>
                     <p class="text-muted">Start by creating your first user</p>
-                    <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal"
-                        data-bs-target="#createModal">
-                        <i class="ti ti-plus me-1"></i> Add New User
-                    </button>
+                    <a href="{{ route('admin.users.create', ['role' => $roleSlug ?? '']) }}" class="btn btn-primary mt-2">
+                        <i class="ti ti-plus me-1"></i> Add New 
+                        @if (isset($roleSlug) && $roleSlug && $roleSlug !== 'all')
+                            {{ ucfirst($roleSlug) }}
+                        @else
+                            User
+                        @endif
+                    </a>
                 </div>
             @endif
         </div>

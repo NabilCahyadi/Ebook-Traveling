@@ -69,9 +69,10 @@
                                 <option value="">Select Role</option>
                                 @php
                                     $roles = \App\Models\Role::all();
+                                    $selectedRole = old('role') ?? ($roleSlug ?? '');
                                 @endphp
                                 @foreach ($roles as $role)
-                                    <option value="{{ $role->slug }}" {{ old('role') == $role->slug ? 'selected' : '' }}>
+                                    <option value="{{ $role->slug }}" {{ $selectedRole == $role->slug ? 'selected' : '' }}>
                                         {{ $role->name }}
                                     </option>
                                 @endforeach

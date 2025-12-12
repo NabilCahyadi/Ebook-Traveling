@@ -110,7 +110,7 @@
                     <ul class="menu-sub">
                         <li
                             class="menu-item {{ Request::is('admin/users') && !Request::get('role') ? 'active' : '' }}">
-                            <a href="{{ route('admin.users.index') }}" class="menu-link">
+                            <a href="{{ route('admin.users.index', ['role' => 'all']) }}" class="menu-link">
                                 <div data-i18n="All Users">All Users</div>
                             </a>
                         </li>
