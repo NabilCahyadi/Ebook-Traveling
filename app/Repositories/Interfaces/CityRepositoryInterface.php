@@ -25,4 +25,6 @@ interface CityRepositoryInterface
     public function getAllCities(int $perPage = 15);
     public function findBySlug(string $slug); 
     public function incrementViews(string $id): bool;
+    public function findBySlugWithEbooks(string $slug);
+    public function getAllCitiesWithRanking(): Collection;
 }

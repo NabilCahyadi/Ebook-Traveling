@@ -119,20 +119,81 @@
         }
     </style>
     <style>
-        /* Style untuk item menu yang aktif */
-        .main-menu ul li.active a {
-            color: #FF4C61 !important;
-            font-weight: 600;
-            /* Opsional: membuat teks sedikit lebih tebal */
+        /* Style untuk tombol (bisa dihapus jika tidak digunakan di tempat lain) */
+        .btn-link {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            padding: 0;
+            font-size: inherit;
+            text-decoration: none;
         }
 
-        /* Opsional: Jika Anda ingin menambahkan efek border bawah */
-        .main-menu ul li.active a {
-            color: #FF4C61 !important;
-            font-weight: 600;
-            border-bottom: 2px solid #FF4C61;
-            padding-bottom: 2px;
-            /* Beri jarak agar border tidak menempel */
+        .btn-link:hover {
+            text-decoration: underline;
+        }
+
+        /* --- HAPUS CLASS INI KARENA TIDAK LAGI DIGUNAKAN --- */
+        /* .category-item-hidden {
+    display: none !important;
+} */
+
+        /* --- PERBAIKI STYLE UNTUK ITEM (HILANGKAN ANIMASI) --- */
+        .category-item {
+            break-inside: avoid;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            /* Animasi dihapus */
+        }
+
+        .category-item img {
+            margin-right: 10px;
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+        /* --- STYLE UNTUK LAYOUT, SCROLL, DAN LEBAR KONSISTEN (TETAP DIPERTAHANKAN) --- */
+        .categori-dropdown-inner-new {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .category-list-columns {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            column-count: 2;
+            column-gap: 30px;
+        }
+
+        .categories-dropdown-wrap {
+            max-height: 450px;
+            overflow-y: auto;
+            width: 600px;
+            padding-right: 10px;
+        }
+
+        /* Untuk scrollbar yang lebih cantik di Webkit (Chrome, Safari, Edge) */
+        .categories-dropdown-wrap::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .categories-dropdown-wrap::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .categories-dropdown-wrap::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 10px;
+        }
+
+        .categories-dropdown-wrap::-webkit-scrollbar-thumb:hover {
+            background: #aaa;
         }
     </style>
     <div class="mobile-promotion">
@@ -355,64 +416,33 @@
                             <span class="fi-rs-apps"></span>Category
                             <i class="fi-rs-angle-down"></i>
                         </a>
-                        <div class="categories-dropdown-wrap categories-dropdown-active-large font-heading">
-                            <div class="d-flex categori-dropdown-inner">
-                                <ul>
-                                    <li>
-                                        <a href="shop-grid-right.html"> <img src="assets-nest/nest-fe/imgs/theme/icons/category-1.svg" alt="" />Milks and Dairies</a>
+                        <div id="categories-dropdown-inner" class="categories-dropdown-wrap categories-dropdown-active-large font-heading">
+                            <div class="categori-dropdown-inner-new">
+                                <ul class="category-list-columns">
+                                    @forelse ($headerCategories as $category)
+                                    <li class="category-item">
+                                        <a href="{{ route('category.show', $category->slug) }}">
+                                            @if ($category->image)
+                                            <img src="{{ asset($category->image) }}" alt="{{ $category->name }}" />
+                                            @else
+                                            <img src="{{ asset('images/default-category-icon.svg') }}" alt="{{ $category->name }}" />
+                                            @endif
+                                            {{ $category->name }}
+                                        </a>
                                     </li>
-                                    <li>
-                                        <a href="shop-grid-right.html"> <img src="assets-nest/nest-fe/imgs/theme/icons/category-2.svg" alt="" />Clothing & beauty</a>
-                                    </li>
-                                    <li>
-                                        <a href="shop-grid-right.html"> <img src="assets-nest/nest-fe/imgs/theme/icons/category-3.svg" alt="" />Pet Foods & Toy</a>
-                                    </li>
-                                    <li>
-                                        <a href="shop-grid-right.html"> <img src="assets-nest/nest-fe/imgs/theme/icons/category-4.svg" alt="" />Baking material</a>
-                                    </li>
-                                    <li>
-                                        <a href="shop-grid-right.html"> <img src="assets-nest/nest-fe/imgs/theme/icons/category-5.svg" alt="" />Fresh Fruit</a>
-                                    </li>
-                                </ul>
-                                <ul class="end">
-                                    <li>
-                                        <a href="shop-grid-right.html"> <img src="assets-nest/nest-fe/imgs/theme/icons/category-6.svg" alt="" />Wines & Drinks</a>
-                                    </li>
-                                    <li>
-                                        <a href="shop-grid-right.html"> <img src="assets-nest/nest-fe/imgs/theme/icons/category-7.svg" alt="" />Fresh Seafood</a>
-                                    </li>
-                                    <li>
-                                        <a href="shop-grid-right.html"> <img src="assets-nest/nest-fe/imgs/theme/icons/category-8.svg" alt="" />Fast food</a>
-                                    </li>
-                                    <li>
-                                        <a href="shop-grid-right.html"> <img src="assets-nest/nest-fe/imgs/theme/icons/category-9.svg" alt="" />Vegetables</a>
-                                    </li>
-                                    <li>
-                                        <a href="shop-grid-right.html"> <img src="assets-nest/nest-fe/imgs/theme/icons/category-10.svg" alt="" />Bread and Juice</a>
-                                    </li>
+                                    @empty
+                                    <li><a href="#">No categories found</a></li>
+                                    @endforelse
                                 </ul>
                             </div>
-                            <div class="more_slide_open" style="display: none">
-                                <div class="d-flex categori-dropdown-inner">
-                                    <ul>
-                                        <li>
-                                            <a href="shop-grid-right.html"> <img src="assets-nest/nest-fe/imgs/theme/icons/icon-1.svg" alt="" />Milks and Dairies</a>
-                                        </li>
-                                        <li>
-                                            <a href="shop-grid-right.html"> <img src="assets-nest/nest-fe/imgs/theme/icons/icon-2.svg" alt="" />Clothing & beauty</a>
-                                        </li>
-                                    </ul>
-                                    <ul class="end">
-                                        <li>
-                                            <a href="shop-grid-right.html"> <img src="assets-nest/nest-fe/imgs/theme/icons/icon-3.svg" alt="" />Wines & Drinks</a>
-                                        </li>
-                                        <li>
-                                            <a href="shop-grid-right.html"> <img src="assets-nest/nest-fe/imgs/theme/icons/icon-4.svg" alt="" />Fresh Seafood</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="more_categories"><span class="icon"></span> <span class="heading-sm-1">Show more...</span></div>
+
+                            {{-- HAPUS SELURUH BLOK INI --}}
+                            {{-- <div class="more_categories">
+            <button id="toggle-categories-btn" class="btn-link">
+                <span class="icon"></span>
+                <span class="heading-sm-1">Show more...</span>
+            </button>
+        </div> --}}
                         </div>
                     </div>
                     <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block font-heading">
@@ -687,3 +717,32 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropdownButton = document.querySelector('.categories-button-active');
+        const dropdownContent = document.querySelector('.categories-dropdown-wrap');
+
+        // --- FITUR: AUTO-CLOSE ON SCROLL (TETAP DIPERTAHANKAN) ---
+        function closeDropdown() {
+            // Periksa apakah dropdown sedang terbuka
+            // Asumsi: dropdown terbuka jika memiliki style display:block
+            if (dropdownContent.style.display === 'block') {
+                // Simulasi klik pada tombol untuk menutup dropdown
+                dropdownButton.click();
+            }
+        }
+
+        // Tambahkan event listener untuk scroll pada window
+        let isScrolling;
+        window.addEventListener('scroll', () => {
+            // Clear our timeout throughout the scroll
+            window.clearTimeout(isScrolling);
+
+            // Set a timeout to run after scrolling ends
+            isScrolling = setTimeout(() => {
+                // Tutup dropdown setelah user selesai scroll
+                closeDropdown();
+            }, 100); // Tunggu 100ms setelah scroll berhenti
+        }, false);
+    });
+</script>

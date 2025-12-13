@@ -15,7 +15,7 @@
                             </span>
                         </div>
                         <div>
-                            <h4 class="text-white mb-1">Welcome back, {{ auth()->user()->name ?? 'Admin' }}! 👋</h4>
+                            <h4 class="text-white mb-1">Welcome back, {{ auth()->user()->name ?? 'Admin' }}!</h4>
                             <p class="text-white mb-0 opacity-75">Here's what's happening with your ebook store today.</p>
                         </div>
                     </div>

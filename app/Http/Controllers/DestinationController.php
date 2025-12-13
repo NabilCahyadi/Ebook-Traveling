@@ -20,16 +20,16 @@ class DestinationController extends Controller
 
     public function show(string $slug)
     {
-        $city = $this->cityService->getCityBySlug($slug);
+        // Panggil satu method yang mengembalikan kota BESERTA ebook-nya
+        $city = $this->cityService->getCityBySlugWithEbooks($slug);
 
         if (!$city) {
             abort(404);
         }
 
-        // Tambahkan baris ini untuk mengambil e-book terkait
-        $ebooks = $this->cityService->getEbooksByCityName($city->name);
+        // Ebook sekarang sudah menjadi relasi dari objek $city
+        $ebooks = $city->ebooks;
 
-        // Kirim variabel $ebooks ke view
         return view('components.destinations.show', compact('city', 'ebooks'));
     }
 }

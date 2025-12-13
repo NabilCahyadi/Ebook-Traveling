@@ -239,7 +239,21 @@
                                     <div class="entry-meta font-xs color-grey mt-10 pb-10">
                                         <div>
                                             <span class="post-on mr-10">{{ $blog->published_at->format('d F Y') }}</span>
-                                            <span class="hit-count has-dot mr-10">{{ number_format($blog->view_count) }} Views</span>
+                                            <span class="post-on has-dot">
+                                                @php
+                                                $views = $blog->view_count;
+                                                if ($views >= 1000000000) { // 1 Miliar
+                                                $formattedViews = number_format($views / 1000000000, 1) . 'B';
+                                                } elseif ($views >= 1000000) { // 1 Juta
+                                                $formattedViews = number_format($views / 1000000, 1) . 'M';
+                                                } elseif ($views >= 1000) { // 1 Ribu
+                                                $formattedViews = number_format($views / 1000, 1) . 'k';
+                                                } else {
+                                                $formattedViews = $views;
+                                                }
+                                                @endphp
+                                                {{ $formattedViews }} Views
+                                            </span>
                                             {{-- Jika Anda menambah kolom read_time (dalam menit) --}}
                                             {{--<span class="hit-count has-dot">{{ $blog->read_time ?? 5 }} mins read</span>--}}
                                         </div>

@@ -80,7 +80,7 @@
                         </div>
                         <!-- /Logo -->
 
-                        <h4 class="mb-1 pt-2">Welcome Admin! 👋</h4>
+                        <h4 class="mb-1 pt-2">Welcome Admin!</h4>
                         <p class="mb-4">Please sign-in to your account</p>
 
                         @if (session('success'))

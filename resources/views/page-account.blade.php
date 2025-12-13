@@ -197,7 +197,7 @@
                             <!-- TAMPILAN UNTUK USER NON-PREMIUM -->
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="mb-0">Hello {{ auth()->user()->name }}! 👋</h3>
+                                    <h3 class="mb-0">Hello {{ auth()->user()->name }}!</h3>
                                     <small class="text-muted">Member since
                                         {{ auth()->user()->created_at->format('M Y') }}</small>
                                 </div>

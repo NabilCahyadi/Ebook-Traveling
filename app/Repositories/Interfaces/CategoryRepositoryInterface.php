@@ -19,4 +19,6 @@ interface CategoryRepositoryInterface
     public function withCount(string $relation);
 
     public function findBySlug(string $slug);
+
+    public function getActiveParentCategories();
 }

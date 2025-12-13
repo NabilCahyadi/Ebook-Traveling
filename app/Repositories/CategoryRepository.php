@@ -56,4 +56,14 @@ class CategoryRepository implements CategoryRepositoryInterface
     {
         return $this->model->where('slug', $slug)->firstOrFail();
     }
+
+    public function getActiveParentCategories()
+    {
+        return $this->model
+            ->where('type', 'ebook')
+            ->where('is_active', 1)
+            ->whereNull('parent_id')
+            ->orderBy('name', 'asc')
+            ->get();
+    }
 }
