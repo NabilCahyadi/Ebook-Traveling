@@ -10,6 +10,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\EbookController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\ReaderController;
+use App\Http\Controllers\FrontendCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -95,7 +96,7 @@ Route::get('/blogs/{slug}', [BlogController::class, 'show'])->name('blogs.show')
 Route::get('/ebooks/{slug}', [EbookController::class, 'show'])->name('ebooks.show');
 Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store')->middleware('auth');
 Route::get('/reader/{slug}', [ReaderController::class, 'show'])->name('reader.show')->middleware('premium');
-
+Route::get('/category/{slug}', [FrontendCategoryController::class, 'show'])->name('category.show');
 
 
 
