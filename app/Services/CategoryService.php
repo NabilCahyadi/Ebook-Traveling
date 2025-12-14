@@ -90,4 +90,9 @@ class CategoryService
     {
         return $this->categoryRepository->findBySlug($slug);
     }
+
+    public function getHeaderCategories()
+    {
+        return $this->categoryRepository->getActiveParentCategories();
+    }
 }

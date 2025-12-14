@@ -127,6 +127,12 @@ class CityService
         });
     }
 
+    public function getCityBySlugWithEbooks(string $slug)
+    {
+        // Delegate the query to the repository
+        return $this->cityRepository->findBySlugWithEbooks($slug);
+    }
+
     public function getCityBySlug(string $slug)
     {
         try {
@@ -171,6 +177,15 @@ class CityService
             ->get();
     }
 
+    public function getPopularCitiesForSlider(int $limit = 10)
+    {
+        return $this->cityRepository->getPopularCities($limit);
+    }
+
+    public function getAllCitiesForCards(): Collection
+    {
+        return $this->cityRepository->getAllCitiesWithRanking();
+    }
 
     public function getFallbackCities(): Collection
     {
@@ -178,19 +193,19 @@ class CityService
             [
                 'name' => 'Bandung',
                 'slug' => 'bandung',
-                'image' => '/images/ach.jpg',
+                'image' => 'https://media.timeout.com/images/106211627/image.jpg',
                 'items_count' => 26
             ],
             [
                 'name' => 'Surabaya',
                 'slug' => 'surabaya',
-                'image' => '/images/mdn.jpg',
+                'image' => 'https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxn-83rEDG4n1j2nNcvioCxocV0t3oHJZwExGG5wM2txHf6h6lLAyRv-MH28zC95SwqgEwgaUQWVQMydTsSjihMeCEt9GNbIIJbaZIEeiUkSOtFNMDXsAuViBAZlzCsYV6skQU=w729-h421-n-k-no',
                 'items_count' => 28
             ],
             [
                 'name' => 'Semarang',
                 'slug' => 'semarang',
-                'image' => '/images/pdg.jpg',
+                'image' => 'https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzPm72y2UC4JLCmk9K91ByylfOaipR6aIqprnCZWANacIVei1r2ntMIw87qq1176Cuu5N5KpO6lVhU_bbsKesw4az99egiIs9aCAxHMgmfhNs9yEQh__h8WzFU8CPE71LU6ZTmb=w729-h421-n-k-no',
                 'items_count' => 14
             ],
             [
@@ -214,25 +229,25 @@ class CityService
             [
                 'name' => 'Makassar',
                 'slug' => 'makassar',
-                'image' => '/images/pdg.jpg',
+                'image' => 'https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxiCMilMCt3jvL8hIZ0lt4OQmQVHW1rJED8pcKSzu7dQFD08uj-ziGZKKtrhAZoQrsShZvVCIFtjz2v2gJfQL3BHbfrH9Ld8fbx2bUe34jc7vbcmsqlV-4SeogZBzTEThzpHrtz=w729-h421-n-k-no',
                 'items_count' => 36
             ],
             [
                 'name' => 'Yogyakarta',
                 'slug' => 'yogyakarta',
-                'image' => '/images/jkt.jpg',
+                'image' => 'https://www.yogyes.com/id/yogyakarta-tourism-object/candi/prambanan/1.jpg',
                 'items_count' => 123
             ],
             [
                 'name' => 'Bandar Lampung',
                 'slug' => 'bandar-lampung',
-                'image' => '/images/ach.jpg',
+                'image' => 'https://ik.imagekit.io/tvlk/blog/2025/04/Open-Trip-One-Day-Pulau-Pahawang-Dermaga-Ketapang-Lampung-674f1082-d294-408d-b5c7-7b0a6034a480.jpeg-1024x768.webp?tr=q-70,c-at_max,w-1000,h-600',
                 'items_count' => 34
             ],
             [
                 'name' => 'Denpasar',
                 'slug' => 'denpasar',
-                'image' => '/images/mdn.jpg',
+                'image' => 'https://bobobox.com/blog/wp-content//uploads/2023/10/Tempat-Wisata-di-Denpasar-1200x900.webp',
                 'items_count' => 89
             ]
         ])->map(function ($item) {

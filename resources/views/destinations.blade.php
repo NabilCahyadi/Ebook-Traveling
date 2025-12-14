@@ -80,6 +80,7 @@
         opacity: 0;
         margin-bottom: 20px;
         animation: animate 1s ease-in-out 1 forwards;
+        color: white;
     }
 
     .content .description {
@@ -91,6 +92,7 @@
         line-height: 1.6;
         max-width: 380px;
         font-weight: 400;
+        color: white;
     }
 
     .content button {
@@ -256,7 +258,7 @@
     }
 
     .destination-content {
-        padding: 12px 14px 16px;
+        padding: 12px 14px 8px 12px;
     }
 
     .destination-title {
@@ -299,83 +301,44 @@
 
 <!-- top 10 city slider -->
 <div class="container">
+    <!-- Ini adalah wadah utama slider, class-nya TIDAK BOLEH BERUBAH -->
     <div class="slider-container">
+        <!-- Ini adalah wadah untuk slide-slide, class-nya TIDAK BOLEH BERUBAH -->
         <div class="slide">
-            <div class="item" style="background-image: url('https://media.istockphoto.com/id/675172642/id/foto/pura-ulun-danu-bratan-temple-in-bali.jpg?s=1024x1024&w=is&k=20&c=KHoO6z4Ieb321gAxNg-E3qVYWhEsXHbS5-Unbt6Tggo=');">
+            @forelse ($popularCities as $city)
+            <!-- Ini adalah item slide untuk setiap kota, class-nya TIDAK BOLEH BERUBAH -->
+            <!-- Kita tambahkan style inline untuk background image yang dinamis -->
+            <div class="item" style="background-image: url('{{ asset($city->image) }}');">
+                <!-- Ini adalah konten di dalam slide, class-nya TIDAK BOLEH BERUBAH -->
                 <div class="content">
-                    <div class="name">Denpasar</div>
-                    <div class="description">The capital of Bali, blending modern commerce with deep Hindu cultural traditions and temples.</div>
+                    <h2 class="name">{{ $city->name }}</h2>
+                    <p class="description">{{ Str::limit($city->description, 150) }}</p>
+                    <!-- Kita gunakan button agar sesuai dengan CSS, dan tambahkan onclick untuk navigasi -->
+                    <button onclick="window.location.href='{{ route('destination.show', $city->slug) }}'">
+                        Explore Now
+                    </button>
                 </div>
             </div>
-
-            <div class="item" style="background-image: url('https://cdn.pixabay.com/photo/2023/04/09/17/24/cukul-7911922_1280.jpg');">
+            @empty
+            <!-- Ini adalah fallback jika tidak ada kota populer -->
+            <div class="item" style="background-image: url('https://via.placeholder.com/1200x600.png?text=No+Destinations');">
                 <div class="content">
-                    <div class="name">Bandung</div>
-                    <div class="description">The 'Paris van Java,' famed for its vibrant fashion districts and cool, mountainous air.</div>
+                    <h2 class="name">Discover Your Journey</h2>
+                    <p class="description">Popular destinations will be shown here.</p>
                 </div>
             </div>
-
-            <div class="item" style="background-image: url('https://media.istockphoto.com/id/181928587/id/foto/pemandangan-udara-puncak-gunung-di-kabut.jpg?s=1024x1024&w=is&k=20&c=sQITAR0_0Ip57_wJ5qiB7ucTQybvX2z4rgiYGOnQ82k=');">
-                <div class="content">
-                    <div class="name">Surabaya</div>
-                    <div class="description">The City of Heroes, a bustling commercial hub with rich historical monuments and modern architecture.</div>
-                </div>
-            </div>
-
-            <div class="item" style="background-image: url('https://cdn.pixabay.com/photo/2018/02/04/15/04/water-3130017_1280.jpg');">
-                <div class="content">
-                    <div class="name">Semarang</div>
-                    <div class="description">A coastal city renowned for its iconic blend of Javanese, Chinese, and colonial history.</div>
-                </div>
-            </div>
-
-            <div class="item" style="background-image: url('https://media.istockphoto.com/id/500798563/id/foto/city-skyline-at-sunset-jakarta-indonesia.jpg?s=1024x1024&w=is&k=20&c=0cNJTIZnHd8gDyJsWSCrY5xWBUcb0rbgF7eA9qgq3Tc=');">
-                <div class="content">
-                    <div class="name">Jakarta</div>
-                    <div class="description">The dynamic capital, offering everything from towering skyscrapers to cultural heritage sites like Kota Tua.</div>
-                </div>
-            </div>
-
-            <div class="item" style="background-image: url('https://cdn.pixabay.com/photo/2023/07/12/18/21/croatia-8123037_1280.jpg');">
-                <div class="content">
-                    <div class="name">Serang</div>
-                    <div class="description">Gateway to historical Banten, featuring fascinating ruins and stunning proximity to the coast.</div>
-                </div>
-            </div>
-
-            <div class="item" style="background-image: url('https://cdn.pixabay.com/photo/2017/05/18/17/03/view-2324147_1280.jpg');">
-                <div class="content">
-                    <div class="name">Medan</div>
-                    <div class="description">A vibrant culinary capital in Sumatra, known for its strong Batak culture and colonial palaces.</div>
-                </div>
-            </div>
-
-            <div class="item" style="background-image: url('https://cdn.pixabay.com/photo/2022/04/15/07/58/sunset-7133867_1280.jpg');">
-                <div class="content">
-                    <div class="name">Makassar</div>
-                    <div class="description">The bustling port city of Sulawesi, famous for its fresh seafood and the historic Fort Rotterdam.</div>
-                </div>
-            </div>
-
-            <div class="item" style="background-image: url('https://cdn.pixabay.com/photo/2020/12/28/20/43/prambanan-5868468_1280.jpg');">
-                <div class="content">
-                    <div class="name">Yogyakarta</div>
-                    <div class="description">Indonesia's cultural heart, the center of Javanese arts, traditional crafts, and royal history.</div>
-                </div>
-            </div>
-
-            <div class="item" style="background-image: url('https://media.istockphoto.com/id/2170318407/id/foto/pemandangan-indah-pulau-pahawang-kecil.jpg?s=1024x1024&w=is&k=20&c=ySuWUZ6QGongHncmTxos0xMxZLbcvm4oKRviki63odA=');">
-                <div class="content">
-                    <div class="name lh-sm">Bandar Lampung</div>
-                    <div class="description">The gateway to Sumatra's nature, providing access to elephant preserves and scenic beaches.</div>
-                </div>
-            </div>
+            @endforelse
         </div>
 
-        <!-- Navigation Buttons -->
+        <!-- Ini adalah tombol navigasi, class-nya TIDAK BOLEH BERUBAH -->
+        <!-- JS Anda membutuhkan tombol dengan class .next dan .prev -->
         <div class="slider-button">
-            <button class="prev"><i class="bi bi-chevron-left"></i></button>
-            <button class="next"><i class="bi bi-chevron-right"></i></button>
+            <button class="prev">
+                <i class="fi-rs-arrow-left"></i>
+            </button>
+            <button class="next">
+                <i class="fi-rs-arrow-right"></i>
+            </button>
         </div>
     </div>
 </div>
@@ -390,298 +353,28 @@
             </p>
         </div>
         <div class="row">
-            <!-- Card 1 -->
+            @forelse ($allCities as $index => $city)
             <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="destination-card position-relative">
-                    <div class="destination-thumb" style="background-image:url('https://cdn.pixabay.com/photo/2017/08/09/12/05/piaynemo-2614341_1280.jpg');"></div>
-                    <span class="destination-badge">#1</span>
-                    <div class="destination-content">
-                        <div class="destination-title">Raja Ampat Islands</div>
-                        <div class="destination-meta">
-                            <div class="destination-stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i>
-                            </div>
-                            <div class="destination-rating">4.5</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                {{-- Bungkus seluruh card dengan tag <a> --}}
+                <a href="{{ route('destination.show', $city->slug) }}" class="text-decoration-none">
+                    <div class="destination-card position-relative">
+                        <div class="destination-thumb" style="background-image:url('{{ asset($city->image) }}');"></div>
 
-            <!-- Card 2 -->
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="destination-card position-relative">
-                    <div class="destination-thumb" style="background-image:url('https://cdn.pixabay.com/photo/2016/01/08/06/57/komodo-1127251_1280.jpg');"></div>
-                    <span class="destination-badge">#2</span>
-                    <div class="destination-content">
-                        <div class="destination-title">Komodo National Park</div>
-                        <div class="destination-meta">
-                            <div class="destination-stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
-                            </div>
-                            <div class="destination-rating">4.7</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                        @if($city->is_popular && $city->order_index <= 10)
+                            <span class="destination-badge">#{{ $city->order_index }}</span>
+                            @endif
 
-            <!-- Card 3 -->
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="destination-card position-relative">
-                    <div class="destination-thumb" style="background-image:url('https://cdn.pixabay.com/photo/2022/01/20/07/06/mount-bromo-6951610_1280.jpg');"></div>
-                    <span class="destination-badge">#3</span>
-                    <div class="destination-content">
-                        <div class="destination-title">Mount Bromo</div>
-                        <div class="destination-meta">
-                            <div class="destination-stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i>
+                            <div class="destination-content">
+                                <div class="destination-title">{{ $city->name }}</div>
                             </div>
-                            <div class="destination-rating">4.4</div>
-                        </div>
                     </div>
-                </div>
+                </a>
             </div>
-
-            <!-- Card 4-20 (Tanpa badge) -->
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="destination-card position-relative">
-                    <div class="destination-thumb" style="background-image:url('https://cdn.pixabay.com/photo/2022/02/27/08/55/sea-7036882_1280.jpg');"></div>
-                    <div class="destination-content">
-                        <div class="destination-title">Lake Toba</div>
-                        <div class="destination-meta">
-                            <div class="destination-stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i><i class="bi bi-star"></i>
-                            </div>
-                            <div class="destination-rating">4.1</div>
-                        </div>
-                    </div>
-                </div>
+            @empty
+            <div class="col-12 text-center py-5">
+                <p>No destinations found.</p>
             </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="destination-card position-relative">
-                    <div class="destination-thumb" style="background-image:url('https://cdn.pixabay.com/photo/2020/04/29/12/21/island-5108695_1280.jpg');"></div>
-                    <div class="destination-content">
-                        <div class="destination-title">Gili Islands</div>
-                        <div class="destination-meta">
-                            <div class="destination-stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                            </div>
-                            <div class="destination-rating">5.0</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="destination-card position-relative">
-                    <div class="destination-thumb" style="background-image:url('https://cdn.pixabay.com/photo/2020/12/28/20/43/prambanan-5868468_1280.jpg');"></div>
-                    <div class="destination-content">
-                        <div class="destination-title">Prambanan Temple</div>
-                        <div class="destination-meta">
-                            <div class="destination-stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
-                            </div>
-                            <div class="destination-rating">4.6</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="destination-card position-relative">
-                    <div class="destination-thumb" style="background-image:url('https://cdn.pixabay.com/photo/2017/09/08/21/26/rice-2730253_1280.jpg');"></div>
-                    <div class="destination-content">
-                        <div class="destination-title">Ubud Rice Terraces</div>
-                        <div class="destination-meta">
-                            <div class="destination-stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i>
-                            </div>
-                            <div class="destination-rating">4.3</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="destination-card position-relative">
-                    <div class="destination-thumb" style="background-image:url('https://cdn.pixabay.com/photo/2023/04/09/17/24/cukul-7911922_1280.jpg');"></div>
-                    <div class="destination-content">
-                        <div class="destination-title">Bandung Highlands</div>
-                        <div class="destination-meta">
-                            <div class="destination-stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i><i class="bi bi-star"></i>
-                            </div>
-                            <div class="destination-rating">4.0</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="destination-card position-relative">
-                    <div class="destination-thumb" style="background-image:url('https://cdn.pixabay.com/photo/2022/04/15/07/58/sunset-7133867_1280.jpg');"></div>
-                    <div class="destination-content">
-                        <div class="destination-title">Fort Rotterdam</div>
-                        <div class="destination-meta">
-                            <div class="destination-stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i><i class="bi bi-star"></i>
-                            </div>
-                            <div class="destination-rating">3.8</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="destination-card position-relative">
-                    <div class="destination-thumb" style="background-image:url('https://cdn.pixabay.com/photo/2018/02/04/15/04/water-3130017_1280.jpg');"></div>
-                    <div class="destination-content">
-                        <div class="destination-title">Semarang Old Town</div>
-                        <div class="destination-meta">
-                            <div class="destination-stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i><i class="bi bi-star"></i>
-                            </div>
-                            <div class="destination-rating">4.2</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="destination-card position-relative">
-                    <div class="destination-thumb" style="background-image:url('https://cdn.pixabay.com/photo/2020/02/13/09/50/jakarta-4845108_1280.jpg');"></div>
-                    <div class="destination-content">
-                        <div class="destination-title">Jakarta Monas</div>
-                        <div class="destination-meta">
-                            <div class="destination-stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i><i class="bi bi-star"></i>
-                            </div>
-                            <div class="destination-rating">3.7</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="destination-card position-relative">
-                    <div class="destination-thumb" style="background-image:url('https://cdn.pixabay.com/photo/2017/06/02/12/14/temple-2366184_1280.jpg');"></div>
-                    <div class="destination-content">
-                        <div class="destination-title">Borobudur Temple</div>
-                        <div class="destination-meta">
-                            <div class="destination-stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
-                            </div>
-                            <div class="destination-rating">4.8</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="destination-card position-relative">
-                    <div class="destination-thumb" style="background-image:url('https://cdn.pixabay.com/photo/2020/06/27/15/24/beach-5346210_1280.jpg');"></div>
-                    <div class="destination-content">
-                        <div class="destination-title">Bali Beaches</div>
-                        <div class="destination-meta">
-                            <div class="destination-stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i>
-                            </div>
-                            <div class="destination-rating">4.4</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="destination-card position-relative">
-                    <div class="destination-thumb" style="background-image:url('https://cdn.pixabay.com/photo/2017/03/14/10/45/detian-waterfall-2142636_1280.jpg');"></div>
-                    <div class="destination-content">
-                        <div class="destination-title">Sewu Waterfall</div>
-                        <div class="destination-meta">
-                            <div class="destination-stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i>
-                            </div>
-                            <div class="destination-rating">4.5</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="destination-card position-relative">
-                    <div class="destination-thumb" style="background-image:url('https://cdn.pixabay.com/photo/2020/10/01/08/06/field-5617818_1280.jpg');"></div>
-                    <div class="destination-content">
-                        <div class="destination-title">Rinjani Volcano</div>
-                        <div class="destination-meta">
-                            <div class="destination-stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
-                            </div>
-                            <div class="destination-rating">4.7</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="destination-card position-relative">
-                    <div class="destination-thumb" style="background-image:url('https://res.cloudinary.com/enchanting/image/upload/v1/artemis-mdm/places/c693afb6-f379-4b43-9ccf-e3163a9fea04.jpg');"></div>
-                    <div class="destination-content">
-                        <div class="destination-title">Toraja Highlands</div>
-                        <div class="destination-meta">
-                            <div class="destination-stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i>
-                            </div>
-                            <div class="destination-rating">4.3</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="destination-card position-relative">
-                    <div class="destination-thumb" style="background-image:url('https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcR3emKyKwXpQYA4-Laj6qDURmejY3BzLgCLl9iIPZXO1RUyWUzmXK3r3b7zwK6obMXcvTPuUI_olnIlLPPpNjavlSZs&s=19');"></div>
-                    <div class="destination-content">
-                        <div class="destination-title">Derawan Islands</div>
-                        <div class="destination-meta">
-                            <div class="destination-stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i>
-                            </div>
-                            <div class="destination-rating">4.6</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="destination-card position-relative">
-                    <div class="destination-thumb" style="background-image:url('https://www.wakatobi.com/wp-content/uploads/2024/01/2023_wakatobi_aerial.webp');"></div>
-                    <div class="destination-content">
-                        <div class="destination-title">Wakatobi Diving</div>
-                        <div class="destination-meta">
-                            <div class="destination-stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                            </div>
-                            <div class="destination-rating">5.0</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="destination-card position-relative">
-                    <div class="destination-thumb" style="background-image:url('https://cdn.audleytravel.com/6755/4820/79/1337066-bunaken-marine-park.jpg');"></div>
-                    <div class="destination-content">
-                        <div class="destination-title">Bunaken Marine Park</div>
-                        <div class="destination-meta">
-                            <div class="destination-stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
-                            </div>
-                            <div class="destination-rating">4.7</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+            @endforelse
         </div>
     </div>
 </section>

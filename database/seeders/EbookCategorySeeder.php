@@ -16,6 +16,7 @@ class EbookCategorySeeder extends Seeder
      */
     public function run(): void
     {
+        DB::table('ebook_categories')->truncate();
         // Ambil semua ID ebook dan kategori yang sudah ada
         $ebookIds = Ebook::pluck('id')->toArray();
         $categoryIds = Category::pluck('id')->toArray();

@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\City;
 use App\Repositories\Interfaces\CityRepositoryInterface;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class CityRepository implements CityRepositoryInterface
 {
@@ -69,6 +70,7 @@ class CityRepository implements CityRepositoryInterface
             ->withCount('ebooks')
             ->popular()
             ->ordered()
+            ->orderBy('order_index', 'asc')
             ->limit($limit)
             ->get();
     }
@@ -88,5 +90,44 @@ class CityRepository implements CityRepositoryInterface
             return true;
         }
         return false;
+    }
+
+    public function findBySlugWithEbooks(string $slug)
+    {
+        // Cari kota berdasarkan slug, lalu muat (load) relasi 'ebooks'
+        // Juga muat relasi 'creator' di dalam setiap ebook agar tidak error di view
+        return $this->model
+            ->with('ebooks.creator')
+            ->where('slug', $slug)
+            ->firstOrFail();
+    }
+
+    public function getAllCitiesWithRanking(): Collection
+    {
+        // Kita hanya perlu menggabungkan cities dan ebooks
+        $query = DB::table('cities as c')
+            ->leftJoin('ebooks as e', 'c.id', '=', 'e.city_id') // <-- PERBAIKAN JOIN DI SINI
+            ->select(
+                'c.id',
+                'c.name',
+                'c.slug',
+                'c.image',
+                'c.description',
+                'c.is_popular',
+                'c.order_index',
+                // Hitung rating rata-rata dari ebook yang terhubung ke kota tersebut
+                DB::raw('COALESCE(AVG(e.average_rating), 0) as average_rating'),
+                // Buat kolom peringkat: populer berdasarkan order_index, sisanya 999
+                DB::raw('CASE WHEN c.is_popular = 1 THEN c.order_index ELSE 999 END as ranking')
+            )
+            ->groupBy('c.id', 'c.name', 'c.slug', 'c.image', 'c.description', 'c.is_popular', 'c.order_index')
+            // Urutkan: pertama berdasarkan ranking (1-10), lalu sisanya berdasarkan nama
+            ->orderBy('ranking', 'asc')
+            ->orderBy('c.name', 'asc');
+
+        // Konversi hasil query ke Collection of City models
+        return $query->get()->map(function ($item) {
+            return City::hydrate([$item])->first();
+        });
     }
 }

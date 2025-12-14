@@ -124,7 +124,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title mb-3">Welcome, {{ auth()->user()->name }}! 👋</h5>
+                        <h5 class="card-title mb-3">Welcome, {{ auth()->user()->name }}!</h5>
                         <p class="text-muted">
                             As a content creator, you can create and manage your ebooks here.
                             Start creating amazing travel content and share your knowledge with readers around the world!
