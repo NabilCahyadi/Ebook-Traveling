@@ -9,8 +9,6 @@ interface SubscriptionPlanRepositoryInterface
 
     public function getAllPaginated(int $perPage = 10);
 
-    public function getActive();
-
     public function getById(string $id);
 
     public function findById(string $id);
@@ -22,7 +20,6 @@ interface SubscriptionPlanRepositoryInterface
     public function delete(string $id);
 
     public function hasActiveSubscriptions(string $id): bool;
-
-    public function getActivePlans(int $limit = null): Collection;
-    public function getAllActive();
+    public function getAllActivePlans();
+    public function getActive();
 }

@@ -45,6 +45,9 @@ class DatabaseSeeder extends Seeder
             BannerSeeder::class,         // Membuat banner di homepage
             SubscriptionSeeder::class,   // Menghubungkan user ke paket berlangganan (BUTUH: User, Plan)
             PremiumUserSeeder::class,   // Membuat user premium (BUTUH: User, Subscription)
+
+            PricingBannerSeeder::class,
+            PricingBenefitSeeder::class,
         ]);
     }
 }

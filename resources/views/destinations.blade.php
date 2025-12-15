@@ -362,10 +362,12 @@
 
                         @if($city->is_popular && $city->order_index <= 10)
                             <span class="destination-badge">#{{ $city->order_index }}</span>
-                            @endif
+                        @endif
 
                             <div class="destination-content">
                                 <div class="destination-title">{{ $city->name }}</div>
+                                <i class="bi bi-eye"></i>
+                                <span>{{ number_format($city->views_count) }}</span>
                             </div>
                     </div>
                 </a>

@@ -134,11 +134,6 @@
             text-decoration: underline;
         }
 
-        /* --- HAPUS CLASS INI KARENA TIDAK LAGI DIGUNAKAN --- */
-        /* .category-item-hidden {
-    display: none !important;
-} */
-
         /* --- PERBAIKI STYLE UNTUK ITEM (HILANGKAN ANIMASI) --- */
         .category-item {
             break-inside: avoid;
@@ -194,6 +189,23 @@
 
         .categories-dropdown-wrap::-webkit-scrollbar-thumb:hover {
             background: #aaa;
+        }
+    </style>
+    <style>
+        /* Style untuk item menu yang aktif */
+        .main-menu ul li.active a {
+            color: #FF4C61 !important;
+            font-weight: 600;
+            /* Opsional: membuat teks sedikit lebih tebal */
+        }
+
+        /* Opsional: Jika Anda ingin menambahkan efek border bawah */
+        .main-menu ul li.active a {
+            color: #FF4C61 !important;
+            font-weight: 600;
+            border-bottom: 2px solid #FF4C61;
+            padding-bottom: 2px;
+            /* Beri jarak agar border tidak menempel */
         }
     </style>
     <div class="mobile-promotion">

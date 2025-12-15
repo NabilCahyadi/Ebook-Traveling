@@ -19,121 +19,121 @@ class CategorySeeder extends Seeder
                 'name' => 'Panduan Wisata',
                 'slug' => 'panduan-wisata',
                 'description' => 'Panduan lengkap destinasi wisata di berbagai kota',
-                'image' => 'https://picsum.photos/seed/panduan-wisata/200/200.jpg' // Tambahkan URL
+                'image' => 'https://skillup-ecourse.sgp1.cdn.digitaloceanspaces.com/meet/category/1752726499-1752726499.png' // Tambahkan URL
             ],
             [
                 'name' => 'Budaya & Sejarah',
                 'slug' => 'budaya-sejarah',
                 'description' => 'Informasi budaya dan sejarah kota-kota di dunia',
-                'image' => 'https://picsum.photos/seed/budaya-sejarah/200/200.jpg'
+                'image' => 'https://skillup-ecourse.sgp1.cdn.digitaloceanspaces.com/meet/category/1752726463-1752726463.png'
             ],
             [
                 'name' => 'Kuliner',
                 'slug' => 'kuliner',
                 'description' => 'Panduan kuliner dan makanan khas daerah',
-                'image' => 'https://picsum.photos/seed/kuliner/200/200.jpg'
+                'image' => 'https://skillup-ecourse.sgp1.cdn.digitaloceanspaces.com/meet/category/1752726445-1752726445.png'
             ],
             [
                 'name' => 'Akomodasi',
                 'slug' => 'akomodasi',
                 'description' => 'Panduan hotel dan penginapan',
-                'image' => 'https://picsum.photos/seed/akomodasi/200/200.jpg'
+                'image' => 'https://skillup-ecourse.sgp1.cdn.digitaloceanspaces.com/meet/category/1752726515-1752726515.png'
             ],
             [
                 'name' => 'Transportasi',
                 'slug' => 'transportasi',
                 'description' => 'Informasi transportasi dan cara berpergian',
-                'image' => 'https://picsum.photos/seed/transportasi/200/200.jpg'
+                'image' => 'https://skillup-ecourse.sgp1.cdn.digitaloceanspaces.com/meet/category/1752726515-1752726515.png'
             ],
             [
                 'name' => 'Wisata Alam',
                 'slug' => 'wisata-alam',
                 'description' => 'Panduan wisata alam, gunung, dan pantai',
-                'image' => 'https://picsum.photos/seed/wisata-alam/200/200.jpg'
+                'image' => 'https://skillup-ecourse.sgp1.cdn.digitaloceanspaces.com/meet/category/1752726534-1752726534.png'
             ],
             [
                 'name' => 'Petualangan',
                 'slug' => 'petualangan',
                 'description' => 'Aktivitas petualangan dan olahraga ekstrim',
-                'image' => 'https://picsum.photos/seed/petualangan/200/200.jpg'
+                'image' => 'https://skillup-ecourse.sgp1.cdn.digitaloceanspaces.com/meet/category/1752726534-1752726534.png'
             ],
             [
                 'name' => 'Tips & Trik',
                 'slug' => 'tips-trik',
                 'description' => 'Tips dan trik traveling',
-                'image' => 'https://picsum.photos/seed/tips-trik/200/200.jpg'
+                'image' => 'https://skillup-ecourse.sgp1.cdn.digitaloceanspaces.com/meet/category/1752726534-1752726534.png'
             ],
             [
                 'name' => 'Budget Travel',
                 'slug' => 'budget-travel',
                 'description' => 'Panduan traveling dengan budget hemat',
-                'image' => 'https://picsum.photos/seed/budget-travel/200/200.jpg'
+                'image' => 'https://skillup-ecourse.sgp1.cdn.digitaloceanspaces.com/meet/category/1752726570-1752726570.png'
             ],
             [
                 'name' => 'Luxury Travel',
                 'slug' => 'luxury-travel',
                 'description' => 'Panduan traveling mewah dan premium',
-                'image' => 'https://picsum.photos/seed/luxury-travel/200/200.jpg'
+                'image' => 'https://skillup-ecourse.sgp1.cdn.digitaloceanspaces.com/meet/category/1752726586-1752726586.png'
             ],
             [
                 'name' => 'Wisata Religi',
                 'slug' => 'wisata-religi',
                 'description' => 'Panduan wisata religi dan spiritual',
-                'image' => 'https://picsum.photos/seed/wisata-religi/200/200.jpg'
+                'image' => 'https://skillup-ecourse.sgp1.cdn.digitaloceanspaces.com/meet/category/1752726499-1752726499.png'
             ],
             [
                 'name' => 'Wisata Edukasi',
                 'slug' => 'wisata-edukasi',
                 'description' => 'Destinasi wisata edukatif dan museum',
-                'image' => 'https://picsum.photos/seed/wisata-edukasi/200/200.jpg'
+                'image' => 'https://skillup-ecourse.sgp1.cdn.digitaloceanspaces.com/meet/category/1752726534-1752726534.png'
             ],
             [
                 'name' => 'Belanja & Shopping',
                 'slug' => 'belanja-shopping',
                 'description' => 'Panduan belanja dan pusat perbelanjaan',
-                'image' => 'https://picsum.photos/seed/belanja-shopping/200/200.jpg'
+                'image' => 'https://skillup-ecourse.sgp1.cdn.digitaloceanspaces.com/meet/category/1752726534-1752726534.png'
             ],
             [
                 'name' => 'Kehidupan Malam',
                 'slug' => 'kehidupan-malam',
                 'description' => 'Panduan hiburan malam dan nightlife',
-                'image' => 'https://picsum.photos/seed/kehidupan-malam/200/200.jpg'
+                'image' => 'https://skillup-ecourse.sgp1.cdn.digitaloceanspaces.com/meet/category/1752726534-1752726534.png'
             ],
             [
                 'name' => 'Family Travel',
                 'slug' => 'family-travel',
                 'description' => 'Panduan traveling bersama keluarga',
-                'image' => 'https://picsum.photos/seed/family-travel/200/200.jpg'
+                'image' => 'https://skillup-ecourse.sgp1.cdn.digitaloceanspaces.com/meet/category/1752726534-1752726534.png'
             ],
             [
                 'name' => 'Wisata Anak',
                 'slug' => 'wisata-anak',
                 'description' => 'Destinasi wisata ramah anak',
-                'image' => 'https://picsum.photos/seed/wisata-anak/200/200.jpg'
+                'image' => 'https://skillup-ecourse.sgp1.cdn.digitaloceanspaces.com/meet/category/1752726534-1752726534.png'
             ],
             [
                 'name' => 'Fotografi',
                 'slug' => 'fotografi',
                 'description' => 'Spot foto terbaik dan tips fotografi travel',
-                'image' => 'https://picsum.photos/seed/fotografi/200/200.jpg'
+                'image' => 'https://skillup-ecourse.sgp1.cdn.digitaloceanspaces.com/meet/category/1752726534-1752726534.png'
             ],
             [
                 'name' => 'Musim & Festival',
                 'slug' => 'musim-festival',
                 'description' => 'Panduan festival dan event musiman',
-                'image' => 'https://picsum.photos/seed/musim-festival/200/200.jpg'
+                'image' => 'https://skillup-ecourse.sgp1.cdn.digitaloceanspaces.com/meet/category/1752726534-1752726534.png'
             ],
             [
                 'name' => 'Kesehatan & Keamanan',
                 'slug' => 'kesehatan-keamanan',
                 'description' => 'Tips kesehatan dan keamanan saat traveling',
-                'image' => 'https://picsum.photos/seed/kesehatan-keamanan/200/200.jpg'
+                'image' => 'https://skillup-ecourse.sgp1.cdn.digitaloceanspaces.com/meet/category/1752726534-1752726534.png'
             ],
             [
                 'name' => 'Digital Nomad',
                 'slug' => 'digital-nomad',
                 'description' => 'Panduan untuk bekerja sambil traveling',
-                'image' => 'https://picsum.photos/seed/digital-nomad/200/200.jpg'
+                'image' => 'https://skillup-ecourse.sgp1.cdn.digitaloceanspaces.com/meet/category/1752726499-1752726499.png'
             ],
         ];
 

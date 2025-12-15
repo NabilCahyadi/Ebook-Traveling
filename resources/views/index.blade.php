@@ -636,7 +636,7 @@ $collections = collect();
 
                 <div class="{{ $colClass }}">
                     <div class="banner-img wow animate__animated animate__fadeInUp" data-wow-delay="{{ $delay }}s">
-                        <a href="{{ route('pricing') }}">
+                        <a href="{{ route('pricing') }}#pricing-plans">
                             <img src="{{ asset($plan->image) }}" alt="{{ $plan->name }}" />
                         </a>
                     </div>

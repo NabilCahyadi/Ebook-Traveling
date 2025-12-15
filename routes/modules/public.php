@@ -11,6 +11,7 @@ use App\Http\Controllers\EbookController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\ReaderController;
 use App\Http\Controllers\FrontendCategoryController;
+use App\Http\Controllers\PricingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,13 +24,13 @@ use App\Http\Controllers\FrontendCategoryController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Pricing Page
-Route::get('/pricing', function () {
-    return view('pricing');
-})->name('pricing');
+// Route::get('/pricing', function () {
+//     return view('pricing');
+// })->name('pricing');
 
 // Destinations Page
 Route::get('/destinations', [DestinationController::class, 'index'])->name('destinations');
-Route::get('/destinations/{slug}', [DestinationController::class, 'show'])->name('destination.show');
+Route::get('/destinations/{slug}', [DestinationController::class, 'show'])->name('destination.show')->middleware('record.view');
 
 // Promo Page
 Route::get('/promo', function () {
@@ -97,7 +98,7 @@ Route::get('/ebooks/{slug}', [EbookController::class, 'show'])->name('ebooks.sho
 Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store')->middleware('auth');
 Route::get('/reader/{slug}', [ReaderController::class, 'show'])->name('reader.show')->middleware('premium');
 Route::get('/category/{slug}', [FrontendCategoryController::class, 'show'])->name('category.show');
-
+Route::get('/pricing', [PricingController::class, 'index'])->name('pricing');
 
 
 

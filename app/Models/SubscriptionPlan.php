@@ -11,6 +11,9 @@ class SubscriptionPlan extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
 
+    protected $keyType = 'char'; // Karena id adalah char(36) untuk UUID
+    public $incrementing = false; // Karena UUID tidak auto-increment
+
     protected $fillable = [
         'name',
         'slug',
@@ -18,7 +21,11 @@ class SubscriptionPlan extends Model
         'cover_image',
         'price',
         'duration_days',
+        'price_description', // Tambahkan ini
         'features',
+        'button_text',       // Tambahkan ini
+        'is_featured',       // Tambahkan ini
+        'sort_order',        // Tambahkan ini
         'is_active',
     ];
 
@@ -27,6 +34,7 @@ class SubscriptionPlan extends Model
         'duration_days' => 'integer',
         'features' => 'array',
         'is_active' => 'boolean',
+        'price' => 'decimal:2',
     ];
 
     /**
