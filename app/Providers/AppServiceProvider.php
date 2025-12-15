@@ -29,6 +29,14 @@ use App\Observers\SubscriptionPlanObserver;
 use App\Repositories\Interfaces\RatingRepositoryInterface;
 use App\Repositories\RatingRepository;
 use App\Services\RatingService;
+use App\Repositories\PricingBannerRepository;
+use App\Repositories\Interfaces\PricingBannerRepositoryInterface;
+use App\Repositories\Interfaces\PricingBenefitRepositoryInterface;
+use App\Repositories\PricingBenefitRepository;
+use App\Repositories\Interfaces\FaqRepositoryInterface;
+use App\Repositories\FaqRepository;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -44,6 +52,18 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(RatingService::class, function ($app) {
             return new RatingService($app->make(RatingRepositoryInterface::class));
         });
+        $this->app->bind(
+            PricingBannerRepositoryInterface::class,
+            PricingBannerRepository::class
+        );
+        $this->app->bind(
+            PricingBenefitRepositoryInterface::class,
+            PricingBenefitRepository::class
+        );
+        $this->app->bind(
+            FaqRepositoryInterface::class,
+            FaqRepository::class
+        );
     }
 
     /**
@@ -65,5 +85,20 @@ class AppServiceProvider extends ServiceProvider
 
         // Register View Composer for sidebar
         View::composer('layouts.partials.admin.sidebar', SidebarComposer::class);
+
+        View::composer('*', function ($view) {
+            $ctaBackground = '/images/default-bg.webp'; // Path default jika belum di-setting
+
+            // Cek apakah tabel ada untuk menghindari error saat fresh install
+            if (Schema::hasTable('system_settings')) {
+                $setting = DB::table('system_settings')->where('key', 'default_cta_background_path')->first();
+                if ($setting) {
+                    $ctaBackground = $setting->value;
+                }
+            }
+
+            // Bagikan variabel ke view
+            $view->with('ctaBackground', $ctaBackground);
+        });
     }
 }

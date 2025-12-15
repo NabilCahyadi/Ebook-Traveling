@@ -117,7 +117,7 @@
             </div>
         </div>
     </div>
-    <section class="container mb-50 d-none d-md-block">
+    <!-- <section class="container mb-50 d-none d-md-block">
         <div class="row about-count">
             <div class="col-lg-1-5 col-md-6 text-center mb-lg-0 mb-md-5">
                 <h1 class="heading-1"><span class="count">12</span>+</h1>
@@ -140,7 +140,7 @@
                 <h4>Products Sale</h4>
             </div>
         </div>
-    </section>
+    </section> -->
     <!-- <div class="container">
         <div class="row">
             <div class="col-xl-10 col-lg-12 m-auto">

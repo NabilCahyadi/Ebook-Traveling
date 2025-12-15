@@ -285,7 +285,7 @@
 
                                         <div class="city-meta-item">
                                             <i class="bi bi-eye"></i>
-                                            <span><strong>Viewed :</strong> {{ number_format($city->views_count) }} kali</span>
+                                            <span><strong>Viewed :</strong> {{ number_format($city->views_count) }}</span>
                                         </div>
                                     </div>
                                 </div>

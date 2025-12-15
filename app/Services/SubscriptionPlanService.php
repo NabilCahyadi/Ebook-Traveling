@@ -39,6 +39,13 @@ class SubscriptionPlanService
         return $this->subscriptionPlanRepository->getActive();
     }
 
+    public function getActivePlansForDisplay()
+    {
+        // Method ini memanggil method yang sudah ada di Repository
+        // untuk mengambil data yang sudah diurutkan
+        return $this->subscriptionPlanRepository->getAllActivePlans();
+    }
+
     /**
      * Get subscription plan by ID
      */

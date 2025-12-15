@@ -25,13 +25,6 @@ class SubscriptionPlanRepository implements SubscriptionPlanRepositoryInterface
         return $this->model->orderBy('duration_days', 'asc')->paginate($perPage);
     }
 
-    public function getActive()
-    {
-        return $this->model->where('is_active', true)
-            ->orderBy('duration_days', 'asc')
-            ->get();
-    }
-
     public function getById(string $id)
     {
         return $this->model->findOrFail($id);
@@ -60,28 +53,28 @@ class SubscriptionPlanRepository implements SubscriptionPlanRepositoryInterface
         return $plan->delete();
     }
 
-    public function getActivePlans(int $limit = null): Collection
-    {
-        $query = SubscriptionPlan::where('is_active', true)
-            ->orderBy('order_index', 'asc');
-
-        if ($limit) {
-            $query->limit($limit);
-        }
-
-        return $query->get();
-    }
-
-    public function getAllActive()
-    {
-        return SubscriptionPlan::where('is_active', true)
-            ->orderBy('order_index', 'asc')
-            ->get();
-    }
-
     public function hasActiveSubscriptions(string $id): bool
     {
         $plan = $this->getById($id);
         return $plan->subscriptions()->count() > 0;
+    }
+
+    /**
+     * Get all active plans, sorted for display on the pricing page.
+     * Ini adalah SATU-SATUNYA method yang akan kita gunakan untuk mengambil data pricing.
+     */
+    public function getAllActivePlans()
+    {
+        // PASTIKAN MENGGUNAKAN 'sort_order' SESUAI MIGRATION DAN SEEDER
+        return $this->model->where('is_active', true)
+            ->orderBy('sort_order', 'asc')
+            ->get();
+    }
+
+    public function getActive()
+    {
+        return $this->model->where('is_active', true)
+            ->orderBy('duration_days', 'asc') // Urutkan berbeda
+            ->get();
     }
 }

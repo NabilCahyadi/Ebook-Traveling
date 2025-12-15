@@ -14,6 +14,8 @@ class CitySeeder extends Seeder
      */
     public function run(): void
     {
+        // Kosongkan tabel terlebih dahulu agar tidak duplikat
+        DB::table('cities')->delete();
         $cities = [
             // 10 Data Kota Populer (is_popular = 1)
             [
@@ -25,7 +27,7 @@ class CitySeeder extends Seeder
                 'order_index' => 1,
                 'is_active' => true,
                 'is_popular' => true,
-                'views_count' => 542310,
+                // 'views_count' => 542310,
             ],
             [
                 'name' => 'Surabaya',
@@ -36,7 +38,7 @@ class CitySeeder extends Seeder
                 'order_index' => 2,
                 'is_active' => true,
                 'is_popular' => true,
-                'views_count' => 421150,
+                // 'views_count' => 421150,
             ],
             [
                 'name' => 'Bandung',
@@ -47,7 +49,7 @@ class CitySeeder extends Seeder
                 'order_index' => 3,
                 'is_active' => true,
                 'is_popular' => true,
-                'views_count' => 398770,
+                // 'views_count' => 398770,
             ],
             [
                 'name' => 'Medan',
@@ -58,7 +60,7 @@ class CitySeeder extends Seeder
                 'order_index' => 4,
                 'is_active' => true,
                 'is_popular' => true,
-                'views_count' => 312450,
+                // 'views_count' => 312450,
             ],
             [
                 'name' => 'Semarang',
@@ -69,7 +71,7 @@ class CitySeeder extends Seeder
                 'order_index' => 5,
                 'is_active' => true,
                 'is_popular' => true,
-                'views_count' => 289100,
+                // 'views_count' => 289100,
             ],
             [
                 'name' => 'Makassar',
@@ -80,7 +82,7 @@ class CitySeeder extends Seeder
                 'order_index' => 6,
                 'is_active' => true,
                 'is_popular' => true,
-                'views_count' => 254330,
+                // 'views_count' => 254330,
             ],
             [
                 'name' => 'Palembang',
@@ -91,7 +93,7 @@ class CitySeeder extends Seeder
                 'order_index' => 7,
                 'is_active' => true,
                 'is_popular' => true,
-                'views_count' => 198500,
+                // 'views_count' => 198500,
             ],
             [
                 'name' => 'Tangerang',
@@ -102,7 +104,7 @@ class CitySeeder extends Seeder
                 'order_index' => 8,
                 'is_active' => true,
                 'is_popular' => true,
-                'views_count' => 176200,
+                // 'views_count' => 176200,
             ],
             [
                 'name' => 'Depok',
@@ -113,7 +115,7 @@ class CitySeeder extends Seeder
                 'order_index' => 9,
                 'is_active' => true,
                 'is_popular' => true,
-                'views_count' => 165880,
+                // 'views_count' => 165880,
             ],
             [
                 'name' => 'Batam',
@@ -124,7 +126,7 @@ class CitySeeder extends Seeder
                 'order_index' => 10,
                 'is_active' => true,
                 'is_popular' => true,
-                'views_count' => 154900,
+                // 'views_count' => 154900,
             ],
 
             // 5 Data Kota Tidak Populer (is_popular = 0)
@@ -137,7 +139,7 @@ class CitySeeder extends Seeder
                 'order_index' => 11,
                 'is_active' => true,
                 'is_popular' => false,
-                'views_count' => 45200,
+                // 'views_count' => 45200,
             ],
             [
                 'name' => 'Pekanbaru',
@@ -148,7 +150,7 @@ class CitySeeder extends Seeder
                 'order_index' => 12,
                 'is_active' => true,
                 'is_popular' => false,
-                'views_count' => 38900,
+                // 'views_count' => 38900,
             ],
             [
                 'name' => 'Bandar Lampung',
@@ -159,7 +161,7 @@ class CitySeeder extends Seeder
                 'order_index' => 13,
                 'is_active' => true,
                 'is_popular' => false,
-                'views_count' => 31100,
+                // 'views_count' => 31100,
             ],
             [
                 'name' => 'Malang',
@@ -170,7 +172,7 @@ class CitySeeder extends Seeder
                 'order_index' => 14,
                 'is_active' => true,
                 'is_popular' => false,
-                'views_count' => 27500,
+                // 'views_count' => 27500,
             ],
             [
                 'name' => 'Samarinda',
@@ -181,7 +183,7 @@ class CitySeeder extends Seeder
                 'order_index' => 15,
                 'is_active' => true,
                 'is_popular' => false,
-                'views_count' => 21900,
+                // 'views_count' => 21900,
             ],
 
             // Tambahan Data Kota yang Hilang
@@ -194,7 +196,7 @@ class CitySeeder extends Seeder
                 'order_index' => 16,
                 'is_active' => true,
                 'is_popular' => true,
-                'views_count' => 345600,
+                // 'views_count' => 345600,
             ],
             [
                 'name' => 'Padang',
@@ -205,7 +207,7 @@ class CitySeeder extends Seeder
                 'order_index' => 17,
                 'is_active' => true,
                 'is_popular' => true,
-                'views_count' => 298700,
+                // 'views_count' => 298700,
             ],
             [
                 'name' => 'Yogyakarta',
@@ -216,7 +218,7 @@ class CitySeeder extends Seeder
                 'order_index' => 18,
                 'is_active' => true,
                 'is_popular' => true,
-                'views_count' => 412300,
+                // 'views_count' => 412300,
             ],
             [
                 'name' => 'Manado',
@@ -227,7 +229,7 @@ class CitySeeder extends Seeder
                 'order_index' => 19,
                 'is_active' => true,
                 'is_popular' => true,
-                'views_count' => 276500,
+                // 'views_count' => 276500,
             ],
             [
                 'name' => 'Mojokerto',
@@ -238,7 +240,7 @@ class CitySeeder extends Seeder
                 'order_index' => 20,
                 'is_active' => true,
                 'is_popular' => false,
-                'views_count' => 38400,
+                // 'views_count' => 38400,
             ],
             [
                 'name' => 'Bali',
@@ -249,7 +251,7 @@ class CitySeeder extends Seeder
                 'order_index' => 21,
                 'is_active' => true,
                 'is_popular' => true,
-                'views_count' => 567800,
+                // 'views_count' => 567800,
             ],
             [
                 'name' => 'Mataram',
@@ -260,7 +262,7 @@ class CitySeeder extends Seeder
                 'order_index' => 22,
                 'is_active' => true,
                 'is_popular' => true,
-                'views_count' => 187600,
+                // 'views_count' => 187600,
             ],
             [
                 'name' => 'Demak',
@@ -271,14 +273,24 @@ class CitySeeder extends Seeder
                 'order_index' => 23,
                 'is_active' => true,
                 'is_popular' => false,
-                'views_count' => 29800,
+                // 'views_count' => 29800,
             ],
         ];
 
-        foreach ($cities as $data) {
-            City::create($data);
+        foreach ($cities as $cityData) {
+            // Log untuk memastikan semua kota diproses
+            // echo "Processing city: " . $cityData['name'] . "\n"; // Hapus ini setelah selesai
+
+            // $imagePath = '/images/' . $cityData['slug'] . '.jpg';
+            $fullData = array_merge($cityData, [
+                'id' => Str::uuid(),
+                'is_active' => true,
+            ]);
+
+            City::create($fullData);
         }
 
         $this->command->info('✅ Cities seeded successfully!');
+        $this->command->info('📚 Total: ' . count($cities) . ' cities created.');
     }
 }

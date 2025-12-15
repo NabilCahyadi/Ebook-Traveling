@@ -134,11 +134,6 @@
             text-decoration: underline;
         }
 
-        /* --- HAPUS CLASS INI KARENA TIDAK LAGI DIGUNAKAN --- */
-        /* .category-item-hidden {
-    display: none !important;
-} */
-
         /* --- PERBAIKI STYLE UNTUK ITEM (HILANGKAN ANIMASI) --- */
         .category-item {
             break-inside: avoid;
