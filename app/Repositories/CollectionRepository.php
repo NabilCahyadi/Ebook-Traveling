@@ -52,4 +52,43 @@ class CollectionRepository implements CollectionRepositoryInterface
     {
         return Collection::destroy($id);
     }
+
+    public function getAll(): IlluminateCollection
+    {
+        return Collection::orderBy('order', 'asc')->get();
+    }
+
+    public function getAllPaginated(int $perPage = 10)
+    {
+        return Collection::withCount('ebooks')
+            ->orderBy('order', 'asc')
+            ->paginate($perPage);
+    }
+
+    public function attachEbooks(string $collectionId, array $ebookIds): void
+    {
+        $collection = Collection::findOrFail($collectionId);
+        $collection->ebooks()->attach($ebookIds);
+    }
+
+    public function detachEbooks(string $collectionId, array $ebookIds): void
+    {
+        $collection = Collection::findOrFail($collectionId);
+        $collection->ebooks()->detach($ebookIds);
+    }
+
+    public function syncEbooks(string $collectionId, array $ebookIds): void
+    {
+        $collection = Collection::findOrFail($collectionId);
+        $collection->ebooks()->sync($ebookIds);
+    }
+
+    public function updateEbookOrder(string $collectionId, array $orders): void
+    {
+        $collection = Collection::findOrFail($collectionId);
+        
+        foreach ($orders as $ebookId => $order) {
+            $collection->ebooks()->updateExistingPivot($ebookId, ['order_index' => $order]);
+        }
+    }
 }

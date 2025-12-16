@@ -35,6 +35,8 @@ class AdminMiddleware
         }
 
         // Not authorized - redirect to admin login
+        Auth::logout();
+        
         return redirect()->route('admin.login')->with('error', 'Unauthorized access. Admin only.');
     }
 }

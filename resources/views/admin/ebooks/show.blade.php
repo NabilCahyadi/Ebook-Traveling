@@ -412,8 +412,8 @@
                     <div class="ebook-cover-container">
                         <div class="ebook-cover-card">
                             <div class="ebook-cover-wrapper">
-                                @if ($ebook->cover_image)
-                                    <img src="{{ asset('storage/' . $ebook->cover_image) }}" alt="{{ $ebook->title }}"
+                                @if ($ebook->cover_image_url)
+                                    <img src="{{ $ebook->cover_image_url }}" alt="{{ $ebook->title }}"
                                         class="ebook-cover-img">
                                 @else
                                     <i class="bx bx-book no-image-icon"></i>

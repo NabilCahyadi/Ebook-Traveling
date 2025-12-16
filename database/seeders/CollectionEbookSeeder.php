@@ -44,7 +44,6 @@ class CollectionEbookSeeder extends Seeder
         // Proses Best Sellers
         foreach ($bestSellerEbooks as $index => $ebookId) {
             $dataToInsert[] = [
-                'id' => (string) Str::uuid(),
                 'collection_id' => $bestSellersCollection->id,
                 'ebook_id' => $ebookId,
                 'order_index' => $index,
@@ -56,7 +55,6 @@ class CollectionEbookSeeder extends Seeder
         // Proses Featured Collection
         foreach ($featuredEbooks as $index => $ebookId) {
             $dataToInsert[] = [
-                'id' => (string) Str::uuid(),
                 'collection_id' => $featuredCollection->id,
                 'ebook_id' => $ebookId,
                 'order_index' => $index,
@@ -68,7 +66,6 @@ class CollectionEbookSeeder extends Seeder
         // Proses Latest
         foreach ($latestEbooks as $index => $ebookId) {
             $dataToInsert[] = [
-                'id' => (string) Str::uuid(),
                 'collection_id' => $latestCollection->id,
                 'ebook_id' => $ebookId,
                 'order_index' => $index,

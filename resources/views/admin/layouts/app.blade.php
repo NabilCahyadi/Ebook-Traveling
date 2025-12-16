@@ -205,8 +205,8 @@
                         </a>
                         <ul class="menu-sub">
                             <li class="menu-item">
-                                <a href="{{ route('admin.website-management.collection-order') }}" class="menu-link">
-                                    <div data-i18n="Collection Order">Collection Order</div>
+                                <a href="{{ route('admin.collections.index') }}" class="menu-link">
+                                    <div data-i18n="Collection Ebook">Collection Ebook</div>
                                 </a>
                             </li>
                         </ul>

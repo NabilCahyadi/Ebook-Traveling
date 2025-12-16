@@ -110,4 +110,76 @@ class CollectionService
 
         return $collection;
     }
+
+    /**
+     * Get all collections with pagination
+     */
+    public function getAllCollections(int $perPage = 10)
+    {
+        return $this->collectionRepository->getAllPaginated($perPage);
+    }
+
+    /**
+     * Get collection by ID
+     */
+    public function getCollectionById(string $id): ?CollectionModel
+    {
+        return $this->collectionRepository->findById($id);
+    }
+
+    /**
+     * Create new collection
+     */
+    public function createCollection(array $data): CollectionModel
+    {
+        return $this->collectionRepository->create($data);
+    }
+
+    /**
+     * Update collection
+     */
+    public function updateCollection(string $id, array $data): bool
+    {
+        return $this->collectionRepository->update($id, $data);
+    }
+
+    /**
+     * Delete collection
+     */
+    public function deleteCollection(string $id): bool
+    {
+        return $this->collectionRepository->delete($id);
+    }
+
+    /**
+     * Attach ebooks to collection
+     */
+    public function attachEbooksToCollection(string $collectionId, array $ebookIds): void
+    {
+        $this->collectionRepository->attachEbooks($collectionId, $ebookIds);
+    }
+
+    /**
+     * Detach ebooks from collection
+     */
+    public function detachEbooksFromCollection(string $collectionId, array $ebookIds): void
+    {
+        $this->collectionRepository->detachEbooks($collectionId, $ebookIds);
+    }
+
+    /**
+     * Sync ebooks in collection
+     */
+    public function syncEbooksInCollection(string $collectionId, array $ebookIds): void
+    {
+        $this->collectionRepository->syncEbooks($collectionId, $ebookIds);
+    }
+
+    /**
+     * Update ebook order in collection
+     */
+    public function updateEbookOrderInCollection(string $collectionId, array $orders): void
+    {
+        $this->collectionRepository->updateEbookOrder($collectionId, $orders);
+    }
 }
