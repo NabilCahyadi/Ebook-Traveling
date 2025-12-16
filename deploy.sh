@@ -23,6 +23,12 @@ $PHP_BIN artisan migrate --force
 # Create storage symlink (PENTING untuk akses file dari public)
 $PHP_BIN artisan storage:link
 
+$PHP_BIN artisan db:seed --class=PricingBannerSeeder --force
+$PHP_BIN artisan db:seed --class=PricingBenefitSeeder --force
+$PHP_BIN artisan db:seed --class=SubscriptionSeeder --force
+$PHP_BIN artisan db:seed --class=FaqSeeder --force
+$PHP_BIN artisan db:seed --class=SystemSettingSeeder --force
+
 # Set permissions untuk storage dan cache
 chmod -R 775 storage bootstrap/cache
 chown -R $USER:$USER storage bootstrap/cache
