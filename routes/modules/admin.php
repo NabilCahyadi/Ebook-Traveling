@@ -94,11 +94,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::delete('blogs/{blog}/force-delete', [\App\Http\Controllers\Admin\BlogController::class, 'forceDelete'])->name('blogs.force-delete');
     Route::resource('blogs', \App\Http\Controllers\Admin\BlogController::class);
 
-    // Blog Category Management
-    Route::get('blog-categories/trashed', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'trashed'])->name('blog-categories.trashed');
-    Route::patch('blog-categories/{id}/restore', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'restore'])->name('blog-categories.restore');
-    Route::delete('blog-categories/{id}/force-delete', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'forceDelete'])->name('blog-categories.force-delete');
-    Route::resource('blog-categories', \App\Http\Controllers\Admin\BlogCategoryController::class);
+    // Blog Category Management (Disabled - Controller not found)
+    // Route::get('blog-categories/trashed', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'trashed'])->name('blog-categories.trashed');
+    // Route::patch('blog-categories/{id}/restore', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'restore'])->name('blog-categories.restore');
+    // Route::delete('blog-categories/{id}/force-delete', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'forceDelete'])->name('blog-categories.force-delete');
+    // Route::resource('blog-categories', \App\Http\Controllers\Admin\BlogCategoryController::class);
 
     // System Settings
     // Route::get('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings');
@@ -116,7 +116,18 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('promos', \App\Http\Controllers\Admin\PromoController::class);
     Route::post('promos/{id}/toggle-active', [\App\Http\Controllers\Admin\PromoController::class, 'toggleActive'])->name('promos.toggle-active');
 
-    // Website Management - Collection Order
+    // Website Management - Collection CRUD
+    Route::get('ebooks-for-selection', [\App\Http\Controllers\Admin\CollectionController::class, 'getEbooksForSelection'])->name('ebooks-for-selection');
+    Route::get('collections/check-order', [\App\Http\Controllers\Admin\CollectionController::class, 'checkOrderAvailability'])->name('collections.check-order');
+    Route::post('collections/update-order', [\App\Http\Controllers\Admin\CollectionController::class, 'updateCollectionsOrder'])->name('collections.update-order');
+    Route::get('collections/{id}/manage-ebooks', [\App\Http\Controllers\Admin\CollectionController::class, 'manageEbooks'])->name('collections.manage-ebooks');
+    Route::get('collections/get-available-ebooks', [\App\Http\Controllers\Admin\CollectionController::class, 'getAvailableEbooks'])->name('collections.get-available-ebooks');
+    Route::post('collections/{id}/add-ebooks', [\App\Http\Controllers\Admin\CollectionController::class, 'addEbooks'])->name('collections.add-ebooks');
+    Route::delete('collections/{collectionId}/remove-ebook/{ebookId}', [\App\Http\Controllers\Admin\CollectionController::class, 'removeEbook'])->name('collections.remove-ebook');
+    Route::post('collections/{id}/update-ebook-order', [\App\Http\Controllers\Admin\CollectionController::class, 'updateEbookOrder'])->name('collections.update-ebook-order');
+    Route::resource('collections', \App\Http\Controllers\Admin\CollectionController::class);
+
+    // Website Management - Collection Order (Legacy - consider migrating to collections.manage-ebooks)
     Route::get('collection-order', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'collectionOrder'])->name('collection-order');
     Route::post('collection-order/update', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'updateCollectionOrder'])->name('collection-order.update');
     Route::post('collection/{id}/toggle-visibility', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'toggleCollectionVisibility'])->name('collection.toggle-visibility');

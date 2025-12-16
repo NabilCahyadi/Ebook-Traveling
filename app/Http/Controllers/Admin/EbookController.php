@@ -93,10 +93,19 @@ class EbookController extends Controller
         try {
             Log::info('Creating ebook with data:', $validated);
             $ebook = $this->ebookService->createEbook($validated);
-            
-            // Attach categories to ebook (many-to-many)
-            $ebook->categories()->attach($categoryIds);
-            
+
+            // Attach categories using DB::table to avoid timestamp issues
+            $insertData = [];
+            foreach ($categoryIds as $categoryId) {
+                $insertData[] = [
+                    'id' => \Illuminate\Support\Str::uuid()->toString(),
+                    'ebook_id' => $ebook->id,
+                    'category_id' => $categoryId,
+                    'created_at' => now()
+                ];
+            }
+            \DB::table('ebook_categories')->insert($insertData);
+
             Log::info('Ebook created successfully:', ['id' => $ebook->id]);
 
             $message = 'Ebook created successfully!';
@@ -194,11 +203,25 @@ class EbookController extends Controller
             }
 
             $this->ebookService->updateEbook($id, $validated);
-            
-            // Sync categories (replaces old with new)
+
+            // Sync categories using DB::table to avoid timestamp issues
             $ebook = $this->ebookService->getEbookById($id);
-            $ebook->categories()->sync($categoryIds);
-            
+
+            // Delete old categories
+            \DB::table('ebook_categories')->where('ebook_id', $ebook->id)->delete();
+
+            // Insert new categories
+            $insertData = [];
+            foreach ($categoryIds as $categoryId) {
+                $insertData[] = [
+                    'id' => \Illuminate\Support\Str::uuid()->toString(),
+                    'ebook_id' => $ebook->id,
+                    'category_id' => $categoryId,
+                    'created_at' => now()
+                ];
+            }
+            \DB::table('ebook_categories')->insert($insertData);
+
             return redirect()->route('admin.ebooks.index')->with('success', 'Ebook updated successfully!');
         } catch (\Exception $e) {
             return back()->with('error', 'Failed to update ebook: ' . $e->getMessage())->withInput();

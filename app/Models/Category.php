@@ -52,8 +52,9 @@ class Category extends Model
     public function ebooks()
     {
         // Tambahkan 'ebook_categories' sebagai parameter kedua
-        return $this->belongsToMany(Ebook::class, 'ebook_categories')
-            ->using(EbookCategory::class)
-            ->withPivot('created_at');
+        return $this->belongsToMany(Ebook::class, 'ebook_categories', 'category_id', 'ebook_id')
+            ->as('ebook_category')
+            ->withPivot('created_at')
+            ->withTimestamps(false);
     }
 }

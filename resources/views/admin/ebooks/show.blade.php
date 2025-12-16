@@ -26,28 +26,34 @@
         }
 
         .ebook-cover-wrapper {
+            position: relative;
             width: 100%;
-            aspect-ratio: 1 / 1.6;
-            /* Rasio 1.6:1 */
+            height: 0;
+            padding-bottom: 160%;
+            /* Rasio 1:1.6 (100/1.6 * 100 = 160%) */
             background: #f2f2f2;
             border-radius: 12px;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .ebook-cover-img {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
             width: 100% !important;
             height: 100% !important;
             object-fit: cover !important;
-            /* Wajib !important karena Vuexy override */
             object-position: center !important;
-            display: block;
+            display: block !important;
+            max-width: none !important;
+            max-height: none !important;
         }
 
-
         .ebook-cover-wrapper .no-image-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             font-size: 64px;
             color: #cbd5e1;
         }
@@ -412,9 +418,8 @@
                     <div class="ebook-cover-container">
                         <div class="ebook-cover-card">
                             <div class="ebook-cover-wrapper">
-                                @if ($ebook->cover_image)
-                                    <img src="{{ asset('storage/' . $ebook->cover_image) }}" alt="{{ $ebook->title }}"
-                                        class="ebook-cover-img">
+                                @if ($ebook->cover_image_url)
+                                    <img src="{{ $ebook->cover_image_url }}" alt="{{ $ebook->title }}" class="ebook-cover-img">
                                 @else
                                     <i class="bx bx-book no-image-icon"></i>
                                 @endif
@@ -506,13 +511,13 @@
                         <tr>
                             <td class="info-label">Page Count</td>
 
-                                <td class="info-value"> :
-                                    <i class="bx bx-file me-1"></i>{{ $ebook->page_count ?? '-' }} pages
-                                </td>
+                            <td class="info-value"> :
+                                <i class="bx bx-file me-1"></i>{{ $ebook->page_count ?? '-' }} pages
+                            </td>
                         </tr>
                         <tr>
                             <td class="info-label">Creator</td>
-                            <td class="info-value">: 
+                            <td class="info-value">:
                                 <i class="bx bx-user me-1"></i>{{ $ebook->creator->name ?? '-' }}
                             </td>
                         </tr>

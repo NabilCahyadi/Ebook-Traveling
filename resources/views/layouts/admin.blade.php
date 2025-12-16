@@ -45,12 +45,12 @@
     <!-- Page CSS -->
     <link rel="stylesheet" href="{{ url('assets/admin/vendor/css/pages/cards-advance.css') }}" />
 
-    @stack('styles')
 
     <!-- Helpers -->
     <script src="{{ url('assets/admin/vendor/js/helpers.js') }}"></script>
     <script src="{{ url('assets/admin/vendor/js/template-customizer.js') }}"></script>
     <script src="{{ url('assets/admin/js/config.js') }}"></script>
+       @stack('styles')
 </head>
 
 <body>
@@ -103,6 +103,24 @@
 
     <!-- Main JS -->
     <script src="{{ url('assets/admin/js/main.js') }}"></script>
+
+    <!-- CSRF Token Setup for AJAX -->
+    <script>
+        // Setup CSRF token for all AJAX requests
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        // Intercept AJAX errors
+        $(document).ajaxError(function(event, jqxhr, settings, thrownError) {
+            if (jqxhr.status === 419) {
+                alert('Your session has expired. Please refresh the page.');
+                location.reload();
+            }
+        });
+    </script>
 
     @stack('scripts')
 </body>

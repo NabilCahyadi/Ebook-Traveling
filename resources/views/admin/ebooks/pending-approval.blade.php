@@ -114,8 +114,8 @@
                             @foreach ($ebooks as $ebook)
                                 <tr>
                                     <td>
-                                        @if ($ebook->cover_image)
-                                            <img src="{{ asset('storage/' . $ebook->cover_image) }}"
+                                        @if ($ebook->cover_image_url)
+                                            <img src="{{ $ebook->cover_image_url }}"
                                                 alt="{{ $ebook->title }}" class="rounded ebook-cover-preview">
                                         @else
                                             <div class="bg-label-secondary rounded d-flex align-items-center justify-content-center"
@@ -202,9 +202,9 @@
                                             <div class="modal-body">
                                                 <div class="row">
                                                     <div class="col-md-4">
-                                                        @if ($ebook->cover_image)
+                                                        @if ($ebook->cover_image_url)
                                                             <div class="modal-cover-wrapper">
-                                                                <img src="{{ asset('storage/' . $ebook->cover_image) }}"
+                                                                <img src="{{ $ebook->cover_image_url }}"
                                                                     alt="{{ $ebook->title }}">
                                                             </div>
                                                         @else

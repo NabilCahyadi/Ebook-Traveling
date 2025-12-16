@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Storage;
 use App\Models\EbookCategory;
 use App\Models\City;
 use App\Models\EbookSection;
@@ -94,6 +95,17 @@ class Ebook extends Model
         }
 
         return $slug;
+    }
+
+    /**
+     * Get the cover image URL attribute.
+     */
+    public function getCoverImageUrlAttribute()
+    {
+        if ($this->cover_image) {
+            return Storage::url($this->cover_image);
+        }
+        return null;
     }
 
     /**
