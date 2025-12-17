@@ -200,11 +200,9 @@
         <div>
             <div class="style-4">
                 <div class="rectangle single-animation-wrap rounded mt-15" style="position: relative;">
-                    
                     <?php if($bannerData): ?>
-                    <img src="<?php echo e(asset($bannerData->gambar_banner)); ?>" alt="Banner" class="img-fluid w-100 rounded" id="pricing-banner-img">
+                    <img src="<?php echo e(asset('storage/' . $bannerData->image)); ?>" alt="Banner" class="img-fluid w-100 rounded" id="pricing-banner-img" style="aspect-ratio: 2.5/1; object-fit: cover;">
 
-                    
                     <div id="pricing-banner-content" class="js-fade-in" style="
                         position: absolute; 
                         top: 0; 
@@ -222,16 +220,16 @@
                         transition: opacity 1s ease-in-out;
                     ">
                         <div style="max-width: 800px; width: 90%;">
-                            
                             <h1 class="mb-30">
-                                <?php echo $bannerData->judul_utama; ?>
+                                <?php echo nl2br(e($bannerData->title)); ?>
 
                             </h1>
-                            <p class="mb-65 lh-base" style="font-size: 25px;"><?php echo e($bannerData->deskripsi); ?></p>
+                            <?php if($bannerData->description): ?>
+                            <p class="mb-65 lh-base" style="font-size: 25px;"><?php echo e($bannerData->description); ?></p>
+                            <?php endif; ?>
                         </div>
                     </div>
                     <?php else: ?>
-                    
                     <p>Banner pricing tidak ditemukan.</p>
                     <?php endif; ?>
                 </div>

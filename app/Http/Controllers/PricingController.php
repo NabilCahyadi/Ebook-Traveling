@@ -3,26 +3,26 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\PricingBannerService;
 use App\Services\PricingBenefitService;
 use App\Services\SubscriptionPlanService;
 use App\Services\FaqService;
+use App\Repositories\BannerRepository;
 
 class PricingController extends Controller
 {
-    protected $pricingBannerService;
+    protected $bannerRepository;
     protected $pricingBenefitService;
     protected $subscriptionPlanService;
     protected $faqService;
 
-    // Inject kedua service
+    // Inject services
     public function __construct(
-        PricingBannerService $pricingBannerService,
+        BannerRepository $bannerRepository,
         PricingBenefitService $pricingBenefitService,
         SubscriptionPlanService $subscriptionPlanService,
         FaqService $faqService,
     ) {
-        $this->pricingBannerService = $pricingBannerService;
+        $this->bannerRepository = $bannerRepository;
         $this->pricingBenefitService = $pricingBenefitService;
         $this->subscriptionPlanService = $subscriptionPlanService;
         $this->faqService = $faqService;
@@ -30,12 +30,12 @@ class PricingController extends Controller
 
     public function index()
     {
-        $bannerData = $this->pricingBannerService->getActiveBannerData();
-        $benefits = $this->pricingBenefitService->getActiveBenefitsForDisplay(); // Panggil service baru
+        // Get banner pricing from banners table
+        $bannerData = $this->bannerRepository->getActiveBannerPricing();
+        $benefits = $this->pricingBenefitService->getActiveBenefitsForDisplay();
         $plans = $this->subscriptionPlanService->getActivePlansForDisplay();
         $faqs = $this->faqService->getPricingFaqs();
 
-        // 5. Kirim variabel $plans ke view menggunakan compact()
         return view('pricing', compact('bannerData', 'benefits', 'plans', 'faqs'));
     }
 }

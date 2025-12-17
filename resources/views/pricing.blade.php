@@ -201,11 +201,9 @@
         <div>
             <div class="style-4">
                 <div class="rectangle single-animation-wrap rounded mt-15" style="position: relative;">
-                    {{-- Periksa apakah $bannerData ada sebelum mencoba mengaksesnya --}}
                     @if($bannerData)
-                    <img src="{{ asset($bannerData->gambar_banner) }}" alt="Banner" class="img-fluid w-100 rounded" id="pricing-banner-img">
+                    <img src="{{ asset('storage/' . $bannerData->image) }}" alt="Banner" class="img-fluid w-100 rounded" id="pricing-banner-img" style="aspect-ratio: 2.5/1; object-fit: cover;">
 
-                    {{-- Tambahkan ID untuk dipilih oleh JavaScript --}}
                     <div id="pricing-banner-content" class="js-fade-in" style="
                         position: absolute; 
                         top: 0; 
@@ -223,15 +221,15 @@
                         transition: opacity 1s ease-in-out;
                     ">
                         <div style="max-width: 800px; width: 90%;">
-                            {{-- Gunakan {!! !!} untuk render HTML tag <br /> --}}
                             <h1 class="mb-30">
-                                {!! $bannerData->judul_utama !!}
+                                {!! nl2br(e($bannerData->title)) !!}
                             </h1>
-                            <p class="mb-65 lh-base" style="font-size: 25px;">{{ $bannerData->deskripsi }}</p>
+                            @if($bannerData->description)
+                            <p class="mb-65 lh-base" style="font-size: 25px;">{{ $bannerData->description }}</p>
+                            @endif
                         </div>
                     </div>
                     @else
-                    {{-- Opsional: Tampilkan pesan atau gambar default jika tidak ada banner --}}
                     <p>Banner pricing tidak ditemukan.</p>
                     @endif
                 </div>

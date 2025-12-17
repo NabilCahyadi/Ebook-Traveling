@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title', 'Manage Hero Banners'); ?>
 
 <?php $__env->startPush('styles'); ?>
