@@ -753,4 +753,5 @@
             }, 100); // Tunggu 100ms setelah scroll berhenti
         }, false);
     });
-</script><?php /**PATH D:\PROJEK PROJEK\Ebook-Traveling\resources\views/layouts_lp/components/header.blade.php ENDPATH**/ ?>
+</script>
+<?php /**PATH D:\PROJEK PROJEK\Ebook-Traveling\resources\views/layouts_lp/components/header.blade.php ENDPATH**/ ?>

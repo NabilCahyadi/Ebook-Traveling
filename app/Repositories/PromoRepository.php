@@ -8,8 +8,19 @@ use App\Models\PromoUserUsage;
 use App\Repositories\Interfaces\PromoRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 
+
 class PromoRepository implements PromoRepositoryInterface
 {
+    protected $model;
+
+    /**
+     * Constructor untuk menerima model dependency.
+     */
+    public function __construct(Promo $model)
+    {
+        $this->model = $model;
+    }
+
     public function getAll()
     {
         return Promo::with('conditions', 'usages')
@@ -35,11 +46,63 @@ class PromoRepository implements PromoRepositoryInterface
         return Promo::where('code', $code)->first();
     }
 
+    public function findByCode($code)
+    {
+        return $this->model->where('code', $code)
+            ->where('is_active', 1)
+            ->where(function ($query) {
+                $query->whereNull('start_date')
+                    ->orWhere('start_date', '<=', now());
+            })
+            ->where(function ($query) {
+                $query->whereNull('end_date')
+                    ->orWhere('end_date', '>=', now());
+            })
+            ->first();
+    }
+
+    public function getAllActive()
+    {
+        return $this->model->where('is_active', 1)
+            ->where(function ($query) {
+                $query->whereNull('start_date')
+                    ->orWhere('start_date', '<=', now());
+            })
+            ->where(function ($query) {
+                $query->whereNull('end_date')
+                    ->orWhere('end_date', '>=', now());
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+    }
+
+    /**
+     * Get promos that are currently active and within their date range.
+     */
     public function getAvailablePromos()
     {
-        return Promo::available()
-            ->with('conditions')
+        $now = \Carbon\Carbon::now();
+
+        return $this->model->where('is_active', true)
+            ->where('start_date', '<=', $now)
+            ->where('end_date', '>=', $now)
+            ->orderBy('start_date', 'desc')
             ->get();
+    }
+
+    public function findBySlug($slug)
+    {
+        return $this->model->where('slug', $slug)
+            ->where('is_active', 1)
+            ->where(function ($query) {
+                $query->whereNull('start_date')
+                    ->orWhere('start_date', '<=', now());
+            })
+            ->where(function ($query) {
+                $query->whereNull('end_date')
+                    ->orWhere('end_date', '>=', now());
+            })
+            ->first();
     }
 
     public function create(array $data)
@@ -167,5 +230,10 @@ class PromoRepository implements PromoRepositoryInterface
     public function recordUsage(array $data)
     {
         return PromoUserUsage::create($data);
+    }
+
+    public function getBySlug($slug)
+    {
+        return $this->model->where('slug', $slug)->first();
     }
 }

@@ -310,4 +310,75 @@ class PromoService
     {
         return $this->promoRepository->toggleActive($id);
     }
+
+    public function getActivePromosForDisplay()
+    {
+        // Panggil method yang sudah ada di repository untuk mengambil promo aktif
+        return $this->promoRepository->getAvailablePromos();
+    }
+
+    /**
+     * Mendapatkan detail promo untuk halaman publik.
+     */
+
+    public function getPromoBySlug(string $slug)
+    {
+        return $this->promoRepository->getBySlug($slug);
+    }
+    
+    // public function getPromoBySlug(string $slug)
+    // {
+    //     $promo = $this->promoRepository->getBySlug($slug);
+
+    //     if (!$promo) {
+    //         return null;
+    //     }
+
+    //     // Siapkan data dasar
+    //     $promoData = [
+    //         'id' => $promo->id,
+    //         'name' => $promo->name,
+    //         'code' => $promo->code,
+    //         'description' => $promo->description,
+    //         'banner_image' => $promo->banner_image,
+    //         'type' => $promo->type,
+    //         'value' => $promo->value,
+    //         'formatted_discount' => $this->getFormattedDiscount($promo),
+    //         'start_date' => $promo->start_date->format('d F Y'),
+    //         'end_date' => $promo->end_date->format('d F Y'),
+    //         'is_active' => $promo->is_active,
+    //     ];
+
+    //     // Tambahkan rentang tanggal jika ada kondisi khusus
+    //     $dateRange = $this->getPromoDateRange($promo);
+    //     if ($dateRange) {
+    //         $promoData['date_range'] = $dateRange;
+    //     }
+
+    //     return $promoData;
+    // }
+
+    // Tambahkan method ini jika belum ada
+    private function getFormattedDiscount($promo)
+    {
+        if ($promo->type === 'percentage') {
+            return $promo->value . '%';
+        } elseif ($promo->type === 'fixed_amount') {
+            return 'Rp ' . number_format($promo->value, 0, ',', '.');
+        }
+
+        return $promo->value;
+    }
+
+    // Tambahkan method ini jika belum ada
+    private function getPromoDateRange($promo)
+    {
+        if (!$promo->start_date || !$promo->end_date) {
+            return null;
+        }
+
+        return \Carbon\Carbon::parse($promo->start_date)->locale('id')->translatedFormat('d F Y') .
+            ' - ' .
+            \Carbon\Carbon::parse($promo->end_date)->locale('id')->translatedFormat('d F Y');
+    }
 }

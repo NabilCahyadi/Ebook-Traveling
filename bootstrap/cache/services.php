@@ -45,10 +45,11 @@
     41 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     42 => 'Termwind\\Laravel\\TermwindServiceProvider',
     43 => 'App\\Providers\\AppServiceProvider',
-    44 => 'App\\Providers\\RepositoryServiceProvider',
-    45 => 'App\\Providers\\ViewComposerServiceProvider',
-    46 => 'App\\Providers\\RepositoryServiceProvider',
-    47 => 'App\\Providers\\ViewComposerServiceProvider',
+    44 => 'App\\Providers\\AppServiceProvider',
+    45 => 'App\\Providers\\RepositoryServiceProvider',
+    46 => 'App\\Providers\\ViewComposerServiceProvider',
+    47 => 'App\\Providers\\RepositoryServiceProvider',
+    48 => 'App\\Providers\\ViewComposerServiceProvider',
   ),
   'eager' => 
   array (
@@ -80,10 +81,11 @@
     25 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     26 => 'Termwind\\Laravel\\TermwindServiceProvider',
     27 => 'App\\Providers\\AppServiceProvider',
-    28 => 'App\\Providers\\RepositoryServiceProvider',
-    29 => 'App\\Providers\\ViewComposerServiceProvider',
-    30 => 'App\\Providers\\RepositoryServiceProvider',
-    31 => 'App\\Providers\\ViewComposerServiceProvider',
+    28 => 'App\\Providers\\AppServiceProvider',
+    29 => 'App\\Providers\\RepositoryServiceProvider',
+    30 => 'App\\Providers\\ViewComposerServiceProvider',
+    31 => 'App\\Providers\\RepositoryServiceProvider',
+    32 => 'App\\Providers\\ViewComposerServiceProvider',
   ),
   'deferred' => 
   array (

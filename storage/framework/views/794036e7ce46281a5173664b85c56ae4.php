@@ -1,9 +1,9 @@
 <!-- resources/views/components/destinations/show.blade.php -->
-@extends('layouts_lp.app')
 
-@section('title', $city->name . ' - Destination Details')
 
-@section('content')
+<?php $__env->startSection('title', $city->name . ' - Destination Details'); ?>
+
+<?php $__env->startSection('content'); ?>
 <style>
     /* 
             Kustomisasi dari template e-book Anda
@@ -246,34 +246,35 @@
     <!-- Bagian Utama Detail Kota -->
     <section class="product-tabs section-padding position-relative">
         <div class="container">
-            {{-- Kontainer untuk Detail Kota --}}
+            
             <div class="row">
                 <div class="col-lg-12">
                     <!-- Tombol Kembali -->
-                    <a href="{{ url('/destinations') }}" class="btn mb-4 fs-6">
+                    <a href="<?php echo e(url('/destinations')); ?>" class="btn mb-4 fs-6">
                         <i class="bi bi-arrow-left"></i>‎ ‎ Back
                     </a>
                     <div class="city-detail-card">
-                        {{-- Gambar Kota --}}
+                        
                         <div class="city-image">
-                            @if($city->image)
-                            <img src="{{ $city->image }}" alt="{{ $city->name }}">
-                            @else
+                            <?php if($city->image): ?>
+                            <img src="<?php echo e($city->image); ?>" alt="<?php echo e($city->name); ?>">
+                            <?php else: ?>
                             <img src="https://via.placeholder.com/1200x450.png?text=Gambar+Tidak+Tersedia" alt="Gambar Tidak Tersedia">
-                            @endif
+                            <?php endif; ?>
                         </div>
 
-                        {{-- Konten Detail --}}
+                        
                         <div class="city-content">
                             <div class="row">
                                 <div class="col-lg-8">
-                                    <h3 class="mb-3">{{ $city->name }}</h3>
+                                    <h3 class="mb-3"><?php echo e($city->name); ?></h3>
                                     <p class="city-description">
-                                        {{-- Jika deskripsi panjang, Anda bisa menampilkannya di sini --}}
-                                        {{ $city->description ?? 'Informasi detail tentang kota ini belum tersedia.' }}
+                                        
+                                        <?php echo e($city->description ?? 'Informasi detail tentang kota ini belum tersedia.'); ?>
+
                                     <div class="city-meta-item">
                                         <i class="bi bi-geo-alt"></i>
-                                        <span><strong>Province :</strong> {{ $city->province }}</span>
+                                        <span><strong>Province :</strong> <?php echo e($city->province); ?></span>
                                     </div>
                                     </p>
                                 </div>
@@ -282,52 +283,52 @@
                     </div>
                 </div>
             </div>
-            {{-- Tampilkan List E-books Terkait --}}
+            
             <section class="ebooks-section mt-5">
                 <div class="container">
                     <!-- <hr class="my-5"> -->
-                    <h4 class="my-5">Discover Your Journey to {{ $city->name }}</h4>
+                    <h4 class="my-5">Discover Your Journey to <?php echo e($city->name); ?></h4>
 
                     <div class="row product-grid-4">
-                        @if($ebooks->isNotEmpty())
-                        @foreach($ebooks as $index => $ebook)
+                        <?php if($ebooks->isNotEmpty()): ?>
+                        <?php $__currentLoopData = $ebooks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $ebook): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="col-lg-1-5 col-md-4 col-12 col-sm-6">
-                            {{-- Kartu E-book --}}
+                            
                             <div class="product-cart-wrap mb-30">
                                 <div class="product-img-action-wrap">
                                     <div class="product-img product-img-zoom">
-                                        <a href="/ebooks/{{ $ebook->slug }}">
-                                            <img class="default-img" src="{{ $ebook->cover_image ?: 'https://via.placeholder.com/300x400.png?text=No+Cover' }}" alt="{{ $ebook->title }}" />
+                                        <a href="/ebooks/<?php echo e($ebook->slug); ?>">
+                                            <img class="default-img" src="<?php echo e($ebook->cover_image ?: 'https://via.placeholder.com/300x400.png?text=No+Cover'); ?>" alt="<?php echo e($ebook->title); ?>" />
                                         </a>
                                     </div>
                                     <div class="product-badges product-badges-position product-badges-mrg">
-                                        <span class="badge-language hot">{{ strtoupper($ebook->language) }}</span>
+                                        <span class="badge-language hot"><?php echo e(strtoupper($ebook->language)); ?></span>
                                     </div>
                                 </div>
                                 <div class="product-content-wrap">
-                                    <h2><a href="/ebooks/{{ $ebook->slug }}">{{ Str::limit($ebook->title, 40) }}</a></h2>
+                                    <h2><a href="/ebooks/<?php echo e($ebook->slug); ?>"><?php echo e(Str::limit($ebook->title, 40)); ?></a></h2>
                                     <div class="product-author">
-                                        @if($ebook->creator)
-                                        <span>by {{ $ebook->creator->pen_name ?? $ebook->creator->name }}</span>
-                                        @else
+                                        <?php if($ebook->creator): ?>
+                                        <span>by <?php echo e($ebook->creator->pen_name ?? $ebook->creator->name); ?></span>
+                                        <?php else: ?>
                                         <span>by Unknown Author</span>
-                                        @endif
+                                        <?php endif; ?>
                                     </div>
                                     <div class="product-meta">
                                         <div class="product-detail-rating">
                                             <div class="product-rate-cover text-end">
                                                 <div class="product-rate-cover">
                                                     <div class="product-rate d-inline-block">
-                                                        <div class="product-rating" style="width: {{ ($ebook->ratings->avg('rating') / 5) * 100 }}%"></div>
+                                                        <div class="product-rating" style="width: <?php echo e(($ebook->ratings->avg('rating') / 5) * 100); ?>%"></div>
                                                     </div>
-                                                    <span class="font-small ml-5 text-muted">({{ round($ebook->ratings->avg('rating'), 2) }})</span>
+                                                    <span class="font-small ml-5 text-muted">(<?php echo e(round($ebook->ratings->avg('rating'), 2)); ?>)</span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="read-count">
                                             <i class="fi-rs-eye align-middle"></i>
                                             <span class="post-on">
-                                                @php
+                                                <?php
                                                 $views = $ebook->view_count;
                                                 if ($views >= 1000000) {
                                                 $formattedViews = number_format($views / 1000000, 1) . 'M';
@@ -336,47 +337,50 @@
                                                 } else {
                                                 $formattedViews = $views;
                                                 }
-                                                @endphp
-                                                {{ $formattedViews }}
+                                                ?>
+                                                <?php echo e($formattedViews); ?>
+
                                             </span>
                                         </div>
                                     </div>
-                                    @php
+                                    <?php
                                     // Ambil teks deskripsi
                                     $descriptionText = $ebook->short_description ?? $ebook->description;
 
                                     // Cek apakah teks pendek (kira-kira 1 baris). Sesuaikan angka 40 jika perlu.
                                     $isSingleLine = strlen($descriptionText) <= 35;
-                                        @endphp
+                                        ?>
 
-                                        <p class="product-description {{ $isSingleLine ? 'single-line' : '' }}">
-                                        {{ Str::limit($descriptionText, 75) }}
+                                        <p class="product-description <?php echo e($isSingleLine ? 'single-line' : ''); ?>">
+                                        <?php echo e(Str::limit($descriptionText, 75)); ?>
+
                                         </p>
-                                        {{-- Logika Tombol Aksi --}}
-                                        @if(auth()->check() && auth()->user()->hasActiveSubscription())
-                                        <a href="/reader/{{ $ebook->slug }}" class="action-btn btn-read-now">
+                                        
+                                        <?php if(auth()->check() && auth()->user()->hasActiveSubscription()): ?>
+                                        <a href="/reader/<?php echo e($ebook->slug); ?>" class="action-btn btn-read-now">
                                             <i class="fi-rs-book-open"></i>
                                             <span>Read Now</span>
                                         </a>
-                                        @else
+                                        <?php else: ?>
                                         <a href="/pricing" class="action-btn btn-subscribe-now">
                                             <i class="fi-rs-lock"></i>
                                             <span>Subscribe to Read</span>
                                         </a>
-                                        @endif
+                                        <?php endif; ?>
                                 </div>
                             </div>
                         </div>
-                        @endforeach
-                        @else
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        <?php else: ?>
                         <div class="col-12 text-center py-5">
                             <p class="text-muted">Belum ada e-book untuk destinasi ini.</p>
                         </div>
-                        @endif
+                        <?php endif; ?>
                     </div>
                 </div>
             </section>
         </div>
     </section>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts_lp.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\PROJEK PROJEK\Ebook-Traveling\resources\views/components/destinations/show.blade.php ENDPATH**/ ?>

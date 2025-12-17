@@ -207,43 +207,40 @@
         </div>
     </div>
     <div class="row d-flex justify-content-center">
-        @php
-        // Data dummy untuk 6 kartu
-        $promos = [
-        ['title' => 'Flash Sale Mendadak Kaya', 'date' => '15 Oktober - 31 Desember 2025', 'img' => '/images/banner-promo-1.webp'],
-        ['title' => 'Diskon Kilat Daging Segar', 'date' => '1 November - 30 November 2025', 'img' => '/images/banner-promo-2.webp'],
-        ['title' => 'Promo Akhir Tahun Steak Premium', 'date' => '10 Desember - 31 Desember 2025', 'img' => '/images/banner-promo-3.webp'],
-        ['title' => 'Beli 2 Gratis 1 Ayam Fillet', 'date' => 'Setiap Hari Jumat', 'img' => '/images/banner-promo-4.webp'],
-        ['title' => 'Gratis Ongkir Seluruh Kota', 'date' => 'Berlaku Hingga Akhir Bulan', 'img' => '/images/banner-promo-2.webp'],
-        ['title' => 'Mystery Box Daging Eksklusif', 'date' => 'Periode Terbatas', 'img' => '/images/banner-promo-3.webp'],
-        ];
-        @endphp
-
-        @foreach ($promos as $promo)
+        @if($promos && $promos->isNotEmpty())
+        @foreach($promos as $promo)
         <div class="col-12 col-sm-6 col-md-6 d-flex justify-content-center">
             <figure class="card card-product-grid card-lg">
                 <a href="#" class="img-wrap" data-abc="true">
-                    <img src="{{ $promo['img'] }}">
+                    {{-- Gunakan aksesor $promo->banner_image --}}
+                    <img src="{{ asset($promo->banner_image) }}" alt="{{ $promo->name }}">
                 </a>
                 <figcaption class="info-wrap">
                     <div class="row">
                         <div class="col-md-12">
-                            <a href="#" class="title promo-title" data-abc="true">{{ $promo['title'] }}</a>
+                            {{-- Gunakan aksesor $promo->name --}}
+                            <a href="#" class="title promo-title" data-abc="true">{{ $promo->name }}</a>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
                             <span class="promo-period">Periode Promo</span>
-                            <span class="promo-date">{{ $promo['date'] }}</span>
+                            {{-- Gunakan aksesor $promo->formatted_period --}}
+                            <span class="promo-date">{{ $promo->formatted_period }}</span>
                         </div>
                     </div>
                 </figcaption>
                 <div class="bottom-wrap">
-                    <a href="#" class="btn btn-primary btn-full-width" data-abc="true"> View Details </a>
+                    <a href="{{ route('promo.detail.show', $promo->slug) }}" class="btn btn-primary btn-full-width">
+                        Detail View
+                    </a>
                 </div>
             </figure>
         </div>
         @endforeach
+        @else
+        <p class="text-center">No active promotions available at this time.</p>
+        @endif
     </div>
 </div>
 @endsection

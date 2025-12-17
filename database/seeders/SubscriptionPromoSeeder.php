@@ -2,8 +2,12 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+// use Illuminate\Support\Facades\DB;
+// use App\Models\Promo;
+// use App\Models\PromoCondition;
+use Illuminate\Support\Str;
 
 class SubscriptionPromoSeeder extends Seeder
 {
@@ -12,6 +16,14 @@ class SubscriptionPromoSeeder extends Seeder
      */
     public function run(): void
     {
+        // Daftar gambar banner yang akan diputar secara berulang
+        $bannerImages = [
+            '/images/banner-promo-1.webp',
+            '/images/banner-promo-2.webp',
+            '/images/banner-promo-3.webp',
+            '/images/banner-promo-4.webp',
+        ];
+
         $promos = [
             // 1. Welcome promo for new users - 50% off
             [
@@ -26,6 +38,14 @@ class SubscriptionPromoSeeder extends Seeder
                     'max_usage' => null, // unlimited
                     'max_usage_per_user' => 1,
                     'is_active' => true,
+                    'terms_conditions' => '
+<ol>
+<li>1. Hanya berlaku untuk <strong>pengguna baru</strong> yang mendaftar.</li>
+<li>2. Diskon hanya berlaku untuk langganan pertama.</li>
+<li>3. Tidak dapat digabungkan dengan promo lain yang sedang berjalan.</li>
+<li>4. Berlaku untuk semua paket langganan (Basic, Premium, Pro).</li>
+</ol>
+<p><em>Catatan: Promo ini tidak berlaku untuk pembelian di luar aplikasi resmi. Untuk informasi lebih lanjut, kunjungi <a href="/help">halaman bantuan kami</a>.</em></p>',
                 ],
                 'conditions' => [
                     ['condition_type' => 'new_user', 'condition_value' => null],
@@ -47,6 +67,14 @@ class SubscriptionPromoSeeder extends Seeder
                     'max_usage' => 1000,
                     'max_usage_per_user' => 1,
                     'is_active' => true,
+                    'terms_conditions' => '
+<ol>
+<li>1. Hanya berlaku untuk <strong>pengguna baru</strong> yang mendaftar.</li>
+<li>2. Diskon hanya berlaku untuk langganan pertama.</li>
+<li>3. Tidak dapat digabungkan dengan promo lain yang sedang berjalan.</li>
+<li>4. Berlaku untuk semua paket langganan (Basic, Premium, Pro).</li>
+</ol>
+<p><em>Catatan: Promo ini tidak berlaku untuk pembelian di luar aplikasi resmi. Untuk informasi lebih lanjut, kunjungi <a href="/help">halaman bantuan kami</a>.</em></p>',
                 ],
                 'conditions' => [
                     ['condition_type' => 'first_subscription', 'condition_value' => null],
@@ -67,6 +95,14 @@ class SubscriptionPromoSeeder extends Seeder
                     'max_usage' => 500,
                     'max_usage_per_user' => 1,
                     'is_active' => true,
+                    'terms_conditions' => '
+<ol>
+<li>1. Hanya berlaku untuk <strong>pengguna baru</strong> yang mendaftar.</li>
+<li>2. Diskon hanya berlaku untuk langganan pertama.</li>
+<li>3. Tidak dapat digabungkan dengan promo lain yang sedang berjalan.</li>
+<li>4. Berlaku untuk semua paket langganan (Basic, Premium, Pro).</li>
+</ol>
+<p><em>Catatan: Promo ini tidak berlaku untuk pembelian di luar aplikasi resmi. Untuk informasi lebih lanjut, kunjungi <a href="/help">halaman bantuan kami</a>.</em></p>',
                 ],
                 'conditions' => [
                     ['condition_type' => 'subscription_type', 'condition_value' => 'Premium'],
@@ -87,6 +123,14 @@ class SubscriptionPromoSeeder extends Seeder
                     'max_usage' => 100,
                     'max_usage_per_user' => 1,
                     'is_active' => true,
+                    'terms_conditions' => '
+<ol>
+<li>1. Hanya berlaku untuk <strong>pengguna baru</strong> yang mendaftar.</li>
+<li>2. Diskon hanya berlaku untuk langganan pertama.</li>
+<li>3. Tidak dapat digabungkan dengan promo lain yang sedang berjalan.</li>
+<li>4. Berlaku untuk semua paket langganan (Basic, Premium, Pro).</li>
+</ol>
+<p><em>Catatan: Promo ini tidak berlaku untuk pembelian di luar aplikasi resmi. Untuk informasi lebih lanjut, kunjungi <a href="/help">halaman bantuan kami</a>.</em></p>',
                 ],
                 'conditions' => [
                     ['condition_type' => 'min_price', 'condition_value' => '9.99'],
@@ -106,6 +150,14 @@ class SubscriptionPromoSeeder extends Seeder
                     'max_usage' => null,
                     'max_usage_per_user' => 1,
                     'is_active' => true,
+                    'terms_conditions' => '
+<ol>
+<li>1. Hanya berlaku untuk <strong>pengguna baru</strong> yang mendaftar.</li>
+<li>2. Diskon hanya berlaku untuk langganan pertama.</li>
+<li>3. Tidak dapat digabungkan dengan promo lain yang sedang berjalan.</li>
+<li>4. Berlaku untuk semua paket langganan (Basic, Premium, Pro).</li>
+</ol>
+<p><em><strong>Catatan: Promo ini tidak berlaku untuk pembelian di luar aplikasi resmi. Untuk informasi lebih lanjut, kunjungi <a href="/help">halaman bantuan kami</a>.</strong></em></p>',
                 ],
                 'conditions' => [
                     ['condition_type' => 'subscription_type', 'condition_value' => 'Pro'],
@@ -125,6 +177,14 @@ class SubscriptionPromoSeeder extends Seeder
                     'max_usage' => null,
                     'max_usage_per_user' => 1,
                     'is_active' => false, // start inactive for manual activation
+                    'terms_conditions' => '
+<ol>
+<li>1. Hanya berlaku untuk <strong>pengguna baru</strong> yang mendaftar.</li>
+<li>2. Diskon hanya berlaku untuk langganan pertama.</li>
+<li>3. Tidak dapat digabungkan dengan promo lain yang sedang berjalan.</li>
+<li>4. Berlaku untuk semua paket langganan (Basic, Premium, Pro).</li>
+</ol>
+<p><em><strong>Catatan: Promo ini tidak berlaku untuk pembelian di luar aplikasi resmi. Untuk informasi lebih lanjut, kunjungi <a href="/help">halaman bantuan kami</a>.</strong></em></p>',
                 ],
                 'conditions' => [
                     ['condition_type' => 'new_user', 'condition_value' => null],
@@ -132,24 +192,38 @@ class SubscriptionPromoSeeder extends Seeder
             ],
         ];
 
+        // Inisialisasi index untuk gambar
+        $imageIndex = 0;
+
         foreach ($promos as $data) {
             // Map new type/value to old discount_type/discount_value for backward compatibility
             $discountType = $data['promo']['type'] === 'fixed_amount' ? 'fixed' : 'percentage';
             $discountValue = $data['promo']['type'] === 'free_trial' ? 0 : $data['promo']['value'];
 
+            // Tentukan gambar banner dengan modulo (sisa bagi)
+            $selectedBannerImage = $bannerImages[$imageIndex % count($bannerImages)];
+
+            // Generate slug dari nama promo
+            $slug = Str::slug($data['promo']['name']);
+
             $promo = \App\Models\Promo::create(array_merge($data['promo'], [
                 'discount_type' => $discountType,
                 'discount_value' => $discountValue,
                 'min_purchase_amount' => 0,
+                'banner_image' => $selectedBannerImage,
+                'slug' => $slug, // Tambahkan slug
             ]));
 
             foreach ($data['conditions'] as $condition) {
                 \App\Models\PromoCondition::create([
                     'promo_id' => $promo->id,
                     'condition_type' => $condition['condition_type'],
-                    'condition_value' => $condition['condition_value'],
+                    'condition_value' => $condition['condition_value'] ?? null,
                 ]);
             }
+
+            // Increment index untuk promo berikutnya
+            $imageIndex++;
         }
 
         $this->command->info('✅ ' . count($promos) . ' subscription promos created successfully!');
