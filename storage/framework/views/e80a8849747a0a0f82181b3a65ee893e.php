@@ -215,12 +215,26 @@
 
         <!-- Website Management -->
         <li
-            class="menu-item <?php echo e(Request::is('admin/collection-order*') || Request::is('admin/banners*') || Request::is('admin/collections*') ? 'active open' : ''); ?>">
+            class="menu-item <?php echo e(Request::is('admin/collection-order*') || Request::is('admin/banners*') || Request::is('admin/collections*') || Request::is('admin/landing-page-content*') || Request::is('admin/pricing-benefits*') ? 'active open' : ''); ?>">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-world"></i>
                 <div data-i18n="Website Management">Website Setting</div>
             </a>
             <ul class="menu-sub">
+                <!-- Landing Page Content -->
+                <li class="menu-item <?php echo e(Request::is('admin/landing-page-content*') ? 'active' : ''); ?>">
+                    <a href="<?php echo e(route('admin.landing-page-content.index')); ?>" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-layout-dashboard"></i>
+                        <div data-i18n="Landing Page Content">Landing Page Content</div>
+                    </a>
+                </li>
+                <!-- Pricing Benefits -->
+                <li class="menu-item <?php echo e(Request::is('admin/pricing-benefits*') ? 'active' : ''); ?>">
+                    <a href="<?php echo e(route('admin.pricing-benefits.index')); ?>" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-star"></i>
+                        <div data-i18n="Pricing Benefits">Pricing Benefits</div>
+                    </a>
+                </li>
                 <!-- Hero Banners -->
                 <li class="menu-item <?php echo e(Request::is('admin/banners*') ? 'active' : ''); ?>">
                     <a href="<?php echo e(route('admin.banners.index')); ?>" class="menu-link">

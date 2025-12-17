@@ -14,6 +14,7 @@ use App\Repositories\Interfaces\SubscriberRepositoryInterface;
 use App\Repositories\Interfaces\RoleRepositoryInterface;
 use App\Repositories\Interfaces\PermissionRepositoryInterface;
 use App\Repositories\Interfaces\PromoRepositoryInterface;
+use App\Repositories\Interfaces\CollectionRepositoryInterface;
 use App\Repositories\UserRepository;
 use App\Repositories\EbookRepository;
 use App\Repositories\CategoryRepository;
@@ -25,6 +26,7 @@ use App\Repositories\SubscriberRepository;
 use App\Repositories\RoleRepository;
 use App\Repositories\PermissionRepository;
 use App\Repositories\PromoRepository;
+use App\Repositories\CollectionRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -44,6 +46,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
         $this->app->bind(PermissionRepositoryInterface::class, PermissionRepository::class);
         $this->app->bind(PromoRepositoryInterface::class, PromoRepository::class);
+        $this->app->bind(CollectionRepositoryInterface::class, CollectionRepository::class);
     }
 
     /**

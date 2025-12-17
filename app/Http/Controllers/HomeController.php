@@ -24,10 +24,36 @@ class HomeController extends Controller
     public function index()
     {
         $homeSliders = $this->bannerService->getActiveHomeSliders();
-        $topCities = $this->cityService->getHomepageCities(10);
+        
+        // Check if curated content exists for Top Cities
+        $topCitiesSection = \App\Models\LandingPageSection::where('section_type', 'top_cities')
+            ->where('is_visible', true)
+            ->first();
+        
+        if ($topCitiesSection && isset($topCitiesSection->config['selected_cities']) && !empty($topCitiesSection->config['selected_cities'])) {
+            // Use curated cities
+            $topCities = $this->cityService->getCuratedCities($topCitiesSection->config['selected_cities']);
+        } else {
+            // Fallback to popular cities
+            $topCities = $this->cityService->getHomepageCities(10);
+        }
+        
+        // Check if curated content exists for Latest Blogs
+        $latestBlogsSection = \App\Models\LandingPageSection::where('section_type', 'latest_blogs')
+            ->where('is_visible', true)
+            ->first();
+        
+        if ($latestBlogsSection && isset($latestBlogsSection->config['selected_blogs']) && !empty($latestBlogsSection->config['selected_blogs'])) {
+            // Use curated blogs
+            $displayCount = $latestBlogsSection->config['display_count'] ?? 4;
+            $latestBlogs = $this->blogService->getCuratedBlogs($latestBlogsSection->config['selected_blogs'], $displayCount);
+        } else {
+            // Fallback to latest blogs
+            $latestBlogs = $this->blogService->getLatestForHomepage(4);
+        }
+        
         // $subscriptionPlans = $this->subscriptionPlanService->getHomepagePlans(5);
         $subscriptionPlans = $this->subscriptionPlanService->getActivePlans()->take(3);
-        $latestBlogs = $this->blogService->getLatestForHomepage(4);
 
         // Tambahkan image property jika belum ada
         $subscriptionPlans = $subscriptionPlans->map(function ($plan, $index) {

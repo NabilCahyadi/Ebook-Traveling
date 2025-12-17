@@ -65,21 +65,5 @@ class WebsiteManagementController extends Controller
             'success' => true,
             'message' => 'Feature no longer available'
         ]);
-        
-        /*
-        try {
-            $collection = Collection::findOrFail($id);
-            // is_visible_on_landing field removed
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Collection visibility updated successfully'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to update collection visibility: ' . $e->getMessage()
-            ], 500);
-        }
     }
 }
