@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class EbookController extends Controller
 {
@@ -165,7 +167,8 @@ class EbookController extends Controller
             }
 
             // Load image dengan Intervention Image untuk compression
-            $image = \Intervention\Image\Laravel\Facades\Image::read($imageData);
+            $manager = new ImageManager(new Driver());
+            $image = $manager->read($imageData);
             
             // Get original dimensions & calculate size
             $originalWidth = $image->width();
