@@ -93,33 +93,13 @@
                             <div class="mb-3">
                                 <label class="form-label d-block">Visibility Settings</label>
                                 
-                                <div class="form-check form-switch mb-2">
+                                <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" id="is_active" 
                                            name="is_active" value="1" 
                                            {{ old('is_active', $collection->is_active) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="is_active">
                                         Active
                                         <small class="text-muted d-block">Collection is active and visible</small>
-                                    </label>
-                                </div>
-
-                                <div class="form-check form-switch mb-2">
-                                    <input class="form-check-input" type="checkbox" id="show_in_homepage" 
-                                           name="show_in_homepage" value="1" 
-                                           {{ old('show_in_homepage', $collection->show_in_homepage) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="show_in_homepage">
-                                        Show in Homepage
-                                        <small class="text-muted d-block">Display this collection on the homepage</small>
-                                    </label>
-                                </div>
-
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="is_visible_on_landing" 
-                                           name="is_visible_on_landing" value="1" 
-                                           {{ old('is_visible_on_landing', $collection->is_visible_on_landing) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="is_visible_on_landing">
-                                        Visible on Landing Page
-                                        <small class="text-muted d-block">Show this collection on the landing page</small>
                                     </label>
                                 </div>
                             </div>
@@ -149,28 +129,12 @@
                             <span>Total Ebooks:</span>
                             <strong>{{ $collection->ebooks->count() }}</strong>
                         </div>
-                        <div class="d-flex justify-content-between mb-2">
+                        <div class="d-flex justify-content-between">
                             <span>Status:</span>
                             @if($collection->is_active)
                                 <span class="badge bg-success">Active</span>
                             @else
                                 <span class="badge bg-secondary">Inactive</span>
-                            @endif
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Homepage:</span>
-                            @if($collection->show_in_homepage)
-                                <span class="badge bg-success">Visible</span>
-                            @else
-                                <span class="badge bg-secondary">Hidden</span>
-                            @endif
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span>Landing Page:</span>
-                            @if($collection->is_visible_on_landing)
-                                <span class="badge bg-success">Visible</span>
-                            @else
-                                <span class="badge bg-secondary">Hidden</span>
                             @endif
                         </div>
                     </div>

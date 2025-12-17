@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title', 'Collections Management'); ?>
 
 <?php $__env->startSection('content'); ?>
@@ -60,8 +58,6 @@
                                 <th>Slug</th>
                                 <th>Ebooks Count</th>
                                 <th>Status</th>
-                                <th>Homepage</th>
-                                <th>Landing Page</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -94,20 +90,6 @@
                                             <span class="badge bg-success">Active</span>
                                         <?php else: ?>
                                             <span class="badge bg-secondary">Inactive</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td>
-                                        <?php if($collection->show_in_homepage): ?>
-                                            <i class="ti ti-check text-success"></i>
-                                        <?php else: ?>
-                                            <i class="ti ti-x text-muted"></i>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td>
-                                        <?php if($collection->is_visible_on_landing): ?>
-                                            <i class="ti ti-check text-success"></i>
-                                        <?php else: ?>
-                                            <i class="ti ti-x text-muted"></i>
                                         <?php endif; ?>
                                     </td>
                                     <td>

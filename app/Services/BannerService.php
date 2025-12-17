@@ -29,7 +29,9 @@ class BannerService
     public function getAvailableBannerTypes(): array
     {
         return [
-            'home_slider' => 'Homepage Slider',
+            'hero' => 'Hero Banner',
+            'home-slider' => 'Home Slider',
+            'banner-pricing' => 'Banner Pricing',
             'promo' => 'Promo Banner',
             'announcement' => 'Announcement',
             'sidebar' => 'Sidebar Banner'

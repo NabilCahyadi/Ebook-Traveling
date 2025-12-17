@@ -19,9 +19,14 @@ class EbookService
     /**
      * Get all ebooks with pagination.
      */
-    public function getAllEbooks(int $perPage = 15, string $sortBy = 'created_at', string $sortOrder = 'desc')
-    {
-        return $this->ebookRepository->getAllPaginated($perPage, $sortBy, $sortOrder);
+    public function getAllEbooks(
+        int $perPage = 15,
+        string $sortBy = 'created_at',
+        string $sortOrder = 'desc',
+        ?string $search = null,
+        ?string $status = null
+    ) {
+        return $this->ebookRepository->getAllPaginated($perPage, $sortBy, $sortOrder, $search, $status);
     }
 
     /**

@@ -513,7 +513,7 @@ $collections = collect();
                     @endphp
 
                     @foreach($homeSliders as $slider)
-                    <div class="single-hero-slider single-animation-wrap" style="background-image: url({{ asset($slider->image) }})">
+                    <div class="single-hero-slider single-animation-wrap" style="background-image: url({{ asset('storage/' . $slider->image) }})">
                         <a href="{{ $slider->target_url }}" style="display: block; height: 100%; text-decoration: none;">
                             <div class="slider-content">
                                 <h1 class="slider-title mb-40">

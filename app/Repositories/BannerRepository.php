@@ -9,10 +9,16 @@ class BannerRepository
 {
     public function getActiveHomeSliders(): Collection
     {
-        return Banner::where('type', 'home_slider')
+        return Banner::where('type', 'home-slider')
             ->where('is_active', true)
-            ->where('start_date', '<=', now())
-            ->where('end_date', '>=', now())
+            ->where(function ($query) {
+                $query->whereNull('start_date')
+                    ->orWhere('start_date', '<=', now());
+            })
+            ->where(function ($query) {
+                $query->whereNull('end_date')
+                    ->orWhere('end_date', '>=', now());
+            })
             ->orderBy('order_index', 'asc')
             ->get();
     }

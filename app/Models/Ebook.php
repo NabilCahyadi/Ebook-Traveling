@@ -23,6 +23,7 @@ class Ebook extends Model
     protected $fillable = [
         'category_id',
         'city_id',
+        'creator_id',
         'title',
         'slug',
         'description',
@@ -47,6 +48,13 @@ class Ebook extends Model
         'is_active' => 'boolean',
         'id' => 'string',
         'published_at' => 'datetime',
+    ];
+
+    /**
+     * Append accessors to JSON
+     */
+    protected $appends = [
+        'cover_image_url',
     ];
 
     /**
@@ -155,7 +163,7 @@ class Ebook extends Model
      */
     public function creator(): BelongsTo
     {
-        return $this->belongsTo(Creator::class);
+        return $this->belongsTo(User::class, 'creator_id');
     }
 
     /**

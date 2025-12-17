@@ -40,6 +40,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('permissions', \App\Http\Controllers\Admin\PermissionController::class);
 
     // Ebook Management (All ebooks in system)
+    Route::get('ebooks/search-creators', [\App\Http\Controllers\Admin\EbookController::class, 'searchCreators'])->name('ebooks.search-creators');
     Route::get('ebooks/pending-approval', [\App\Http\Controllers\Admin\EbookController::class, 'pendingApproval'])->name('ebooks.pending-approval');
     Route::get('ebooks/trashed', [\App\Http\Controllers\Admin\EbookController::class, 'trashed'])->name('ebooks.trashed');
     Route::patch('ebooks/{ebook}/restore', [\App\Http\Controllers\Admin\EbookController::class, 'restore'])->name('ebooks.restore');
@@ -110,7 +111,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     // Route::get('/reports/users', [\App\Http\Controllers\Admin\ReportController::class, 'users'])->name('reports.users');
 
     // Banner Management
-    // Route::resource('banners', \App\Http\Controllers\Admin\BannerController::class);
+    Route::post('banners/check-order', [\App\Http\Controllers\Admin\BannerController::class, 'checkOrder'])->name('banners.check-order');
+    Route::post('banners/{id}/toggle-active', [\App\Http\Controllers\Admin\BannerController::class, 'toggleActive'])->name('banners.toggle-active');
+    Route::post('banners/update-order', [\App\Http\Controllers\Admin\BannerController::class, 'updateOrder'])->name('banners.update-order');
+    Route::resource('banners', \App\Http\Controllers\Admin\BannerController::class);
 
     // Promo Management (Subscription Promos)
     Route::resource('promos', \App\Http\Controllers\Admin\PromoController::class);
@@ -131,11 +135,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('collection-order', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'collectionOrder'])->name('collection-order');
     Route::post('collection-order/update', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'updateCollectionOrder'])->name('collection-order.update');
     Route::post('collection/{id}/toggle-visibility', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'toggleCollectionVisibility'])->name('collection.toggle-visibility');
-
-    // Website Management - Landing Page Sections
-    Route::get('landing-sections', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'landingSections'])->name('landing-sections');
-    Route::post('landing-sections/update', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'updateLandingSections'])->name('landing-sections.update');
-    Route::post('landing-section/{id}/toggle-visibility', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'toggleSectionVisibility'])->name('landing-section.toggle-visibility');
 
     // FAQ Management
     // Route::resource('faqs', \App\Http\Controllers\Admin\FaqController::class);

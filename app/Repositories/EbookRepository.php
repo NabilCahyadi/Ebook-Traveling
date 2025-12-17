@@ -12,11 +12,29 @@ class EbookRepository implements EbookRepositoryInterface
     /**
      * Get all ebooks with pagination.
      */
-    public function getAllPaginated(int $perPage = 15, string $sortBy = 'created_at', string $sortOrder = 'desc'): mixed
-    {
-        return Ebook::with(['category', 'city'])
-            ->orderBy($sortBy, $sortOrder)
-            ->paginate($perPage);
+    public function getAllPaginated(
+        int $perPage = 15,
+        string $sortBy = 'created_at',
+        string $sortOrder = 'desc',
+        ?string $search = null,
+        ?string $status = null
+    ): mixed {
+        $query = Ebook::with(['category', 'city']);
+
+        // Apply search filter
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'LIKE', "%{$search}%")
+                    ->orWhere('description', 'LIKE', "%{$search}%");
+            });
+        }
+
+        // Apply status filter
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        return $query->orderBy($sortBy, $sortOrder)->paginate($perPage);
     }
 
     /**
@@ -35,7 +53,7 @@ class EbookRepository implements EbookRepositoryInterface
      */
     public function findById(string $id): ?Ebook
     {
-        return Ebook::with(['category', 'city'])->find($id);
+        return Ebook::with(['category', 'city', 'creator'])->find($id);
     }
 
     /**

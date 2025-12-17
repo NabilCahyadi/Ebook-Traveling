@@ -14,21 +14,21 @@ class Banner extends Model
     protected $fillable = [
         'title',
         'description',
-        'image_url',
-        'link_url',
-        'link_text',
-        'position',
-        'sort_order',
+        'image',
+        'type',
+        'target_url',
+        'is_active',
         'start_date',
         'end_date',
-        'is_active',
+        'order_index',
     ];
 
     protected $casts = [
-        'sort_order' => 'integer',
+        'order_index' => 'integer',
         'start_date' => 'datetime',
         'end_date' => 'datetime',
         'is_active' => 'boolean',
+        'id' => 'string',
     ];
 
     /**
@@ -43,5 +43,24 @@ class Banner extends Model
             ->where(function ($q) {
                 $q->whereNull('end_date')->orWhere('end_date', '>=', now());
             });
+    }
+
+    /**
+     * Scope a query to order by index.
+     */
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('order_index', 'asc');
+    }
+
+    /**
+     * Get image URL with fallback
+     */
+    public function getImageUrlAttribute()
+    {
+        if ($this->image) {
+            return asset('storage/' . $this->image);
+        }
+        return asset('images/bg-default.webp');
     }
 }

@@ -27,8 +27,10 @@ class EbookController extends Controller
         $perPage = $request->get('per_page', 8);
         $sortBy = $request->get('sort_by', 'created_at');
         $sortOrder = $request->get('sort_order', 'desc');
+        $search = $request->get('search');
+        $status = $request->get('status');
 
-        $ebooks = $this->ebookService->getAllEbooks($perPage, $sortBy, $sortOrder);
+        $ebooks = $this->ebookService->getAllEbooks($perPage, $sortBy, $sortOrder, $search, $status);
         return view('admin.ebooks.index', compact('ebooks'));
     }
 
@@ -52,13 +54,29 @@ class EbookController extends Controller
             $validated = $request->validate([
                 'category_ids' => 'required|array|min:1',
                 'category_ids.*' => 'exists:categories,id',
-                'city_id' => 'required|exists:cities,id',
+                'city_id' => 'nullable|exists:cities,id',
                 'creator_id' => 'required|exists:users,id',
                 'title' => 'required|string|max:255',
                 'description' => 'required|string',
                 'cover_image_cropped' => 'nullable|string', // base64 dari auto crop
                 'pdf_file' => 'nullable|file|mimes:pdf|max:10240',
                 'status' => 'required|in:draft,published,unpublished,archived',
+            ], [
+                'category_ids.required' => 'Kategori ebook wajib dipilih minimal 1.',
+                'category_ids.array' => 'Format kategori tidak valid.',
+                'category_ids.min' => 'Pilih minimal 1 kategori untuk ebook.',
+                'category_ids.*.exists' => 'Kategori yang dipilih tidak valid.',
+                'city_id.exists' => 'Kota/destinasi yang dipilih tidak valid.',
+                'creator_id.required' => 'Pembuat ebook wajib dipilih.',
+                'creator_id.exists' => 'Pembuat ebook tidak ditemukan.',
+                'title.required' => 'Judul ebook wajib diisi.',
+                'title.max' => 'Judul ebook maksimal 255 karakter.',
+                'description.required' => 'Deskripsi ebook wajib diisi.',
+                'pdf_file.file' => 'File PDF tidak valid.',
+                'pdf_file.mimes' => 'File harus berformat PDF.',
+                'pdf_file.max' => 'Ukuran file PDF maksimal 10MB.',
+                'status.required' => 'Status publikasi wajib dipilih.',
+                'status.in' => 'Status publikasi tidak valid.',
             ]);
 
             // Check if user is admin
@@ -70,8 +88,14 @@ class EbookController extends Controller
                 $validated['status'] = 'waiting_approval';
             }
 
-            // Set creator_id
-            $validated['creator_id'] = $user->id;
+            // Set creator_id - if not admin, use logged in user, otherwise use selected creator
+            if (!$isAdmin) {
+                $validated['creator_id'] = $user->id;
+            }
+            // If admin and no creator selected, default to logged in user
+            if (!isset($validated['creator_id']) || empty($validated['creator_id'])) {
+                $validated['creator_id'] = $user->id;
+            }
 
             // Extract category_ids for pivot table attachment
             $categoryIds = $validated['category_ids'];
@@ -124,7 +148,7 @@ class EbookController extends Controller
     }
 
     /**
-     * Save base64 image to storage
+     * Save base64 image to storage with auto-compression
      */
     private function saveBase64Image($base64String)
     {
@@ -140,12 +164,61 @@ class EbookController extends Controller
                 throw new \Exception('Base64 decode failed');
             }
 
-            // Generate unique filename
-            $filename = 'ebook_cover_' . time() . '_' . uniqid() . '.' . $type;
+            // Load image dengan Intervention Image untuk compression
+            $image = \Intervention\Image\Laravel\Facades\Image::read($imageData);
+            
+            // Get original dimensions & calculate size
+            $originalWidth = $image->width();
+            $originalHeight = $image->height();
+            
+            // Estimate size from base64 length (rough estimation)
+            $estimatedSize = strlen($imageData);
+            
+            // Determine if we need to resize for large images
+            $targetWidth = $originalWidth;
+            if ($estimatedSize > 2 * 1024 * 1024) { // > 2MB
+                // Resize to max width 1200px for better performance
+                if ($originalWidth > 1200) {
+                    $targetWidth = 1200;
+                    $targetHeight = (int) ($originalHeight * ($targetWidth / $originalWidth));
+                    $image->scale(width: $targetWidth, height: $targetHeight);
+                }
+            }
+            
+            // Determine quality based on estimated size
+            $quality = 85; // Default high quality
+            
+            if ($estimatedSize > 5 * 1024 * 1024) {
+                // > 5MB: aggressive compression
+                $quality = 65;
+            } elseif ($estimatedSize > 3 * 1024 * 1024) {
+                // 3-5MB: medium compression
+                $quality = 75;
+            } elseif ($estimatedSize > 2 * 1024 * 1024) {
+                // 2-3MB: light compression
+                $quality = 80;
+            }
+
+            // Generate unique filename (force WebP for best compression)
+            $filename = 'ebook_cover_' . time() . '_' . uniqid() . '.webp';
             $path = 'ebook_covers/' . $filename;
 
+            // Encode to WebP with quality setting
+            $encodedImage = (string) $image->encode(
+                new \Intervention\Image\Encoders\WebpEncoder(quality: $quality)
+            );
+
             // Save to storage
-            Storage::disk('public')->put($path, $imageData);
+            Storage::disk('public')->put($path, $encodedImage);
+            
+            // Log compression result
+            $finalSize = Storage::disk('public')->size($path);
+            Log::info('Cover compressed', [
+                'original_size' => round($estimatedSize / 1024 / 1024, 2) . 'MB',
+                'final_size' => round($finalSize / 1024 / 1024, 2) . 'MB',
+                'quality' => $quality,
+                'dimensions' => $image->width() . 'x' . $image->height(),
+            ]);
 
             return $path;
         }
@@ -189,6 +262,22 @@ class EbookController extends Controller
             'cover_image_cropped' => 'nullable|string', // base64 dari auto crop
             'pdf_file' => 'nullable|file|mimes:pdf|max:10240',
             'status' => 'required|in:draft,published,unpublished,archived',
+        ], [
+            'category_ids.required' => 'Kategori ebook wajib dipilih minimal 1.',
+            'category_ids.array' => 'Format kategori tidak valid.',
+            'category_ids.min' => 'Pilih minimal 1 kategori untuk ebook.',
+            'category_ids.*.exists' => 'Kategori yang dipilih tidak valid.',
+            'city_id.exists' => 'Kota/destinasi yang dipilih tidak valid.',
+            'creator_id.required' => 'Pembuat ebook wajib dipilih.',
+            'creator_id.exists' => 'Pembuat ebook tidak ditemukan.',
+            'title.required' => 'Judul ebook wajib diisi.',
+            'title.max' => 'Judul ebook maksimal 255 karakter.',
+            'description.required' => 'Deskripsi ebook wajib diisi.',
+            'pdf_file.file' => 'File PDF tidak valid.',
+            'pdf_file.mimes' => 'File harus berformat PDF.',
+            'pdf_file.max' => 'Ukuran file PDF maksimal 10MB.',
+            'status.required' => 'Status publikasi wajib dipilih.',
+            'status.in' => 'Status publikasi tidak valid.',
         ]);
 
         try {
@@ -226,6 +315,29 @@ class EbookController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Failed to update ebook: ' . $e->getMessage())->withInput();
         }
+    }
+
+    /**
+     * Search creators by name or email for autocomplete
+     */
+    public function searchCreators(Request $request)
+    {
+        $query = $request->get('q', '');
+        
+        if (strlen($query) < 2) {
+            return response()->json([]);
+        }
+
+        $creators = \App\Models\User::where('user_type', 'creator')
+            ->where(function ($q) use ($query) {
+                $q->where('name', 'LIKE', "%{$query}%")
+                  ->orWhere('email', 'LIKE', "%{$query}%");
+            })
+            ->select('id', 'name', 'email')
+            ->limit(10)
+            ->get();
+
+        return response()->json($creators);
     }
 
     /**

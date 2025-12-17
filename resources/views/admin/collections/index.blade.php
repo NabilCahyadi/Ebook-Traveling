@@ -58,8 +58,6 @@
                                 <th>Slug</th>
                                 <th>Ebooks Count</th>
                                 <th>Status</th>
-                                <th>Homepage</th>
-                                <th>Landing Page</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -92,20 +90,6 @@
                                             <span class="badge bg-success">Active</span>
                                         @else
                                             <span class="badge bg-secondary">Inactive</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if($collection->show_in_homepage)
-                                            <i class="ti ti-check text-success"></i>
-                                        @else
-                                            <i class="ti ti-x text-muted"></i>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if($collection->is_visible_on_landing)
-                                            <i class="ti ti-check text-success"></i>
-                                        @else
-                                            <i class="ti ti-x text-muted"></i>
                                         @endif
                                     </td>
                                     <td>

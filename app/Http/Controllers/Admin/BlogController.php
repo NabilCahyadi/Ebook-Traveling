@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\BlogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-// use App\Models\BlogCategory;
+use App\Models\BlogCategory;
 
 class BlogController extends Controller
 {
@@ -71,6 +71,16 @@ class BlogController extends Controller
             'featured_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
             'blog_category_id' => 'nullable|exists:blog_categories,id',
             'status' => 'required|in:draft,published,unpublished,archived',
+        ], [
+            'title.required' => 'Judul blog wajib diisi.',
+            'title.max' => 'Judul blog maksimal 255 karakter.',
+            'content.required' => 'Konten blog wajib diisi.',
+            'featured_image.image' => 'File harus berupa gambar.',
+            'featured_image.mimes' => 'Format gambar harus JPEG, JPG, PNG, atau WebP.',
+            'featured_image.max' => 'Ukuran gambar maksimal 2MB.',
+            'blog_category_id.exists' => 'Kategori blog yang dipilih tidak valid.',
+            'status.required' => 'Status publikasi wajib dipilih.',
+            'status.in' => 'Status publikasi tidak valid.',
         ]);
 
         $validated['author_id'] = Auth::id();
@@ -123,6 +133,16 @@ class BlogController extends Controller
             'blog_category_id' => 'nullable|exists:blog_categories,id',
             'status' => 'required|in:draft,published,unpublished,archived',
             'remove_image' => 'boolean',
+        ], [
+            'title.required' => 'Judul blog wajib diisi.',
+            'title.max' => 'Judul blog maksimal 255 karakter.',
+            'content.required' => 'Konten blog wajib diisi.',
+            'featured_image.image' => 'File harus berupa gambar.',
+            'featured_image.mimes' => 'Format gambar harus JPEG, JPG, PNG, atau WebP.',
+            'featured_image.max' => 'Ukuran gambar maksimal 2MB.',
+            'blog_category_id.exists' => 'Kategori blog yang dipilih tidak valid.',
+            'status.required' => 'Status publikasi wajib dipilih.',
+            'status.in' => 'Status publikasi tidak valid.',
         ]);
 
         $validated['remove_image'] = $request->has('remove_image');

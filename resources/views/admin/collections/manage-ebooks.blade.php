@@ -376,8 +376,8 @@
         }
 
         tbody.innerHTML = ebooks.map(ebook => {
-            const coverImage = ebook.cover_image || '/images/default-ebook.png';
-            const creatorName = ebook.creator?.user?.name || 'Unknown';
+            const coverImage = ebook.cover_image_url || '/images/default-ebook.png';
+            const creatorName = ebook.creator?.name || 'Unknown';
             const categories = ebook.categories?.map(c => c.name).join(', ') || '-';
             
             return `

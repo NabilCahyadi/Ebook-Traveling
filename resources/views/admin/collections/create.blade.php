@@ -97,30 +97,12 @@
                             <div class="mb-3">
                                 <label class="form-label d-block">Visibility Settings</label>
                                 
-                                <div class="form-check form-switch mb-2">
+                                <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" id="is_active" 
                                            name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="is_active">
                                         Active
                                         <small class="text-muted d-block">Collection is active and visible</small>
-                                    </label>
-                                </div>
-
-                                <div class="form-check form-switch mb-2">
-                                    <input class="form-check-input" type="checkbox" id="show_in_homepage" 
-                                           name="show_in_homepage" value="1" {{ old('show_in_homepage') ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="show_in_homepage">
-                                        Show in Homepage
-                                        <small class="text-muted d-block">Display this collection on the homepage</small>
-                                    </label>
-                                </div>
-
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="is_visible_on_landing" 
-                                           name="is_visible_on_landing" value="1" {{ old('is_visible_on_landing') ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="is_visible_on_landing">
-                                        Visible on Landing Page
-                                        <small class="text-muted d-block">Show this collection on the landing page</small>
                                     </label>
                                 </div>
                             </div>

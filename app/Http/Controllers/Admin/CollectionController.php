@@ -71,8 +71,6 @@ class CollectionController extends Controller
             'slug' => 'nullable|string|unique:collections,slug',
             'description' => 'nullable|string',
             'is_active' => 'boolean',
-            'show_in_homepage' => 'boolean',
-            'is_visible_on_landing' => 'boolean',
             'order' => 'nullable|integer',
             'selected_ebooks' => 'nullable|json',
         ]);
@@ -84,8 +82,6 @@ class CollectionController extends Controller
 
         // Set default values
         $validated['is_active'] = $request->has('is_active');
-        $validated['show_in_homepage'] = $request->has('show_in_homepage');
-        $validated['is_visible_on_landing'] = $request->has('is_visible_on_landing');
         $validated['order'] = $validated['order'] ?? 0;
 
         try {
@@ -251,8 +247,6 @@ class CollectionController extends Controller
             'slug' => 'nullable|string|unique:collections,slug,' . $id,
             'description' => 'nullable|string',
             'is_active' => 'boolean',
-            'show_in_homepage' => 'boolean',
-            'is_visible_on_landing' => 'boolean',
             'order' => 'nullable|integer',
         ]);
 
@@ -263,8 +257,6 @@ class CollectionController extends Controller
 
         // Set boolean values
         $validated['is_active'] = $request->has('is_active');
-        $validated['show_in_homepage'] = $request->has('show_in_homepage');
-        $validated['is_visible_on_landing'] = $request->has('is_visible_on_landing');
 
         try {
             $this->collectionService->updateCollection($id, $validated);
@@ -321,7 +313,7 @@ class CollectionController extends Controller
     public function getAvailableEbooks(Request $request)
     {
         $query = Ebook::select('ebooks.*')
-            ->with(['categories', 'creator.user'])
+            ->with(['categories', 'creator'])
             ->where('status', 'published');
 
         // Filter by search

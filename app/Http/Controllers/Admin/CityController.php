@@ -60,6 +60,11 @@ class CityController extends Controller
             'name' => 'required|string|max:255',
             'province' => 'required|string|max:255',
             'city_image_cropped' => 'nullable|string',
+        ], [
+            'name.required' => 'Nama kota wajib diisi.',
+            'name.max' => 'Nama kota maksimal 255 karakter.',
+            'province.required' => 'Nama provinsi wajib diisi.',
+            'province.max' => 'Nama provinsi maksimal 255 karakter.',
         ]);
 
         // Handle base64 cropped image from JavaScript (ratio 4:3, 980x735px)
@@ -117,6 +122,11 @@ class CityController extends Controller
             'name' => 'required|string|max:255',
             'province' => 'required|string|max:255',
             'city_image_cropped' => 'nullable|string',
+        ], [
+            'name.required' => 'Nama kota wajib diisi.',
+            'name.max' => 'Nama kota maksimal 255 karakter.',
+            'province.required' => 'Nama provinsi wajib diisi.',
+            'province.max' => 'Nama provinsi maksimal 255 karakter.',
         ]);
 
         // Handle base64 cropped image from JavaScript (ratio 4:3, 980x735px)

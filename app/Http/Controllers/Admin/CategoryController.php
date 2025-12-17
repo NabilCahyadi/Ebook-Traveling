@@ -62,6 +62,10 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name',
+        ], [
+            'name.required' => 'Nama kategori wajib diisi.',
+            'name.max' => 'Nama kategori maksimal 255 karakter.',
+            'name.unique' => 'Nama kategori sudah digunakan.',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);

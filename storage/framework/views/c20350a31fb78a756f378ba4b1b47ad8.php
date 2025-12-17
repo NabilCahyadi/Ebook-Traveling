@@ -49,17 +49,18 @@
                             <!-- Search -->
                             <div class="input-group" style="width: 250px;">
                                 <span class="input-group-text"><i class="ti ti-search"></i></span>
-                                <input type="text" class="form-control" placeholder="Search ebooks..." id="searchEbook">
+                                <input type="text" class="form-control" placeholder="Search ebooks..." id="searchEbook" 
+                                    value="<?php echo e(request('search')); ?>">
                             </div>
 
                             <!-- Filter Status -->
                             <div class="input-group" style="width: 180px;">
                                 <span class="input-group-text"><i class="ti ti-filter"></i></span>
-                                <select class="form-select" id="filterStatus">
+                                <select class="form-select" id="filterStatus" onchange="applyFilters()">
                                     <option value="">All Status</option>
-                                    <option value="published">Published</option>
-                                    <option value="draft">Draft</option>
-                                    <option value="archived">Archived</option>
+                                    <option value="published" <?php echo e(request('status') == 'published' ? 'selected' : ''); ?>>Published</option>
+                                    <option value="draft" <?php echo e(request('status') == 'draft' ? 'selected' : ''); ?>>Draft</option>
+                                    <option value="archived" <?php echo e(request('status') == 'archived' ? 'selected' : ''); ?>>Archived</option>
                                 </select>
                             </div>
 
@@ -108,7 +109,7 @@
                         <tr>
                             <th style="width: 80px;">Cover</th>
                             <th style="width: 35%;">Title</th>
-                            <th style="width: 20%;">Author</th>
+                            <th style="width: 20%;">Creator</th>
                             <th style="width: 12%;">Status</th>
                             <th style="width: 12%;">Views</th>
                             <th style="width: 100px;">Actions</th>
@@ -145,7 +146,7 @@
                                 </td>
                                 <td>
                                     <div style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.875rem;"
-                                        title="<?php echo e($ebook->author ?? '-'); ?>"><?php echo e($ebook->author ?? '-'); ?></div>
+                                        title="<?php echo e($ebook->creator->name ?? '-'); ?>"><?php echo e($ebook->creator->name ?? '-'); ?></div>
                                 </td>
                                 <td>
                                     <?php if($ebook->status === 'published'): ?>
@@ -257,7 +258,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <p class="text-muted small mb-2">by <?php echo e($ebook->author ?? 'Unknown'); ?></p>
                                     <p class="card-text small text-muted mb-3"
                                         style="flex-grow: 1; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">
                                         <?php echo e(Str::limit(strip_tags($ebook->description), 100)); ?></p>
@@ -307,7 +307,13 @@
 
             <?php if($ebooks->hasPages()): ?>
                 <div class="card-footer">
-                    <?php echo e($ebooks->appends(['per_page' => request('per_page', 8), 'sort_by' => request('sort_by'), 'sort_order' => request('sort_order')])->links()); ?>
+                    <?php echo e($ebooks->appends([
+                        'per_page' => request('per_page', 8), 
+                        'sort_by' => request('sort_by'), 
+                        'sort_order' => request('sort_order'),
+                        'search' => request('search'),
+                        'status' => request('status')
+                    ])->links()); ?>
 
                 </div>
             <?php endif; ?>
@@ -374,14 +380,41 @@
                 toggleView(savedView);
             });
 
-            // Search functionality
+            // Search functionality - Server-side dengan debounce
+            let searchTimeout;
             document.getElementById('searchEbook')?.addEventListener('keyup', function(e) {
-                const searchTerm = e.target.value.toLowerCase();
-                filterEbooks();
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(function() {
+                    applyFilters();
+                }, 500); // Tunggu 500ms setelah user selesai mengetik
             });
 
-            // Filter functionality
-            document.getElementById('filterStatus')?.addEventListener('change', filterEbooks);
+            // Apply filters function - Server-side
+            window.applyFilters = function() {
+                const searchTerm = document.getElementById('searchEbook').value;
+                const statusFilter = document.getElementById('filterStatus').value;
+                
+                const currentUrl = new URL(window.location.href);
+                
+                // Set or remove search parameter
+                if (searchTerm) {
+                    currentUrl.searchParams.set('search', searchTerm);
+                } else {
+                    currentUrl.searchParams.delete('search');
+                }
+                
+                // Set or remove status parameter
+                if (statusFilter) {
+                    currentUrl.searchParams.set('status', statusFilter);
+                } else {
+                    currentUrl.searchParams.delete('status');
+                }
+                
+                // Reset ke page 1 saat filter berubah
+                currentUrl.searchParams.delete('page');
+                
+                window.location.href = currentUrl.toString();
+            }
 
             // Sort functionality
             window.applySorting = function() {
@@ -407,48 +440,7 @@
                 window.location.href = currentUrl.toString();
             }
 
-            function filterEbooks() {
-                const searchTerm = document.getElementById('searchEbook').value.toLowerCase();
-                const statusFilter = document.getElementById('filterStatus').value;
 
-                // Filter table rows
-                const tableRows = document.querySelectorAll('#ebookTableBody tr:not(#noDataRow)');
-                let visibleTableCount = 0;
-
-                tableRows.forEach(row => {
-                    const text = row.textContent.toLowerCase();
-                    const status = row.dataset.status;
-
-                    const matchSearch = text.includes(searchTerm);
-                    const matchStatus = !statusFilter || status === statusFilter;
-
-                    if (matchSearch && matchStatus) {
-                        row.style.display = '';
-                        visibleTableCount++;
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-
-                // Filter cards
-                const cards = document.querySelectorAll('.ebook-card');
-                let visibleCardCount = 0;
-
-                cards.forEach(card => {
-                    const text = card.textContent.toLowerCase();
-                    const status = card.dataset.status;
-
-                    const matchSearch = text.includes(searchTerm);
-                    const matchStatus = !statusFilter || status === statusFilter;
-
-                    if (matchSearch && matchStatus) {
-                        card.style.display = '';
-                        visibleCardCount++;
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-            }
         </script>
     <?php $__env->stopPush(); ?>
 <?php $__env->stopSection(); ?>

@@ -20,15 +20,11 @@ class Collection extends Model
         'description',
         'order_index',
         'is_active',
-        'show_in_homepage',
-        'order',
-        'is_visible_on_landing'
+        'order'
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
-        'show_in_homepage' => 'boolean',
-        'is_visible_on_landing' => 'boolean',
         'id' => 'string'
     ];
 
@@ -43,7 +39,6 @@ class Collection extends Model
     public function scopeForHomepage($query)
     {
         return $query->where('is_active', true)
-            ->where('is_visible_on_landing', true)
             ->orderBy('order', 'asc')
             ->with(['ebooks' => function ($q) {
                 $q->limit(10); // Limit untuk homepage
@@ -56,15 +51,7 @@ class Collection extends Model
         return $query->where('is_active', true);
     }
 
-    public function scopeHomepage($query)
-    {
-        return $query->where('show_in_homepage', true);
-    }
 
-    public function scopeVisibleOnLanding($query)
-    {
-        return $query->where('is_visible_on_landing', true);
-    }
 
     public function scopeOrdered($query)
     {

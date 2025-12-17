@@ -3,7 +3,11 @@
 @section('title', 'Create New Ebook')
 
 @push('styles')
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.css" />
 <style>
+    .ck-editor__editable {
+        min-height: 400px;
+    }
     /* Category Badge Styles - Override Vuexy */
     .category-badge {
         display: inline-flex !important;
@@ -39,6 +43,36 @@
 
     #selected-categories .category-badge .remove-category:hover {
         opacity: 1 !important;
+    }
+
+    /* Creator Autocomplete Suggestions */
+    #creator_suggestions {
+        background-color: #fff;
+        border: 1px solid #d9dee3;
+        border-radius: 0.375rem;
+        box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+        margin-top: 0.25rem;
+    }
+
+    #creator_suggestions .list-group-item {
+        background-color: #fff;
+        border: none;
+        border-bottom: 1px solid #f0f0f0;
+        cursor: pointer;
+        padding: 0.75rem 1rem;
+    }
+
+    #creator_suggestions .list-group-item:last-child {
+        border-bottom: none;
+    }
+
+    #creator_suggestions .list-group-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    #creator_suggestions .list-group-item.text-muted,
+    #creator_suggestions .list-group-item.text-danger {
+        cursor: default;
     }
 </style>
 @endpush
@@ -104,21 +138,22 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="creator_id" class="form-label">Creator <span class="text-danger">*</span></label>
-                            <select class="form-select @error('creator_id') is-invalid @enderror" id="creator_id"
-                                name="creator_id" required>
-                                <option value="">Pilih Creator</option>
-                                @if (isset($creators))
-                                    @foreach ($creators as $creator)
-                                        <option value="{{ $creator->id }}"
-                                            {{ old('creator_id') == $creator->id ? 'selected' : '' }}>
-                                            {{ $creator->name }} ({{ $creator->id }})
-                                        </option>
-                                    @endforeach
-                                @endif
-                            </select>
+                            <label for="creator_search" class="form-label">Creator <span class="text-danger">*</span></label>
+                            <input type="text" 
+                                class="form-control @error('creator_id') is-invalid @enderror" 
+                                id="creator_search" 
+                                placeholder="Ketik nama atau email creator..."
+                                autocomplete="off">
+                            <input type="hidden" name="creator_id" id="creator_id" value="{{ old('creator_id') }}">
+                            
+                            <!-- Autocomplete dropdown -->
+                            <div id="creator_suggestions" class="list-group position-absolute w-100" style="z-index: 1000; display: none; max-height: 250px; overflow-y: auto;"></div>
+                            
+                            <!-- Selected creator display -->
+                            <div id="selected_creator" class="mt-2"></div>
+                            
                             @error('creator_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                         </div>
 
@@ -178,7 +213,7 @@
                             <label for="description" class="form-label">Description <span
                                     class="text-danger">*</span></label>
                             <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
-                                rows="5" placeholder="Deskripsi singkat tentang ebook" required>{{ old('description') }}</textarea>
+                                rows="5" placeholder="Deskripsi singkat tentang ebook">{{ old('description') }}</textarea>
                             @error('description')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -221,8 +256,8 @@
                             <label class="form-label">Cover Image (Ratio 1:1.6)</label>
                             <input type="file" class="form-control @error('cover_image') is-invalid @enderror"
                                 id="coverImageInput" name="cover_image" accept="image/*">
-                            <small class="text-muted">Gambar akan otomatis di-crop ke rasio 1:1.6 (contoh: 650x965px). Max
-                                2MB.</small>
+                            <small class="text-muted">Gambar akan otomatis di-crop ke rasio 1:1.6 (contoh: 650x965px). 
+                                <strong>File besar akan otomatis dikompresi.</strong></small>
                             @error('cover_image')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -285,6 +320,146 @@
         </div>
     </form>
 @endsection
+
+@push('scripts')
+<script type="importmap">
+{
+    "imports": {
+        "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.js",
+        "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.0.0/"
+    }
+}
+</script>
+
+<script type="module">
+    import {
+        ClassicEditor,
+        Essentials,
+        Bold,
+        Italic,
+        Underline,
+        Strikethrough,
+        Paragraph,
+        Heading,
+        List,
+        Link,
+        BlockQuote,
+        Alignment,
+        Font,
+        Indent,
+        IndentBlock,
+        Table,
+        TableToolbar,
+        MediaEmbed,
+        HorizontalLine,
+        RemoveFormat,
+        Undo,
+        Image,
+        ImageCaption,
+        ImageStyle,
+        ImageToolbar,
+        ImageUpload,
+        ImageResize,
+        LinkImage,
+        Base64UploadAdapter
+    } from 'ckeditor5';
+
+    let editorInstance;
+
+    // Wait for DOM to be ready
+    document.addEventListener('DOMContentLoaded', function() {
+        ClassicEditor
+            .create(document.querySelector('#description'), {
+                plugins: [
+                    Essentials, Bold, Italic, Underline, Strikethrough, Paragraph, Heading,
+                    List, Link, BlockQuote, Alignment, Font, Indent, IndentBlock,
+                    Table, TableToolbar, MediaEmbed, HorizontalLine, RemoveFormat, Undo,
+                    Image, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, ImageResize, LinkImage,
+                    Base64UploadAdapter
+                ],
+                toolbar: [
+                    'undo', 'redo', '|',
+                    'heading', '|',
+                    'bold', 'italic', 'underline', 'strikethrough', '|',
+                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+                    'alignment', '|',
+                    'bulletedList', 'numberedList', '|',
+                    'outdent', 'indent', '|',
+                    'link', 'uploadImage', 'blockQuote', 'insertTable', 'mediaEmbed', '|',
+                    'horizontalLine', 'removeFormat'
+                ],
+                image: {
+                    toolbar: [
+                        'imageStyle:inline',
+                        'imageStyle:block',
+                        'imageStyle:side',
+                        '|',
+                        'toggleImageCaption',
+                        'imageTextAlternative',
+                        '|',
+                        'linkImage'
+                    ]
+                },
+                heading: {
+                    options: [{
+                            model: 'paragraph',
+                            title: 'Paragraph',
+                            class: 'ck-heading_paragraph'
+                        },
+                        {
+                            model: 'heading1',
+                            view: 'h1',
+                            title: 'Heading 1',
+                            class: 'ck-heading_heading1'
+                        },
+                        {
+                            model: 'heading2',
+                            view: 'h2',
+                            title: 'Heading 2',
+                            class: 'ck-heading_heading2'
+                        },
+                        {
+                            model: 'heading3',
+                            view: 'h3',
+                            title: 'Heading 3',
+                            class: 'ck-heading_heading3'
+                        }
+                    ]
+                },
+                table: {
+                    contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+                }
+            })
+            .then(editor => {
+                editorInstance = editor;
+                console.log('Description editor initialized');
+
+                // Sync editor content before form submit
+                const form = document.querySelector('form');
+                if (form) {
+                    form.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        console.log('Form submit intercepted');
+                        
+                        const content = editor.getData();
+                        console.log('Editor content:', content.substring(0, 100));
+                        
+                        document.querySelector('#description').value = content;
+                        console.log('Content synced to textarea');
+                        
+                        // Submit form
+                        setTimeout(() => {
+                            form.submit();
+                        }, 100);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Editor initialization error:', error);
+            });
+    });
+</script>
+@endpush
 
 @push('scripts')
     <script>
@@ -493,6 +668,115 @@
                     input.val(id);
                     inputsContainer.append(input);
                 });
+            }
+        });
+
+        // Creator Autocomplete
+        const creatorSearch = $('#creator_search');
+        const creatorId = $('#creator_id');
+        const creatorSuggestions = $('#creator_suggestions');
+        const selectedCreatorDiv = $('#selected_creator');
+        let searchTimeout;
+
+        // Load selected creator if edit mode
+        @if(old('creator_id'))
+            loadSelectedCreator('{{ old('creator_id') }}');
+        @endif
+
+        creatorSearch.on('input', function() {
+            const query = $(this).val().trim();
+            
+            clearTimeout(searchTimeout);
+            
+            if (query.length < 2) {
+                creatorSuggestions.hide().empty();
+                return;
+            }
+            
+            searchTimeout = setTimeout(() => {
+                $.ajax({
+                    url: '{{ route('admin.ebooks.search-creators') }}',
+                    method: 'GET',
+                    data: { q: query },
+                    success: function(data) {
+                        creatorSuggestions.empty();
+                        
+                        if (data.length === 0) {
+                            creatorSuggestions.append(
+                                '<div class="list-group-item text-muted">Tidak ada creator ditemukan</div>'
+                            );
+                        } else {
+                            data.forEach(creator => {
+                                const item = $('<a href="javascript:void(0)" class="list-group-item list-group-item-action"></a>');
+                                item.html(`
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>${creator.name}</strong>
+                                            <br><small class="text-muted">${creator.email}</small>
+                                        </div>
+                                    </div>
+                                `);
+                                item.on('click', function() {
+                                    selectCreator(creator);
+                                });
+                                creatorSuggestions.append(item);
+                            });
+                        }
+                        
+                        creatorSuggestions.show();
+                    },
+                    error: function() {
+                        creatorSuggestions.html(
+                            '<div class="list-group-item text-danger">Error loading creators</div>'
+                        ).show();
+                    }
+                });
+            }, 300);
+        });
+
+        function selectCreator(creator) {
+            creatorId.val(creator.id);
+            creatorSearch.val('');
+            creatorSuggestions.hide().empty();
+            
+            selectedCreatorDiv.html(`
+                <div class="alert alert-info d-flex justify-content-between align-items-center py-2 mb-0">
+                    <div>
+                        <i class="ti ti-user me-1"></i>
+                        <strong>${creator.name}</strong>
+                        <br><small>${creator.email}</small>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="clearCreator()">
+                        <i class="ti ti-x"></i>
+                    </button>
+                </div>
+            `);
+        }
+
+        function loadSelectedCreator(creatorId) {
+            $.ajax({
+                url: '{{ route('admin.ebooks.search-creators') }}',
+                method: 'GET',
+                data: { q: '' },
+                success: function(data) {
+                    const creator = data.find(c => c.id == creatorId);
+                    if (creator) {
+                        selectCreator(creator);
+                    }
+                }
+            });
+        }
+
+        window.clearCreator = function() {
+            creatorId.val('');
+            creatorSearch.val('');
+            selectedCreatorDiv.empty();
+        };
+
+        // Hide suggestions when clicking outside
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('#creator_search, #creator_suggestions').length) {
+                creatorSuggestions.hide();
             }
         });
     </script>

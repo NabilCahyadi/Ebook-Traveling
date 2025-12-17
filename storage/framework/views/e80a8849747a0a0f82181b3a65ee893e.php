@@ -61,7 +61,7 @@
                                 <div data-i18n="Add New">Add New</div>
                             </a>
                         </li>
-                        <li class="menu-item <?php echo e(Request::is('admin/ebooks/pending-approval') ? 'active' : ''); ?>">
+                        <!-- <li class="menu-item <?php echo e(Request::is('admin/ebooks/pending-approval') ? 'active' : ''); ?>">
                             <a href="<?php echo e(route('admin.ebooks.pending-approval')); ?>" class="menu-link">
                                 <div data-i18n="Pending Approval">Pending Approval</div>
                                 <?php
@@ -71,7 +71,7 @@
                                     <span class="badge bg-warning rounded-pill ms-auto"><?php echo e($pendingCount); ?></span>
                                 <?php endif; ?>
                             </a>
-                        </li>
+                        </li> -->
                     </ul>
                 </li>
 
@@ -215,19 +215,19 @@
 
         <!-- Website Management -->
         <li
-            class="menu-item open <?php echo e(Request::is('admin/collection-order*') || Request::is('admin/landing-sections*') ? 'active' : ''); ?>">
+            class="menu-item <?php echo e(Request::is('admin/collection-order*') || Request::is('admin/banners*') || Request::is('admin/collections*') ? 'active open' : ''); ?>">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-world"></i>
-                <div data-i18n="Website Management">Website Management</div>
+                <div data-i18n="Website Management">Website Setting</div>
             </a>
             <ul class="menu-sub">
-                <!-- Landing Page Sections -->
-                <!-- <li class="menu-item <?php echo e(Request::is('admin/landing-sections*') ? 'active' : ''); ?>">
-                    <a href="<?php echo e(route('admin.landing-sections')); ?>" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-layout-grid"></i>
-                        <div data-i18n="Landing Page Sections">Landing Page Sections</div>
+                <!-- Hero Banners -->
+                <li class="menu-item <?php echo e(Request::is('admin/banners*') ? 'active' : ''); ?>">
+                    <a href="<?php echo e(route('admin.banners.index')); ?>" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-photo"></i>
+                        <div data-i18n="Hero Banners">Hero Banners</div>
                     </a>
-                </li> -->
+                </li>
                 <!-- Collection Ebook -->
                 <li class="menu-item <?php echo e(Request::is('admin/collections*') ? 'active' : ''); ?>">
                     <a href="<?php echo e(route('admin.collections.index')); ?>" class="menu-link">

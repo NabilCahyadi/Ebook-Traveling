@@ -45,6 +45,18 @@ class SubscriptionPlanController extends Controller
             'duration_days' => 'required|integer|min:1',
             'features' => 'nullable|string',
             'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'name.required' => 'Nama paket berlangganan wajib diisi.',
+            'name.max' => 'Nama paket maksimal 255 karakter.',
+            'price.required' => 'Harga paket wajib diisi.',
+            'price.numeric' => 'Harga harus berupa angka.',
+            'price.min' => 'Harga tidak boleh kurang dari 0.',
+            'duration_days.required' => 'Durasi berlangganan wajib diisi.',
+            'duration_days.integer' => 'Durasi harus berupa angka.',
+            'duration_days.min' => 'Durasi minimal 1 hari.',
+            'banner_image.image' => 'File harus berupa gambar.',
+            'banner_image.mimes' => 'Format gambar harus JPEG, PNG, JPG, atau GIF.',
+            'banner_image.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
 
         // Set is_active
@@ -102,6 +114,18 @@ class SubscriptionPlanController extends Controller
             'duration_days' => 'required|integer|min:1',
             'features' => 'nullable|string',
             'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'name.required' => 'Nama paket berlangganan wajib diisi.',
+            'name.max' => 'Nama paket maksimal 255 karakter.',
+            'price.required' => 'Harga paket wajib diisi.',
+            'price.numeric' => 'Harga harus berupa angka.',
+            'price.min' => 'Harga tidak boleh kurang dari 0.',
+            'duration_days.required' => 'Durasi berlangganan wajib diisi.',
+            'duration_days.integer' => 'Durasi harus berupa angka.',
+            'duration_days.min' => 'Durasi minimal 1 hari.',
+            'banner_image.image' => 'File harus berupa gambar.',
+            'banner_image.mimes' => 'Format gambar harus JPEG, PNG, JPG, atau GIF.',
+            'banner_image.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
 
         // Set is_active

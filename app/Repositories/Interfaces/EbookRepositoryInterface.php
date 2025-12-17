@@ -10,7 +10,13 @@ interface EbookRepositoryInterface
     /**
      * Get all ebooks with pagination.
      */
-    public function getAllPaginated(int $perPage = 15, string $sortBy = 'created_at', string $sortOrder = 'desc'): mixed;
+    public function getAllPaginated(
+        int $perPage = 15,
+        string $sortBy = 'created_at',
+        string $sortOrder = 'desc',
+        ?string $search = null,
+        ?string $status = null
+    ): mixed;
 
     /**
      * Get all active ebooks.

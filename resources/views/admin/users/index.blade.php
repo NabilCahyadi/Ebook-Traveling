@@ -100,7 +100,6 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Role(s)</th>
@@ -112,12 +111,6 @@
                         <tbody>
                             @foreach ($users as $user)
                                 <tr @if ($user->trashed()) class="table-danger" @endif>
-                                    <td>
-                                        <strong>#{{ $user->id }}</strong>
-                                        @if ($user->trashed())
-                                            <span class="badge bg-label-danger ms-1">Deleted</span>
-                                        @endif
-                                    </td>
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <div class="avatar avatar-sm me-2">
