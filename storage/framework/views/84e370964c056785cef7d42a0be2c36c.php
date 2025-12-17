@@ -1,7 +1,6 @@
-@extends('layouts_lp.app')
-@section('title', 'Destinations - MeatMap')
+<?php $__env->startSection('title', 'Destinations - MeatMap'); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <style>
     /* style untuk top 10 slider */
     .slider-container {
@@ -305,21 +304,21 @@
     <div class="slider-container">
         <!-- Ini adalah wadah untuk slide-slide, class-nya TIDAK BOLEH BERUBAH -->
         <div class="slide">
-            @forelse ($popularCities as $city)
+            <?php $__empty_1 = true; $__currentLoopData = $popularCities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $city): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
             <!-- Ini adalah item slide untuk setiap kota, class-nya TIDAK BOLEH BERUBAH -->
             <!-- Kita tambahkan style inline untuk background image yang dinamis -->
-            <div class="item" style="background-image: url('{{ asset($city->image) }}');">
+            <div class="item" style="background-image: url('<?php echo e(asset($city->image)); ?>');">
                 <!-- Ini adalah konten di dalam slide, class-nya TIDAK BOLEH BERUBAH -->
                 <div class="content">
-                    <h2 class="name">{{ $city->name }}</h2>
-                    <p class="description">{{ Str::limit($city->description, 150) }}</p>
+                    <h2 class="name"><?php echo e($city->name); ?></h2>
+                    <p class="description"><?php echo e(Str::limit($city->description, 150)); ?></p>
                     <!-- Kita gunakan button agar sesuai dengan CSS, dan tambahkan onclick untuk navigasi -->
-                    <button onclick="window.location.href='{{ route('destination.show', $city->slug) }}'">
+                    <button onclick="window.location.href='<?php echo e(route('destination.show', $city->slug)); ?>'">
                         Explore Now
                     </button>
                 </div>
             </div>
-            @empty
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
             <!-- Ini adalah fallback jika tidak ada kota populer -->
             <div class="item" style="background-image: url('https://via.placeholder.com/1200x600.png?text=No+Destinations');">
                 <div class="content">
@@ -327,7 +326,7 @@
                     <p class="description">Popular destinations will be shown here.</p>
                 </div>
             </div>
-            @endforelse
+            <?php endif; ?>
         </div>
 
         <!-- Ini adalah tombol navigasi, class-nya TIDAK BOLEH BERUBAH -->
@@ -353,28 +352,28 @@
             </p>
         </div>
         <div class="row">
-            @forelse ($allCities as $index => $city)
+            <?php $__empty_1 = true; $__currentLoopData = $allCities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $city): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
             <div class="col-lg-3 col-md-4 col-sm-6">
-                {{-- Bungkus seluruh card dengan tag <a> --}}
-                <a href="{{ route('destination.show', $city->slug) }}" class="text-decoration-none">
+                
+                <a href="<?php echo e(route('destination.show', $city->slug)); ?>" class="text-decoration-none">
                     <div class="destination-card position-relative">
-                        <div class="destination-thumb" style="background-image:url('{{ asset($city->image) }}');"></div>
+                        <div class="destination-thumb" style="background-image:url('<?php echo e(asset($city->image)); ?>');"></div>
 
-                        @if($city->is_popular && $city->order_index <= 10)
-                            <span class="destination-badge">#{{ $city->order_index }}</span>
-                        @endif
+                        <?php if($city->is_popular && $city->order_index <= 10): ?>
+                            <span class="destination-badge">#<?php echo e($city->order_index); ?></span>
+                        <?php endif; ?>
 
                             <div class="destination-content">
-                                <div class="destination-title">{{ $city->name }}</div>
+                                <div class="destination-title"><?php echo e($city->name); ?></div>
                             </div>
                     </div>
                 </a>
             </div>
-            @empty
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
             <div class="col-12 text-center py-5">
                 <p>No destinations found.</p>
             </div>
-            @endforelse
+            <?php endif; ?>
         </div>
     </div>
 </section>
@@ -395,4 +394,5 @@
         })
     });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts_lp.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\PROJEK PROJEK\Ebook-Traveling\resources\views/destinations.blade.php ENDPATH**/ ?>

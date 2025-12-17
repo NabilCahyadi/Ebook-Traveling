@@ -6,30 +6,33 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Promo extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, SoftDeletes, HasUuids;
+
+    protected $table = 'promos';
 
     protected $fillable = [
         'name',
+        'slug',
         'code',
         'description',
         'type',
         'value',
-        'start_date',
-        'end_date',
         'max_usage',
         'max_usage_per_user',
         'current_usage',
-        'is_active',
-        // Old fields for ebook promo (keep for backward compatibility)
+        'banner_image',
         'discount_type',
         'discount_value',
-        'min_purchase',
-        'max_discount',
-        'usage_limit',
-        'usage_count',
+        'min_purchase_amount',
+        'start_date',
+        'end_date',
+        'terms_conditions',
+        'is_active'
     ];
 
     protected $casts = [
@@ -40,12 +43,11 @@ class Promo extends Model
         'max_usage' => 'integer',
         'max_usage_per_user' => 'integer',
         'current_usage' => 'integer',
-        // Old fields
-        'discount_value' => 'decimal:2',
-        'min_purchase' => 'decimal:2',
+        'min_purchase_amount' => 'decimal:2',
         'max_discount' => 'decimal:2',
         'usage_limit' => 'integer',
         'usage_count' => 'integer',
+        'deleted_at' => 'datetime',
     ];
 
     /**
@@ -136,5 +138,79 @@ class Promo extends Model
     public function scopeByCode($query, string $code)
     {
         return $query->where('code', $code);
+    }
+
+
+    /**
+     * Bagian ini adalah yang TERPENTING.
+     * Ini akan otomatis membuat slug dari nama.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Saat promo baru dibuat
+        static::creating(function ($promo) {
+            $promo->slug = $promo->generateUniqueSlug($promo->name);
+        });
+
+        // Saat nama promo diubah
+        static::updating(function ($promo) {
+            if ($promo->isDirty('name')) {
+                $promo->slug = $promo->generateUniqueSlug($promo->name);
+            }
+        });
+    }
+
+    /**
+     * Fungsi untuk membuat slug yang unik.
+     * Contoh: "Welcome50 - New User Discount" menjadi "welcome50-new-user-discount"
+     */
+    public function generateUniqueSlug($name)
+    {
+        $slug = Str::slug($name); // Mengubah spasi jadi "-", huruf besar jadi kecil
+        $originalSlug = $slug;
+        $counter = 1;
+
+        // Cek apakah slug sudah ada di database. Jika ya, tambahkan angka.
+        while (static::where('slug', $slug)->where('id', '!=', $this->id)->exists()) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
+        }
+
+        return $slug;
+    }
+
+    /**
+     * Aksesori untuk memformat periode.
+     */
+    public function getFormattedPeriodAttribute()
+    {
+        $startDate = $this->start_date ? \Carbon\Carbon::parse($this->start_date)->locale('id')->translatedFormat('d M Y') : 'Mulai sekarang';
+        $endDate = $this->end_date ? \Carbon\Carbon::parse($this->end_date)->locale('id')->translatedFormat('d M Y') : 'Berlaku selamanya';
+
+        return $startDate . ' - ' . $endDate;
+    }
+
+    public function getDateRangeAttribute()
+    {
+        if (!$this->start_date || !$this->end_date) {
+            return null;
+        }
+
+        return \Carbon\Carbon::parse($this->start_date)->locale('id')->translatedFormat('d F Y') .
+            ' - ' .
+            \Carbon\Carbon::parse($this->end_date)->locale('id')->translatedFormat('d F Y');
+    }
+
+    /**
+     * Aksesori untuk mendapatkan URL gambar.
+     */
+    public function getImageUrlAttribute()
+    {
+        if ($this->banner_image) {
+            return asset($this->banner_image);
+        }
+        return asset('/images/default-promo.webp');
     }
 }

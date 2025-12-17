@@ -24,7 +24,8 @@ class DatabaseSeeder extends Seeder
             CitySeeder::class,           // Membuat kota (surabaya, jakarta, dll)
             CollectionSeeder::class,     // Membuat koleksi (best-seller, featured, dll)
             SubscriptionPlanSeeder::class, // Membuat paket berlangganan (basic, premium)
-
+            SubscriptionPromoSeeder::class,
+            
             // 2. DATA PENGGUNA (Bergantung pada RoleSeeder)
             // Membuat pengguna setelah role tersedia.
             UserSeeder::class,           // Membuat user (creator, member)
@@ -48,6 +49,7 @@ class DatabaseSeeder extends Seeder
 
             PricingBannerSeeder::class,
             PricingBenefitSeeder::class,
+            FaqSeeder::class,
         ]);
     }
 }

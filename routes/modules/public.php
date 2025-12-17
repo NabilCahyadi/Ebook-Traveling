@@ -12,6 +12,8 @@ use App\Http\Controllers\RatingController;
 use App\Http\Controllers\ReaderController;
 use App\Http\Controllers\FrontendCategoryController;
 use App\Http\Controllers\PricingController;
+use App\Http\Controllers\PromoController;
+use App\Http\Controllers\PromoDetailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,9 +35,9 @@ Route::get('/destinations', [DestinationController::class, 'index'])->name('dest
 Route::get('/destinations/{slug}', [DestinationController::class, 'show'])->name('destination.show')->middleware('record.view');
 
 // Promo Page
-Route::get('/promo', function () {
-    return view('promo');
-})->name('promo');
+// Route::get('/promo', function () {
+//     return view('promo');
+// })->name('promo');
 
 // Contact Page
 Route::get('/contact', function () {
@@ -99,12 +101,8 @@ Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store
 Route::get('/reader/{slug}', [ReaderController::class, 'show'])->name('reader.show')->middleware('premium');
 Route::get('/category/{slug}', [FrontendCategoryController::class, 'show'])->name('category.show');
 Route::get('/pricing', [PricingController::class, 'index'])->name('pricing');
-
-
-
-
-
-
+Route::get('/promo', [PromoController::class, 'index'])->name('promo');
+Route::get('/promo/{slug}', [PromoController::class, 'showDetail'])->name('promo.detail.show');
 
 
 

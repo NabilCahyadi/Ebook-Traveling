@@ -9,6 +9,10 @@ interface PromoRepositoryInterface
     public function getById(string $id);
     public function getByCode(string $code);
     public function getAvailablePromos();
+
+    public function findBySlug($slug);
+    public function getBySlug($slug);
+
     public function create(array $data);
     public function update(string $id, array $data);
     public function delete(string $id);

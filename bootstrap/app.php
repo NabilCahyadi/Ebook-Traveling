@@ -21,6 +21,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })
+    ->withProviders([
+        \App\Providers\AppServiceProvider::class,
+    ])
     ->withCommands([
         \App\Console\Commands\UpdateEbookRatingsCommand::class,
     ])->create();

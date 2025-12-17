@@ -34,7 +34,12 @@ use App\Repositories\Interfaces\PricingBannerRepositoryInterface;
 use App\Repositories\Interfaces\PricingBenefitRepositoryInterface;
 use App\Repositories\PricingBenefitRepository;
 use App\Repositories\Interfaces\FaqRepositoryInterface;
+use App\Repositories\Interfaces\PromoRepositoryInterface;
+
 use App\Repositories\FaqRepository;
+use App\Repositories\PromoRepository;
+use App\Services\PromoService;
+use App\Services\Contracts\PromoServiceInterface;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
@@ -63,6 +68,14 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             FaqRepositoryInterface::class,
             FaqRepository::class
+        );
+        $this->app->bind(
+            PromoRepositoryInterface::class,
+            PromoRepository::class
+        );
+        $this->app->bind(
+            PromoServiceInterface::class,
+            PromoService::class
         );
     }
 
