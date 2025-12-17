@@ -178,6 +178,8 @@ class BannerController extends Controller
         ]);
 
         try {
+            $bannerType = $validated['type'] ?? $banner->type;
+            
             // Handle image upload
             if ($request->hasFile('image')) {
                 // Delete old image
@@ -191,47 +193,53 @@ class BannerController extends Controller
                 $validated['image'] = $imagePath;
             }
 
-            // Check if order_index already exists (exclude current banner)
-            $orderIndex = $validated['order_index'] ?? 0;
-            $existingBanner = Banner::where('order_index', $orderIndex)
-                ->where('id', '!=', $banner->id)
-                ->first();
-            
-            if ($existingBanner) {
-                // Find available order numbers
-                $usedOrders = Banner::where('id', '!=', $banner->id)
-                    ->orderBy('order_index')
-                    ->pluck('order_index')
-                    ->toArray();
-                $minAvailable = 0;
-                $maxUsed = count($usedOrders) > 0 ? max($usedOrders) : 0;
+            // Skip order_index validation for banner-pricing
+            if ($bannerType !== 'banner-pricing') {
+                // Check if order_index already exists (exclude current banner)
+                $orderIndex = $validated['order_index'] ?? 0;
+                $existingBanner = Banner::where('order_index', $orderIndex)
+                    ->where('type', $bannerType)
+                    ->where('id', '!=', $banner->id)
+                    ->first();
                 
-                // Find smallest available number
-                while (in_array($minAvailable, $usedOrders)) {
-                    $minAvailable++;
+                if ($existingBanner) {
+                    // Find available order numbers
+                    $usedOrders = Banner::where('type', $bannerType)
+                        ->where('id', '!=', $banner->id)
+                        ->orderBy('order_index')
+                        ->pluck('order_index')
+                        ->toArray();
+                    $minAvailable = 0;
+                    $maxUsed = count($usedOrders) > 0 ? max($usedOrders) : 0;
+                    
+                    // Find smallest available number
+                    while (in_array($minAvailable, $usedOrders)) {
+                        $minAvailable++;
+                    }
+                    
+                    $suggestion = "Nomor urutan $orderIndex sudah dipakai oleh banner lain. ";
+                    $suggestion .= "Nomor terkecil yang tersedia: $minAvailable. ";
+                    $suggestion .= "Atau gunakan nomor lebih besar dari: $maxUsed.";
+                    
+                    return redirect()->back()
+                        ->withInput()
+                        ->with('error', $suggestion);
                 }
                 
-                $suggestion = "Nomor urutan $orderIndex sudah dipakai oleh banner lain. ";
-                $suggestion .= "Nomor terkecil yang tersedia: $minAvailable. ";
-                $suggestion .= "Atau gunakan nomor lebih besar dari: $maxUsed.";
-                
-                return redirect()->back()
-                    ->withInput()
-                    ->with('error', $suggestion);
+                $validated['order_index'] = $orderIndex;
+            } else {
+                // For banner-pricing, set defaults
+                $validated['order_index'] = 0;
+                $validated['target_url'] = null;
             }
             
             $validated['is_active'] = $request->has('is_active');
-            $validated['type'] = $validated['type'] ?? 'hero';
-            $validated['order_index'] = $orderIndex;
-            
-            // Null target_url if banner type is banner-pricing
-            if ($validated['type'] === 'banner-pricing') {
-                $validated['target_url'] = null;
-            }
+            $validated['type'] = $bannerType;
 
             $banner->update($validated);
 
-            return redirect()->route('admin.banners.index')
+            $tab = $bannerType === 'banner-pricing' ? 'banner-pricing' : 'home-slider';
+            return redirect()->route('admin.banners.index', ['tab' => $tab])
                 ->with('success', 'Banner updated successfully.');
         } catch (\Exception $e) {
             return redirect()->back()

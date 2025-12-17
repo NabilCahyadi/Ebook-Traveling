@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title', 'Edit Banner'); ?>
 
 <?php $__env->startPush('styles'); ?>
@@ -378,7 +376,6 @@ unset($__errorArgs, $__bag); ?>
             const orderIndexField = document.getElementById('order_index_field');
             const orderIndexInput = document.getElementById('order_index');
             const imageSizeHint = document.getElementById('image-size-hint');
-            const currentImage = document.getElementById('currentImage');
 
             function toggleFields() {
                 if (typeSelect.value === 'banner-pricing') {
