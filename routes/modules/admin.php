@@ -144,4 +144,18 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     // Email Template Management
     // Route::resource('email-templates', \App\Http\Controllers\Admin\EmailTemplateController::class);
+
+    // Landing Page Content Curation
+    Route::prefix('landing-page-content')->name('landing-page-content.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\LandingPageContentController::class, 'index'])->name('index');
+        Route::get('/top-cities', [\App\Http\Controllers\Admin\LandingPageContentController::class, 'editTopCities'])->name('top-cities');
+        Route::put('/top-cities', [\App\Http\Controllers\Admin\LandingPageContentController::class, 'updateTopCities'])->name('top-cities.update');
+        Route::get('/latest-blogs', [\App\Http\Controllers\Admin\LandingPageContentController::class, 'editLatestBlogs'])->name('latest-blogs');
+        Route::put('/latest-blogs', [\App\Http\Controllers\Admin\LandingPageContentController::class, 'updateLatestBlogs'])->name('latest-blogs.update');
+    });
+
+    // Pricing Benefits Management
+    Route::post('pricing-benefits/{id}/toggle-status', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'toggleStatus'])->name('pricing-benefits.toggle-status');
+    Route::post('pricing-benefits/update-order', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'updateOrder'])->name('pricing-benefits.update-order');
+    Route::resource('pricing-benefits', \App\Http\Controllers\Admin\PricingBenefitController::class);
 });

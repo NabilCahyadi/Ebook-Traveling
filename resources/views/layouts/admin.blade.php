@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="{{ url('assets/admin/vendor/fonts/fontawesome.css') }}" />
     <link rel="stylesheet" href="{{ url('assets/admin/vendor/fonts/tabler-icons.css') }}" />
     <link rel="stylesheet" href="{{ url('assets/admin/vendor/fonts/flag-icons.css') }}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 
     <!-- Core CSS -->
     <link rel="stylesheet" href="{{ url('assets/admin/vendor/css/core.css') }}" class="template-customizer-core-css" />
@@ -45,6 +46,11 @@
     <!-- Page CSS -->
     <link rel="stylesheet" href="{{ url('assets/admin/vendor/css/pages/cards-advance.css') }}" />
 
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+
+    <!-- Toastr -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 
     <!-- Helpers -->
     <script src="{{ url('assets/admin/vendor/js/helpers.js') }}"></script>
@@ -103,6 +109,12 @@
 
     <!-- Main JS -->
     <script src="{{ url('assets/admin/js/main.js') }}"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     <!-- CSRF Token Setup for AJAX -->
     <script>
