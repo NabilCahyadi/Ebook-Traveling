@@ -13,7 +13,7 @@ class CollectionRepository implements CollectionRepositoryInterface
         return Collection::with(['ebooks' => function ($query) {
             $query->select('ebooks.*') // Select semua kolom ebook
                 ->where('status', 'published')
-                ->with('creator.user')
+                ->with('creator')
                 ->whereNotNull('published_at') // Tambahkan ini
                 ->limit(10)
                 ->orderBy('created_at', 'desc');

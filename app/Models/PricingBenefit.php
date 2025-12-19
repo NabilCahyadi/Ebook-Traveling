@@ -16,4 +16,8 @@ class PricingBenefit extends Model
         'status',
         'sort_order',
     ];
+
+    protected $casts = [
+        'sort_order' => 'integer',
+    ];
 }

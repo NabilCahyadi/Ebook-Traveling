@@ -31,10 +31,26 @@ class Role extends Model
     }
 
     /**
-     * Get the permissions for the role.
+     * Get the old permissions for the role (legacy).
+     */
+    public function rolePermissions()
+    {
+        return $this->hasMany(RolePermission::class);
+    }
+
+    /**
+     * Get the permissions for the role (new dynamic system).
      */
     public function permissions()
     {
-        return $this->hasMany(RolePermission::class);
+        return $this->belongsToMany(Permission::class, 'role_permission');
+    }
+
+    /**
+     * Check if role has a specific permission.
+     */
+    public function hasPermission($permissionName)
+    {
+        return $this->permissions()->where('name', $permissionName)->exists();
     }
 }

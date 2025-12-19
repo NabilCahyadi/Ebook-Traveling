@@ -254,4 +254,34 @@ class CityService
             return (object) $item; // Convert array ke object untuk konsistensi
         });
     }
+
+    /**
+     * Get all active cities for admin selection
+     */
+    public function getAllActiveCities()
+    {
+        return \App\Models\City::where('is_active', true)
+            ->orderBy('name', 'asc')
+            ->get();
+    }
+
+    /**
+     * Get curated cities for landing page
+     */
+    public function getCuratedCities(array $cityIds)
+    {
+        if (empty($cityIds)) {
+            return collect();
+        }
+
+        // Get cities by IDs and maintain order
+        $cities = \App\Models\City::whereIn('id', $cityIds)
+            ->where('is_active', true)
+            ->get()
+            ->sortBy(function ($city) use ($cityIds) {
+                return array_search($city->id, $cityIds);
+            });
+
+        return $cities;
+    }
 }

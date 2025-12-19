@@ -250,4 +250,38 @@ class BlogService
     {
         return $this->blogRepository->getLatestPublished($limit);
     }
+
+    /**
+     * Get all published blogs for admin selection
+     */
+    public function getAllPublishedBlogs()
+    {
+        return \App\Models\Blog::where('status', 'published')
+            ->orderBy('published_at', 'desc')
+            ->get();
+    }
+
+    /**
+     * Get curated blogs for landing page
+     */
+    public function getCuratedBlogs(array $blogIds, int $limit = null)
+    {
+        if (empty($blogIds)) {
+            return collect();
+        }
+
+        // Get blogs by IDs and maintain order
+        $blogs = \App\Models\Blog::whereIn('id', $blogIds)
+            ->where('status', 'published')
+            ->get()
+            ->sortBy(function ($blog) use ($blogIds) {
+                return array_search($blog->id, $blogIds);
+            });
+
+        if ($limit) {
+            $blogs = $blogs->take($limit);
+        }
+
+        return $blogs;
+    }
 }
