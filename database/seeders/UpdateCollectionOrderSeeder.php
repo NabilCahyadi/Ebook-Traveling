@@ -17,7 +17,7 @@ class UpdateCollectionOrderSeeder extends Seeder
         foreach ($collections as $index => $collection) {
             $collection->update([
                 'order' => $index,
-                'is_visible_on_landing' => true
+                // 'is_visible_on_landing' => true
             ]);
         }
 

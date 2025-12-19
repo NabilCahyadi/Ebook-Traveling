@@ -1,5 +1,7 @@
 <?php
-
+// Service ini untuk mengelola data subscriber/pelanggan 
+// (misalnya daftar pengguna yang berlangganan). Ini untuk keperluan admin, 
+//bukan untuk menampilkan pricing di halaman publik.
 namespace App\Services;
 
 use App\Repositories\Interfaces\SubscriberRepositoryInterface;

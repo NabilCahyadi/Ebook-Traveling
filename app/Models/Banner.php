@@ -61,6 +61,6 @@ class Banner extends Model
         if ($this->image) {
             return asset('storage/' . $this->image);
         }
-        return asset('images/bg-default.webp');
+        return asset('/images/bg-default.webp');
     }
 }

@@ -1,5 +1,7 @@
 <?php
-
+// Service ini untuk mengelola transaksi langganan 
+//(misalnya membuat langganan baru, memperpanjang, membatalkan). 
+//Ini juga untuk keperluan admin atau logika bisnis, bukan untuk menampilkan pricing.
 namespace App\Services;
 
 use App\Models\Subscription;

@@ -17,20 +17,20 @@ class AdminSeeder extends Seeder
     {
         // Create Admin User
         User::updateOrCreate(
-            ['email' => 'nabilcahyadi155@gmail.com'],
+            ['email' => 'kahla@gmail.com'],
             [
                 'id' => Str::uuid(),
                 'name' => 'Nabil Cahyadi',
-                'email' => 'nabilcahyadi155@gmail.com',
+                'email' => 'kahla@gmail.com',
                 'phone' => '081234567890',
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('password'),
                 'user_type' => 'admin',
                 'email_verified_at' => now(),
             ]
         );
 
         $this->command->info('Admin user created successfully!');
-        $this->command->info('Email: nabilcahyadi155@gmail.com');
+        $this->command->info('Email: kahla@gmail.com');
         $this->command->info('Password: password123');
     }
 }

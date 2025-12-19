@@ -497,13 +497,13 @@ $collections = collect();
                     if (!isset($homeSliders)) {
                     $homeSliders = collect([
                     (object)[
-                    'image' => 'images/slider-1.webp',
+                    'image' => '/images/slider-1.webp',
                     'title' => "Get My Essential Travel Guide",
                     'description' => 'Access insider tips and verified travel itineraries.',
                     'target_url' => '/pricing'
                     ],
                     (object)[
-                    'image' => 'images/slider-2.webp',
+                    'image' => '/images/slider-2.webp',
                     'title' => "Start Your Plan Claim Your Promo",
                     'description' => 'Save up to 50% off on your first order',
                     'target_url' => '/promo'
@@ -614,7 +614,7 @@ $collections = collect();
                     <div class="title">
                         <h3>Subscription Plans</h3>
                     </div>
-                    <a href="{{ route('pricing') }}" class="show-all">View All</a>
+                    <a href="{{ route('pricing') }}#pricing-plans" class="show-all">View All</a>
                 </div>
 
                 @php

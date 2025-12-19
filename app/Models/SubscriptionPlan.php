@@ -21,20 +21,29 @@ class SubscriptionPlan extends Model
         'cover_image',
         'price',
         'duration_days',
-        'price_description', // Tambahkan ini
+        'price_description', 
         'features',
-        'button_text',       // Tambahkan ini
-        'is_featured',       // Tambahkan ini
-        'sort_order',        // Tambahkan ini
+        'button_text',       
+        'is_featured',       
+        'sort_order',        
         'is_active',
+        'category_subscription',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
         'duration_days' => 'integer',
-        'features' => 'array',
+        'features' => 'array', // Pastikan ini ada dan benar
         'is_active' => 'boolean',
-        'price' => 'decimal:2',
+        'is_featured' => 'boolean', 
+        'sort_order' => 'integer', 
+    ];
+
+    const CATEGORIES = [
+        'harian' => 'Daily',
+        'mingguan' => 'Weekly',
+        'bulanan' => 'Monthly',
+        'tahunan' => 'Yearly',
     ];
 
     /**

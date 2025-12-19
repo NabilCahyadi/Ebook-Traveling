@@ -25,9 +25,9 @@ class HomeController extends Controller
     {
         $homeSliders = $this->bannerService->getActiveHomeSliders();
         $topCities = $this->cityService->getHomepageCities(10);
-        // $subscriptionPlans = $this->subscriptionPlanService->getHomepagePlans(5);
         $subscriptionPlans = $this->subscriptionPlanService->getActivePlans()->take(3);
         $latestBlogs = $this->blogService->getLatestForHomepage(4);
+        $groupedSubscriptionPlans = $this->subscriptionPlanService->getPlansGroupedByCategory();
 
         // Tambahkan image property jika belum ada
         $subscriptionPlans = $subscriptionPlans->map(function ($plan, $index) {
@@ -48,6 +48,7 @@ class HomeController extends Controller
             'collections' => $collectionData['collections'],
             'isSubscribed' => $collectionData['isSubscribed'],
             'latestBlogs' => $latestBlogs,
+            'groupedSubscriptionPlans' => $groupedSubscriptionPlans,
         ]);
     }
 

@@ -51,7 +51,7 @@
         /* Opsi: Samakan border dengan warna hover primary, atau hilangkan border */
     }
 </style>
-<style>
+<!-- <style>
     /* CSS untuk Grid Layout dan Centering */
     .pricing-grid {
         display: flex;
@@ -156,7 +156,7 @@
             flex: 0 0 100%;
         }
     }
-</style>
+</style> -->
 <style>
     /* STYLE UNTUK FAQS */
     /* FAQ accordion styles (minimal & elegant) */
@@ -194,6 +194,221 @@
         .faqs-section .accordion-header h4 {
             font-size: 1.05rem;
         }
+    }
+</style>
+<style>
+    /* ----------------- */
+    /* CUSTOM PRICING STYLE */
+    /* ----------------- */
+
+    /* Gunakan CSS Variable agar mudah diubah */
+    :root {
+        --primary-color: #FF4C61;
+        --primary-color-dark: #e53e4a;
+        --light-color: #f8f9fa;
+        --dark-color: #343a40;
+        --text-muted: #6c757d;
+    }
+
+    /* --- Style untuk Tab Navigasi --- */
+    .nav-pills .nav-link {
+        border-radius: 50px;
+        padding: 12px 28px;
+        color: var(--dark-color);
+        background-color: var(--light-color);
+        border: 2px solid transparent;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        margin: 0 5px;
+    }
+
+    .nav-pills .nav-link:hover {
+        background-color: #fff;
+        border-color: var(--primary-color);
+        transform: translateY(-2px);
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        color: #fff;
+        box-shadow: 0 4px 15px rgba(255, 76, 97, 0.3);
+    }
+
+    /* --- Style untuk Container Tab --- */
+    .tab-content {
+        margin-top: 3rem;
+    }
+
+    /* --- Style untuk Grid Kartu --- */
+    .pricing-grid {
+        display: grid;
+        /* Untuk layar lebar (Desktop), paksa 4 kolom */
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+        /* Jarak antar kartu */
+        margin-top: 2rem;
+
+        /* --- TAMBAHKAN INI UNTUK MENENGahkan KARTU --- */
+        justify-content: center;
+    }
+
+    /* Untuk layar sedang (Tablet & Desktop kecil) */
+    @media (max-width: 1200px) {
+        .pricing-grid {
+            grid-template-columns: repeat(3, 1fr);
+            /* 3 kolom */
+        }
+    }
+
+    /* Untuk layar kecil (Tablet besar) */
+    @media (max-width: 992px) {
+        .pricing-grid {
+            grid-template-columns: repeat(2, 1fr);
+            /* 2 kolom */
+        }
+    }
+
+    /* Untuk layar sangat kecil (Mobile) */
+    @media (max-width: 576px) {
+        .pricing-grid {
+            grid-template-columns: 1fr;
+            /* 1 kolom */
+            gap: 1.5rem;
+            /* Kurangi jarak di mobile */
+        }
+    }
+
+    /* --- Style untuk Kartu Harga --- */
+    /* --- Style untuk Kartu Harga (DIPERBAIKI) --- */
+    .pricing-card {
+        background-color: #fff;
+        border-radius: 16px;
+        padding: 2.5rem 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 2px solid transparent;
+        position: relative;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        min-height: 600px;
+    }
+
+    .pricing-card:hover {
+        transform: translateY(-15px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    /* --- Style untuk Kartu yang Diunggulkan (Featured) --- */
+    .pricing-card--featured {
+        border-color: var(--primary-color);
+        transform: scale(1.05);
+    }
+
+    .pricing-card--featured::before {
+        content: 'MOST POPULAR';
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--primary-color);
+        color: white;
+        padding: 5px 20px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    /* --- Typography di dalam Kartu --- */
+    .pricing-card .card-title {
+        font-size: 1.1rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 1.5rem;
+    }
+
+    .pricing-card h2 {
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--dark-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .pricing-card .card-price-description {
+        font-size: 1rem;
+        color: var(--text-muted);
+        margin-bottom: 2rem;
+    }
+
+    .pricing-card .desc-plan {
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        margin-bottom: 2.5rem;
+        flex-grow: 1;
+        /* Mendorong konten ke tengah */
+    }
+
+    /* --- Style untuk Daftar Fitur --- */
+    .pricing-card .card-features {
+        list-style: none;
+        padding: 0;
+        text-align: left;
+        margin-bottom: 2rem;
+        flex-grow: 1;
+    }
+
+    .pricing-card .card-features li {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f1f1f1;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .pricing-card .card-features li:last-child {
+        border-bottom: none;
+    }
+
+    /* Tambahkan icon Font Awesome untuk checklist */
+    .pricing-card .card-features li .feature-check {
+        color: #28a745;
+        /* Warna hijau untuk centang */
+        margin-right: 1rem;
+        font-size: 1.1rem;
+    }
+
+    /* --- Style untuk Tombol --- */
+    .pricing-button {
+        width: 100%;
+        padding: 15px 30px;
+        background-color: var(--dark-color);
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .pricing-card--featured .pricing-button {
+        background-color: var(--primary-color);
+        box-shadow: 0 5px 15px rgba(255, 76, 97, 0.3);
+    }
+
+    .pricing-button:hover {
+        background-color: var(--primary-color-dark);
+        transform: translateY(-3px);
+    }
+
+    .pricing-card--featured .pricing-button:hover {
+        background-color: var(--primary-color-dark);
     }
 </style>
 <div class="container">
@@ -265,7 +480,6 @@
         </div>
     </section>
     <!-- end why choose our -->
-
     <section id="pricing-plans" class="benefits-section py-5">
         <div class="container text-center">
             <h3>Our Flexible Subscription Plans</h3>
@@ -273,31 +487,41 @@
                 Choose the best plan to power your projects, from small personal websites to large-scale enterprise applications.
             </p>
 
-            @if(isset($plans) && $plans->isNotEmpty())
-            <div class="pricing-grid">
-                @foreach($plans as $plan)
-                <div class="pricing-card {{ $loop->iteration % 2 == 0 ? 'pricing-card--even' : 'pricing-card--odd' }}">
-
-                    <p class="card-title" style="font-weight: 500; text-transform: uppercase; margin-bottom: 2rem;">{{ $plan->name }}</p>
-
-                    <h2 style="font-size: 2.5rem; font-weight: 700; text-transform: uppercase;">
-                        Rp {{ number_format($plan->price, 0, ',', '.') }}
-                    </h2>
-                    <p class="card-price-description" style="font-weight: 500; margin-bottom: 1rem;">{{ $plan->price_description }}</p>
-
-                    <p class="desc-plan mb-3">{{ $plan->description }}</p>
-
-                    <ul class="card-features list-unstyled" style="font-size: 0.875rem; text-align: left; width: 100%;">
-                        @foreach($plan->features as $feature)
-                        <li style="margin-bottom: 0.5rem;">
-                            <span class="feature-check" style="margin-right: 0.5rem;">&#10003;</span> {{ $feature }}
-                        </li>
-                        @endforeach
-                    </ul>
-
-                    <button class="pricing-button">
-                        {{ $plan->button_text }}
+            @if(isset($groupedSubscriptionPlans) && $groupedSubscriptionPlans->isNotEmpty())
+            <!-- Tab Navigation (menggunakan nav-pills) -->
+            <ul class="nav nav-pills justify-content-center mb-5" id="pricingTab" role="tablist">
+                @foreach($groupedSubscriptionPlans as $categoryKey => $plans)
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link {{ $loop->first ? 'active' : '' }}" id="{{ $categoryKey }}-tab" data-bs-toggle="pill" data-bs-target="#{{ $categoryKey }}" type="button" role="tab" aria-controls="{{ $categoryKey }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}">
+                        {{ App\Models\SubscriptionPlan::CATEGORIES[$categoryKey] ?? ucfirst($categoryKey) }}
                     </button>
+                </li>
+                @endforeach
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="pricingTabContent">
+                @foreach($groupedSubscriptionPlans as $categoryKey => $plans)
+                <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ $categoryKey }}" role="tabpanel" aria-labelledby="{{ $categoryKey }}-tab">
+                    <div class="pricing-grid">
+                        @foreach($plans as $plan)
+                        <!-- Tambahkan class 'pricing-card--featured' jika plan ini diunggulkan -->
+                        <div class="pricing-card {{ $plan->is_featured ? 'pricing-card--featured' : '' }}">
+                            <p class="card-title">{{ $plan->name }}</p>
+
+                            <h2>Rp {{ number_format($plan->price, 0, ',', '.') }}</h2>
+                            <p class="card-price-description">{{ $plan->price_description }}</p>
+
+                            <p class="desc-plan">{{ $plan->description }}</p>
+
+                            <!-- DAFTAR FITUR SUDAH DIHAPUS -->
+
+                            <button class="pricing-button">
+                                {{ $plan->button_text }}
+                            </button>
+                        </div>
+                        @endforeach
+                    </div>
                 </div>
                 @endforeach
             </div>

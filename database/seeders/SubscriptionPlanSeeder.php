@@ -27,6 +27,7 @@ class SubscriptionPlanSeeder extends Seeder
                 'is_featured' => false,
                 'sort_order' => 1,
                 'is_active' => true,
+                'category_subscription' => 'harian',
             ],
             [
                 'name' => 'Monthly Explorer',
@@ -45,13 +46,14 @@ class SubscriptionPlanSeeder extends Seeder
                 'is_featured' => false,
                 'sort_order' => 2,
                 'is_active' => true,
+                'category_subscription' => 'mingguan',
             ],
             [
                 'name' => 'Yearly Voyager',
                 'slug' => 'yearly-voyager', // <-- Slug yang dibutuhkan
                 'description' => 'Best value for dedicated explorers. Save big with an annual plan.',
                 'price' => 99000,
-                'price_description' => 'Per Year',
+                'price_description' => 'Per Month',
                 'duration_days' => 365,
                 'features' => [
                     'Everything in Monthly',
@@ -63,6 +65,7 @@ class SubscriptionPlanSeeder extends Seeder
                 'is_featured' => true, // Jadikan yang ini unggulan
                 'sort_order' => 3,
                 'is_active' => true,
+                'category_subscription' => 'bulanan',
             ],
             [
                 'name' => 'Business',
@@ -81,6 +84,7 @@ class SubscriptionPlanSeeder extends Seeder
                 'is_featured' => false,
                 'sort_order' => 4,
                 'is_active' => true,
+                'category_subscription' => 'tahunan',
             ],
         ];
 

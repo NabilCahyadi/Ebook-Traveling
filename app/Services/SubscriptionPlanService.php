@@ -1,10 +1,12 @@
 <?php
-
+//Fungsinya adalah mengelola data paket langganan itu sendiri (nama, harga, fitur),
+// termasuk mengambil data untuk ditampilkan di halaman pricing publik.
 namespace App\Services;
 
 use App\Repositories\Interfaces\SubscriptionPlanRepositoryInterface;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use App\models\SubscriptionPlan;
 
 class SubscriptionPlanService
 {
@@ -88,6 +90,32 @@ class SubscriptionPlanService
         }
 
         return $plan->delete(); // Soft delete
+    }
+
+
+    /**
+     * Mengambil semua plan aktif dan mengelompokkannya berdasarkan kategori.
+     */
+    public function getPlansGroupedByCategory(): Collection
+    {
+        // 1. Gunakan method getActivePlans() yang sudah ada dan benar
+        $plans = $this->getActivePlansForDisplay();
+
+        // 2. Kelompokkan berdasarkan kategori
+        $groupedPlans = $plans->groupBy('category_subscription');
+
+        // 3. Urutkan kategori berdasarkan konstanta dari MODEL
+        $sortedCategories = array_keys(SubscriptionPlan::CATEGORIES);
+        $orderedGroupedPlans = collect();
+
+        foreach ($sortedCategories as $category) {
+            if ($groupedPlans->has($category)) {
+                $orderedGroupedPlans->put($category, $groupedPlans->get($category));
+            }
+        }
+
+        // 4. Kembalikan hasilnya
+        return $orderedGroupedPlans; // <-- PASTIKAN BARIS INI ADA
     }
 
     /**
