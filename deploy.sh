@@ -9,29 +9,48 @@ PHP_BIN="/usr/bin/php"
 # Masuk ke folder project
 cd $PROJECT_PATH
 
+echo "🚀 Starting deployment process..."
+
 # Update repo dari GitHub
-/usr/bin/git fetch --all
+echo "📥 Pulling latest changes from repository..."
+/usr/bin/git fetch --all    
 /usr/bin/git reset --hard origin/main
 
-# Install/Update dependencies (optional, uncomment jika perlu)
-# composer install --no-dev --optimize-autoloader
+# Install/Update dependencies
+echo "📦 Installing Composer dependencies..."
+composer install --no-dev --optimize-autoloader --no-interaction
 
-# Jalankan migrate (HANYA untuk setup awal, ganti setelah ada data production!)
+# Clear all caches before migration
+echo "🧹 Clearing application cache..."
+$PHP_BIN artisan config:clear
+$PHP_BIN artisan cache:clear
+$PHP_BIN artisan view:clear
+$PHP_BIN artisan route:clear
+
+# Jalankan migrate
+echo "🗄️  Running database migrations..."
 $PHP_BIN artisan migrate --force
 
+# Run seeders (only if needed for updates)
+echo "🌱 Running database seeders..."
+$PHP_BIN artisan db:seed --class=RoleSeeder --force
+$PHP_BIN artisan db:seed --class=PermissionSeeder --force
+$PHP_BIN artisan db:seed --class=CreatorSeeder --force
+$PHP_BIN artisan db:seed --class=EbookSeeder --force
 
 # Create storage symlink (PENTING untuk akses file dari public)
+echo "🔗 Creating storage symbolic link..."
 $PHP_BIN artisan storage:link
 
-
 # Set permissions untuk storage dan cache
+echo "🔒 Setting proper permissions..."
 chmod -R 775 storage bootstrap/cache
 chown -R $USER:$USER storage bootstrap/cache
 
-# Clear optimize (cache, config, view, route, dll)
-$PHP_BIN artisan optimize:clear
-
-# Cache config dan routes untuk performance
+# Optimize application for production
+echo "⚡ Optimizing application..."
 $PHP_BIN artisan config:cache
 $PHP_BIN artisan route:cache
 $PHP_BIN artisan view:cache
+
+echo "✅ Deployment completed successfully!"
