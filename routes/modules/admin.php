@@ -39,6 +39,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     // Permission Management
     Route::resource('permissions', \App\Http\Controllers\Admin\PermissionController::class);
 
+    // Role Permission Management
+    Route::get('role-permissions', [\App\Http\Controllers\Admin\RolePermissionController::class, 'index'])->name('role-permissions.index');
+    Route::get('role-permissions/{role}/edit', [\App\Http\Controllers\Admin\RolePermissionController::class, 'edit'])->name('role-permissions.edit');
+    Route::put('role-permissions/{role}', [\App\Http\Controllers\Admin\RolePermissionController::class, 'update'])->name('role-permissions.update');
+
     // Ebook Management (All ebooks in system)
     Route::get('ebooks/search-creators', [\App\Http\Controllers\Admin\EbookController::class, 'searchCreators'])->name('ebooks.search-creators');
     Route::get('ebooks/pending-approval', [\App\Http\Controllers\Admin\EbookController::class, 'pendingApproval'])->name('ebooks.pending-approval');

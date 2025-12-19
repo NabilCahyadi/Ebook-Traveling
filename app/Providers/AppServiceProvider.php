@@ -77,6 +77,10 @@ class AppServiceProvider extends ServiceProvider
             PromoServiceInterface::class,
             PromoService::class
         );
+        $this->app->bind(
+            \App\Repositories\Interfaces\PermissionRepositoryInterface::class,
+            \App\Repositories\PermissionRepository::class
+        );
     }
 
     /**

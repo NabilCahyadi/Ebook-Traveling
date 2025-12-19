@@ -217,9 +217,13 @@
                 <div class="col-xl-3 col-lg-4">
                     <div class="header-info">
                         <ul>
+                            <?php if(hasPermission('access_about_us')): ?>
                             <li><a href="<?php echo e(route('about-us')); ?>">About Us</a></li>
+                            <?php endif; ?>
                             <!-- <li><a href="page-account.html">Promo</a></li> -->
+                            <?php if(hasPermission('access_contact_us')): ?>
                             <li><a href="<?php echo e(route('contact')); ?>">Customer Service</a></li>
+                            <?php endif; ?>
                             <li><a href="#">E-book</a></li>
                         </ul>
                     </div>
@@ -380,20 +384,52 @@
                                         <li>
                                             <a href="<?php echo e(route('page-account')); ?>"><i class="fi fi-rs-user mr-10"></i>Account</a>
                                         </li>
+                                        <?php if(hasPermission('access_wishlist')): ?>
                                         <li>
                                             <a href="<?php echo e(route('page-account')); ?>?tab=orders"><i class="fi fi-rs-label mr-10"></i>Wishlist</a>
                                         </li>
+                                        <?php endif; ?>
+                                        <?php if(hasPermission('access_creator_dashboard')): ?>
                                         <li>
                                             <a href="<?php echo e(route('page-account')); ?>?tab=creator"><i class="fi-rs-edit mr-10"></i>Creator</a>
                                         </li>
+                                        <?php endif; ?>
                                         <li>
                                             
                                             <form method="POST" action="<?php echo e(route('user.logout')); ?>" id="logout-form" style="display: none;">
                                                 <?php echo csrf_field(); ?>
                                             </form>
-                                            <a onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                            <a href="#" onclick="event.preventDefault(); handleLogout();">
                                                 <i class="fi fi-rs-sign-out mr-10"></i>Sign out
                                             </a>
+                                            <script>
+                                                function handleLogout() {
+                                                    // Try to submit logout form
+                                                    const form = document.getElementById('logout-form');
+                                                    const formData = new FormData(form);
+                                                    
+                                                    fetch(form.action, {
+                                                        method: 'POST',
+                                                        body: formData,
+                                                        headers: {
+                                                            'X-Requested-With': 'XMLHttpRequest'
+                                                        }
+                                                    })
+                                                    .then(response => {
+                                                        if (response.ok || response.status === 419) {
+                                                            // Success or CSRF expired, redirect to login
+                                                            window.location.href = '/login';
+                                                        } else {
+                                                            throw new Error('Logout failed');
+                                                        }
+                                                    })
+                                                    .catch(error => {
+                                                        // If anything fails, just redirect to login
+                                                        console.log('Logout error, redirecting to login', error);
+                                                        window.location.href = '/login';
+                                                    });
+                                                }
+                                            </script>
                                         </li>
                                     </ul>
                                 </div>
@@ -456,21 +492,47 @@
                     <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block font-heading">
                         <nav>
                             <ul>
+                                <?php
+                                    // Debug: check user and role
+                                    $currentUser = auth()->user();
+                                    $debugInfo = '';
+                                    if ($currentUser) {
+                                        $userType = $currentUser->user_type ?? 'unknown';
+                                        $debugInfo = "User: {$currentUser->name}, Type: {$userType}";
+                                    } else {
+                                        $debugInfo = "Guest User";
+                                    }
+                                ?>
+                                
+                                <?php if(hasPermission('access_home')): ?>
                                 <li class="<?php echo e(request()->routeIs('home') ? 'active' : ''); ?>">
                                     <a href="/">Home</a>
                                 </li>
+                                <?php endif; ?>
+                                
+                                <?php if(hasPermission('access_destinations')): ?>
                                 <li class="<?php echo e(request()->routeIs('destinations*') ? 'active' : ''); ?>">
                                     <a href="<?php echo e(route('destinations')); ?>">Destinations</a>
                                 </li>
+                                <?php endif; ?>
+                                
+                                <?php if(hasPermission('access_blog')): ?>
                                 <li class="<?php echo e(request()->routeIs('blogs.*') ? 'active' : ''); ?>">
                                     <a href="<?php echo e(route('blogs.index')); ?>">Blog</a>
                                 </li>
+                                <?php endif; ?>
+                                
+                                <?php if(hasPermission('access_pricing')): ?>
                                 <li class="<?php echo e(request()->routeIs('pricing') ? 'active' : ''); ?>">
                                     <a href="<?php echo e(route('pricing')); ?>">Pricing</a>
                                 </li>
+                                <?php endif; ?>
+                                
+                                <?php if(hasPermission('access_promo')): ?>
                                 <li class="<?php echo e(request()->routeIs('promo') ? 'active' : ''); ?>">
                                     <a href="<?php echo e(route('promo')); ?>">Promo</a>
                                 </li>
+                                <?php endif; ?>
                             </ul>
                         </nav>
                     </div>

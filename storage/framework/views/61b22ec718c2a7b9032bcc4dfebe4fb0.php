@@ -354,7 +354,7 @@
                                     </div>
                                 </div>
                                 <div class="short-desc mb-30">
-                                    <p class="font-lg"><?php echo e($ebook->description); ?></p>
+                                    <div class="font-lg"><?php echo $ebook->description; ?></div>
                                 </div>
                                 <div class="font-xs">
                                     <ul class="mr-50 float-start">
@@ -661,7 +661,7 @@
                                             </div>
                                         </div>
 
-                                        <p class="product-description"><?php echo e($ebook->short_description); ?></p>
+                                        <div class="product-description"><?php echo $ebook->short_description; ?></div>
 
                                         
                                         <?php if(auth()->check() && auth()->user()->hasActiveSubscription()): ?>
@@ -717,4 +717,4 @@
     });
 </script>
 <?php $__env->stopSection(); ?>
-<?php echo $__env->make('layouts_lp.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\PROJEK PROJEK\Ebook-Traveling\resources\views/ebooks-detail.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts_lp.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\ebook_traveling\resources\views/ebooks-detail.blade.php ENDPATH**/ ?>

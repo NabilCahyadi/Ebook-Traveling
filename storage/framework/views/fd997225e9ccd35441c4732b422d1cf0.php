@@ -33,40 +33,44 @@
                         </ul>
                     </div>
                 </div>
+                <?php if(hasPermission('access_about_us') || hasPermission('access_terms_conditions') || hasPermission('access_contact_us') || hasPermission('access_help_center')): ?>
                 <div class="footer-link-widget col">
                     <h4 class="widget-title">Company</h4>
                     <ul class="footer-list mb-sm-5 mb-md-0">
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Terms &amp; Conditions</a></li>
-                        <li><a href="#">Contact Us</a></li>
-                        <li><a href="#">Support Center</a></li>
+                        <?php if(hasPermission('access_about_us')): ?>
+                        <li><a href="<?php echo e(route('about-us')); ?>">About Us</a></li>
+                        <?php endif; ?>
+                        <?php if(hasPermission('access_terms_conditions')): ?>
+                        <li><a href="<?php echo e(route('terms-conditions')); ?>">Terms &amp; Conditions</a></li>
+                        <?php endif; ?>
+                        <?php if(hasPermission('access_contact_us')): ?>
+                        <li><a href="<?php echo e(route('contact')); ?>">Contact Us</a></li>
+                        <?php endif; ?>
+                        <?php if(hasPermission('access_help_center')): ?>
+                        <li><a href="<?php echo e(route('help-center')); ?>">Support Center</a></li>
+                        <?php endif; ?>
                     </ul>
                 </div>
-                <div class="footer-link-widget col">
-                    <h4 class="widget-title">Account</h4>
-                    <ul class="footer-list mb-sm-5 mb-md-0">
-                        <li><a href="#">Sign In</a></li>
-                        <li><a href="#">View Cart</a></li>
-                        <li><a href="#">My Wishlist</a></li>
-                    </ul>
-                </div>
-                <div class="footer-link-widget col">
-                    <h4 class="widget-title">Quick Links</h4>
-                    <ul class="footer-list mb-sm-5 mb-md-0">
-                        <li><a href="<?php echo e(route('shopping-policy')); ?>">Shopping Policy</a></li>
-                        <li><a href="<?php echo e(route('payment-policy')); ?>">Payment Policy</a></li>
-                        <li><a href="<?php echo e(route('faq')); ?>">FAQs</a></li>
-                    </ul>
-                </div>
+                <?php endif; ?>
+                <?php if(hasPermission('access_privacy_policy') || hasPermission('access_shopping_policy') || hasPermission('access_payment_policy') || hasPermission('access_faq')): ?>
                 <div class="footer-link-widget col">
                     <h4 class="widget-title">More</h4>
                     <ul class="footer-list mb-sm-5 mb-md-0">
-                        <li><a href="<?php echo e(route('terms-conditions')); ?>">Terms &amp; Conditions</a></li>
+                        <?php if(hasPermission('access_privacy_policy')): ?>
                         <li><a href="<?php echo e(route('privacy-policy')); ?>">Privacy Policy</a></li>
-                        <li><a href="<?php echo e(route('help-center')); ?>">Help Center</a></li>
-                        <li><a href="<?php echo e(route('contact')); ?>">Contact Us</a></li>
+                        <?php endif; ?>
+                        <?php if(hasPermission('access_shopping_policy')): ?>
+                        <li><a href="<?php echo e(route('shopping-policy')); ?>">Shopping Policy</a></li>
+                        <?php endif; ?>
+                        <?php if(hasPermission('access_payment_policy')): ?>
+                        <li><a href="<?php echo e(route('payment-policy')); ?>">Payment Policy</a></li>
+                        <?php endif; ?>
+                        <?php if(hasPermission('access_faq')): ?>
+                        <li><a href="<?php echo e(route('faq')); ?>">FAQs</a></li>
+                        <?php endif; ?>
                     </ul>
                 </div>
+                <?php endif; ?>
                 <!-- <div class="footer-link-widget widget-install-app col">
                     <h4 class="widget-title">Install App</h4>
                     <p class="wow fadeIn animated">From App Store or Google Play</p>

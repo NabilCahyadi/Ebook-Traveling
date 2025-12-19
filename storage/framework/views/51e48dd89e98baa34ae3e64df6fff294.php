@@ -383,4 +383,4 @@
     </section>
 </div>
 <?php $__env->stopSection(); ?>
-<?php echo $__env->make('layouts_lp.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\PROJEK PROJEK\Ebook-Traveling\resources\views/components/destinations/show.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts_lp.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\ebook_traveling\resources\views/components/destinations/show.blade.php ENDPATH**/ ?>

@@ -319,7 +319,7 @@ unset($__errorArgs, $__bag); ?>" id="status"
                                     <option value="archived" <?php echo e(old('status') == 'archived' ? 'selected' : ''); ?>>Archived
                                     </option>
                                 </select>
-                                <small class="text-muted">Admin dapat langsung publish tanpa approval</small>
+                                <!-- <small class="text-muted">Admin dapat langsung publish tanpa approval</small> -->
                                 <?php $__errorArgs = ['status'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -356,8 +356,8 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
                                 id="coverImageInput" name="cover_image" accept="image/*">
-                            <small class="text-muted">Gambar akan otomatis di-crop ke rasio 1:1.6 (contoh: 650x965px). 
-                                <strong>File besar akan otomatis dikompresi.</strong></small>
+                            <!-- <small class="text-muted">Rasio 1:1.6 (contoh: 650x965px). 
+                                <strong>File besar akan otomatis dikompresi.</strong></small> -->
                             <?php $__errorArgs = ['cover_image'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -798,62 +798,110 @@ unset($__errorArgs, $__bag); ?>
         const creatorSuggestions = $('#creator_suggestions');
         const selectedCreatorDiv = $('#selected_creator');
         let searchTimeout;
+        let allCreators = []; // Cache all creators
 
         // Load selected creator if edit mode
         <?php if(old('creator_id')): ?>
             loadSelectedCreator('<?php echo e(old('creator_id')); ?>');
         <?php endif; ?>
 
+        // Load all creators on focus
+        creatorSearch.on('focus', function() {
+            if (creatorId.val()) {
+                // Already has selected creator, don't show list
+                return;
+            }
+            
+            if (allCreators.length > 0) {
+                // Already loaded, show from cache
+                displayCreators(allCreators);
+            } else {
+                // Load all creators
+                loadAllCreators();
+            }
+        });
+
+        // Search on input (from first character)
         creatorSearch.on('input', function() {
             const query = $(this).val().trim();
             
             clearTimeout(searchTimeout);
             
-            if (query.length < 2) {
-                creatorSuggestions.hide().empty();
-                return;
+            if (query.length === 0) {
+                // Show first 10 when input is empty
+                loadAllCreators();
+            } else {
+                // Search from server when typing (even 1 character)
+                searchTimeout = setTimeout(() => {
+                    searchCreatorsFromServer(query);
+                }, 300);
+            }
+        });
+        
+        function searchCreatorsFromServer(query) {
+            creatorSuggestions.html('<div class="list-group-item text-muted"><i class="ti ti-loader ti-spin me-1"></i> Searching...</div>').show();
+            
+            $.ajax({
+                url: '<?php echo e(route('admin.ebooks.search-creators')); ?>',
+                method: 'GET',
+                data: { q: query },
+                success: function(data) {
+                    displayCreators(data);
+                },
+                error: function() {
+                    creatorSuggestions.html(
+                        '<div class="list-group-item text-danger">Error searching creators</div>'
+                    ).show();
+                }
+            });
+        }
+
+        function loadAllCreators() {
+            creatorSuggestions.html('<div class="list-group-item text-muted"><i class="ti ti-loader ti-spin me-1"></i> Loading creators...</div>').show();
+            
+            $.ajax({
+                url: '<?php echo e(route('admin.ebooks.search-creators')); ?>',
+                method: 'GET',
+                data: { q: '' }, // Empty query to get all
+                success: function(data) {
+                    allCreators = data;
+                    displayCreators(data);
+                },
+                error: function() {
+                    creatorSuggestions.html(
+                        '<div class="list-group-item text-danger">Error loading creators</div>'
+                    ).show();
+                }
+            });
+        }
+
+        function displayCreators(creators) {
+            creatorSuggestions.empty();
+            
+            if (creators.length === 0) {
+                creatorSuggestions.append(
+                    '<div class="list-group-item text-muted">Tidak ada creator ditemukan</div>'
+                );
+            } else {
+                creators.forEach(creator => {
+                    const item = $('<a href="javascript:void(0)" class="list-group-item list-group-item-action"></a>');
+                    item.html(`
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>${creator.name}</strong>
+                                <br><small class="text-muted">${creator.email}</small>
+                            </div>
+                        </div>
+                    `);
+                    item.on('click', function() {
+                        selectCreator(creator);
+                    });
+                    creatorSuggestions.append(item);
+                });
             }
             
-            searchTimeout = setTimeout(() => {
-                $.ajax({
-                    url: '<?php echo e(route('admin.ebooks.search-creators')); ?>',
-                    method: 'GET',
-                    data: { q: query },
-                    success: function(data) {
-                        creatorSuggestions.empty();
-                        
-                        if (data.length === 0) {
-                            creatorSuggestions.append(
-                                '<div class="list-group-item text-muted">Tidak ada creator ditemukan</div>'
-                            );
-                        } else {
-                            data.forEach(creator => {
-                                const item = $('<a href="javascript:void(0)" class="list-group-item list-group-item-action"></a>');
-                                item.html(`
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>${creator.name}</strong>
-                                            <br><small class="text-muted">${creator.email}</small>
-                                        </div>
-                                    </div>
-                                `);
-                                item.on('click', function() {
-                                    selectCreator(creator);
-                                });
-                                creatorSuggestions.append(item);
-                            });
-                        }
-                        
-                        creatorSuggestions.show();
-                    },
-                    error: function() {
-                        creatorSuggestions.html(
-                            '<div class="list-group-item text-danger">Error loading creators</div>'
-                        ).show();
-                    }
-                });
-            }, 300);
-        });
+            creatorSuggestions.show();
+        }
 
         function selectCreator(creator) {
             creatorId.val(creator.id);

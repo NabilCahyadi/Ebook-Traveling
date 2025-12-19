@@ -356,7 +356,7 @@
                                     </div>
                                 </div>
                                 <div class="short-desc mb-30">
-                                    <p class="font-lg">{{ $ebook->description }}</p>
+                                    <div class="font-lg">{!! $ebook->description !!}</div>
                                 </div>
                                 <div class="font-xs">
                                     <ul class="mr-50 float-start">
@@ -661,7 +661,7 @@
                                             </div>
                                         </div>
 
-                                        <p class="product-description">{{ $ebook->short_description }}</p>
+                                        <div class="product-description">{!! $ebook->short_description !!}</div>
 
                                         {{-- LOGIKA HANYA PADA TOMBOL AKSI --}}
                                         @if(auth()->check() && auth()->user()->hasActiveSubscription())

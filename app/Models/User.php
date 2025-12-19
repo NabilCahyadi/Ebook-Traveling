@@ -107,10 +107,27 @@ class User extends Authenticatable
 
     /**
      * Get the first role for the user (for backward compatibility).
+     * This is not a relationship, use roles() for relationship.
      */
     public function role()
     {
+        // Try to get from relationship first (if already loaded)
+        if ($this->relationLoaded('roles') && $this->roles->isNotEmpty()) {
+            return $this->roles->first();
+        }
+        
+        // Otherwise query
         return $this->roles()->first();
+    }
+    
+    /**
+     * Get the primary role based on user_type.
+     * For use in permission checks.
+     */
+    public function primaryRole()
+    {
+        $userType = $this->user_type ?? 'member';
+        return Role::where('slug', $userType)->first();
     }
 
     /**

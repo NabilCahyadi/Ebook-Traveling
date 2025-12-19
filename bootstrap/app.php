@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'creator' => \App\Http\Middleware\CreatorMiddleware::class,
             'premium' => \App\Http\Middleware\IsPremiumUser::class,
             'record.view' => \App\Http\Middleware\RecordView::class,
+            'permission' => \App\Http\Middleware\CheckPermission::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

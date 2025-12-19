@@ -135,6 +135,14 @@
                     </a>
                 </li>
 
+                <!-- Role Permissions -->
+                <li class="menu-item <?php echo e(Request::is('admin/role-permissions*') ? 'active' : ''); ?>">
+                    <a href="<?php echo e(route('admin.role-permissions.index')); ?>" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-lock-access"></i>
+                        <div data-i18n="Role Permissions">Role Permissions</div>
+                    </a>
+                </li>
+
                 <!-- Permissions -->
                 <!-- <li class="menu-item <?php echo e(Request::is('admin/permissions*') ? 'active' : ''); ?>">
                     <a href="<?php echo e(route('admin.permissions.index')); ?>" class="menu-link">
