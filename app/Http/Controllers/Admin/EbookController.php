@@ -327,17 +327,24 @@ class EbookController extends Controller
     {
         $query = $request->get('q', '');
         
-        if (strlen($query) < 2) {
-            return response()->json([]);
-        }
-
-        $creators = \App\Models\User::where('user_type', 'creator')
-            ->where(function ($q) use ($query) {
+        // Build base query
+        $creatorsQuery = \App\Models\User::where('user_type', 'creator');
+        
+        // Add search filter if query is provided
+        if (strlen($query) >= 1) {
+            $creatorsQuery->where(function ($q) use ($query) {
                 $q->where('name', 'LIKE', "%{$query}%")
                   ->orWhere('email', 'LIKE', "%{$query}%");
-            })
+            });
+            $limit = 50; // More results when searching
+        } else {
+            $limit = 10; // Only 10 for initial load
+        }
+        
+        $creators = $creatorsQuery
             ->select('id', 'name', 'email')
-            ->limit(10)
+            ->orderBy('name', 'asc')
+            ->limit($limit)
             ->get();
 
         return response()->json($creators);

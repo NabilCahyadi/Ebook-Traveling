@@ -91,6 +91,7 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
+                                    <th>Image</th>
                                     <th>Name</th>
                                     <th>Total Ebooks</th>
                                     <th>Created</th>
@@ -100,6 +101,15 @@
                             <tbody>
                                 <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <tr>
+                                        <td>
+                                            <?php if($category->image): ?>
+                                                <img src="<?php echo e(Storage::url($category->image)); ?>" alt="<?php echo e($category->name); ?>" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                                            <?php else: ?>
+                                                <div class="bg-label-secondary rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                    <i class="ti ti-photo ti-lg"></i>
+                                                </div>
+                                            <?php endif; ?>
+                                        </td>
                                         <td>
                                             <div class="fw-medium"><?php echo e($category->name); ?></div>
                                         </td>
@@ -118,7 +128,7 @@
                                                 </button>
                                                 <div class="dropdown-menu dropdown-menu-end">
                                                     <a class="dropdown-item" href="javascript:void(0);"
-                                                        onclick="editCategory('<?php echo e($category->id); ?>', '<?php echo e($category->name); ?>')">
+                                                        onclick="editCategory('<?php echo e($category->id); ?>', '<?php echo e(addslashes($category->name)); ?>', '<?php echo e($category->image ? Storage::url($category->image) : ''); ?>')">
                                                         <i class="ti ti-pencil me-2"></i>
                                                         <span>Edit</span>
                                                     </a>
@@ -167,7 +177,7 @@
     <div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form action="<?php echo e(route('admin.categories.store')); ?>" method="POST">
+                <form action="<?php echo e(route('admin.categories.store')); ?>" method="POST" enctype="multipart/form-data">
                     <?php echo csrf_field(); ?>
                     <div class="modal-header">
                         <h5 class="modal-title">Create New Category</h5>
@@ -198,6 +208,30 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
                         </div>
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Category Image</label>
+                            <input type="file" class="form-control <?php $__errorArgs = ['image'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="image"
+                                name="image" accept="image/*">
+                            <small class="text-muted">Recommended size: 200x200px (JPG, PNG, max 2MB)</small>
+                            <?php $__errorArgs = ['image'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="invalid-feedback"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                            <div class="mt-2" id="imagePreview"></div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -214,7 +248,7 @@ unset($__errorArgs, $__bag); ?>
     <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form id="editForm" method="POST">
+                <form id="editForm" method="POST" enctype="multipart/form-data">
                     <?php echo csrf_field(); ?>
                     <?php echo method_field('PUT'); ?>
                     <div class="modal-header">
@@ -228,6 +262,14 @@ unset($__errorArgs, $__bag); ?>
                             <input type="text" class="form-control" id="edit_name" name="name"
                                 placeholder="e.g. Travel Guide" required>
                             <small class="text-muted">Slug will be auto-generated</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_image" class="form-label">Category Image</label>
+                            <div id="currentImagePreview" class="mb-2"></div>
+                            <input type="file" class="form-control" id="edit_image"
+                                name="image" accept="image/*">
+                            <small class="text-muted">Leave empty to keep current image. Recommended size: 200x200px (JPG, PNG, max 2MB)</small>
+                            <div class="mt-2" id="editImagePreview"></div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -243,11 +285,57 @@ unset($__errorArgs, $__bag); ?>
 
     <?php $__env->startPush('scripts'); ?>
         <script>
-            function editCategory(id, name) {
+            function editCategory(id, name, image = null) {
                 document.getElementById('editForm').action = '/admin/categories/' + id;
                 document.getElementById('edit_name').value = name;
+                
+                // Show current image if exists
+                const currentImagePreview = document.getElementById('currentImagePreview');
+                if (image) {
+                    currentImagePreview.innerHTML = `
+                        <div class="mb-2">
+                            <label class="form-label text-muted">Current Image:</label>
+                            <div>
+                                <img src="${image}" alt="${name}" class="rounded" style="width: 100px; height: 100px; object-fit: cover;">
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    currentImagePreview.innerHTML = '<small class="text-muted">No image uploaded</small>';
+                }
+                
                 new bootstrap.Modal(document.getElementById('editModal')).show();
             }
+
+            // Image preview for create form
+            document.getElementById('image')?.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                const preview = document.getElementById('imagePreview');
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.innerHTML = `<img src="${e.target.result}" class="rounded" style="width: 100px; height: 100px; object-fit: cover;">`;
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.innerHTML = '';
+                }
+            });
+
+            // Image preview for edit form
+            document.getElementById('edit_image')?.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                const preview = document.getElementById('editImagePreview');
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.innerHTML = `<img src="${e.target.result}" class="rounded" style="width: 100px; height: 100px; object-fit: cover;">`;
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.innerHTML = '';
+                }
+            });
 
             // Show create modal if validation error exists
             <?php if($errors->any() && !$errors->has('edit_name')): ?>

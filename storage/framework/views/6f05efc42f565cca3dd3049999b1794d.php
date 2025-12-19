@@ -206,43 +206,40 @@
         </div>
     </div>
     <div class="row d-flex justify-content-center">
-        <?php
-        // Data dummy untuk 6 kartu
-        $promos = [
-        ['title' => 'Flash Sale Mendadak Kaya', 'date' => '15 Oktober - 31 Desember 2025', 'img' => '/images/banner-promo-1.webp'],
-        ['title' => 'Diskon Kilat Daging Segar', 'date' => '1 November - 30 November 2025', 'img' => '/images/banner-promo-2.webp'],
-        ['title' => 'Promo Akhir Tahun Steak Premium', 'date' => '10 Desember - 31 Desember 2025', 'img' => '/images/banner-promo-3.webp'],
-        ['title' => 'Beli 2 Gratis 1 Ayam Fillet', 'date' => 'Setiap Hari Jumat', 'img' => '/images/banner-promo-4.webp'],
-        ['title' => 'Gratis Ongkir Seluruh Kota', 'date' => 'Berlaku Hingga Akhir Bulan', 'img' => '/images/banner-promo-2.webp'],
-        ['title' => 'Mystery Box Daging Eksklusif', 'date' => 'Periode Terbatas', 'img' => '/images/banner-promo-3.webp'],
-        ];
-        ?>
-
+        <?php if($promos && $promos->isNotEmpty()): ?>
         <?php $__currentLoopData = $promos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $promo): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
         <div class="col-12 col-sm-6 col-md-6 d-flex justify-content-center">
             <figure class="card card-product-grid card-lg">
                 <a href="#" class="img-wrap" data-abc="true">
-                    <img src="<?php echo e($promo['img']); ?>">
+                    
+                    <img src="<?php echo e(asset($promo->banner_image)); ?>" alt="<?php echo e($promo->name); ?>">
                 </a>
                 <figcaption class="info-wrap">
                     <div class="row">
                         <div class="col-md-12">
-                            <a href="#" class="title promo-title" data-abc="true"><?php echo e($promo['title']); ?></a>
+                            
+                            <a href="#" class="title promo-title" data-abc="true"><?php echo e($promo->name); ?></a>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
                             <span class="promo-period">Periode Promo</span>
-                            <span class="promo-date"><?php echo e($promo['date']); ?></span>
+                            
+                            <span class="promo-date"><?php echo e($promo->formatted_period); ?></span>
                         </div>
                     </div>
                 </figcaption>
                 <div class="bottom-wrap">
-                    <a href="#" class="btn btn-primary btn-full-width" data-abc="true"> View Details </a>
+                    <a href="<?php echo e(route('promo.detail.show', $promo->slug)); ?>" class="btn btn-primary btn-full-width">
+                        Detail View
+                    </a>
                 </div>
             </figure>
         </div>
         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        <?php else: ?>
+        <p class="text-center">No active promotions available at this time.</p>
+        <?php endif; ?>
     </div>
 </div>
 <?php $__env->stopSection(); ?>

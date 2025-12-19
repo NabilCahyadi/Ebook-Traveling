@@ -62,14 +62,26 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
             'name.required' => 'Nama kategori wajib diisi.',
             'name.max' => 'Nama kategori maksimal 255 karakter.',
             'name.unique' => 'Nama kategori sudah digunakan.',
+            'image.image' => 'File harus berupa gambar.',
+            'image.mimes' => 'Format gambar harus: jpeg, png, jpg, gif.',
+            'image.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
         $validated['id'] = Str::uuid();
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '_' . Str::slug($validated['name']) . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('categories', $imageName, 'public');
+            $validated['image'] = $imagePath;
+        }
 
         Category::create($validated);
 
@@ -104,9 +116,23 @@ class CategoryController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name,' . $id,
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($category->image && \Storage::disk('public')->exists($category->image)) {
+                \Storage::disk('public')->delete($category->image);
+            }
+
+            $image = $request->file('image');
+            $imageName = time() . '_' . Str::slug($validated['name']) . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('categories', $imageName, 'public');
+            $validated['image'] = $imagePath;
+        }
 
         $category->update($validated);
 

@@ -12,7 +12,9 @@ class SidebarComposer
      */
     public function compose(View $view): void
     {
+        // Exclude 'guest' role because guest users are not stored in database (anonymous users)
         $roles = Role::where('is_active', true)
+            ->where('slug', '!=', 'guest')
             ->orderBy('name')
             ->get(['id', 'name', 'slug']);
 

@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Permission;
 use App\Models\RolePermission;
 use App\Repositories\Interfaces\PermissionRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
@@ -104,5 +105,13 @@ class PermissionRepository implements PermissionRepositoryInterface
         return RolePermission::with('role')
             ->get()
             ->groupBy('role_id');
+    }
+
+    /**
+     * Find permissions by names.
+     */
+    public function findByNames(array $names): Collection
+    {
+        return Permission::whereIn('name', $names)->get();
     }
 }

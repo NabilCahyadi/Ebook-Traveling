@@ -573,6 +573,7 @@ $collections = collect();
         </div>
     </section>
     <!-- top 10 ibu kota di indonesia -->
+    <?php if(hasPermission('access_destinations')): ?>
     <section class="popular-categories section-padding">
         <div class="container wow animate__animated animate__fadeIn">
             <div class="section-title style-2 flex-container-custom">
@@ -606,6 +607,7 @@ $collections = collect();
             </div>
         </div>
     </section>
+    <?php endif; ?>
     <!-- 3 subscriprion plans -->
     <!-- Subscription Plans -->
     <section class="banners mb-25">
@@ -776,6 +778,7 @@ $collections = collect();
     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     <?php endif; ?>
     <!-- blogs -->
+    <?php if(hasPermission('access_blog')): ?>
     <section class="section-padding pb-5">
         <div class="container mb-30">
             <div class="section-title style-2 flex-container-custom">
@@ -830,9 +833,9 @@ $collections = collect();
                     <?php endif; ?>
                 </div>
             </div>
-            <!-- </div> -->
+        </div>
     </section>
-</div>
+    <?php endif; ?>
 <script>
     // Scroll functionality
     document.addEventListener('DOMContentLoaded', function() {

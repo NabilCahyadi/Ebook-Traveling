@@ -45,4 +45,9 @@ interface PermissionRepositoryInterface
      * Get all resources with their permissions grouped by role.
      */
     public function getAllGroupedByRole(): Collection;
+
+    /**
+     * Find permissions by names.
+     */
+    public function findByNames(array $names): Collection;
 }

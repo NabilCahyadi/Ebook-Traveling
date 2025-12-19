@@ -37,6 +37,7 @@
                             </li>
 
                             <!-- WISHLIST -->
+                            @if(hasPermission('access_wishlist'))
                             <li class="nav-item">
                                 <a class="nav-link {{ request('tab') == 'orders' ? 'active' : '' }}"
                                     href="{{ route('page-account') }}?tab=orders">
@@ -46,6 +47,7 @@
                                     @endif
                                 </a>
                             </li>
+                            @endif
 
                             <!-- MY LIBRARY -->
                             <li class="nav-item">
@@ -97,6 +99,7 @@
                             </li>
 
                             <!-- WISHLIST -->
+                            @if(hasPermission('access_wishlist'))
                             <li class="nav-item">
                                 <a class="nav-link {{ request('tab') == 'orders' ? 'active' : '' }}"
                                     href="{{ route('page-account') }}?tab=orders">
@@ -106,28 +109,34 @@
                                     @endif
                                 </a>
                             </li>
+                            @endif
 
                             @endif
 
-                            <!-- ========== MENU UNTUK SEMUA USER ========== -->
+                            <!-- ========== MENU UNTUK SEMUA USER (WITH PERMISSIONS) ========== -->
 
                             <!-- CREATOR (UNTUK SEMUA USER) -->
+                            @if(hasPermission('access_creator_dashboard'))
                             <li class="nav-item">
                                 <a class="nav-link {{ request('tab') == 'creator' ? 'active' : '' }}"
                                     href="{{ route('page-account') }}?tab=creator">
                                     <i class="fi-rs-edit mr-10"></i>Creator
                                 </a>
                             </li>
+                            @endif
 
                             <!-- PROFILE SETTINGS (UNTUK SEMUA USER) -->
+                            @if(hasPermission('access_profile_settings'))
                             <li class="nav-item">
                                 <a class="nav-link {{ request('tab') == 'account-detail' ? 'active' : '' }}"
                                     href="{{ route('page-account') }}?tab=account-detail">
                                     <i class="fi-rs-user mr-10"></i>Profile Settings
                                 </a>
                             </li>
+                            @endif
 
                             <!-- PAYMENT HISTORY (UNTUK SEMUA USER) -->
+                            @if(hasPermission('access_payment_history'))
                             <li class="nav-item">
                                 <a class="nav-link {{ request('tab') == 'payment' ? 'active' : '' }}"
                                     href="{{ route('page-account') }}?tab=payment">
@@ -137,6 +146,7 @@
                                     @endif
                                 </a>
                             </li>
+                            @endif
 
                             <!-- LOGOUT (SAMA UNTUK KEDUANYA) -->
                             <li class="nav-item">
@@ -144,11 +154,36 @@
                                     style="display: none;">
                                     @csrf
                                 </form>
-                                <a class="nav-link"
-                                    onclick="event.preventDefault(); document.getElementById('nav-logout-form').submit();">
+                                <a class="nav-link" href="#"
+                                    onclick="event.preventDefault(); handleAccountLogout();">
                                     <i class="fi-rs-sign-out mr-10"></i>Logout
                                 </a>
                             </li>
+                            <script>
+                                function handleAccountLogout() {
+                                    const form = document.getElementById('nav-logout-form');
+                                    const formData = new FormData(form);
+                                    
+                                    fetch(form.action, {
+                                        method: 'POST',
+                                        body: formData,
+                                        headers: {
+                                            'X-Requested-With': 'XMLHttpRequest'
+                                        }
+                                    })
+                                    .then(response => {
+                                        if (response.ok || response.status === 419) {
+                                            window.location.href = '/login';
+                                        } else {
+                                            throw new Error('Logout failed');
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.log('Logout error, redirecting to login', error);
+                                        window.location.href = '/login';
+                                    });
+                                }
+                            </script>
                         </ul>
                     </div>
                 </div>

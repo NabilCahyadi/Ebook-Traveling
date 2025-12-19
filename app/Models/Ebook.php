@@ -176,9 +176,6 @@ class Ebook extends Model
 
     public function categories()
     {
-        // Tambahkan 'ebook_categories' sebagai parameter kedua
-        return $this->belongsToMany(Category::class, 'ebook_categories')
-            ->using(EbookCategory::class)
-            ->withPivot('created_at');
+        return $this->belongsToMany(Category::class, 'ebook_categories');
     }
 }

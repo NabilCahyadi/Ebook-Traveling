@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title', 'Landing Page Content Management'); ?>
 
 <?php $__env->startSection('content'); ?>
