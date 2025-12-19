@@ -24,6 +24,16 @@ class SubscriptionPlanService
     }
 
     /**
+     * Mengambil beberapa plan aktif untuk ditampilkan di halaman beranda.
+     */
+    public function getHomepagePlans(int $limit = 3)
+    {
+        // Gunakan method yang sudah ada dan benar untuk mengambil data aktif
+        // lalu ambil sebanyak 'limit' item
+        return $this->getActivePlansForDisplay()->take($limit);
+    }
+
+    /**
      * Get paginated subscription plans
      */
     public function getPaginatedPlans(int $perPage = 10)
