@@ -73,9 +73,28 @@ class PermissionRepository implements PermissionRepositoryInterface
 
     /**
      * Sync permissions for a role.
+     * 
+     * WARNING: This method is for the OLD permission system (role_permissions table).
+     * The NEW permission system uses role_permission pivot table.
+     * This method is DEPRECATED and should not be used.
+     * 
+     * @deprecated Use RolePermissionService::updateRolePermissions() instead
      */
     public function syncRolePermissions(string $roleId, array $permissions): void
     {
+        // DISABLED: This method is deprecated to prevent conflicts with the new permission system
+        // If you need to manage permissions, please use the Role Permissions page
+        // at /admin/role-permissions instead of /admin/permissions
+        
+        \Log::warning('Deprecated method syncRolePermissions called', [
+            'role_id' => $roleId,
+            'permissions_count' => count($permissions),
+            'stack_trace' => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5)
+        ]);
+        
+        throw new \Exception('This permission management method is deprecated. Please use /admin/role-permissions instead.');
+        
+        /* OLD CODE - COMMENTED OUT TO PREVENT DATA LOSS
         DB::transaction(function () use ($roleId, $permissions) {
             // Delete existing permissions for this role
             RolePermission::where('role_id', $roleId)->delete();
@@ -95,6 +114,7 @@ class PermissionRepository implements PermissionRepositoryInterface
                 }
             }
         });
+        */
     }
 
     /**

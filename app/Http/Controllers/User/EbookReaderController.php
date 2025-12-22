@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActionLog;
 use App\Services\EbookService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +30,25 @@ class EbookReaderController extends Controller
 
         // Check if user has access (you can add subscription check here)
         // Example: if (!Auth::user()->hasAccessToEbook($ebook)) { abort(403); }
+
+        // Log ebook view/read activity
+        if (Auth::check()) {
+            ActionLog::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'view',
+                'table_name' => 'ebooks',
+                'record_id' => $ebook->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'url' => request()->fullUrl(),
+                'method' => request()->method(),
+                'new_values' => json_encode([
+                    'ebook_title' => $ebook->title,
+                    'ebook_slug' => $ebook->slug,
+                    'content_type' => !empty($ebook->pdf_file) ? 'pdf' : 'text'
+                ])
+            ]);
+        }
 
         // Determine content type (PDF or Text)
         $hasPdf = !empty($ebook->pdf_file);

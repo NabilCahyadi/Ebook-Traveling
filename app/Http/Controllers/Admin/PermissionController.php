@@ -20,33 +20,40 @@ class PermissionController extends Controller
 
     /**
      * Display a listing of the resource.
+     * 
+     * @deprecated This controller is deprecated. Use RolePermissionController instead.
      */
     public function index()
     {
-        $roles = $this->roleService->getAllRoles(100);
-        $resources = $this->permissionService->getAvailableResources();
-        $permissions = $this->permissionService->getAllGroupedByRole();
-
-        return view('admin.permissions.index', compact('roles', 'resources', 'permissions'));
+        // DISABLED: Redirect to new permission system
+        return redirect()->route('admin.role-permissions.index')
+            ->with('info', 'This permission management page has been replaced. Please use Role Permissions instead.');
     }
 
     /**
      * Show the form for editing the specified resource.
+     * 
+     * @deprecated This controller is deprecated. Use RolePermissionController instead.
      */
     public function edit(string $roleId)
     {
-        $role = $this->roleService->getRoleById($roleId);
-        $permissions = $this->permissionService->getPermissionsByRole($roleId);
-        $resources = $this->permissionService->getAvailableResources();
-
-        return view('admin.permissions.edit', compact('role', 'permissions', 'resources'));
+        // DISABLED: Redirect to new permission system
+        return redirect()->route('admin.role-permissions.index')
+            ->with('info', 'This permission management page has been replaced. Please use Role Permissions instead.');
     }
 
     /**
      * Update the specified resource in storage.
+     * 
+     * @deprecated This controller is deprecated. Use RolePermissionController instead.
      */
     public function update(Request $request, string $roleId)
     {
+        // DISABLED: Redirect to new permission system
+        return redirect()->route('admin.role-permissions.index')
+            ->with('error', 'This permission management page is deprecated. Please use Role Permissions instead.');
+        
+        /* OLD CODE - DISABLED
         $validated = $request->validate([
             'permissions' => 'required|array',
             'permissions.*.resource' => 'required|string',
@@ -64,5 +71,6 @@ class PermissionController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Failed to update permissions: ' . $e->getMessage());
         }
+        */
     }
 }

@@ -5,7 +5,7 @@ namespace App\Observers;
 use App\Models\Ebook;
 use App\Models\Rating;
 
-class RatingObserver
+class RatingObserver extends BaseObserver
 {
     /**
      * Handle the Rating "created" event.
@@ -13,6 +13,15 @@ class RatingObserver
     public function created(Rating $rating)
     {
         $this->updateEbookRating($rating->ebook);
+        
+        // Log activity
+        $this->logActivity('create', $this->getTableName($rating), $rating->id, [
+            'ebook_id' => $rating->ebook_id,
+            'ebook_title' => $rating->ebook->title ?? 'N/A',
+            'rating' => $rating->rating,
+            'has_review' => !empty($rating->review_text),
+            'data' => $this->getModelData($rating)
+        ]);
     }
 
     /**
@@ -21,6 +30,15 @@ class RatingObserver
     public function updated(Rating $rating)
     {
         $this->updateEbookRating($rating->ebook);
+        
+        // Log activity
+        $this->logActivity('update', $this->getTableName($rating), $rating->id, [
+            'ebook_id' => $rating->ebook_id,
+            'ebook_title' => $rating->ebook->title ?? 'N/A',
+            'rating' => $rating->rating,
+            'changes' => $rating->getChanges(),
+            'data' => $this->getModelData($rating)
+        ]);
     }
 
     /**
@@ -29,6 +47,14 @@ class RatingObserver
     public function deleted(Rating $rating)
     {
         $this->updateEbookRating($rating->ebook);
+        
+        // Log activity
+        $this->logActivity('delete', $this->getTableName($rating), $rating->id, [
+            'ebook_id' => $rating->ebook_id,
+            'ebook_title' => $rating->ebook->title ?? 'N/A',
+            'rating' => $rating->rating,
+            'data' => $this->getModelData($rating)
+        ]);
     }
 
     /**
