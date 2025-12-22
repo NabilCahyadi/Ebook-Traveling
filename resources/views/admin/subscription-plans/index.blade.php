@@ -48,11 +48,19 @@
                         @forelse($plans as $plan)
                             <tr>
                                 <td>
-                                    <div>
-                                        <strong class="d-block">{{ $plan->name }}</strong>
-                                        @if ($plan->description)
-                                            <small class="text-muted">{{ Str::limit($plan->description, 50) }}</small>
+                                    <div class="d-flex align-items-center gap-3">
+                                        @if ($plan->cover_image)
+                                            <div style="width: 120px; aspect-ratio: 3/1; overflow: hidden; border-radius: 0.375rem; background-color: #f5f5f5; flex-shrink: 0;">
+                                                <img src="{{ asset('storage/' . $plan->cover_image) }}" alt="Banner" 
+                                                    style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                            </div>
                                         @endif
+                                        <div>
+                                            <strong class="d-block">{{ $plan->name }}</strong>
+                                            @if ($plan->description)
+                                                <small class="text-muted">{{ Str::limit($plan->description, 30) }}</small>
+                                            @endif
+                                        </div>
                                     </div>
                                 </td>
                                 <td>

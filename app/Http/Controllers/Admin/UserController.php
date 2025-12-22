@@ -183,4 +183,32 @@ class UserController extends Controller
 
         return view('admin.users.trashed', compact('users', 'search'));
     }
+
+    /**
+     * Verify user email.
+     */
+    public function verifyEmail(string $id)
+    {
+        try {
+            $this->userService->verifyUserEmail($id);
+
+            return back()->with('success', 'User email verified successfully!');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * Unverify user email.
+     */
+    public function unverifyEmail(string $id)
+    {
+        try {
+            $this->userService->unverifyUserEmail($id);
+
+            return back()->with('success', 'User email unverified successfully!');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
 }

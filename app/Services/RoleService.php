@@ -21,11 +21,14 @@ class RoleService
      */
     public function getAllRoles(int $perPage = 10, ?string $search = null, bool $withTrashed = false)
     {
-        $query = Role::query();
+        $query = Role::query()->withCount('users');
 
         if ($withTrashed) {
             $query->withTrashed();
         }
+
+        // Hide guest role
+        $query->where('slug', '!=', 'guest');
 
         if ($search) {
             $query->where(function ($q) use ($search) {

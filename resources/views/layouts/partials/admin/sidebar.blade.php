@@ -53,11 +53,13 @@
                         <li
                             class="menu-item {{ Request::is('admin/ebooks') && !Request::is('admin/ebooks/create') && !Request::is('admin/ebooks/pending-approval') ? 'active' : '' }}">
                             <a href="{{ route('admin.ebooks.index') }}" class="menu-link">
+                                <i class="menu-icon tf-icons ti ti-list"></i>
                                 <div data-i18n="All Ebooks">All Ebooks</div>
                             </a>
                         </li>
                         <li class="menu-item {{ Request::is('admin/ebooks/create') ? 'active' : '' }}">
                             <a href="{{ route('admin.ebooks.create') }}" class="menu-link">
+                                <i class="menu-icon tf-icons ti ti-plus"></i>
                                 <div data-i18n="Add New">Add New</div>
                             </a>
                         </li>
@@ -111,6 +113,7 @@
                         <li
                             class="menu-item {{ Request::is('admin/users') && !Request::get('role') ? 'active' : '' }}">
                             <a href="{{ route('admin.users.index', ['role' => 'all']) }}" class="menu-link">
+                                <i class="menu-icon tf-icons ti ti-users"></i>
                                 <div data-i18n="All Users">All Users</div>
                             </a>
                         </li>
@@ -119,6 +122,7 @@
                                 <li class="menu-item {{ Request::get('role') === $role->slug ? 'active' : '' }}">
                                     <a href="{{ route('admin.users.index', ['role' => $role->slug]) }}"
                                         class="menu-link">
+                                        <i class="menu-icon tf-icons ti ti-user-check"></i>
                                         <div data-i18n="{{ $role->name }}">{{ $role->name }}</div>
                                     </a>
                                 </li>
@@ -164,7 +168,7 @@
                 <!-- Subscription Plans -->
                 <li class="menu-item {{ Request::is('admin/subscription-plans*') ? 'active' : '' }}">
                     <a href="{{ route('admin.subscription-plans.index') }}" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-crown"></i>
+                        <i class="menu-icon tf-icons ti ti-package"></i>
                         <div data-i18n="Subscription Plans">Subscription Plans</div>
                     </a>
                 </li>
@@ -172,7 +176,7 @@
                 <!-- Manual Subscriptions -->
                 <li class="menu-item {{ Request::is('admin/manual-subscriptions*') ? 'active' : '' }}">
                     <a href="{{ route('admin.manual-subscriptions.index') }}" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-clipboard-check"></i>
+                        <i class="menu-icon tf-icons ti ti-edit"></i>
                         <div data-i18n="Manual Subscriptions">Manual Subscriptions</div>
                     </a>
                 </li>
@@ -188,7 +192,7 @@
                 <!-- Payment History -->
                 <li class="menu-item {{ Request::is('admin/subscription-history*') ? 'active' : '' }}">
                     <a href="{{ route('admin.subscription-history.index') }}" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-history"></i>
+                        <i class="menu-icon tf-icons ti ti-receipt"></i>
                         <div data-i18n="Payment History">Payment History</div>
                     </a>
                 </li>
@@ -196,7 +200,7 @@
                 <!-- Promos -->
                 <li class="menu-item {{ Request::is('admin/promos*') ? 'active' : '' }}">
                     <a href="{{ route('admin.promos.index') }}" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-discount-2"></i>
+                        <i class="menu-icon tf-icons ti ti-ticket"></i>
                         <div data-i18n="Promos">Promos & Discounts</div>
                     </a>
                 </li>
@@ -206,7 +210,7 @@
         <!-- Content Management -->
         <li class="menu-item {{ Request::is('admin/blogs*') ? 'active' : '' }}">
             <a href="{{ route('admin.blogs.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-article"></i>
+                <i class="menu-icon tf-icons ti ti-news"></i>
                 <div data-i18n="Blogs">Blogs</div>
             </a>
         </li>
@@ -241,21 +245,21 @@
         <li
             class="menu-item {{ Request::is('admin/collection-order*') || Request::is('admin/banners*') || Request::is('admin/collections*') || Request::is('admin/landing-page-content*') || Request::is('admin/pricing-benefits*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons ti ti-world"></i>
+                <i class="menu-icon tf-icons ti ti-settings"></i>
                 <div data-i18n="Website Management">Website Setting</div>
             </a>
             <ul class="menu-sub">
                 <!-- Landing Page Content -->
                 <li class="menu-item {{ Request::is('admin/landing-page-content*') ? 'active' : '' }}">
                     <a href="{{ route('admin.landing-page-content.index') }}" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-layout-dashboard"></i>
+                        <i class="menu-icon tf-icons ti ti-layout"></i>
                         <div data-i18n="Landing Page Content">Landing Page Content</div>
                     </a>
                 </li>
                 <!-- Pricing Benefits -->
                 <li class="menu-item {{ Request::is('admin/pricing-benefits*') ? 'active' : '' }}">
                     <a href="{{ route('admin.pricing-benefits.index') }}" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-star"></i>
+                        <i class="menu-icon tf-icons ti ti-gift"></i>
                         <div data-i18n="Pricing Benefits">Pricing Benefits</div>
                     </a>
                 </li>
@@ -269,7 +273,7 @@
                 <!-- Collection Ebook -->
                 <li class="menu-item {{ Request::is('admin/collections*') ? 'active' : '' }}">
                     <a href="{{ route('admin.collections.index') }}" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-books"></i>
+                        <i class="menu-icon tf-icons ti ti-folders"></i>
                         <div data-i18n="Collection Ebook">Collection Ebook</div>
                     </a>
                 </li>

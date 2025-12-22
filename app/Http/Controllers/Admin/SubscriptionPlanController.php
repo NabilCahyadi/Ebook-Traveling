@@ -44,7 +44,7 @@ class SubscriptionPlanController extends Controller
             'price' => 'required|numeric|min:0',
             'duration_days' => 'required|integer|min:1',
             'features' => 'nullable|string',
-            'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ], [
             'name.required' => 'Nama paket berlangganan wajib diisi.',
             'name.max' => 'Nama paket maksimal 255 karakter.',
@@ -54,20 +54,23 @@ class SubscriptionPlanController extends Controller
             'duration_days.required' => 'Durasi berlangganan wajib diisi.',
             'duration_days.integer' => 'Durasi harus berupa angka.',
             'duration_days.min' => 'Durasi minimal 1 hari.',
-            'banner_image.image' => 'File harus berupa gambar.',
-            'banner_image.mimes' => 'Format gambar harus JPEG, PNG, JPG, atau GIF.',
-            'banner_image.max' => 'Ukuran gambar maksimal 2MB.',
+            'cover_image.image' => 'File harus berupa gambar.',
+            'cover_image.mimes' => 'Format gambar harus JPEG, PNG, JPG, GIF, atau WEBP.',
+            'cover_image.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
 
         // Set is_active
         $validated['is_active'] = $request->has('is_active');
 
+        // Set features to null (features input removed from create form)
+        $validated['features'] = null;
+
         // Handle banner image upload
-        if ($request->hasFile('banner_image')) {
-            $image = $request->file('banner_image');
+        if ($request->hasFile('cover_image')) {
+            $image = $request->file('cover_image');
             $filename = 'banner_' . time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
             $path = $image->storeAs('subscription_banners', $filename, 'public');
-            $validated['banner_image'] = $path;
+            $validated['cover_image'] = $path;
         }
 
         try {
@@ -113,7 +116,7 @@ class SubscriptionPlanController extends Controller
             'price' => 'required|numeric|min:0',
             'duration_days' => 'required|integer|min:1',
             'features' => 'nullable|string',
-            'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ], [
             'name.required' => 'Nama paket berlangganan wajib diisi.',
             'name.max' => 'Nama paket maksimal 255 karakter.',
@@ -123,27 +126,27 @@ class SubscriptionPlanController extends Controller
             'duration_days.required' => 'Durasi berlangganan wajib diisi.',
             'duration_days.integer' => 'Durasi harus berupa angka.',
             'duration_days.min' => 'Durasi minimal 1 hari.',
-            'banner_image.image' => 'File harus berupa gambar.',
-            'banner_image.mimes' => 'Format gambar harus JPEG, PNG, JPG, atau GIF.',
-            'banner_image.max' => 'Ukuran gambar maksimal 2MB.',
+            'cover_image.image' => 'File harus berupa gambar.',
+            'cover_image.mimes' => 'Format gambar harus JPEG, PNG, JPG, GIF, atau WEBP.',
+            'cover_image.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
 
         // Set is_active
         $validated['is_active'] = $request->has('is_active');
 
         // Handle banner image upload
-        if ($request->hasFile('banner_image')) {
+        if ($request->hasFile('cover_image')) {
             $plan = $this->subscriptionPlanService->getPlanById($id);
 
             // Delete old banner if exists
-            if ($plan->banner_image && \Storage::disk('public')->exists($plan->banner_image)) {
-                \Storage::disk('public')->delete($plan->banner_image);
+            if ($plan->cover_image && \Storage::disk('public')->exists($plan->cover_image)) {
+                \Storage::disk('public')->delete($plan->cover_image);
             }
 
-            $image = $request->file('banner_image');
+            $image = $request->file('cover_image');
             $filename = 'banner_' . time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
             $path = $image->storeAs('subscription_banners', $filename, 'public');
-            $validated['banner_image'] = $path;
+            $validated['cover_image'] = $path;
         }
 
         try {
