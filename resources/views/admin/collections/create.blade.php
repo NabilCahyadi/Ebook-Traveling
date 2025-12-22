@@ -59,11 +59,11 @@
 
                             <!-- Slug -->
                             <div class="mb-3">
-                                <label class="form-label" for="slug">Slug <small class="text-muted">(optional, will be auto-generated)</small></label>
+                                <label class="form-label" for="slug">Slug</label>
                                 <input type="text" class="form-control @error('slug') is-invalid @enderror" 
                                        id="slug" name="slug" value="{{ old('slug') }}" 
                                        placeholder="e.g., trending-this-week">
-                                <small class="form-text text-muted">URL-friendly version of the name. Leave empty to auto-generate.</small>
+                                <small class="form-text text-muted">Versi nama yang ramah URL. Kosongkan untuk dibuat secara otomatis.</small>
                                 @error('slug')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -74,7 +74,7 @@
                                 <label class="form-label" for="order">Display Order</label>
                                 <input type="number" class="form-control @error('order') is-invalid @enderror" 
                                        id="order" name="order" value="{{ old('order', 0) }}" min="0">
-                                <small class="form-text text-muted">Lower numbers appear first</small>
+                                <small class="form-text text-muted">Angka lebih kecil muncul lebih dulu</small>
                                 @error('order')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -87,7 +87,7 @@
                                 <label class="form-label" for="description">Description</label>
                                 <textarea class="form-control @error('description') is-invalid @enderror" 
                                           id="description" name="description" rows="4" 
-                                          placeholder="Brief description of this collection...">{{ old('description') }}</textarea>
+                                          placeholder="Deskripsi singkat dari koleksi ini....">{{ old('description') }}</textarea>
                                 @error('description')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -273,18 +273,18 @@
                         div.className = 'invalid-feedback order-feedback';
                         div.style.display = 'block';
                         
-                        let message = `Display order ${orderValue} is already taken by <strong>${data.collection_name}</strong>.`;
+                        let message = `Display order ${orderValue} sudah terisi oleh <strong>${data.collection_name}</strong>.`;
                         let suggestions = [];
                         
                         if (data.suggestions.lower !== null) {
-                            suggestions.push(`<strong>${data.suggestions.lower}</strong> (lower)`);
+                            suggestions.push(`<strong>${data.suggestions.lower}</strong> (lebih rendah)`);
                         }
                         if (data.suggestions.higher !== null) {
-                            suggestions.push(`<strong>${data.suggestions.higher}</strong> (higher)`);
+                            suggestions.push(`<strong>${data.suggestions.higher}</strong> (lebih tinggi)`);
                         }
                         
                         if (suggestions.length > 0) {
-                            message += `<br><small>Suggested: ${suggestions.join(' or ')}</small>`;
+                            message += `<br><small>Disarankan: ${suggestions.join(' atau ')}</small>`;
                         }
                         
                         div.innerHTML = message;
@@ -444,7 +444,7 @@
         tbody.innerHTML = ebooks.map(ebook => {
             const isSelected = selectedEbooks.has(ebook.id);
             const coverImage = ebook.cover_image || '/images/default-ebook.png';
-            const creatorName = ebook.creator?.user?.name || 'Unknown';
+            const creatorName = ebook.creator?.name || 'Unknown';
             const categories = ebook.categories?.map(c => c.name).join(', ') || '-';
             
             return `

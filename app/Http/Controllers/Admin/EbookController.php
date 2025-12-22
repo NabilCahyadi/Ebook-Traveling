@@ -90,14 +90,12 @@ class EbookController extends Controller
                 $validated['status'] = 'waiting_approval';
             }
 
-            // Set creator_id - if not admin, use logged in user, otherwise use selected creator
+            // Set creator_id - if not admin, force use logged in user
+            // If admin, use the selected creator from form
             if (!$isAdmin) {
                 $validated['creator_id'] = $user->id;
             }
-            // If admin and no creator selected, default to logged in user
-            if (!isset($validated['creator_id']) || empty($validated['creator_id'])) {
-                $validated['creator_id'] = $user->id;
-            }
+            // Admin harus sudah input creator_id di form (sudah divalidasi required)
 
             // Extract category_ids for pivot table attachment
             $categoryIds = $validated['category_ids'];

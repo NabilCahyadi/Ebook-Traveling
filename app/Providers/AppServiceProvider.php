@@ -26,6 +26,10 @@ use App\Models\Banner;
 use App\Observers\BannerObserver;
 use App\Models\SubscriptionPlan;
 use App\Observers\SubscriptionPlanObserver;
+use App\Models\Order;
+use App\Observers\OrderObserver;
+use App\Models\Subscription;
+use App\Observers\SubscriptionObserver;
 use App\Repositories\Interfaces\RatingRepositoryInterface;
 use App\Repositories\RatingRepository;
 use App\Services\RatingService;
@@ -97,6 +101,8 @@ class AppServiceProvider extends ServiceProvider
         Category::observe(CategoryObserver::class);
         Banner::observe(BannerObserver::class);
         SubscriptionPlan::observe(SubscriptionPlanObserver::class);
+        Order::observe(OrderObserver::class);
+        Subscription::observe(SubscriptionObserver::class);
 
         Paginator::useBootstrapFive();
 

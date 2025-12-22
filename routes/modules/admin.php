@@ -36,10 +36,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::patch('roles/{id}/restore', [\App\Http\Controllers\Admin\RoleController::class, 'restore'])->name('roles.restore');
     Route::delete('roles/{id}/force-delete', [\App\Http\Controllers\Admin\RoleController::class, 'forceDelete'])->name('roles.force-delete');
 
-    // Permission Management
-    Route::resource('permissions', \App\Http\Controllers\Admin\PermissionController::class);
+    // Permission Management (OLD SYSTEM - DISABLED TO PREVENT CONFLICTS)
+    // Route::resource('permissions', \App\Http\Controllers\Admin\PermissionController::class);
 
-    // Role Permission Management
+    // Role Permission Management (NEW SYSTEM - ACTIVE)
     Route::get('role-permissions', [\App\Http\Controllers\Admin\RolePermissionController::class, 'index'])->name('role-permissions.index');
     Route::get('role-permissions/{role}/edit', [\App\Http\Controllers\Admin\RolePermissionController::class, 'edit'])->name('role-permissions.edit');
     Route::put('role-permissions/{role}', [\App\Http\Controllers\Admin\RolePermissionController::class, 'update'])->name('role-permissions.update');

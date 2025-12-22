@@ -95,7 +95,7 @@
 
         <!-- Users Management -->
         <li
-            class="menu-item open {{ Request::is('admin/users*') || Request::is('admin/roles*') || Request::is('admin/permissions*') ? 'active' : '' }}">
+            class="menu-item open {{ Request::is('admin/users*') || Request::is('admin/roles*') || Request::is('admin/role-permissions*') ? 'active' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-users"></i>
                 <div data-i18n="User Management">User Management</div>
@@ -142,14 +142,6 @@
                         <div data-i18n="Role Permissions">Role Permissions</div>
                     </a>
                 </li>
-
-                <!-- Permissions -->
-                <!-- <li class="menu-item {{ Request::is('admin/permissions*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.permissions.index') }}" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-lock"></i>
-                        <div data-i18n="Permissions">Permissions</div>
-                    </a>
-                </li> -->
 
                 <!-- User Activity Logs -->
                 <li class="menu-item {{ Request::is('admin/user-activity-logs*') ? 'active' : '' }}">

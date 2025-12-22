@@ -127,7 +127,9 @@ class CollectionController extends Controller
      */
     public function getEbooksForSelection(Request $request)
     {
-        $query = Ebook::with(['creator.user', 'categories'])
+        $query = Ebook::query()
+            ->select('ebooks.*')
+            ->with(['creator:id,name,email', 'categories:id,name'])
             ->where('status', 'published');
 
         // Search filter
