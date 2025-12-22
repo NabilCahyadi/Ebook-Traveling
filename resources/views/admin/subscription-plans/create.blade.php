@@ -138,6 +138,19 @@
                     {{-- Features input removed as requested --}}
 
                     <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label" for="button_text">Button Text</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control @error('button_text') is-invalid @enderror" 
+                                id="button_text" name="button_text" value="{{ old('button_text') }}" 
+                                placeholder="e.g., Get Started, Subscribe Now, Choose Plan">
+                            @error('button_text')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <div class="form-text">Text that will appear on the button in pricing page (optional)</div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
                         <label class="col-sm-2 col-form-label">Status</label>
                         <div class="col-sm-10">
                             <div class="form-check form-switch mt-2">

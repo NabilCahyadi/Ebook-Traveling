@@ -100,35 +100,34 @@
                         <label class="col-sm-2 col-form-label" for="duration_days">Duration (Days) <span
                                 class="text-danger">*</span></label>
                         <div class="col-sm-10">
-                            <select class="form-select @error('duration_days') is-invalid @enderror" id="duration_days"
-                                name="duration_days" required>
-                                <option value="">Select Duration</option>
-                                <option value="30"
-                                    {{ old('duration_days', $plan->duration_days) == 30 ? 'selected' : '' }}>1 Month (30
-                                    Days)</option>
-                                <option value="180"
-                                    {{ old('duration_days', $plan->duration_days) == 180 ? 'selected' : '' }}>6 Months (180
-                                    Days)</option>
-                                <option value="365"
-                                    {{ old('duration_days', $plan->duration_days) == 365 ? 'selected' : '' }}>1 Year (365
-                                    Days)</option>
-                                <option value="custom"
-                                    {{ !in_array(old('duration_days', $plan->duration_days), [30, 180, 365]) ? 'selected' : '' }}>
-                                    Custom Duration</option>
-                            </select>
-                            @error('duration_days')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="row mb-3" id="customDurationDiv"
-                        style="display: {{ !in_array(old('duration_days', $plan->duration_days), [30, 180, 365]) ? 'block' : 'none' }};">
-                        <label class="col-sm-2 col-form-label" for="custom_duration">Custom Duration</label>
-                        <div class="col-sm-10">
-                            <input type="number" class="form-control" id="custom_duration"
-                                value="{{ !in_array($plan->duration_days, [30, 180, 365]) ? $plan->duration_days : '' }}"
-                                min="1" placeholder="Enter number of days">
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <select class="form-select @error('duration_days') is-invalid @enderror" id="duration_select"
+                                        required>
+                                        <option value="">Select Duration</option>
+                                        <option value="30"
+                                            {{ old('duration_days', $plan->duration_days) == 30 ? 'selected' : '' }}>1 Month (30 Days)</option>
+                                        <option value="180"
+                                            {{ old('duration_days', $plan->duration_days) == 180 ? 'selected' : '' }}>6 Months (180 Days)</option>
+                                        <option value="365"
+                                            {{ old('duration_days', $plan->duration_days) == 365 ? 'selected' : '' }}>1 Year (365 Days)</option>
+                                        <option value="custom"
+                                            {{ !in_array(old('duration_days', $plan->duration_days), [30, 180, 365]) ? 'selected' : '' }}>
+                                            Custom Duration</option>
+                                    </select>
+                                    @error('duration_days')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6" id="customDurationDiv"
+                                    style="display: {{ !in_array(old('duration_days', $plan->duration_days), [30, 180, 365]) ? 'block' : 'none' }};">
+                                    <input type="number" class="form-control" id="custom_duration"
+                                        value="{{ !in_array($plan->duration_days, [30, 180, 365]) ? $plan->duration_days : '' }}"
+                                        min="1" placeholder="Enter custom days">
+                                </div>
+                            </div>
+                            <!-- Hidden input that will be submitted -->
+                            <input type="hidden" name="duration_days" id="duration_days" value="{{ old('duration_days', $plan->duration_days) }}">
                         </div>
                     </div>
 
@@ -146,6 +145,19 @@
                         </div>
                     </div>
                     @endif
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label" for="button_text">Button Text</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control @error('button_text') is-invalid @enderror" 
+                                id="button_text" name="button_text" value="{{ old('button_text', $plan->button_text) }}" 
+                                placeholder="e.g., Get Started, Subscribe Now, Choose Plan">
+                            @error('button_text')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <div class="form-text">Text that will appear on the button in pricing page (optional)</div>
+                        </div>
+                    </div>
 
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label">Status</label>
@@ -178,7 +190,8 @@
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                const durationSelect = document.getElementById('duration_days');
+                const durationSelect = document.getElementById('duration_select');
+                const hiddenInput = document.getElementById('duration_days');
                 const customDiv = document.getElementById('customDurationDiv');
                 const customInput = document.getElementById('custom_duration');
                 const form = document.querySelector('form');
@@ -188,29 +201,38 @@
                     if (this.value === 'custom') {
                         customDiv.style.display = 'block';
                         customInput.required = true;
+                        customInput.focus();
+                        hiddenInput.value = ''; // Clear hidden input
                     } else {
                         customDiv.style.display = 'none';
                         customInput.required = false;
                         customInput.value = '';
+                        hiddenInput.value = this.value; // Set hidden input to selected value
+                    }
+                });
+
+                // Update hidden input when custom duration changes
+                customInput.addEventListener('input', function() {
+                    if (durationSelect.value === 'custom' && this.value) {
+                        hiddenInput.value = this.value;
                     }
                 });
 
                 // Handle form submission
                 form.addEventListener('submit', function(e) {
-                    // If custom duration is selected, use custom input value
-                    if (durationSelect.value === 'custom' && customInput.value) {
-                        // Create hidden input for the actual duration value
-                        const hiddenInput = document.createElement('input');
-                        hiddenInput.type = 'hidden';
-                        hiddenInput.name = 'duration_days';
+                    // If custom duration is selected, validate and set hidden input
+                    if (durationSelect.value === 'custom') {
+                        if (!customInput.value || customInput.value <= 0) {
+                            e.preventDefault();
+                            alert('Silakan masukkan durasi custom (minimal 1 hari)');
+                            customInput.focus();
+                            return false;
+                        }
+                        // Make sure hidden input has the custom value
                         hiddenInput.value = customInput.value;
-
-                        // Disable the select so it doesn't send 'custom' value
-                        durationSelect.disabled = true;
-
-                        // Add hidden input to form
-                        form.appendChild(hiddenInput);
                     }
+                    
+                    return true;
                 });
             });
 
@@ -228,7 +250,7 @@
             }
 
             function removeBanner() {
-                document.getElementById('banner_image').value = '';
+                document.getElementById('cover_image').value = '';
                 document.getElementById('bannerPreview').style.display = 'none';
                 document.getElementById('bannerPreviewImg').src = '';
             }
