@@ -44,6 +44,7 @@ class SubscriptionPlanController extends Controller
             'price' => 'required|numeric|min:0',
             'duration_days' => 'required|integer|min:1',
             'features' => 'nullable|string',
+            'button_text' => 'nullable|string|max:100',
             'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ], [
             'name.required' => 'Nama paket berlangganan wajib diisi.',
@@ -54,6 +55,7 @@ class SubscriptionPlanController extends Controller
             'duration_days.required' => 'Durasi berlangganan wajib diisi.',
             'duration_days.integer' => 'Durasi harus berupa angka.',
             'duration_days.min' => 'Durasi minimal 1 hari.',
+            'button_text.max' => 'Teks button maksimal 100 karakter.',
             'cover_image.image' => 'File harus berupa gambar.',
             'cover_image.mimes' => 'Format gambar harus JPEG, PNG, JPG, GIF, atau WEBP.',
             'cover_image.max' => 'Ukuran gambar maksimal 2MB.',
@@ -116,6 +118,7 @@ class SubscriptionPlanController extends Controller
             'price' => 'required|numeric|min:0',
             'duration_days' => 'required|integer|min:1',
             'features' => 'nullable|string',
+            'button_text' => 'nullable|string|max:100',
             'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ], [
             'name.required' => 'Nama paket berlangganan wajib diisi.',
@@ -126,6 +129,7 @@ class SubscriptionPlanController extends Controller
             'duration_days.required' => 'Durasi berlangganan wajib diisi.',
             'duration_days.integer' => 'Durasi harus berupa angka.',
             'duration_days.min' => 'Durasi minimal 1 hari.',
+            'button_text.max' => 'Teks button maksimal 100 karakter.',
             'cover_image.image' => 'File harus berupa gambar.',
             'cover_image.mimes' => 'Format gambar harus JPEG, PNG, JPG, GIF, atau WEBP.',
             'cover_image.max' => 'Ukuran gambar maksimal 2MB.',
