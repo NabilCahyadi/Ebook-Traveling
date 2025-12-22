@@ -56,11 +56,11 @@
 
                     <!-- Banner Image Upload -->
                     <div class="row mb-3">
-                        <label class="col-sm-2 col-form-label" for="banner_image">Banner Image</label>
+                        <label class="col-sm-2 col-form-label" for="cover_image">Banner Image</label>
                         <div class="col-sm-10">
-                            <input type="file" class="form-control @error('banner_image') is-invalid @enderror"
-                                id="banner_image" name="banner_image" accept="image/*" onchange="previewBanner(event)">
-                            @error('banner_image')
+                            <input type="file" class="form-control @error('cover_image') is-invalid @enderror"
+                                id="cover_image" name="cover_image" accept="image/*" onchange="previewBanner(event)">
+                            @error('cover_image')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                             <div class="form-text">Upload a banner image for this plan (Optional, recommended size:
@@ -69,8 +69,10 @@
                             <!-- Preview -->
                             <div id="bannerPreview" class="mt-3" style="display: none;">
                                 <div class="border rounded p-2" style="max-width: 600px;">
-                                    <img id="bannerPreviewImg" src="" alt="Banner Preview"
-                                        style="width: 100%; height: auto; border-radius: 0.375rem;">
+                                    <div class="position-relative" style="aspect-ratio: 3/1; overflow: hidden; border-radius: 0.375rem; background-color: #f5f5f5;">
+                                        <img id="bannerPreviewImg" src="" alt="Banner Preview"
+                                            style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                    </div>
                                     <button type="button" class="btn btn-sm btn-label-danger mt-2"
                                         onclick="removeBanner()">
                                         <i class="ti ti-x me-1"></i> Remove
@@ -109,44 +111,31 @@
                         <label class="col-sm-2 col-form-label" for="duration_days">Duration (Days) <span
                                 class="text-danger">*</span></label>
                         <div class="col-sm-10">
-                            <select class="form-select @error('duration_days') is-invalid @enderror" id="duration_days"
-                                name="duration_days" required>
-                                <option value="">Select Duration</option>
-                                <option value="30" {{ old('duration_days') == 30 ? 'selected' : '' }}>1 Month (30
-                                    Days)
-                                </option>
-                                <option value="180" {{ old('duration_days') == 180 ? 'selected' : '' }}>6 Months (180
-                                    Days)</option>
-                                <option value="365" {{ old('duration_days') == 365 ? 'selected' : '' }}>1 Year (365
-                                    Days)</option>
-                                <option value="custom">Custom Duration</option>
-                            </select>
-                            @error('duration_days')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <select class="form-select @error('duration_days') is-invalid @enderror" id="duration_select"
+                                        required>
+                                        <option value="">Select Duration</option>
+                                        <option value="30" {{ old('duration_days') == 30 ? 'selected' : '' }}>1 Month (30 Days)</option>
+                                        <option value="180" {{ old('duration_days') == 180 ? 'selected' : '' }}>6 Months (180 Days)</option>
+                                        <option value="365" {{ old('duration_days') == 365 ? 'selected' : '' }}>1 Year (365 Days)</option>
+                                        <option value="custom">Custom Duration</option>
+                                    </select>
+                                    @error('duration_days')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6" id="customDurationDiv" style="display: none;">
+                                    <input type="number" class="form-control" id="custom_duration" min="1"
+                                        placeholder="Enter custom days">
+                                </div>
+                            </div>
+                            <!-- Hidden input that will be submitted -->
+                            <input type="hidden" name="duration_days" id="duration_days" value="{{ old('duration_days') }}">
                         </div>
                     </div>
 
-                    <div class="row mb-3" id="customDurationDiv" style="display: none;">
-                        <label class="col-sm-2 col-form-label" for="custom_duration">Custom Duration</label>
-                        <div class="col-sm-10">
-                            <input type="number" class="form-control" id="custom_duration" min="1"
-                                placeholder="Enter number of days">
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <label class="col-sm-2 col-form-label" for="features">Features</label>
-                        <div class="col-sm-10">
-                            <textarea class="form-control @error('features') is-invalid @enderror" id="features" name="features" rows="5"
-                                placeholder="Enter each feature on a new line">{{ old('features') }}</textarea>
-                            @error('features')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror>
-                            <div class="form-text">Enter one feature per line (e.g., "Unlimited book access", "Offline
-                                reading", etc.)</div>
-                        </div>
-                    </div>
+                    {{-- Features input removed as requested --}}
 
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label">Status</label>
@@ -179,7 +168,8 @@
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                const durationSelect = document.getElementById('duration_days');
+                const durationSelect = document.getElementById('duration_select');
+                const hiddenInput = document.getElementById('duration_days');
                 const customDiv = document.getElementById('customDurationDiv');
                 const customInput = document.getElementById('custom_duration');
                 const form = document.querySelector('form');
@@ -189,32 +179,37 @@
                     if (this.value === 'custom') {
                         customDiv.style.display = 'block';
                         customInput.required = true;
+                        customInput.focus();
+                        hiddenInput.value = ''; // Clear hidden input
                     } else {
                         customDiv.style.display = 'none';
                         customInput.required = false;
                         customInput.value = '';
+                        hiddenInput.value = this.value; // Set hidden input to selected value
+                    }
+                });
+
+                // Update hidden input when custom duration changes
+                customInput.addEventListener('input', function() {
+                    if (durationSelect.value === 'custom' && this.value) {
+                        hiddenInput.value = this.value;
                     }
                 });
 
                 // Handle form submission
                 form.addEventListener('submit', function(e) {
-                    console.log('Form submit triggered');
-                    console.log('Duration select value:', durationSelect.value);
-                    console.log('Custom input value:', customInput.value);
-
-                    // If custom duration is selected, use custom input value
+                    // If custom duration is selected, validate and set hidden input
                     if (durationSelect.value === 'custom') {
-                        if (!customInput.value) {
+                        if (!customInput.value || customInput.value <= 0) {
                             e.preventDefault();
-                            alert('Please enter custom duration');
+                            alert('Silakan masukkan durasi custom (minimal 1 hari)');
+                            customInput.focus();
                             return false;
                         }
-                        // Set the select value to the custom input value before submitting
-                        durationSelect.value = customInput.value;
-                        console.log('Changed duration to:', durationSelect.value);
+                        // Make sure hidden input has the custom value
+                        hiddenInput.value = customInput.value;
                     }
-
-                    // Let form submit normally
+                    
                     return true;
                 });
             });
@@ -233,7 +228,7 @@
             }
 
             function removeBanner() {
-                document.getElementById('banner_image').value = '';
+                document.getElementById('cover_image').value = '';
                 document.getElementById('bannerPreview').style.display = 'none';
                 document.getElementById('bannerPreviewImg').src = '';
             }

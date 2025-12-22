@@ -10,7 +10,7 @@
                 <span class="text-muted fw-light">Payment /</span> History
             </h4>
             <div>
-                <a href="{{ route('admin.subscription-history.export') }}" class="btn btn-success">
+                <a href="{{ route('admin.subscription-history.export', request()->all()) }}" class="btn btn-success">
                     <i class="ti ti-download me-1"></i> Export
                 </a>
             </div>
@@ -26,13 +26,6 @@
         @if (session('error'))
             <div class="alert alert-danger alert-dismissible" role="alert">
                 {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
-        @if (session('info'))
-            <div class="alert alert-info alert-dismissible" role="alert">
-                {{ session('info') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif

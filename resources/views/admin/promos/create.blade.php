@@ -6,6 +6,40 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
         rel="stylesheet" />
+    <style>
+        /* Subscription Plan Badge Styles */
+        .plan-badge {
+            display: inline-flex !important;
+            align-items: center !important;
+            padding: 0.5rem 0.75rem !important;
+            margin: 0.25rem 0.25rem 0.25rem 0 !important;
+            font-size: 0.875rem !important;
+            font-weight: 500 !important;
+            line-height: 1.5 !important;
+            color: #7367f0 !important;
+            background-color: #f8f7ff !important;
+            border: 2px solid #7367f0 !important;
+            border-radius: 0.5rem !important;
+            box-shadow: 0 2px 6px rgba(115, 103, 240, 0.15) !important;
+        }
+
+        .remove-plan {
+            margin-left: 0.5rem !important;
+            cursor: pointer !important;
+            font-size: 1rem !important;
+            line-height: 1 !important;
+            opacity: 0.8 !important;
+            color: #7367f0 !important;
+        }
+        
+        .remove-plan:hover {
+            opacity: 1 !important;
+        }
+        
+        .selected-plans {
+            min-height: 20px !important;
+        }
+    </style>
 @endpush
 
 @section('content')
@@ -252,38 +286,39 @@
                                                         </select>
                                                     </div>
                                                     <div class="col-md-6 condition-value-wrapper"
-                                                        style="{{ in_array($condition['condition_type'], ['new_user', 'first_subscription']) ? 'display:none;' : '' }}">
+                                                        style="{{ $condition['condition_type'] === 'first_subscription' ? 'display:none;' : '' }}">
                                                         <label>Value <span class="value-required text-danger"
-                                                                style="{{ in_array($condition['condition_type'], ['subscription_type', 'min_price']) ? '' : 'display:none;' }}">*</span></label>
+                                                                style="{{ in_array($condition['condition_type'], ['subscription_type', 'min_price', 'new_user']) ? '' : 'display:none;' }}">*</span></label>
                                                         <input type="number"
                                                             class="form-control condition-value condition-value-text"
                                                             name="conditions[{{ $index }}][condition_value_text]"
-                                                            value="{{ $condition['condition_type'] === 'min_price' ? $condition['condition_value'] ?? '' : '' }}"
-                                                            step="0.01" placeholder="Enter value"
-                                                            style="{{ $condition['condition_type'] !== 'min_price' ? 'display:none;' : '' }}">
-                                                        <select class="form-select condition-value condition-value-select"
-                                                            name="conditions[{{ $index }}][condition_value_select]"
-                                                            multiple
-                                                            style="{{ $condition['condition_type'] !== 'subscription_type' ? 'display:none;' : '' }}">
-                                                            @foreach ($subscriptionPlans as $plan)
-                                                                @php
-                                                                    $selectedPlans =
-                                                                        $condition['condition_type'] ===
-                                                                            'subscription_type' &&
-                                                                        isset($condition['condition_value'])
-                                                                            ? explode(
-                                                                                ',',
-                                                                                $condition['condition_value'],
-                                                                            )
-                                                                            : [];
-                                                                @endphp
-                                                                <option value="{{ $plan->name }}"
-                                                                    {{ in_array($plan->name, $selectedPlans) ? 'selected' : '' }}>
-                                                                    {{ $plan->name }} - Rp
-                                                                    {{ number_format($plan->price, 0, ',', '.') }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
+                                                            value="{{ in_array($condition['condition_type'], ['min_price', 'new_user']) ? $condition['condition_value'] ?? '' : '' }}"
+                                                            step="1" placeholder="Enter value"
+                                                            style="{{ !in_array($condition['condition_type'], ['min_price', 'new_user']) ? 'display:none;' : '' }}">
+                                                        
+                                                        <div class="subscription-plan-selector" style="{{ $condition['condition_type'] !== 'subscription_type' ? 'display:none;' : '' }}">
+                                                            <select class="form-select condition-plan-selector">
+                                                                <option value="">Select subscription plans</option>
+                                                                @foreach ($subscriptionPlans as $plan)
+                                                                    <option value="{{ $plan->name }}" data-price="{{ number_format($plan->price, 0, ',', '.') }}">
+                                                                        {{ $plan->name }} - Rp {{ number_format($plan->price, 0, ',', '.') }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                            
+                                                            <!-- Selected Plans Display -->
+                                                            <div class="selected-plans mt-2">
+                                                                @if($condition['condition_type'] === 'subscription_type' && isset($condition['condition_value']))
+                                                                    @foreach(explode(',', $condition['condition_value']) as $planName)
+                                                                        <span class="plan-badge">{{ $planName }}<span class="remove-plan">&times;</span></span>
+                                                                    @endforeach
+                                                                @endif
+                                                            </div>
+                                                            
+                                                            <!-- Hidden inputs for form submission -->
+                                                            <div class="plan-inputs"></div>
+                                                        </div>
+                                                        
                                                         <small class="form-text text-muted condition-hint"></small>
                                                     </div>
                                                     <div class="col-md-1 d-flex align-items-end">
@@ -332,33 +367,33 @@
                         </h5>
                     </div>
                     <div class="card-body">
-                        <h6 class="font-weight-bold">Discount Types:</h6>
+                        <h6 class="font-weight-bold">Tipe Diskon:</h6>
                         <ul class="small">
-                            <li><strong>Percentage:</strong> Reduces price by % (e.g., 50% off)</li>
-                            <li><strong>Fixed Amount:</strong> Reduces price by $ (e.g., $10 off)</li>
-                            <li><strong>Free Trial:</strong> Number of free days</li>
+                            <li><strong>Persentase:</strong> Mengurangi harga berdasarkan % (contoh: diskon 50%)</li>
+                            <li><strong>Nominal Tetap:</strong> Mengurangi harga dengan nominal tetap (contoh: potongan Rp 50.000)</li>
+                            <li><strong>Uji Coba Gratis:</strong> Jumlah hari gratis berlangganan</li>
                         </ul>
 
-                        <h6 class="font-weight-bold mt-3">Condition Types:</h6>
+                        <h6 class="font-weight-bold mt-3">Tipe Kondisi:</h6>
                         <ul class="small">
-                            <li><strong>New User:</strong> Users registered within 7 days (no value needed)</li>
-                            <li><strong>First Subscription:</strong> User's first subscription only (no value needed)</li>
-                            <li><strong>Subscription Type:</strong> Specific plan types (e.g., "Premium,Pro")</li>
-                            <li><strong>Minimum Price:</strong> Order must meet minimum amount (e.g., "9.99")</li>
+                            <li><strong>Pengguna Baru:</strong> User yang terdaftar dalam X hari (contoh: 7 untuk 7 hari)</li>
+                            <li><strong>Langganan Pertama:</strong> Hanya untuk langganan pertama user (tidak perlu nilai)</li>
+                            <li><strong>Tipe Langganan:</strong> Paket langganan tertentu (contoh: "Premium,Pro")</li>
+                            <li><strong>Harga Minimum:</strong> Pesanan harus memenuhi minimal harga (contoh: "99000")</li>
                         </ul>
 
-                        <h6 class="font-weight-bold mt-3">Examples:</h6>
+                        <h6 class="font-weight-bold mt-3">Contoh:</h6>
                         <div class="alert alert-info small">
-                            <strong>Welcome Discount:</strong><br>
-                            - Code: WELCOME50<br>
-                            - Type: Percentage (50%)<br>
-                            - Conditions: New User + First Subscription
+                            <strong>Diskon Selamat Datang:</strong><br>
+                            - Kode: WELCOME50<br>
+                            - Tipe: Persentase (50%)<br>
+                            - Kondisi: Pengguna Baru + Langganan Pertama
                         </div>
                         <div class="alert alert-success small">
-                            <strong>Holiday Sale:</strong><br>
-                            - Code: HOLIDAY70<br>
-                            - Type: Percentage (70%)<br>
-                            - Conditions: Min Price $9.99
+                            <strong>Promo Hari Raya:</strong><br>
+                            - Kode: HARIRAYA70<br>
+                            - Tipe: Persentase (70%)<br>
+                            - Kondisi: Harga Min Rp 99.000
                         </div>
                     </div>
                 </div>
@@ -439,14 +474,24 @@
                                step="0.01"
                                placeholder="Enter value"
                                style="display:none;">
-                        <select class="form-select condition-value condition-value-select"
-                                name="conditions[${conditionIndex}][condition_value_select]"
-                                multiple
-                                style="display:none;">
-                            @foreach ($subscriptionPlans as $plan)
-                                <option value="{{ $plan->name }}">{{ $plan->name }} - Rp {{ number_format($plan->price, 0, ',', '.') }}</option>
-                            @endforeach
-                        </select>
+                        
+                        <div class="subscription-plan-selector" style="display:none;">
+                            <select class="form-select condition-plan-selector">
+                                <option value="">Select subscription plans</option>
+                                @foreach ($subscriptionPlans as $plan)
+                                    <option value="{{ $plan->name }}" data-price="{{ number_format($plan->price, 0, ',', '.') }}">
+                                        {{ $plan->name }} - Rp {{ number_format($plan->price, 0, ',', '.') }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            
+                            <!-- Selected Plans Display -->
+                            <div class="selected-plans mt-2"></div>
+                            
+                            <!-- Hidden inputs for form submission -->
+                            <div class="plan-inputs"></div>
+                        </div>
+                        
                         <small class="form-text text-muted condition-hint"></small>
                     </div>
                     <div class="col-md-1 d-flex align-items-end">
@@ -462,12 +507,7 @@
                 const newRow = $(html);
                 $('#conditionsContainer').append(newRow);
 
-                // Initialize select2 for subscription type select
-                newRow.find('.condition-value-select').select2({
-                    placeholder: 'Select subscription plans',
-                    allowClear: true,
-                    width: '100%'
-                });
+                // DO NOT initialize select2 here - it will be initialized when subscription_type is selected
 
                 $('#noConditions').hide();
                 conditionIndex++;
@@ -488,34 +528,39 @@
                 const row = $(this).closest('.condition-row');
                 const valueWrapper = row.find('.condition-value-wrapper');
                 const textInput = row.find('.condition-value-text');
-                const selectInput = row.find('.condition-value-select');
+                const planSelector = row.find('.subscription-plan-selector');
                 const valueRequired = row.find('.value-required');
                 const hint = row.find('.condition-hint');
 
-                // Hide all inputs first
-                textInput.hide().prop('required', false);
-                selectInput.hide().prop('required', false);
+                // Hide all first and clear values
+                valueWrapper.hide();
+                textInput.hide().prop('required', false).val('');
+                planSelector.hide();
+                valueRequired.hide();
+                hint.text('');
 
                 switch (type) {
                     case 'new_user':
+                        valueWrapper.show();
+                        textInput.show().prop('required', true);
+                        textInput.attr('type', 'number').attr('step', '1').attr('min', '1').attr('placeholder', 'e.g., 7');
+                        valueRequired.show();
+                        hint.text('Enter maximum account age in days (e.g., 7 for users registered within 7 days)');
+                        break;
                     case 'first_subscription':
-                        valueWrapper.hide();
-                        textInput.val('');
-                        selectInput.val(null).trigger('change');
-                        valueRequired.hide();
+                        // Tetap hide semua
                         hint.text('This condition does not require a value');
                         break;
                     case 'subscription_type':
                         valueWrapper.show();
-                        selectInput.show().prop('required', true);
-                        textInput.hide();
+                        planSelector.show();
                         valueRequired.show();
                         hint.text('Select one or more subscription plans');
+                        break;
                         break;
                     case 'min_price':
                         valueWrapper.show();
                         textInput.show().prop('required', true);
-                        selectInput.hide();
                         textInput.attr('type', 'number').attr('step', '1').attr('placeholder', 'e.g., 99000');
                         valueRequired.show();
                         hint.text('Enter minimum price in rupiah (e.g., 99000)');
@@ -523,10 +568,50 @@
                     default:
                         valueWrapper.show();
                         textInput.show();
-                        selectInput.hide();
                         textInput.attr('type', 'text').attr('placeholder', 'Enter value');
                         valueRequired.hide();
                         hint.text('');
+                }
+            });
+
+            // Handle subscription plan selection
+            $(document).on('change', '.condition-plan-selector', function() {
+                const row = $(this).closest('.condition-row');
+                const selectedValue = $(this).val();
+                const selectedText = $(this).find('option:selected').text();
+                const selectedPlansDiv = row.find('.selected-plans');
+                const planInputsDiv = row.find('.plan-inputs');
+                
+                if (selectedValue) {
+                    // Get existing plans
+                    const existingPlans = [];
+                    planInputsDiv.find('input').each(function() {
+                        existingPlans.push($(this).val());
+                    });
+                    
+                    // Check if not already selected
+                    if (!existingPlans.includes(selectedValue)) {
+                        // Add badge
+                        const badge = $('<span class="plan-badge"></span>');
+                        badge.text(selectedValue);
+                        
+                        const removeBtn = $('<span class="remove-plan">&times;</span>');
+                        removeBtn.on('click', function() {
+                            badge.remove();
+                            planInputsDiv.find(`input[value="${selectedValue}"]`).remove();
+                        });
+                        
+                        badge.append(removeBtn);
+                        selectedPlansDiv.append(badge);
+                        
+                        // Add hidden input
+                        const input = $('<input type="hidden">');
+                        input.val(selectedValue);
+                        planInputsDiv.append(input);
+                    }
+                    
+                    // Reset selector
+                    $(this).val('');
                 }
             });
 
@@ -556,23 +641,25 @@
                     return false;
                 }
 
-                // Process conditions: merge select values into single field
+                // Process conditions: merge values into single field
                 $('.condition-row').each(function(index) {
                     const row = $(this);
                     const conditionType = row.find('.condition-type').val();
 
                     if (conditionType === 'subscription_type') {
-                        const selectedValues = row.find('.condition-value-select').val();
-                        if (selectedValues && selectedValues.length > 0) {
-                            // Create hidden input with comma-separated values
-                            const joinedValue = selectedValues.join(',');
+                        // Get all selected plans from hidden inputs
+                        const selectedPlans = [];
+                        row.find('.plan-inputs input').each(function() {
+                            selectedPlans.push($(this).val());
+                        });
+                        
+                        if (selectedPlans.length > 0) {
+                            const joinedValue = selectedPlans.join(',');
                             row.append(
                                 `<input type="hidden" name="conditions[${index}][condition_value]" value="${joinedValue}">`
-                                );
+                            );
                         }
-                        // Remove the select name to avoid duplicate submission
-                        row.find('.condition-value-select').attr('name', '');
-                    } else if (conditionType === 'min_price') {
+                    } else if (conditionType === 'min_price' || conditionType === 'new_user') {
                         const textValue = row.find('.condition-value-text').val();
                         if (textValue) {
                             row.append(
@@ -591,14 +678,7 @@
                     $('#type').trigger('change');
                 }
 
-                // Initialize select2 for existing conditions
-                $('.condition-value-select').each(function() {
-                    $(this).select2({
-                        placeholder: 'Select subscription plans',
-                        allowClear: true,
-                        width: '100%'
-                    });
-                });
+                // DO NOT initialize select2 for all - it will be done conditionally based on type
 
                 // Update condition hints for existing conditions
                 $('.condition-type').each(function() {

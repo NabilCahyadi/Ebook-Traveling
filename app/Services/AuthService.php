@@ -34,6 +34,12 @@ class AuthService
                 'email_verified_at' => now(),
             ]);
 
+            // Assign member role automatically
+            $memberRole = \App\Models\Role::where('slug', 'member')->first();
+            if ($memberRole) {
+                $user->roles()->attach($memberRole->id);
+            }
+
             DB::commit();
             return $user;
         } catch (\Exception $e) {
@@ -60,6 +66,12 @@ class AuthService
                 'language_pref' => $data['language_pref'] ?? 'en',
                 'email_verified_at' => now(),
             ]);
+
+            // Assign member role automatically
+            $memberRole = \App\Models\Role::where('slug', 'member')->first();
+            if ($memberRole) {
+                $user->roles()->attach($memberRole->id);
+            }
 
             DB::commit();
             return $user;

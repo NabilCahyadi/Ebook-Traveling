@@ -191,6 +191,32 @@
                                                     </a>
                                                     @if ($user->id !== auth()->id())
                                                         <div class="dropdown-divider"></div>
+                                                        @if (!$user->email_verified_at)
+                                                            <a class="dropdown-item text-success" href="javascript:void(0);"
+                                                                onclick="event.preventDefault(); if(confirm('Are you sure you want to verify this user email?')) document.getElementById('verify-form-{{ $user->id }}').submit();">
+                                                                <i class="ti ti-circle-check me-2"></i>
+                                                                <span>Verify Email</span>
+                                                            </a>
+                                                            <form id="verify-form-{{ $user->id }}"
+                                                                action="{{ route('admin.users.verify-email', $user->id) }}"
+                                                                method="POST" style="display: none;">
+                                                                @csrf
+                                                                @method('PATCH')
+                                                            </form>
+                                                        @else
+                                                            <a class="dropdown-item text-secondary" href="javascript:void(0);"
+                                                                onclick="event.preventDefault(); if(confirm('Are you sure you want to unverify this user email?')) document.getElementById('unverify-form-{{ $user->id }}').submit();">
+                                                                <i class="ti ti-circle-x me-2"></i>
+                                                                <span>Unverify Email</span>
+                                                            </a>
+                                                            <form id="unverify-form-{{ $user->id }}"
+                                                                action="{{ route('admin.users.unverify-email', $user->id) }}"
+                                                                method="POST" style="display: none;">
+                                                                @csrf
+                                                                @method('PATCH')
+                                                            </form>
+                                                        @endif
+                                                        <div class="dropdown-divider"></div>
                                                         <a class="dropdown-item text-warning" href="javascript:void(0);"
                                                             onclick="event.preventDefault(); if(confirm('Are you sure you want to move this user to trash?')) document.getElementById('delete-form-{{ $user->id }}').submit();">
                                                             <i class="ti ti-trash me-2"></i>

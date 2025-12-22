@@ -38,21 +38,21 @@
 
                     <!-- Banner Image Upload -->
                     <div class="row mb-3">
-                        <label class="col-sm-2 col-form-label" for="banner_image">Banner Image</label>
+                        <label class="col-sm-2 col-form-label" for="cover_image">Banner Image</label>
                         <div class="col-sm-10">
-                            @if ($plan->banner_image)
+                            @if ($plan->cover_image)
                                 <div class="mb-2">
                                     <div class="border rounded p-2" style="max-width: 600px;">
-                                        <img src="{{ asset('storage/' . $plan->banner_image) }}" alt="Current Banner"
+                                        <img src="{{ asset('storage/' . $plan->cover_image) }}" alt="Current Banner"
                                             style="width: 100%; height: auto; border-radius: 0.375rem;">
                                         <small class="text-muted d-block mt-1">Current banner image</small>
                                     </div>
                                 </div>
                             @endif
 
-                            <input type="file" class="form-control @error('banner_image') is-invalid @enderror"
-                                id="banner_image" name="banner_image" accept="image/*" onchange="previewBanner(event)">
-                            @error('banner_image')
+                            <input type="file" class="form-control @error('cover_image') is-invalid @enderror"
+                                id="cover_image" name="cover_image" accept="image/*" onchange="previewBanner(event)">
+                            @error('cover_image')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                             <div class="form-text">Upload a new banner image to replace the current one (Optional,
@@ -132,6 +132,8 @@
                         </div>
                     </div>
 
+                    {{-- Features input hidden as requested --}}
+                    @if(false)
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label" for="features">Features</label>
                         <div class="col-sm-10">
@@ -143,6 +145,7 @@
                             <div class="form-text">Enter one feature per line</div>
                         </div>
                     </div>
+                    @endif
 
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label">Status</label>

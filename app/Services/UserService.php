@@ -204,6 +204,64 @@ class UserService
     }
 
     /**
+     * Verify user email.
+     */
+    public function verifyUserEmail(string $id): bool
+    {
+        DB::beginTransaction();
+        try {
+            $user = User::find($id);
+
+            if (!$user) {
+                throw new \Exception('User not found');
+            }
+
+            if ($user->email_verified_at) {
+                throw new \Exception('User email is already verified');
+            }
+
+            $result = $this->userRepository->update($user, [
+                'email_verified_at' => now()
+            ]);
+
+            DB::commit();
+            return $result;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * Unverify user email.
+     */
+    public function unverifyUserEmail(string $id): bool
+    {
+        DB::beginTransaction();
+        try {
+            $user = User::find($id);
+
+            if (!$user) {
+                throw new \Exception('User not found');
+            }
+
+            if (!$user->email_verified_at) {
+                throw new \Exception('User email is already unverified');
+            }
+
+            $result = $this->userRepository->update($user, [
+                'email_verified_at' => null
+            ]);
+
+            DB::commit();
+            return $result;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    /**
      * Get only trashed users.
      */
     public function getTrashedUsers(int $perPage = 10, ?string $search = null)

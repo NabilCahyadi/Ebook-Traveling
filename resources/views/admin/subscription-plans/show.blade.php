@@ -28,6 +28,16 @@
                         </span>
                     </div>
                     <div class="card-body">
+                        @if ($plan->cover_image)
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <img src="{{ asset('storage/' . $plan->cover_image) }}" alt="{{ $plan->name }} Banner" 
+                                        class="img-fluid rounded" style="width: 100%; height: auto; object-fit: cover;">
+                                </div>
+                            </div>
+                            <hr>
+                        @endif
+
                         <div class="row mb-3">
                             <div class="col-sm-4">
                                 <h6 class="text-muted mb-1">Plan Name</h6>
@@ -84,6 +94,8 @@
 
                         <hr>
 
+                        {{-- Features section hidden as requested --}}
+                        @if(false)
                         <div class="row">
                             <div class="col-sm-4">
                                 <h6 class="text-muted mb-1">Features</h6>
@@ -103,6 +115,7 @@
                                 @endif
                             </div>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>
