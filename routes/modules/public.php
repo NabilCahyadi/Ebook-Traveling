@@ -13,7 +13,6 @@ use App\Http\Controllers\ReaderController;
 use App\Http\Controllers\FrontendCategoryController;
 use App\Http\Controllers\PricingController;
 use App\Http\Controllers\PromoController;
-use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\PromoDetailController;
 
 /*
@@ -33,7 +32,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Destinations Page
 Route::get('/destinations', [DestinationController::class, 'index'])->name('destinations');
-Route::get('/destinations/{slug}', [DestinationController::class, 'show'])->name('destination.show')->middleware(['record.view']);
+Route::get('/destinations/{slug}', [DestinationController::class, 'show'])->name('destination.show')->middleware('record.view');
 
 // Promo Page
 // Route::get('/promo', function () {
@@ -103,13 +102,11 @@ Route::get('/category/{slug}', [FrontendCategoryController::class, 'show'])->nam
 Route::get('/pricing', [PricingController::class, 'index'])->name('pricing');
 Route::get('/promo', [PromoController::class, 'index'])->name('promo');
 Route::get('/promo/{slug}', [PromoController::class, 'showDetail'])->name('promo.detail.show');
-Route::post('/reader/update-progress', [ReaderController::class, 'updateProgress'])->name('reader.updateProgress');
 
 
-// Bungkus dengan prefix 'api'
-Route::prefix('api')->group(function () {
-    Route::post('/subscription/create', [SubscriptionController::class, 'create'])
-        ->middleware('auth'); // Tetap gunakan middleware auth
 
-    Route::post('/payment/mayar-callback', [SubscriptionController::class, 'mayarCallback']);
-});
+
+
+
+
+

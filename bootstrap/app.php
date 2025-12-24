@@ -18,6 +18,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'record.view' => \App\Http\Middleware\RecordView::class,
             'permission' => \App\Http\Middleware\CheckPermission::class,
         ]);
+        
+        // Add SetLocale middleware to web group
+        $middleware->web(append: [
+            \App\Http\Middleware\SetLocale::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

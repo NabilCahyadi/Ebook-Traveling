@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Manage Hero Banners')
+@section('title', __('admin.banners.title'))
 
 @push('styles')
     <style>
@@ -32,23 +32,23 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h4 class="fw-bold mb-1">
-                <span class="text-muted fw-light">Website Management /</span> Hero Banners
+                <span class="text-muted fw-light">{{ __('admin.menu.website_management') }} /</span> {{ __('admin.banners.hero_banners') }}
             </h4>
-            <p class="mb-0">Kelola banner slider yang tampil di halaman utama</p>
+            <p class="mb-0">{{ __('admin.banners.description') }}</p>
         </div>
         <div>
             @if($activeTab === 'home-slider')
                 <a href="{{ route('admin.banners.create') }}" class="btn btn-primary">
-                    <i class="ti ti-plus me-1"></i> Add New Banner
+                    <i class="ti ti-plus me-1"></i> {{ __('admin.banners.add_banner') }}
                 </a>
             @elseif($activeTab === 'banner-pricing')
                 @if($bannerPricing)
-                    <button class="btn btn-secondary" disabled title="Banner pricing sudah ada, hapus dulu untuk membuat yang baru">
-                        <i class="ti ti-plus me-1"></i> Add New Banner
+                    <button class="btn btn-secondary" disabled title="{{ __('admin.banners.banner_exists') }}">
+                        <i class="ti ti-plus me-1"></i> {{ __('admin.banners.add_banner') }}
                     </button>
                 @else
                     <a href="{{ route('admin.banners.create') }}?type=banner-pricing" class="btn btn-primary">
-                        <i class="ti ti-plus me-1"></i> Add New Banner
+                        <i class="ti ti-plus me-1"></i> {{ __('admin.banners.add_banner') }}
                     </a>
                 @endif
             @endif
@@ -60,13 +60,13 @@
         <li class="nav-item" role="presentation">
             <a class="nav-link {{ $activeTab === 'home-slider' ? 'active' : '' }}" 
                href="{{ route('admin.banners.index', ['tab' => 'home-slider']) }}">
-                <i class="ti ti-photo me-1"></i> Home Slider
+                <i class="ti ti-photo me-1"></i> {{ __('admin.banners.home_slider') }}
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link {{ $activeTab === 'banner-pricing' ? 'active' : '' }}" 
                href="{{ route('admin.banners.index', ['tab' => 'banner-pricing']) }}">
-                <i class="ti ti-tag me-1"></i> Banner Pricing
+                <i class="ti ti-tag me-1"></i> {{ __('admin.banners.banner_pricing') }}
             </a>
         </li>
     </ul>

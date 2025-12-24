@@ -1,20 +1,20 @@
 @extends('layouts.admin')
 
-@section('title', 'Role Management')
+@section('title', __('admin.roles.title'))
 
 @section('content')
 
     <!-- Success/Error Messages -->
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Success!</strong> {{ session('success') }}
+            <strong>{{ __('admin.messages.success_title') }}</strong> {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
 
     @if (session('error'))
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Error!</strong> {{ session('error') }}
+            <strong>{{ __('admin.messages.error_title') }}</strong> {{ session('error') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
@@ -23,24 +23,24 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h4 class="fw-bold py-3 mb-2">
-                <span class="text-muted fw-light">Admin /</span> Role Management
+                <span class="text-muted fw-light">{{ __('admin.menu.admin') }} /</span> {{ __('admin.roles.title') }}
                 @if ($showTrashed ?? false)
-                    <span class="badge bg-label-danger ms-2">Trashed Roles</span>
+                    <span class="badge bg-label-danger ms-2">{{ __('admin.roles.trashed_roles') }}</span>
                 @endif
             </h4>
         </div>
         <div>
             @if ($showTrashed ?? false)
                 <a href="{{ route('admin.roles.index') }}" class="btn btn-secondary me-2">
-                    <i class="ti ti-arrow-left me-1"></i> Back to Active Roles
+                    <i class="ti ti-arrow-left me-1"></i> {{ __('admin.roles.back_to_active') }}
                 </a>
             @else
                 <a href="{{ route('admin.roles.trashed') }}" class="btn btn-outline-danger me-2">
-                    <i class="ti ti-trash me-1"></i> View Trashed Roles
+                    <i class="ti ti-trash me-1"></i> {{ __('admin.roles.view_trashed') }}
                 </a>
             @endif
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
-                <i class="ti ti-plus me-1"></i> Add New Role
+                <i class="ti ti-plus me-1"></i> {{ __('admin.roles.add_role') }}
             </button>
         </div>
     </div>
@@ -48,8 +48,8 @@
     <!-- Roles Table -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Roles List</h5>
-            <div class="text-muted">Total: {{ $roles->total() }} roles</div>
+            <h5 class="mb-0">{{ __('admin.roles.roles_list') }}</h5>
+            <div class="text-muted">{{ __('admin.common.total') }}: {{ $roles->total() }} {{ __('admin.roles.roles') }}</div>
         </div>
         <div class="card-body">
             @if ($roles->count() > 0)
@@ -57,13 +57,13 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Slug</th>
-                                <th>Description</th>
-                                <th>Status</th>
-                                <th>Users</th>
-                                <th>Created</th>
-                                <th>Actions</th>
+                                <th>{{ __('admin.form.name') }}</th>
+                                <th>{{ __('admin.form.slug') }}</th>
+                                <th>{{ __('admin.form.description') }}</th>
+                                <th>{{ __('admin.form.status') }}</th>
+                                <th>{{ __('admin.users.users') }}</th>
+                                <th>{{ __('admin.roles.created') }}</th>
+                                <th>{{ __('admin.ebooks.actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>

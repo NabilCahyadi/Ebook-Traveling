@@ -1,20 +1,20 @@
 @extends('layouts.admin')
 
-@section('title', 'Trashed Users')
+@section('title', __('admin.users.trashed_users'))
 
 @section('content')
 
     <!-- Success/Error Messages -->
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Success!</strong> {{ session('success') }}
+            <strong>{{ __('admin.messages.success_title') }}</strong> {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
 
     @if (session('error'))
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Error!</strong> {{ session('error') }}
+            <strong>{{ __('admin.messages.error_title') }}</strong> {{ session('error') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
@@ -23,14 +23,14 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h4 class="fw-bold py-3 mb-2">
-                <span class="text-muted fw-light">Admin / User Management /</span>
-                <span class="text-danger">Trashed Users</span>
+                <span class="text-muted fw-light">{{ __('admin.menu.dashboard') }} / {{ __('admin.menu.user_management') }} /</span>
+                <span class="text-danger">{{ __('admin.users.trashed_users') }}</span>
             </h4>
-            <p class="text-muted mb-0">Users that have been soft deleted</p>
+            <p class="text-muted mb-0">{{ __('admin.users.trashed_description') }}</p>
         </div>
         <div>
             <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">
-                <i class="ti ti-arrow-left me-1"></i> Back to Active Users
+                <i class="ti ti-arrow-left me-1"></i> {{ __('admin.users.back_to_active') }}
             </a>
         </div>
     </div>
@@ -40,9 +40,9 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0 text-danger">
                 <i class="ti ti-trash me-1"></i>
-                Trashed Users
+                {{ __('admin.users.trashed_users') }}
             </h5>
-            <div class="text-muted">Total: {{ $users->total() }} deleted users</div>
+            <div class="text-muted">Total: {{ $users->total() }} {{ __('admin.users.users') }}</div>
         </div>
 
         <!-- Search Filter -->
@@ -54,20 +54,20 @@
                             <i class="ti ti-search"></i>
                         </span>
                         <input type="text" class="form-control" name="search" value="{{ $search ?? '' }}"
-                            placeholder="Search deleted users by name, email, or phone...">
+                            placeholder="{{ __('admin.users.search_placeholder') }}">
                     </div>
                 </div>
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-primary w-100">
-                        <i class="ti ti-search me-1"></i> Search
+                        <i class="ti ti-search me-1"></i> {{ __('admin.actions.search') }}
                     </button>
                 </div>
                 @if (isset($search) && $search)
                     <div class="col-12">
                         <a href="{{ route('admin.users.trashed') }}" class="btn btn-sm btn-outline-secondary">
-                            <i class="ti ti-x me-1"></i> Clear Filter
+                            <i class="ti ti-x me-1"></i> {{ __('admin.common.clear') }} {{ __('admin.common.filter') }}
                         </a>
-                        <span class="text-muted ms-2">Showing results for: <strong>"{{ $search }}"</strong></span>
+                        <span class="text-muted ms-2">{{ __('admin.users.showing_results_for') }}: <strong>"{{ $search }}"</strong></span>
                     </div>
                 @endif
             </form>
@@ -80,11 +80,11 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role(s)</th>
-                                <th>Deleted At</th>
-                                <th>Actions</th>
+                                <th>{{ __('admin.users.name') }}</th>
+                                <th>{{ __('admin.users.email') }}</th>
+                                <th>{{ __('admin.users.role') }}</th>
+                                <th>{{ __('admin.users.deleted_at') }}</th>
+                                <th>{{ __('admin.users.actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -92,7 +92,7 @@
                                 <tr class="table-danger">
                                     <td>
                                         <strong>#{{ $user->id }}</strong>
-                                        <span class="badge bg-label-danger ms-1">Deleted</span>
+                                        <span class="badge bg-label-danger ms-1">{{ __('admin.users.deleted') }}</span>
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center">
@@ -104,19 +104,19 @@
                                             <div>
                                                 <div class="fw-medium">
                                                     {{ $user->name }}
-                                                    <i class="ti ti-trash text-danger ms-1" title="Deleted"></i>
+                                                    <i class="ti ti-trash text-danger ms-1" title="{{ __('admin.users.deleted') }}"></i>
                                                 </div>
                                                 @if ($user->id === auth()->id())
                                                     <small class="badge bg-label-warning">
-                                                        <i class="ti ti-star ti-xs"></i> You
+                                                        <i class="ti ti-star ti-xs"></i> {{ __('admin.users.you') }}
                                                     </small>
                                                 @elseif($user->email_verified_at)
                                                     <small class="text-success">
-                                                        <i class="ti ti-check ti-xs"></i> Verified
+                                                        <i class="ti ti-check ti-xs"></i> {{ __('admin.users.verified') }}
                                                     </small>
                                                 @else
                                                     <small class="text-muted">
-                                                        <i class="ti ti-x ti-xs"></i> Not verified
+                                                        <i class="ti ti-x ti-xs"></i> {{ __('admin.users.not_verified') }}
                                                     </small>
                                                 @endif
                                             </div>
@@ -136,7 +136,7 @@
                                                 <span class="badge bg-label-secondary mb-1">{{ $role->name }}</span>
                                             @endforeach
                                         @else
-                                            <span class="badge bg-label-secondary">No Role</span>
+                                            <span class="badge bg-label-secondary">{{ __('admin.users.role') }}</span>
                                         @endif
                                     </td>
                                     <td>
@@ -154,9 +154,9 @@
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-end">
                                                 <a class="dropdown-item text-success" href="javascript:void(0);"
-                                                    onclick="event.preventDefault(); if(confirm('Are you sure you want to restore this user?')) document.getElementById('restore-form-{{ $user->id }}').submit();">
+                                                    onclick="event.preventDefault(); if(confirm('{{ __('admin.users.confirm_restore') }}')) document.getElementById('restore-form-{{ $user->id }}').submit();">
                                                     <i class="ti ti-restore me-2"></i>
-                                                    <span>Restore User</span>
+                                                    <span>{{ __('admin.actions.restore') }}</span>
                                                 </a>
                                                 <form id="restore-form-{{ $user->id }}"
                                                     action="{{ route('admin.users.restore', $user->id) }}" method="POST"
@@ -167,9 +167,9 @@
                                                 @if ($user->id !== auth()->id())
                                                     <div class="dropdown-divider"></div>
                                                     <a class="dropdown-item text-danger" href="javascript:void(0);"
-                                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to permanently delete this user? This action cannot be undone!')) document.getElementById('force-delete-form-{{ $user->id }}').submit();">
+                                                        onclick="event.preventDefault(); if(confirm('{{ __('admin.users.confirm_force_delete') }}')) document.getElementById('force-delete-form-{{ $user->id }}').submit();">
                                                         <i class="ti ti-trash-x me-2"></i>
-                                                        <span>Delete Permanently</span>
+                                                        <span>{{ __('admin.users.delete_permanently') }}</span>
                                                     </a>
                                                     <form id="force-delete-form-{{ $user->id }}"
                                                         action="{{ route('admin.users.force-delete', $user->id) }}"
@@ -194,12 +194,12 @@
             @else
                 <div class="text-center py-5">
                     <i class="ti ti-trash-off ti-xl text-muted mb-3" style="font-size: 3rem;"></i>
-                    <h6 class="text-muted">No trashed users found</h6>
+                    <h6 class="text-muted">{{ __('admin.users.no_users_found') }}</h6>
                     <p class="text-muted mb-0">
                         @if (isset($search) && $search)
-                            No deleted users match your search criteria
+                            {{ __('admin.users.no_deleted_users_search') }}
                         @else
-                            No users have been deleted yet
+                            {{ __('admin.users.no_deleted_users_yet') }}
                         @endif
                     </p>
                 </div>

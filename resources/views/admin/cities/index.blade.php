@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Cities Management')
+@section('title', __('admin.cities.title'))
 
 @php
     use Illuminate\Support\Facades\Storage;
@@ -12,14 +12,14 @@
         <!-- Success/Error Messages -->
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>Success!</strong> {{ session('success') }}
+                <strong>{{ __('admin.messages.success_title') }}</strong> {{ session('success') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
         @if (session('error'))
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Error!</strong> {{ session('error') }}
+                <strong>{{ __('admin.messages.error_title') }}</strong> {{ session('error') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
@@ -28,21 +28,21 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h4 class="fw-bold py-3 mb-2">
-                    <span class="text-muted fw-light">Master Data /</span> Cities
+                    <span class="text-muted fw-light">{{ __('admin.menu.master_data') }} /</span> {{ __('admin.cities.title') }}
                 </h4>
             </div>
             <div class="d-flex gap-2">
                 <!-- View Toggle -->
                 <div class="btn-group" role="group">
                     <button type="button" class="btn btn-outline-primary" id="cardViewBtn" onclick="switchView('card')">
-                        <i class="ti ti-layout-grid me-1"></i> Cards
+                        <i class="ti ti-layout-grid me-1"></i> {{ __('admin.cities.cards_view') }}
                     </button>
                     <button type="button" class="btn btn-outline-primary" id="tableViewBtn" onclick="switchView('table')">
-                        <i class="ti ti-table me-1"></i> Table
+                        <i class="ti ti-table me-1"></i> {{ __('admin.cities.table_view') }}
                     </button>
                 </div>
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
-                    <i class="ti ti-plus me-1"></i> Add New City
+                    <i class="ti ti-plus me-1"></i> {{ __('admin.cities.add_city') }}
                 </button>
             </div>
         </div>
@@ -53,14 +53,14 @@
                 <form action="{{ route('admin.cities.index') }}" method="GET">
                     <div class="row g-3">
                         <div class="col-md-4">
-                            <label for="search" class="form-label">Search</label>
+                            <label for="search" class="form-label">{{ __('admin.common.search') }}</label>
                             <input type="text" class="form-control" id="search" name="search"
-                                value="{{ request('search') }}" placeholder="Search by city name or province...">
+                                value="{{ request('search') }}" placeholder="{{ __('admin.cities.search_placeholder') }}">
                         </div>
                         <div class="col-md-3">
-                            <label for="province" class="form-label">Filter by Province</label>
+                            <label for="province" class="form-label">{{ __('admin.cities.filter_province') }}</label>
                             <select class="form-select" id="province" name="province">
-                                <option value="">All Provinces</option>
+                                <option value="">{{ __('admin.cities.all_provinces') }}</option>
                                 @foreach ($provinces as $province)
                                     <option value="{{ $province }}"
                                         {{ request('province') == $province ? 'selected' : '' }}>
@@ -70,21 +70,21 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label for="sort_by" class="form-label">Sort By</label>
+                            <label for="sort_by" class="form-label">{{ __('admin.cities.sort_by') }}</label>
                             <select class="form-select" id="sort_by" name="sort_by">
-                                <option value="created_at" {{ request('sort_by') == 'created_at' ? 'selected' : '' }}>Date
+                                <option value="created_at" {{ request('sort_by') == 'created_at' ? 'selected' : '' }}>{{ __('admin.cities.date') }}
                                 </option>
-                                <option value="name" {{ request('sort_by') == 'name' ? 'selected' : '' }}>Name</option>
-                                <option value="province" {{ request('sort_by') == 'province' ? 'selected' : '' }}>Province
+                                <option value="name" {{ request('sort_by') == 'name' ? 'selected' : '' }}>{{ __('admin.form.name') }}</option>
+                                <option value="province" {{ request('sort_by') == 'province' ? 'selected' : '' }}>{{ __('admin.cities.province') }}
                                 </option>
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label for="sort_order" class="form-label">Order</label>
+                            <label for="sort_order" class="form-label">{{ __('admin.cities.order') }}</label>
                             <select class="form-select" id="sort_order" name="sort_order">
-                                <option value="asc" {{ request('sort_order') == 'asc' ? 'selected' : '' }}>Ascending
+                                <option value="asc" {{ request('sort_order') == 'asc' ? 'selected' : '' }}>{{ __('admin.cities.ascending') }}
                                 </option>
-                                <option value="desc" {{ request('sort_order') == 'desc' ? 'selected' : '' }}>Descending
+                                <option value="desc" {{ request('sort_order') == 'desc' ? 'selected' : '' }}>{{ __('admin.cities.descending') }}
                                 </option>
                             </select>
                         </div>
@@ -96,7 +96,7 @@
                         @if (request()->hasAny(['search', 'province', 'sort_by', 'sort_order']))
                             <div class="col-12">
                                 <a href="{{ route('admin.cities.index') }}" class="btn btn-label-secondary">
-                                    <i class="ti ti-x me-1"></i> Clear Filters
+                                    <i class="ti ti-x me-1"></i> {{ __('admin.cities.clear_filters') }}
                                 </a>
                             </div>
                         @endif

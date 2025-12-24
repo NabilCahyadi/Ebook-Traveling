@@ -1,15 +1,15 @@
 @extends('layouts.admin')
 
-@section('title', 'Blogs')
+@section('title', __('admin.blogs.title'))
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="fw-bold py-3 mb-0">
-                <span class="text-muted fw-light">Admin /</span> Blogs
+                <span class="text-muted fw-light">{{ __('admin.menu.admin') }} /</span> {{ __('admin.blogs.title') }}
             </h4>
             <a href="{{ route('admin.blogs.create') }}" class="btn btn-primary">
-                <i class="bx bx-plus me-1"></i> Create New Blog
+                <i class="bx bx-plus me-1"></i> {{ __('admin.blogs.create_blog') }}
             </a>
         </div>
 
@@ -29,24 +29,24 @@
 
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-3">All Blogs</h5>
+                <h5 class="mb-3">{{ __('admin.blogs.all_blogs') }}</h5>
 
                 <!-- Filter Section -->
                 <form method="GET" action="{{ route('admin.blogs.index') }}" class="row g-3">
                     <div class="col-md-3">
-                        <label for="status" class="form-label">Status</label>
+                        <label for="status" class="form-label">{{ __('admin.form.status') }}</label>
                         <select class="form-select" id="status" name="status">
-                            <option value="">All Status</option>
-                            <option value="draft" {{ $status == 'draft' ? 'selected' : '' }}>Draft</option>
-                            <option value="published" {{ $status == 'published' ? 'selected' : '' }}>Published</option>
-                            <option value="unpublished" {{ $status == 'unpublished' ? 'selected' : '' }}>Unpublished
+                            <option value="">{{ __('admin.blogs.all_status') }}</option>
+                            <option value="draft" {{ $status == 'draft' ? 'selected' : '' }}>{{ __('admin.status.draft') }}</option>
+                            <option value="published" {{ $status == 'published' ? 'selected' : '' }}>{{ __('admin.status.published') }}</option>
+                            <option value="unpublished" {{ $status == 'unpublished' ? 'selected' : '' }}>{{ __('admin.status.unpublished') }}
                             </option>
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label for="category" class="form-label">Category</label>
+                        <label for="category" class="form-label">{{ __('admin.blogs.category') }}</label>
                         <select class="form-select" id="category" name="category">
-                            <option value="">All Categories</option>
+                            <option value="">{{ __('admin.blogs.all_categories') }}</option>
                             @foreach ($categories as $cat)
                                 <option value="{{ $cat }}" {{ $category == $cat ? 'selected' : '' }}>
                                     {{ $cat }}</option>
@@ -54,15 +54,15 @@
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label for="search" class="form-label">Search</label>
+                        <label for="search" class="form-label">{{ __('admin.common.search') }}</label>
                         <input type="text" class="form-control" id="search" name="search"
-                            placeholder="Search by title, content..." value="{{ $search ?? '' }}">
+                            placeholder="{{ __('admin.blogs.search_placeholder') }}" value="{{ $search ?? '' }}">
                     </div>
                     <div class="col-md-2">
                         <label class="form-label">&nbsp;</label>
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary">
-                                <i class="bx bx-search-alt me-1"></i> Filter
+                                <i class="bx bx-search-alt me-1"></i> {{ __('admin.common.filter') }}
                             </button>
                             @if ($status || $category || $search)
                                 <a href="{{ route('admin.blogs.index') }}" class="btn btn-outline-secondary">
@@ -75,9 +75,9 @@
 
                 <!-- Stats -->
                 <div class="d-flex justify-content-between align-items-center mt-3">
-                    <span class="badge bg-primary">{{ $blogs->total() }} Total</span>
+                    <span class="badge bg-primary">{{ $blogs->total() }} {{ __('admin.common.total') }}</span>
                     <a href="{{ route('admin.blogs.archived') }}" class="btn btn-sm btn-outline-secondary">
-                        <i class="bx bx-archive me-1"></i> View Archived
+                        <i class="bx bx-archive me-1"></i> {{ __('admin.blogs.view_archived') }}
                     </a>
                 </div>
             </div>
@@ -87,14 +87,14 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>Image</th>
-                                    <th>Title</th>
-                                    <th>Author</th>
-                                    <th>Category</th>
-                                    <th>Views</th>
-                                    <th>Status</th>
-                                    <th>Published</th>
-                                    <th>Actions</th>
+                                    <th>{{ __('admin.blogs.image') }}</th>
+                                    <th>{{ __('admin.blogs.title') }}</th>
+                                    <th>{{ __('admin.blogs.author') }}</th>
+                                    <th>{{ __('admin.blogs.category') }}</th>
+                                    <th>{{ __('admin.blogs.views') }}</th>
+                                    <th>{{ __('admin.blogs.status') }}</th>
+                                    <th>{{ __('admin.blogs.published') }}</th>
+                                    <th>{{ __('admin.actions.actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody>

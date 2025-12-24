@@ -1,20 +1,20 @@
 @extends('layouts.admin')
 
-@section('title', 'User Management')
+@section('title', __('admin.users.title'))
 
 @section('content')
 
     <!-- Success/Error Messages -->
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Success!</strong> {{ session('success') }}
+            <strong>{{ __('admin.messages.success_title') }}</strong> {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
 
     @if (session('error'))
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Error!</strong> {{ session('error') }}
+            <strong>{{ __('admin.messages.error_title') }}</strong> {{ session('error') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
@@ -23,33 +23,33 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h4 class="fw-bold py-3 mb-2">
-                <span class="text-muted fw-light">Admin /</span> User Management
+                <span class="text-muted fw-light">{{ __('admin.menu.admin') }} /</span> {{ __('admin.users.title') }}
                 @if (isset($roleSlug) && $roleSlug)
                     <span class="badge bg-label-primary ms-2">
                         {{ ucfirst(str_replace('-', ' ', $roleSlug)) }}
                     </span>
                 @endif
                 @if ($showTrashed ?? false)
-                    <span class="badge bg-label-danger ms-2">Trashed Users</span>
+                    <span class="badge bg-label-danger ms-2">{{ __('admin.users.trashed_users') }}</span>
                 @endif
             </h4>
         </div>
         <div>
             @if ($showTrashed ?? false)
                 <a href="{{ route('admin.users.index') }}" class="btn btn-secondary me-2">
-                    <i class="ti ti-arrow-left me-1"></i> Back to Active Users
+                    <i class="ti ti-arrow-left me-1"></i> {{ __('admin.users.back_to_active') }}
                 </a>
             @else
                 <a href="{{ route('admin.users.trashed') }}" class="btn btn-outline-danger me-2">
-                    <i class="ti ti-trash me-1"></i> View Trashed Users
+                    <i class="ti ti-trash me-1"></i> {{ __('admin.users.view_trashed') }}
                 </a>
             @endif
             <a href="{{ route('admin.users.create', ['role' => $roleSlug ?? '']) }}" class="btn btn-primary">
-                <i class="ti ti-plus me-1"></i> Add New 
+                <i class="ti ti-plus me-1"></i> {{ __('admin.users.add_user') }}
                 @if (isset($roleSlug) && $roleSlug && $roleSlug !== 'all')
                     {{ ucfirst($roleSlug) }}
                 @else
-                    User
+                    {{ __('admin.users.user') }}
                 @endif
             </a>
         </div>
@@ -58,8 +58,8 @@
     <!-- Users Table -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Users List</h5>
-            <div class="text-muted">Total: {{ $users->total() }} users</div>
+            <h5 class="mb-0">{{ __('admin.users.users_list') }}</h5>
+            <div class="text-muted">{{ __('admin.common.total') }}: {{ $users->total() }} {{ __('admin.users.users') }}</div>
         </div>
 
         <!-- Search Filter -->
@@ -74,7 +74,7 @@
                             <i class="ti ti-search"></i>
                         </span>
                         <input type="text" class="form-control" name="search" value="{{ $search ?? '' }}"
-                            placeholder="Search by name, email, or phone...">
+                            placeholder="{{ __('admin.users.search_placeholder') }}">
                     </div>
                 </div>
                 <div class="col-md-2">

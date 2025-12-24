@@ -11,6 +11,7 @@ class AdminMiddleware
 {
     /**
      * Handle an incoming request.
+     * Check if user has permission to access management panel.
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
@@ -18,25 +19,32 @@ class AdminMiddleware
     {
         // Check if user is authenticated
         if (!Auth::check()) {
-            return redirect()->route('admin.login')->with('error', 'Please login as admin first.');
+            return redirect()->route('admin.login')->with('error', 'Please login first.');
         }
 
-        // Check if user has admin access
         $user = Auth::user();
 
-        // Check user_type field first (primary method)
+        // Admin always has full access (bypass permission check)
         if (isset($user->user_type) && $user->user_type === 'admin') {
             return $next($request);
         }
 
-        // Fallback: Check roles relationship (if exists)
+        // Check if user has 'panel.access' permission
+        if (method_exists($user, 'hasPermission')) {
+            if ($user->hasPermission('panel.access')) {
+                return $next($request);
+            }
+        }
+
+        // Fallback: Check roles relationship for admin role
         if (method_exists($user, 'roles') && $user->roles()->where('name', 'admin')->exists()) {
             return $next($request);
         }
 
-        // Not authorized - redirect to admin login
+        // Not authorized - logout and redirect
         Auth::logout();
         
-        return redirect()->route('admin.login')->with('error', 'Unauthorized access. Admin only.');
+        return redirect()->route('admin.login')
+            ->with('error', 'You do not have permission to access the management panel. Please contact administrator.');
     }
 }

@@ -1,20 +1,20 @@
 @extends('layouts.admin')
 
-@section('title', 'Active Subscribers')
+@section('title', __('admin.subscribers.title'))
 
 @section('content')
 
     <!-- Success/Error Messages -->
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Success!</strong> {{ session('success') }}
+            <strong>{{ __('admin.messages.success_title') }}</strong> {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
 
     @if (session('error'))
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Error!</strong> {{ session('error') }}
+            <strong>{{ __('admin.messages.error_title') }}</strong> {{ session('error') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
@@ -23,7 +23,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h4 class="fw-bold py-3 mb-2">
-                <span class="text-muted fw-light">Subscription /</span> Active Subscribers
+                <span class="text-muted fw-light">{{ __('admin.menu.subscription') }} /</span> {{ __('admin.subscribers.title') }}
             </h4>
         </div>
     </div>
@@ -32,7 +32,7 @@
     <div class="card mb-4">
         <div class="card-header">
             <h5 class="mb-0">
-                <i class="ti ti-filter me-2"></i>Filter Subscribers
+                <i class="ti ti-filter me-2"></i>{{ __('admin.subscribers.filter_subscribers') }}
             </h5>
         </div>
         <div class="card-body">
@@ -40,17 +40,17 @@
                 <div class="row g-3">
                     <!-- Search -->
                     <div class="col-md-3">
-                        <label for="search" class="form-label">Search</label>
+                        <label for="search" class="form-label">{{ __('admin.common.search') }}</label>
                         <input type="text" class="form-control" id="search" name="search" 
                                value="{{ request('search') }}" 
-                               placeholder="Name or email...">
+                               placeholder="{{ __('admin.subscribers.search_placeholder') }}">
                     </div>
 
                     <!-- Role Filter -->
                     <div class="col-md-3">
-                        <label for="role" class="form-label">Role</label>
+                        <label for="role" class="form-label">{{ __('admin.users.role') }}</label>
                         <select class="form-select" id="role" name="role">
-                            <option value="">All Roles</option>
+                            <option value="">{{ __('admin.users.all_roles') }}</option>
                             @foreach ($roles as $role)
                                 <option value="{{ $role->slug }}" 
                                     {{ request('role') == $role->slug ? 'selected' : '' }}>
@@ -62,9 +62,9 @@
 
                     <!-- Subscription Plan Filter -->
                     <div class="col-md-3">
-                        <label for="subscription_plan" class="form-label">Subscription Plan</label>
+                        <label for="subscription_plan" class="form-label">{{ __('admin.subscribers.subscription_plan') }}</label>
                         <select class="form-select" id="subscription_plan" name="subscription_plan">
-                            <option value="">All Plans</option>
+                            <option value="">{{ __('admin.subscribers.all_plans') }}</option>
                             @foreach ($subscriptionPlans as $plan)
                                 <option value="{{ $plan->id }}" 
                                     {{ request('subscription_plan') == $plan->id ? 'selected' : '' }}>
@@ -76,14 +76,14 @@
 
                     <!-- Date From -->
                     <div class="col-md-3">
-                        <label for="date_from" class="form-label">Start Date From</label>
+                        <label for="date_from" class="form-label">{{ __('admin.subscribers.start_date_from') }}</label>
                         <input type="date" class="form-control" id="date_from" name="date_from" 
                                value="{{ request('date_from') }}">
                     </div>
 
                     <!-- Date To -->
                     <div class="col-md-3">
-                        <label for="date_to" class="form-label">Start Date To</label>
+                        <label for="date_to" class="form-label">{{ __('admin.subscribers.start_date_to') }}</label>
                         <input type="date" class="form-control" id="date_to" name="date_to" 
                                value="{{ request('date_to') }}">
                     </div>
@@ -91,10 +91,10 @@
                     <!-- Filter Buttons -->
                     <div class="col-md-9 d-flex align-items-end">
                         <button type="submit" class="btn btn-primary me-2">
-                            <i class="ti ti-search me-1"></i> Apply Filters
+                            <i class="ti ti-search me-1"></i> {{ __('admin.actions.apply_filters') }}
                         </button>
                         <a href="{{ route('admin.active-subscribers.index') }}" class="btn btn-secondary">
-                            <i class="ti ti-refresh me-1"></i> Reset
+                            <i class="ti ti-refresh me-1"></i> {{ __('admin.actions.reset') }}
                         </a>
                     </div>
                 </div>
@@ -105,8 +105,8 @@
     <!-- Subscribers Table -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Subscribers List</h5>
-            <div class="text-muted">Total: {{ $subscriptions->total() }} subscribers</div>
+            <h5 class="mb-0">{{ __('admin.subscribers.list') }}</h5>
+            <div class="text-muted">{{ __('admin.common.total') }}: {{ $subscriptions->total() }} {{ __('admin.subscribers.subscribers') }}</div>
         </div>
         <div class="card-body">
             @if ($subscriptions->count() > 0)
@@ -114,15 +114,15 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>User</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Plan</th>
-                                <th>Status</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                                <th>Amount</th>
-                                <th>Actions</th>
+                                <th>{{ __('admin.subscribers.user') }}</th>
+                                <th>{{ __('admin.subscribers.email') }}</th>
+                                <th>{{ __('admin.subscribers.role') }}</th>
+                                <th>{{ __('admin.subscribers.plan') }}</th>
+                                <th>{{ __('admin.subscribers.status') }}</th>
+                                <th>{{ __('admin.subscribers.start_date') }}</th>
+                                <th>{{ __('admin.subscribers.end_date') }}</th>
+                                <th>{{ __('admin.subscribers.amount') }}</th>
+                                <th>{{ __('admin.actions.actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -145,7 +145,7 @@
                                         <div>{{ $subscription->user->email ?? 'N/A' }}</div>
                                         @if ($subscription->user && $subscription->user->email_verified_at)
                                             <small class="text-success">
-                                                <i class="ti ti-check ti-xs"></i> Verified
+                                                <i class="ti ti-check ti-xs"></i> {{ __('admin.status.verified') }}
                                             </small>
                                         @endif
                                     </td>
@@ -155,14 +155,14 @@
                                                 <span class="badge bg-label-primary mb-1">{{ $role->name }}</span>
                                             @endforeach
                                         @else
-                                            <span class="badge bg-label-secondary">No Role</span>
+                                            <span class="badge bg-label-secondary">{{ __('admin.users.no_role') }}</span>
                                         @endif
                                     </td>
                                     <td>
                                         @if ($subscription->plan)
                                             <div class="fw-medium">{{ $subscription->plan->name }}</div>
                                             <small class="text-muted">
-                                                {{ $subscription->plan->duration_days }} days
+                                                {{ $subscription->plan->duration_days }} {{ __('admin.subscribers.days') }}
                                             </small>
                                         @else
                                             <span class="text-muted">-</span>
@@ -171,15 +171,15 @@
                                     <td>
                                         @if ($subscription->status === 'active')
                                             <span class="badge bg-success">
-                                                <i class="ti ti-check ti-xs"></i> Active
+                                                <i class="ti ti-check ti-xs"></i> {{ __('admin.status.active') }}
                                             </span>
                                         @elseif($subscription->status === 'pending')
                                             <span class="badge bg-warning">
-                                                <i class="ti ti-clock ti-xs"></i> Pending
+                                                <i class="ti ti-clock ti-xs"></i> {{ __('admin.status.pending') }}
                                             </span>
                                         @elseif($subscription->status === 'expired')
                                             <span class="badge bg-danger">
-                                                <i class="ti ti-x ti-xs"></i> Expired
+                                                <i class="ti ti-x ti-xs"></i> {{ __('admin.status.expired') }}
                                             </span>
                                         @else
                                             <span class="badge bg-secondary">
@@ -199,7 +199,7 @@
                                             {{ $subscription->end_date ? $subscription->end_date->format('H:i') : '' }}
                                         </small>
                                         @if ($subscription->end_date && $subscription->end_date < now())
-                                            <br><small class="text-danger"><i class="ti ti-alert-circle ti-xs"></i> Expired</small>
+                                            <br><small class="text-danger"><i class="ti ti-alert-circle ti-xs"></i> {{ __('admin.status.expired') }}</small>
                                         @endif
                                     </td>
                                     <td>
@@ -218,17 +218,17 @@
                                                 @if($subscription->user)
                                                     <a class="dropdown-item" href="{{ route('admin.users.show', $subscription->user->id) }}">
                                                         <i class="ti ti-user me-2"></i>
-                                                        <span>View User</span>
+                                                        <span>{{ __('admin.actions.view_user') }}</span>
                                                     </a>
                                                 @endif
                                                 <a class="dropdown-item" href="{{ route('admin.manual-subscriptions.show', $subscription->id) }}">
                                                     <i class="ti ti-eye me-2"></i>
-                                                    <span>View Subscription</span>
+                                                    <span>{{ __('admin.actions.view_subscription') }}</span>
                                                 </a>
                                                 @if($subscription->status === 'active')
                                                     <a class="dropdown-item" href="{{ route('admin.manual-subscriptions.extend', $subscription->id) }}">
                                                         <i class="ti ti-calendar-plus me-2"></i>
-                                                        <span>Extend</span>
+                                                        <span>{{ __('admin.actions.extend') }}</span>
                                                     </a>
                                                 @endif
                                             </div>
@@ -247,17 +247,17 @@
             @else
                 <div class="text-center py-5">
                     <i class="ti ti-users-off ti-xl text-muted mb-3"></i>
-                    <h5 class="text-muted">No subscribers found</h5>
+                    <h5 class="text-muted">{{ __('admin.subscribers.no_subscribers') }}</h5>
                     <p class="text-muted">
                         @if(request()->hasAny(['search', 'role', 'subscription_plan', 'date_from', 'date_to']))
-                            Try adjusting your filters to find what you're looking for.
+                            {{ __('admin.subscribers.try_adjusting') }}
                         @else
-                            There are no active subscribers yet.
+                            {{ __('admin.subscribers.no_active_yet') }}
                         @endif
                     </p>
                     @if(request()->hasAny(['search', 'role', 'subscription_plan', 'date_from', 'date_to']))
                         <a href="{{ route('admin.active-subscribers.index') }}" class="btn btn-primary mt-2">
-                            <i class="ti ti-refresh me-1"></i> Clear Filters
+                            <i class="ti ti-refresh me-1"></i> {{ __('admin.actions.clear_filters') }}
                         </a>
                     @endif
                 </div>
