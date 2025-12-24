@@ -332,4 +332,86 @@ class User extends Authenticatable
     {
         return $this->hasOne(Creator::class);
     }
+
+    // ==================== PERMISSION METHODS ====================
+
+    /**
+     * Check if user has a specific permission.
+     */
+    public function hasPermission(string $permissionName): bool
+    {
+        // Admin always has all permissions
+        if ($this->user_type === 'admin') {
+            return true;
+        }
+
+        // Check through all user roles
+        foreach ($this->roles as $role) {
+            if ($role->hasPermission($permissionName)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if user has any of the given permissions.
+     */
+    public function hasAnyPermission(array $permissions): bool
+    {
+        // Admin always has all permissions
+        if ($this->user_type === 'admin') {
+            return true;
+        }
+
+        foreach ($permissions as $permission) {
+            if ($this->hasPermission($permission)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if user has all of the given permissions.
+     */
+    public function hasAllPermissions(array $permissions): bool
+    {
+        // Admin always has all permissions
+        if ($this->user_type === 'admin') {
+            return true;
+        }
+
+        foreach ($permissions as $permission) {
+            if (!$this->hasPermission($permission)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if user can access management panel.
+     */
+    public function canAccessPanel(): bool
+    {
+        // Admin always can access
+        if ($this->user_type === 'admin') {
+            return true;
+        }
+
+        // Check panel.access permission
+        return $this->hasPermission('panel.access');
+    }
+
+    /**
+     * Alias for backward compatibility.
+     */
+    public function canAccessAdmin(): bool
+    {
+        return $this->canAccessPanel();
+    }
 }

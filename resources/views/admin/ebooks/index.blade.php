@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Manage Ebooks')
+@section('title', __('admin.ebooks.title'))
 
 @php
     use Illuminate\Support\Facades\Storage;
@@ -17,39 +17,45 @@
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="fw-bold py-3 mb-0">
-                <span class="text-muted fw-light">Admin /</span> Ebooks
+                <span class="text-muted fw-light">Admin /</span> {{ __('admin.menu.ebooks') }}
             </h4>
-            <a href="{{ route('admin.ebooks.create') }}" class="btn btn-primary">
-                <i class="ti ti-plus me-1"></i> Add New Ebook
-            </a>
+            <div class="d-flex gap-2">
+                <!-- Toggle Enable Download -->
+                @php
+                    $downloadEnabled = \App\Models\SystemSetting::get('enable_ebook_download', '1');
+                @endphp
+                <div class="d-flex align-items-center gap-2 px-3 py-2 bg-light rounded">
+                    <i class="ti ti-download {{ $downloadEnabled == '1' ? 'text-success' : 'text-danger' }}"></i>
+                    <span class="small fw-semibold">{{ __('admin.ebooks.download') }}:</span>
+                    <div class="form-check form-switch mb-0">
+                        <input class="form-check-input" type="checkbox" id="toggleDownload" 
+                            {{ $downloadEnabled == '1' ? 'checked' : '' }}
+                            onchange="toggleEbookDownload(this)">
+                        <label class="form-check-label" for="toggleDownload">
+                            <span id="downloadStatus" class="badge bg-{{ $downloadEnabled == '1' ? 'success' : 'danger' }}">
+                                {{ $downloadEnabled == '1' ? __('admin.ebooks.enabled') : __('admin.ebooks.disabled') }}
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                <a href="{{ route('admin.ebooks.create') }}" class="btn btn-primary">
+                    <i class="ti ti-plus me-1"></i> {{ __('admin.ebooks.add_new') }}
+                </a>
+            </div>
         </div>
-
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
-        @if (session('error'))
-            <div class="alert alert-danger alert-dismissible" role="alert">
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
 
         <div class="card">
             <div class="card-header">
                 <div class="row align-items-center">
                     <div class="col-md-3">
-                        <h5 class="mb-0">All Ebooks</h5>
+                        <h5 class="mb-0">{{ __('admin.ebooks.all_ebooks') }}</h5>
                     </div>
                     <div class="col-md-9">
                         <div class="d-flex gap-2 justify-content-end flex-wrap">
                             <!-- Search -->
                             <div class="input-group" style="width: 250px;">
                                 <span class="input-group-text"><i class="ti ti-search"></i></span>
-                                <input type="text" class="form-control" placeholder="Search ebooks..." id="searchEbook" 
+                                <input type="text" class="form-control" placeholder="{{ __('admin.ebooks.search_placeholder') }}" id="searchEbook" 
                                     value="{{ request('search') }}">
                             </div>
 
@@ -57,9 +63,9 @@
                             <div class="input-group" style="width: 180px;">
                                 <span class="input-group-text"><i class="ti ti-filter"></i></span>
                                 <select class="form-select" id="filterStatus" onchange="applyFilters()">
-                                    <option value="">All Status</option>
-                                    <option value="published" {{ request('status') == 'published' ? 'selected' : '' }}>Published</option>
-                                    <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                                    <option value="">{{ __('admin.ebooks.all_status') }}</option>
+                                    <option value="published" {{ request('status') == 'published' ? 'selected' : '' }}>{{ __('admin.ebooks.published') }}</option>
+                                    <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>{{ __('admin.ebooks.draft') }}</option>
                                     <option value="archived" {{ request('status') == 'archived' ? 'selected' : '' }}>Archived</option>
                                 </select>
                             </div>
@@ -107,12 +113,12 @@
                 <table class="table table-hover align-middle">
                     <thead>
                         <tr>
-                            <th style="width: 80px;">Cover</th>
-                            <th style="width: 35%;">Title</th>
-                            <th style="width: 20%;">Creator</th>
-                            <th style="width: 12%;">Status</th>
-                            <th style="width: 12%;">Views</th>
-                            <th style="width: 100px;">Actions</th>
+                            <th style="width: 80px;">{{ __('admin.ebooks.cover') }}</th>
+                            <th style="width: 35%;">{{ __('admin.ebooks.title') }}</th>
+                            <th style="width: 20%;">{{ __('admin.ebooks.creator') }}</th>
+                            <th style="width: 12%;">{{ __('admin.ebooks.status') }}</th>
+                            <th style="width: 12%;">{{ __('admin.ebooks.views') }}</th>
+                            <th style="width: 100px;">{{ __('admin.ebooks.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0" id="ebookTableBody">
@@ -150,9 +156,9 @@
                                 </td>
                                 <td>
                                     @if ($ebook->status === 'published')
-                                        <span class="badge bg-success" style="font-size: 0.8125rem;">Published</span>
+                                        <span class="badge bg-success" style="font-size: 0.8125rem;">{{ __('admin.ebooks.published') }}</span>
                                     @elseif($ebook->status === 'draft')
-                                        <span class="badge bg-warning" style="font-size: 0.8125rem;">Draft</span>
+                                        <span class="badge bg-warning" style="font-size: 0.8125rem;">{{ __('admin.ebooks.draft') }}</span>
                                     @else
                                         <span class="badge bg-secondary" style="font-size: 0.8125rem;">Archived</span>
                                     @endif
@@ -171,10 +177,10 @@
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-end">
                                             <a class="dropdown-item" href="{{ route('admin.ebooks.show', $ebook->id) }}">
-                                                <i class="ti ti-eye me-2"></i> View Details
+                                                <i class="ti ti-eye me-2"></i> {{ __('admin.actions.view_details') }}
                                             </a>
                                             <a class="dropdown-item" href="{{ route('admin.ebooks.edit', $ebook->id) }}">
-                                                <i class="ti ti-pencil me-2"></i> Edit
+                                                <i class="ti ti-pencil me-2"></i> {{ __('admin.actions.edit') }}
                                             </a>
                                             <div class="dropdown-divider"></div>
                                             <form action="{{ route('admin.ebooks.destroy', $ebook->id) }}" method="POST"
@@ -183,8 +189,8 @@
                                                 @method('DELETE')
                                             </form>
                                             <a class="dropdown-item text-danger" href="javascript:void(0);"
-                                                onclick="if(confirm('Are you sure you want to delete this ebook?')) document.getElementById('delete-ebook-{{ $ebook->id }}').submit();">
-                                                <i class="ti ti-trash me-2"></i> Delete
+                                                onclick="if(confirm('{{ __('admin.actions.delete_confirm') }}')) document.getElementById('delete-ebook-{{ $ebook->id }}').submit();">
+                                                <i class="ti ti-trash me-2"></i> {{ __('admin.actions.delete') }}
                                             </a>
                                         </div>
                                     </div>
@@ -194,9 +200,8 @@
                             <tr id="noDataRow">
                                 <td colspan="6" class="text-center py-5">
                                     <i class="ti ti-book" style="font-size: 48px; color: #ddd;"></i>
-                                    <p class="mt-2 text-muted">No ebooks found</p>
-                                    <a href="{{ route('admin.ebooks.create') }}" class="btn btn-sm btn-primary">Add Your
-                                        First Ebook</a>
+                                    <p class="mt-2 text-muted">{{ __('admin.ebooks.no_data') }}</p>
+                                    <a href="{{ route('admin.ebooks.create') }}" class="btn btn-sm btn-primary">{{ __('admin.ebooks.add_new') }}</a>
                                 </td>
                             </tr>
                         @endforelse
@@ -438,6 +443,63 @@
                 window.location.href = currentUrl.toString();
             }
 
+            // Toggle Ebook Download
+            window.toggleEbookDownload = function(checkbox) {
+                const isEnabled = checkbox.checked;
+                
+                console.log('Toggle clicked:', isEnabled);
+                
+                fetch('{{ route('admin.ebooks.toggle-download') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        enable: isEnabled ? '1' : '0'
+                    })
+                })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Response data:', data);
+                    
+                    if (data.success) {
+                        const statusBadge = document.getElementById('downloadStatus');
+                        const icon = document.querySelector('.ti-download');
+                        
+                        if (isEnabled) {
+                            statusBadge.textContent = '{{ __("admin.ebooks.enabled") }}';
+                            statusBadge.classList.remove('bg-danger');
+                            statusBadge.classList.add('bg-success');
+                            icon.classList.remove('text-danger');
+                            icon.classList.add('text-success');
+                        } else {
+                            statusBadge.textContent = '{{ __("admin.ebooks.disabled") }}';
+                            statusBadge.classList.remove('bg-success');
+                            statusBadge.classList.add('bg-danger');
+                            icon.classList.remove('text-success');
+                            icon.classList.add('text-danger');
+                        }
+                        
+                        // Show success message using Toastr
+                        console.log('Showing toastr with message:', data.message);
+                        toastr.success(data.message, 'Success');
+                    } else {
+                        console.log('Error response:', data.message);
+                        toastr.error(data.message || 'Terjadi kesalahan', 'Error');
+                        checkbox.checked = !isEnabled;
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch Error:', error);
+                    toastr.error('Gagal mengubah setting', 'Error');
+                    checkbox.checked = !isEnabled;
+                });
+            }
 
         </script>
     @endpush

@@ -217,13 +217,9 @@
                 <div class="col-xl-3 col-lg-4">
                     <div class="header-info">
                         <ul>
-                            @if(hasPermission('access_about_us'))
                             <li><a href="{{route('about-us')}}">About Us</a></li>
-                            @endif
                             <!-- <li><a href="page-account.html">Promo</a></li> -->
-                            @if(hasPermission('access_contact_us'))
                             <li><a href="{{route('contact')}}">Customer Service</a></li>
-                            @endif
                             <li><a href="#">E-book</a></li>
                         </ul>
                     </div>
@@ -384,16 +380,12 @@
                                         <li>
                                             <a href="{{ route('page-account') }}"><i class="fi fi-rs-user mr-10"></i>Account</a>
                                         </li>
-                                        @if(hasPermission('access_wishlist'))
                                         <li>
                                             <a href="{{ route('page-account') }}?tab=orders"><i class="fi fi-rs-label mr-10"></i>Wishlist</a>
                                         </li>
-                                        @endif
-                                        @if(hasPermission('access_creator_dashboard'))
                                         <li>
                                             <a href="{{ route('page-account') }}?tab=creator"><i class="fi-rs-edit mr-10"></i>Creator</a>
                                         </li>
-                                        @endif
                                         <li>
                                             {{-- FORM LOGOUT USER --}}
                                             <form method="POST" action="{{ route('user.logout') }}" id="logout-form" style="display: none;">
@@ -508,35 +500,25 @@
                                     }
                                 @endphp
                                 
-                                @if(hasPermission('access_home'))
                                 <li class="{{ request()->routeIs('home') ? 'active' : '' }}">
                                     <a href="/">Home</a>
                                 </li>
-                                @endif
                                 
-                                @if(hasPermission('access_destinations'))
                                 <li class="{{ request()->routeIs('destinations*') ? 'active' : '' }}">
                                     <a href="{{ route('destinations') }}">Destinations</a>
                                 </li>
-                                @endif
                                 
-                                @if(hasPermission('access_blog'))
                                 <li class="{{ request()->routeIs('blogs.*') ? 'active' : '' }}">
                                     <a href="{{ route('blogs.index') }}">Blog</a>
                                 </li>
-                                @endif
                                 
-                                @if(hasPermission('access_pricing'))
                                 <li class="{{ request()->routeIs('pricing') ? 'active' : '' }}">
                                     <a href="{{ route('pricing') }}">Pricing</a>
                                 </li>
-                                @endif
                                 
-                                @if(hasPermission('access_promo'))
                                 <li class="{{ request()->routeIs('promo') ? 'active' : '' }}">
                                     <a href="{{ route('promo') }}">Promo</a>
                                 </li>
-                                @endif
                             </ul>
                         </nav>
                     </div>

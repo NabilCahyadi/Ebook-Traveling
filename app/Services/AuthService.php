@@ -34,10 +34,10 @@ class AuthService
                 'email_verified_at' => now(),
             ]);
 
-            // Assign member role automatically
-            $memberRole = \App\Models\Role::where('slug', 'member')->first();
-            if ($memberRole) {
-                $user->roles()->attach($memberRole->id);
+            // Assign free user role automatically
+            $freeUserRole = \App\Models\Role::where('slug', 'free-user')->first();
+            if ($freeUserRole) {
+                $user->roles()->attach($freeUserRole->id);
             }
 
             DB::commit();
@@ -67,10 +67,10 @@ class AuthService
                 'email_verified_at' => now(),
             ]);
 
-            // Assign member role automatically
-            $memberRole = \App\Models\Role::where('slug', 'member')->first();
-            if ($memberRole) {
-                $user->roles()->attach($memberRole->id);
+            // Assign free user role automatically
+            $freeUserRole = \App\Models\Role::where('slug', 'free-user')->first();
+            if ($freeUserRole) {
+                $user->roles()->attach($freeUserRole->id);
             }
 
             DB::commit();

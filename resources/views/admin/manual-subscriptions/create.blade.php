@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Create Manual Subscription')
+@section('title', __('admin.manual_subscription.create'))
 
 @section('styles')
     <style>
@@ -56,7 +56,7 @@
 
 @section('content')
     <h4 class="fw-bold py-3 mb-4">
-        <span class="text-muted fw-light">Subscription / Manual Subscriptions /</span> Create
+        <span class="text-muted fw-light">{{ __('admin.menu.subscription_management') }} / {{ __('admin.menu.manual_subscriptions') }} /</span> {{ __('admin.actions.add') }}
     </h4>
 
     @if (session('error'))
@@ -70,21 +70,21 @@
         <div class="col-md-8">
             <div class="card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Subscription Information</h5>
+                    <h5 class="mb-0">{{ __('admin.manual_subscription.subscription_info') }}</h5>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('admin.manual-subscriptions.store') }}" method="POST">
                         @csrf
 
                         <div class="mb-3">
-                            <label class="form-label" for="user_search">Select User <span
+                            <label class="form-label" for="user_search">{{ __('admin.manual_subscription.select_user') }} <span
                                     class="text-danger">*</span></label>
 
                             <input type="hidden" id="user_id" name="user_id" value="{{ old('user_id') }}">
 
                             <div class="position-relative">
                                 <input type="text" class="form-control @error('user_id') is-invalid @enderror"
-                                    id="user_search" placeholder="Type to search user by name or email..."
+                                    id="user_search" placeholder="{{ __('admin.manual_subscription.search_user') }}"
                                     autocomplete="off" value="{{ old('user_search') }}">
 
                                 <div id="search-loading" class="position-absolute top-50 end-0 translate-middle-y me-3"
@@ -103,15 +103,15 @@
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
 
-                            <div class="form-text">Type at least 2 characters to search for users</div>
+                            <div class="form-text">{{ __('admin.manual_subscription.search_hint') }}</div>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label" for="subscription_plan_id">Subscription Plan <span
+                            <label class="form-label" for="subscription_plan_id">{{ __('admin.manual_subscription.subscription_plan') }} <span
                                     class="text-danger">*</span></label>
                             <select class="form-select @error('subscription_plan_id') is-invalid @enderror"
                                 id="subscription_plan_id" name="subscription_plan_id" required>
-                                <option value="">Choose a plan...</option>
+                                <option value="">{{ __('admin.manual_subscription.choose_plan') }}</option>
                                 @foreach ($plans as $plan)
                                     <option value="{{ $plan->id }}" data-duration="{{ $plan->duration_days }}"
                                         data-price="{{ $plan->price }}"
@@ -127,11 +127,11 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label" for="quantity">Quantity <span class="text-danger">*</span></label>
+                            <label class="form-label" for="quantity">{{ __('admin.manual_subscription.quantity') }} <span class="text-danger">*</span></label>
                             <input type="number" class="form-control @error('quantity') is-invalid @enderror"
                                 id="quantity" name="quantity" min="1" max="12"
                                 value="{{ old('quantity', 1) }}" required>
-                            <div class="form-text">Number of subscription periods (e.g., 2 for 2 months if plan is 1 month)
+                            <div class="form-text">{{ __('admin.manual_subscription.quantity_help') }}
                             </div>
                             @error('quantity')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -140,10 +140,10 @@
 
                         <div class="card bg-light-info mb-3" id="subscription-summary" style="display: none;">
                             <div class="card-body">
-                                <h6 class="card-title mb-2">Subscription Summary</h6>
+                                <h6 class="card-title mb-2">{{ __('admin.manual_subscription.subscription_summary') }}</h6>
                                 <div class="row">
                                     <div class="col-6">
-                                        <small class="text-muted">Plan Duration:</small>
+                                        <small class="text-muted">{{ __('admin.manual_subscription.plan_duration') }}:</small>
                                         <div class="fw-semibold" id="plan-duration">-</div>
                                     </div>
                                     <div class="col-6">
@@ -189,20 +189,20 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Subscription Preview</h5>
+                    <h5 class="card-title">{{ __('admin.manual_subscription.subscription_preview') }}</h5>
                     <hr>
                     <div id="preview-info">
-                        <div class="mb-3"><small class="text-muted d-block">User</small><strong id="preview-user">Not
-                                selected</strong></div>
-                        <div class="mb-3"><small class="text-muted d-block">Plan</small><strong id="preview-plan">Not
-                                selected</strong></div>
-                        <div class="mb-3"><small class="text-muted d-block">Duration</small><strong
+                        <div class="mb-3"><small class="text-muted d-block">{{ __('admin.manual_subscription.user') }}</small><strong id="preview-user">{{ __('admin.manual_subscription.not_selected') }}
+                                </strong></div>
+                        <div class="mb-3"><small class="text-muted d-block">{{ __('admin.manual_subscription.plan') }}</small><strong id="preview-plan">{{ __('admin.manual_subscription.not_selected') }}
+                                </strong></div>
+                        <div class="mb-3"><small class="text-muted d-block">{{ __('admin.manual_subscription.duration') }}</small><strong
                                 id="preview-duration">-</strong></div>
-                        <div class="mb-3"><small class="text-muted d-block">Amount</small><strong
+                        <div class="mb-3"><small class="text-muted d-block">{{ __('admin.manual_subscription.amount') }}</small><strong
                                 id="preview-amount">Rp 0</strong></div>
-                        <div class="mb-3"><small class="text-muted d-block">Start
-                                Date</small><strong>{{ now()->format('d M Y') }}</strong></div>
-                        <div class="mb-3"><small class="text-muted d-block">End Date</small><strong
+                        <div class="mb-3"><small class="text-muted d-block">{{ __('admin.manual_subscription.start_date') }}
+                                </small><strong>{{ now()->format('d M Y') }}</strong></div>
+                        <div class="mb-3"><small class="text-muted d-block">{{ __('admin.manual_subscription.end_date') }}</small><strong
                                 id="preview-end-date">-</strong></div>
                     </div>
                 </div>
@@ -233,7 +233,7 @@
                     suggestionsDiv.style.display = 'none';
                     suggestionsDiv.innerHTML = '';
                     userIdInput.value = '';
-                    document.getElementById('preview-user').textContent = 'Not selected';
+                    document.getElementById('preview-user').textContent = '{{ __('admin.manual_subscription.not_selected') }}';
                     return;
                 }
 
@@ -250,7 +250,7 @@
                         .catch(() => {
                             loadingIndicator.style.display = 'none';
                             suggestionsDiv.innerHTML =
-                                '<div class="list-group-item text-danger">Error loading users</div>';
+                                '<div class="list-group-item text-danger">{{ __('admin.messages.error_loading') }}</div>';
                             suggestionsDiv.style.display = 'block';
                         });
                 }, 300);
@@ -260,7 +260,7 @@
                 suggestionsDiv.innerHTML = '';
 
                 if (users.length === 0) {
-                    suggestionsDiv.innerHTML = '<div class="list-group-item text-muted">No users found</div>';
+                    suggestionsDiv.innerHTML = '<div class="list-group-item text-muted">{{ __('admin.users.no_users_found') }}</div>';
                     suggestionsDiv.style.display = 'block';
                     return;
                 }
@@ -346,7 +346,7 @@
                     });
                 } else {
                     document.getElementById('subscription-summary').style.display = 'none';
-                    document.getElementById('preview-plan').textContent = 'Not selected';
+                    document.getElementById('preview-plan').textContent = '{{ __('admin.manual_subscription.not_selected') }}';
                     document.getElementById('preview-duration').textContent = '-';
                     document.getElementById('preview-amount').textContent = 'Rp 0';
                     document.getElementById('preview-end-date').textContent = '-';

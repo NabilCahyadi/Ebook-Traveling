@@ -204,4 +204,19 @@ class SubscriptionHistoryController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
+
+    /**
+     * Print payment receipt as PDF
+     */
+    public function print($id)
+    {
+        $subscription = Subscription::with(['user', 'plan', 'payment'])->findOrFail($id);
+        
+        // Only allow printing for paid subscriptions
+        if ($subscription->status !== 'active' || !$subscription->end_date->isFuture()) {
+            abort(403, 'Only paid subscriptions can be printed');
+        }
+
+        return view('admin.subscription-history.print', compact('subscription'));
+    }
 }

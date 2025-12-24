@@ -51,6 +51,35 @@
 
     <!-- Toastr -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    
+    <!-- Custom Toastr CSS -->
+    <style>
+        #toast-container > div {
+            opacity: 1;
+            box-shadow: 0 0 12px rgba(0,0,0,0.2);
+        }
+        #toast-container > .toast {
+            background-image: none !important;
+        }
+        #toast-container > .toast-success {
+            background-color: #51A351;
+        }
+        #toast-container > .toast-error {
+            background-color: #BD362F;
+        }
+        #toast-container > .toast-info {
+            background-color: #2F96B4;
+        }
+        #toast-container > .toast-warning {
+            background-color: #F89406;
+        }
+        .toast-message {
+            font-weight: normal;
+        }
+        .toast-title {
+            font-weight: bold;
+        }
+    </style>
 
     <!-- Helpers -->
     <script src="{{ url('assets/admin/vendor/js/helpers.js') }}"></script>
@@ -116,6 +145,66 @@
     <!-- Toastr -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
+    <!-- Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+
+    <!-- Configure Toastr -->
+    <script>
+        // Pastikan jQuery dan Toastr loaded
+        if (typeof jQuery === 'undefined') {
+            console.error('jQuery is not loaded!');
+        }
+        if (typeof toastr === 'undefined') {
+            console.error('Toastr is not loaded!');
+        } else {
+            console.log('Toastr loaded successfully');
+        }
+
+        // Konfigurasi Toastr agar mengambang
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": false,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut",
+            "tapToDismiss": true
+        };
+
+        // Test toastr
+        console.log('Toastr options:', toastr.options);
+
+        // Tampilkan notifikasi dari session
+        @if(session('success'))
+            console.log('Session success:', "{!! addslashes(session('success')) !!}");
+            toastr.success("{!! addslashes(session('success')) !!}", "Success");
+        @endif
+
+        @if(session('error'))
+            console.log('Session error:', "{!! addslashes(session('error')) !!}");
+            toastr.error("{!! addslashes(session('error')) !!}", "Error");
+        @endif
+
+        @if(session('warning'))
+            console.log('Session warning:', "{!! addslashes(session('warning')) !!}");
+            toastr.warning("{!! addslashes(session('warning')) !!}", "Warning");
+        @endif
+
+        @if(session('info'))
+            console.log('Session info:', "{!! addslashes(session('info')) !!}");
+            toastr.info("{!! addslashes(session('info')) !!}", "Info");
+        @endif
+    </script>
+
     <!-- CSRF Token Setup for AJAX -->
     <script>
         // Setup CSRF token for all AJAX requests
@@ -131,6 +220,132 @@
                 alert('Your session has expired. Please refresh the page.');
                 location.reload();
             }
+        });
+
+        // Notification Center
+        function loadNotifications() {
+            $.ajax({
+                url: '{{ route('admin.notifications.recent') }}',
+                method: 'GET',
+                success: function(response) {
+                    const notifications = response.notifications;
+                    const unreadCount = response.unread_count;
+                    
+                    // Update unread count
+                    if (unreadCount > 0) {
+                        $('#unreadCount').text(unreadCount + ' {{ __('admin.notifications.new') }}');
+                        $('#notificationBadge').removeClass('d-none');
+                    } else {
+                        $('#unreadCount').text('0');
+                        $('#notificationBadge').addClass('d-none');
+                    }
+                    
+                    // Update notifications list
+                    if (notifications.length === 0) {
+                        $('#notificationsList').html(`
+                            <li class="list-group-item text-center py-4">
+                                <i class="ti ti-bell-off ti-lg text-muted mb-2 d-block"></i>
+                                <p class="text-muted mb-0">{{ __('admin.notifications.no_notifications') }}</p>
+                            </li>
+                        `);
+                    } else {
+                        let html = '';
+                        notifications.forEach(function(userNotif) {
+                            const notif = userNotif.notification;
+                            const isRead = userNotif.is_read;
+                            const createdAt = moment(userNotif.created_at).fromNow();
+                            
+                            const iconMap = {
+                                'success': 'ti-check',
+                                'info': 'ti-info-circle',
+                                'warning': 'ti-alert-triangle',
+                                'danger': 'ti-alert-circle',
+                                'order': 'ti-shopping-cart',
+                                'user': 'ti-user',
+                                'ebook': 'ti-book'
+                            };
+                            
+                            const colorMap = {
+                                'success': 'success',
+                                'info': 'info',
+                                'warning': 'warning',
+                                'danger': 'danger',
+                                'order': 'primary',
+                                'user': 'secondary',
+                                'ebook': 'info'
+                            };
+                            
+                            const icon = iconMap[notif.icon] || 'ti-bell';
+                            const color = colorMap[notif.icon] || 'secondary';
+                            
+                            html += `
+                                <li class="list-group-item list-group-item-action dropdown-notifications-item ${!isRead ? 'bg-label-primary' : ''}" 
+                                    data-id="${userNotif.id}" 
+                                    style="cursor: pointer;">
+                                    <div class="d-flex">
+                                        <div class="flex-shrink-0 me-3">
+                                            <div class="avatar">
+                                                <span class="avatar-initial rounded-circle bg-label-${color}">
+                                                    <i class="ti ${icon}"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="small mb-1 ${!isRead ? 'fw-bold' : ''}">${notif.title}</h6>
+                                            <small class="mb-1 d-block text-body">${notif.message}</small>
+                                            <small class="text-muted">${createdAt}</small>
+                                        </div>
+                                        ${!isRead ? '<div class="flex-shrink-0"><span class="badge badge-dot bg-primary"></span></div>' : ''}
+                                    </div>
+                                </li>
+                            `;
+                        });
+                        $('#notificationsList').html(html);
+                    }
+                }
+            });
+        }
+
+        // Mark notification as read on click
+        $(document).on('click', '.dropdown-notifications-item', function() {
+            const notifId = $(this).data('id');
+            const $item = $(this);
+            
+            $.ajax({
+                url: '/admin/notifications/' + notifId + '/mark-as-read',
+                method: 'POST',
+                success: function() {
+                    $item.removeClass('bg-label-primary');
+                    $item.find('.fw-bold').removeClass('fw-bold');
+                    $item.find('.badge-dot').remove();
+                    loadNotifications();
+                }
+            });
+        });
+
+        // Mark all as read
+        $('#markAllAsRead').click(function() {
+            $.ajax({
+                url: '{{ route('admin.notifications.mark-all-as-read') }}',
+                method: 'POST',
+                success: function(response) {
+                    toastr.success(response.message);
+                    loadNotifications();
+                }
+            });
+        });
+
+        // Load notifications on page load
+        $(document).ready(function() {
+            loadNotifications();
+            
+            // Refresh notifications every 30 seconds
+            setInterval(loadNotifications, 30000);
+        });
+
+        // Load when dropdown is opened
+        $('#notificationDropdown').on('click', function() {
+            loadNotifications();
         });
     </script>
 

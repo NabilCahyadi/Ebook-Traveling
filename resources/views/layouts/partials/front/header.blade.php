@@ -104,20 +104,14 @@
                     <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block font-heading">
                         <nav>
                             <ul>
-                                @if(!auth()->check() || hasPermission('access_home'))
                                 <li><a class="{{ Request::is('/') ? 'active' : '' }}"
                                         href="{{ route('home') }}">Home</a></li>
-                                @endif
                                 
-                                @if(!auth()->check() || hasPermission('view_ebook_library'))
                                 <li><a class="{{ Request::is('shop*') ? 'active' : '' }}"
                                         href="{{ route('shop.index') }}">Shop</a></li>
-                                @endif
                                 
-                                @if(!auth()->check() || hasPermission('access_blog'))
                                 <li><a class="{{ Request::is('blog*') ? 'active' : '' }}"
                                         href="{{ route('blog.index') }}">Blog</a></li>
-                                @endif
                                 
                                 <li><a class="{{ Request::is('contact') ? 'active' : '' }}"
                                         href="{{ route('page.contact') }}">Contact</a></li>
@@ -165,17 +159,11 @@
                 <!-- Mobile menu content -->
                 <nav>
                     <ul class="mobile-menu font-heading">
-                        @if(!auth()->check() || hasPermission('access_home'))
                         <li><a href="{{ route('home') }}">Home</a></li>
-                        @endif
                         
-                        @if(!auth()->check() || hasPermission('view_ebook_library'))
                         <li><a href="{{ route('shop.index') }}">Shop</a></li>
-                        @endif
                         
-                        @if(!auth()->check() || hasPermission('access_blog'))
                         <li><a href="{{ route('blog.index') }}">Blog</a></li>
-                        @endif
                         
                         <li><a href="{{ route('page.contact') }}">Contact</a></li>
                     </ul>

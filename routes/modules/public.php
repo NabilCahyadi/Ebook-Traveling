@@ -31,8 +31,8 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // })->name('pricing');
 
 // Destinations Page
-Route::get('/destinations', [DestinationController::class, 'index'])->name('destinations')->middleware('permission:access_destinations');
-Route::get('/destinations/{slug}', [DestinationController::class, 'show'])->name('destination.show')->middleware(['permission:access_destinations', 'record.view']);
+Route::get('/destinations', [DestinationController::class, 'index'])->name('destinations');
+Route::get('/destinations/{slug}', [DestinationController::class, 'show'])->name('destination.show')->middleware('record.view');
 
 // Promo Page
 // Route::get('/promo', function () {
@@ -42,42 +42,42 @@ Route::get('/destinations/{slug}', [DestinationController::class, 'show'])->name
 // Contact Page
 Route::get('/contact', function () {
     return view('contact');
-})->name('contact')->middleware('permission:access_contact_us');
+})->name('contact');
 
 // Help Center
 Route::get('/help-center', function () {
     return view('help-center');
-})->name('help-center')->middleware('permission:access_help_center');
+})->name('help-center');
 
 // About Us
 Route::get('/about-us', function () {
     return view('about-us');
-})->name('about-us')->middleware('permission:access_about_us');
+})->name('about-us');
 
 // Terms & Conditions
 Route::get('/terms-conditions', function () {
     return view('terms-conditions');
-})->name('terms-conditions')->middleware('permission:access_terms_conditions');
+})->name('terms-conditions');
 
 // Privacy Policy
 Route::get('/privacy-policy', function () {
     return view('privacy-policy');
-})->name('privacy-policy')->middleware('permission:access_privacy_policy');
+})->name('privacy-policy');
 
 // Shopping Policy
 Route::get('/shopping-policy', function () {
     return view('shopping-policy');
-})->name('shopping-policy')->middleware('permission:access_shopping_policy');
+})->name('shopping-policy');
 
 // Payment Policy
 Route::get('/payment-policy', function () {
     return view('payment-policy');
-})->name('payment-policy')->middleware('permission:access_payment_policy');
+})->name('payment-policy');
 
 // FAQ
 Route::get('/faq', function () {
     return view('faq');
-})->name('faq')->middleware('permission:access_faq');
+})->name('faq');
 
 // Page Account (Public account page/info)
 // Account Routes
@@ -92,16 +92,16 @@ Route::middleware('auth')->group(function () {
 Route::get('/help/content/{type}', [HelpController::class, 'loadContent'])->name('help.content');
 
 Route::get('/collections/{collection:slug}', [CollectionController::class, 'show'])->name('collections.show');
-Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index')->middleware('permission:access_blog');
-Route::get('/blogs/tag/{tag}', [BlogController::class, 'byTag'])->name('blogs.by.tag')->middleware('permission:access_blog');
-Route::get('/blogs/{slug}', [BlogController::class, 'show'])->name('blogs.show')->middleware('permission:access_blog');
+Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index');
+Route::get('/blogs/tag/{tag}', [BlogController::class, 'byTag'])->name('blogs.by.tag');
+Route::get('/blogs/{slug}', [BlogController::class, 'show'])->name('blogs.show');
 Route::get('/ebooks/{slug}', [EbookController::class, 'show'])->name('ebooks.show');
 Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store')->middleware('auth');
 Route::get('/reader/{slug}', [ReaderController::class, 'show'])->name('reader.show')->middleware('premium');
 Route::get('/category/{slug}', [FrontendCategoryController::class, 'show'])->name('category.show');
-Route::get('/pricing', [PricingController::class, 'index'])->name('pricing')->middleware('permission:access_pricing');
-Route::get('/promo', [PromoController::class, 'index'])->name('promo')->middleware('permission:access_promo');
-Route::get('/promo/{slug}', [PromoController::class, 'showDetail'])->name('promo.detail.show')->middleware('permission:access_promo');
+Route::get('/pricing', [PricingController::class, 'index'])->name('pricing');
+Route::get('/promo', [PromoController::class, 'index'])->name('promo');
+Route::get('/promo/{slug}', [PromoController::class, 'showDetail'])->name('promo.detail.show');
 
 
 

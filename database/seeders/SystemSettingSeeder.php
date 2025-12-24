@@ -16,6 +16,11 @@ class SystemSettingSeeder extends Seeder
                 'value' => '/images/bg-default.webp',
                 'description' => 'Background untuk section Call-to-Action (CTA) default.',
             ],
+            [
+                'key' => 'enable_ebook_download',
+                'value' => '1',
+                'description' => 'Enable or disable ebook download globally for all ebooks (1=enabled, 0=disabled)',
+            ],
         ];
 
         foreach ($settings as $setting) {

@@ -452,4 +452,50 @@ class EbookController extends Controller
             return back()->with('error', 'Failed to reject ebook: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Toggle ebook download setting for all ebooks.
+     */
+    public function toggleDownload(Request $request)
+    {
+        try {
+            $enable = $request->input('enable', '1');
+            
+            Log::info('Toggle Download Request', [
+                'enable' => $enable,
+                'user' => auth()->id()
+            ]);
+            
+            $setting = \App\Models\SystemSetting::updateOrCreate(
+                ['key' => 'enable_ebook_download'],
+                [
+                    'value' => $enable,
+                    'description' => 'Enable or disable ebook download globally for all ebooks (1=enabled, 0=disabled)'
+                ]
+            );
+            
+            Log::info('Setting Updated', ['setting' => $setting]);
+
+            $message = $enable == '1' 
+                ? 'Download ebook berhasil diaktifkan untuk semua buku' 
+                : 'Download ebook berhasil dinonaktifkan untuk semua buku';
+
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'enabled' => $enable == '1',
+                'value' => $enable
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Toggle Download Error', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengubah setting: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
