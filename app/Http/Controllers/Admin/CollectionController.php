@@ -9,6 +9,7 @@ use App\Models\Ebook;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
+
 class CollectionController extends Controller
 {
     protected $collectionService;
@@ -91,30 +92,30 @@ class CollectionController extends Controller
 
             // Attach selected ebooks if any
             if ($request->filled('selected_ebooks')) {
-                \Log::info('Selected ebooks raw:', ['data' => $request->selected_ebooks]);
+                Log::info('Selected ebooks raw:', ['data' => $request->selected_ebooks]);
                 
                 $ebookIds = json_decode($request->selected_ebooks, true);
                 
-                \Log::info('Selected ebooks decoded:', ['ids' => $ebookIds, 'count' => count($ebookIds ?? [])]);
+                Log::info('Selected ebooks decoded:', ['ids' => $ebookIds, 'count' => count($ebookIds ?? [])]);
                 
                 if (is_array($ebookIds) && !empty($ebookIds)) {
-                    \Log::info('Syncing ebooks to collection:', ['collection_id' => $collection->id, 'ebook_ids' => $ebookIds]);
+                    Log::info('Syncing ebooks to collection:', ['collection_id' => $collection->id, 'ebook_ids' => $ebookIds]);
                     
                     $this->collectionService->syncEbooksInCollection($collection->id, $ebookIds);
                     
-                    \Log::info('Ebooks synced successfully');
+                    Log::info('Ebooks synced successfully');
                 } else {
-                    \Log::warning('Ebook IDs not valid array or empty');
+                    Log::warning('Ebook IDs not valid array or empty');
                 }
             } else {
-                \Log::info('No selected_ebooks in request');
+                Log::info('No selected_ebooks in request');
             }
 
             return redirect()
                 ->route('admin.collections.index')
                 ->with('success', 'Collection created successfully with ' . count($ebookIds) . ' ebooks');
         } catch (\Exception $e) {
-            \Log::error('Collection creation error:', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            Log::error('Collection creation error:', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
             
             return back()
                 ->withInput()

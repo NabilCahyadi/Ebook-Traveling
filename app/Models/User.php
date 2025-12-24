@@ -115,11 +115,11 @@ class User extends Authenticatable
         if ($this->relationLoaded('roles') && $this->roles->isNotEmpty()) {
             return $this->roles->first();
         }
-        
+
         // Otherwise query
         return $this->roles()->first();
     }
-    
+
     /**
      * Get the primary role based on user_type.
      * For use in permission checks.

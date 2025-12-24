@@ -16,7 +16,7 @@ class HomeController extends Controller
     public function __construct(
         private BannerService $bannerService,
         private CityService $cityService,
-        private SubscriptionPlanService $subscriptionPlanService,
+        private SubscriptionPlanService $SubscriptionPlanService,
         private CollectionService $collectionService,
         private BlogService $blogService
     ) {}
@@ -51,11 +51,11 @@ class HomeController extends Controller
             // Fallback to latest blogs
             $latestBlogs = $this->blogService->getLatestForHomepage(4);
         }
-        $subscriptionPlans = $this->subscriptionPlanService->getActivePlans()->take(3);
-        $groupedSubscriptionPlans = $this->subscriptionPlanService->getPlansGroupedByCategory();
+        $SubscriptionPlans = $this->SubscriptionPlanService->getActivePlans()->take(3);
+        $groupedSubscriptionPlans = $this->SubscriptionPlanService->getPlansGroupedByCategory();
         
         // Tambahkan image property jika belum ada
-        $subscriptionPlans = $subscriptionPlans->map(function ($plan, $index) {
+        $SubscriptionPlans = $SubscriptionPlans->map(function ($plan, $index) {
             if (!isset($plan->image)) {
                 $plan->image = $this->getPlanImage($plan->name, $index);
             }
@@ -69,7 +69,7 @@ class HomeController extends Controller
         return view('index', [
             'homeSliders' => $homeSliders,
             'topCities' => $topCities,
-            'subscriptionPlans' => $subscriptionPlans,
+            'SubscriptionPlans' => $SubscriptionPlans,
             'collections' => $collectionData['collections'],
             'isSubscribed' => $collectionData['isSubscribed'],
             'latestBlogs' => $latestBlogs,

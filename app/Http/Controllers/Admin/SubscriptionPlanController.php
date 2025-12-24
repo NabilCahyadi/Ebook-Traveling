@@ -5,14 +5,15 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Services\SubscriptionPlanService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SubscriptionPlanController extends Controller
 {
-    protected $subscriptionPlanService;
+    protected $SubscriptionPlanService;
 
-    public function __construct(SubscriptionPlanService $subscriptionPlanService)
+    public function __construct(SubscriptionPlanService $SubscriptionPlanService)
     {
-        $this->subscriptionPlanService = $subscriptionPlanService;
+        $this->SubscriptionPlanService = $SubscriptionPlanService;
     }
 
     /**
@@ -20,7 +21,7 @@ class SubscriptionPlanController extends Controller
      */
     public function index()
     {
-        $plans = $this->subscriptionPlanService->getPaginatedPlans(5);
+        $plans = $this->SubscriptionPlanService->getPaginatedPlans(5);
 
         return view('admin.subscription-plans.index', compact('plans'));
     }
@@ -71,7 +72,7 @@ class SubscriptionPlanController extends Controller
         }
 
         try {
-            $this->subscriptionPlanService->createPlan($validated);
+            $this->SubscriptionPlanService->createPlan($validated);
 
             return redirect()->route('admin.subscription-plans.index')
                 ->with('success', 'Subscription plan created successfully!');
@@ -87,7 +88,7 @@ class SubscriptionPlanController extends Controller
      */
     public function show(string $id)
     {
-        $plan = $this->subscriptionPlanService->getPlanById($id);
+        $plan = $this->SubscriptionPlanService->getPlanById($id);
 
         return view('admin.subscription-plans.show', compact('plan'));
     }
@@ -97,7 +98,7 @@ class SubscriptionPlanController extends Controller
      */
     public function edit(string $id)
     {
-        $plan = $this->subscriptionPlanService->getPlanById($id);
+        $plan = $this->SubscriptionPlanService->getPlanById($id);
 
         return view('admin.subscription-plans.edit', compact('plan'));
     }
@@ -133,7 +134,7 @@ class SubscriptionPlanController extends Controller
 
         // Handle banner image upload
         if ($request->hasFile('banner_image')) {
-            $plan = $this->subscriptionPlanService->getPlanById($id);
+            $plan = $this->SubscriptionPlanService->getPlanById($id);
 
             // Delete old banner if exists
             if ($plan->banner_image && \Storage::disk('public')->exists($plan->banner_image)) {
@@ -147,7 +148,7 @@ class SubscriptionPlanController extends Controller
         }
 
         try {
-            $this->subscriptionPlanService->updatePlan($id, $validated);
+            $this->SubscriptionPlanService->updatePlan($id, $validated);
 
             return redirect()->route('admin.subscription-plans.index')
                 ->with('success', 'Subscription plan updated successfully!');
@@ -164,7 +165,7 @@ class SubscriptionPlanController extends Controller
     public function destroy(string $id)
     {
         try {
-            $this->subscriptionPlanService->deletePlan($id);
+            $this->SubscriptionPlanService->deletePlan($id);
 
             return redirect()->route('admin.subscription-plans.index')
                 ->with('success', 'Subscription plan moved to trash successfully!');
@@ -180,7 +181,7 @@ class SubscriptionPlanController extends Controller
     public function trashed()
     {
         try {
-            $plans = $this->subscriptionPlanService->getTrashedPlans(15);
+            $plans = $this->SubscriptionPlanService->getTrashedPlans(15);
             return view('admin.subscription-plans.trashed', compact('plans'));
         } catch (\Exception $e) {
             return redirect()->route('admin.subscription-plans.index')
@@ -194,7 +195,7 @@ class SubscriptionPlanController extends Controller
     public function restore(string $id)
     {
         try {
-            $this->subscriptionPlanService->restorePlan($id);
+            $this->SubscriptionPlanService->restorePlan($id);
             return redirect()->route('admin.subscription-plans.trashed')
                 ->with('success', 'Subscription plan restored successfully!');
         } catch (\Exception $e) {
@@ -209,7 +210,7 @@ class SubscriptionPlanController extends Controller
     public function forceDelete(string $id)
     {
         try {
-            $this->subscriptionPlanService->forceDeletePlan($id);
+            $this->SubscriptionPlanService->forceDeletePlan($id);
             return redirect()->route('admin.subscription-plans.trashed')
                 ->with('success', 'Subscription plan permanently deleted!');
         } catch (\Exception $e) {

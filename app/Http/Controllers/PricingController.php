@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\PricingBenefitService;
-use App\Services\subscriptionPlanService;
+use App\Services\SubscriptionPlanService;
 use App\Services\FaqService;
 use App\Repositories\BannerRepository;
 

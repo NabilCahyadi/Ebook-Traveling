@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\MayarWebhookController;
 use App\Http\Controllers\Api\PromoController;
 
 /*
@@ -9,9 +8,6 @@ use App\Http\Controllers\Api\PromoController;
 | API Routes
 |--------------------------------------------------------------------------
 */
-
-// Mayar.id Webhook
-Route::post('/mayar/callback', [MayarWebhookController::class, 'handleCallback'])->name('mayar.callback');
 
 // Promo API (requires authentication)
 Route::middleware('auth:sanctum')->group(function () {

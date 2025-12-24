@@ -26,51 +26,31 @@
                             <p class="font-lg text-heading">The Most Comprehensive Indonesia Destination Guide</p>
                         </div>
                         <ul class="contact-infor">
-                            <li><img src="assets/imgs/theme/icons/icon-location.svg" alt="" /><strong>Address : </strong> <span>Perumahan Jati Indah, Jl. Otista No.57 Blok. B, Panyingkiran, Kab. Ciamis, Jawa Barat</span></li>
-                            <li><img src="assets/imgs/theme/icons/icon-contact.svg" alt="" /><strong>Call Us :</strong><span>(+62) - 540-025-124553</span></li>
-                            <li><img src="assets/imgs/theme/icons/icon-email-2.svg" alt="" /><strong>Email :</strong><span>smactactic@gmail.com</span></li>
-                            <li><img src="assets/imgs/theme/icons/icon-clock.svg" alt="" /><strong>Hours :</strong><span>08:00 - 16:30, EveryDay</span></li>
+                            <li><strong>Address : </strong> <span>Perumahan Jati Indah, Jl. Otista No.57 Blok. B, Panyingkiran, Kab. Ciamis, Jawa Barat</span></li>
+                            <li><strong>Call Us :</strong><span>(+62) - 540-025-124553</span></li>
+                            <li><strong>Email :</strong><span>smactactic@gmail.com</span></li>
+                            <li><strong>Hours :</strong><span>08:00 - 16:30, EveryDay</span></li>
                         </ul>
                     </div>
                 </div>
-                @if(hasPermission('access_about_us') || hasPermission('access_terms_conditions') || hasPermission('access_contact_us') || hasPermission('access_help_center'))
                 <div class="footer-link-widget col">
                     <h4 class="widget-title">Company</h4>
                     <ul class="footer-list mb-sm-5 mb-md-0">
-                        @if(hasPermission('access_about_us'))
                         <li><a href="{{route('about-us')}}">About Us</a></li>
-                        @endif
-                        @if(hasPermission('access_terms_conditions'))
                         <li><a href="{{route('terms-conditions')}}">Terms &amp; Conditions</a></li>
-                        @endif
-                        @if(hasPermission('access_contact_us'))
                         <li><a href="{{route('contact')}}">Contact Us</a></li>
-                        @endif
-                        @if(hasPermission('access_help_center'))
                         <li><a href="{{route('help-center')}}">Support Center</a></li>
-                        @endif
                     </ul>
                 </div>
-                @endif
-                @if(hasPermission('access_privacy_policy') || hasPermission('access_shopping_policy') || hasPermission('access_payment_policy') || hasPermission('access_faq'))
                 <div class="footer-link-widget col">
                     <h4 class="widget-title">More</h4>
                     <ul class="footer-list mb-sm-5 mb-md-0">
-                        @if(hasPermission('access_privacy_policy'))
                         <li><a href="{{route('privacy-policy')}}">Privacy Policy</a></li>
-                        @endif
-                        @if(hasPermission('access_shopping_policy'))
                         <li><a href="{{route('shopping-policy')}}">Shopping Policy</a></li>
-                        @endif
-                        @if(hasPermission('access_payment_policy'))
                         <li><a href="{{route('payment-policy')}}">Payment Policy</a></li>
-                        @endif
-                        @if(hasPermission('access_faq'))
                         <li><a href="{{route('faq')}}">FAQs</a></li>
-                        @endif
                     </ul>
                 </div>
-                @endif
                 <!-- <div class="footer-link-widget widget-install-app col">
                     <h4 class="widget-title">Install App</h4>
                     <p class="wow fadeIn animated">From App Store or Google Play</p>
@@ -105,11 +85,10 @@
             <div class="col-xl-6 col-lg-6 col-md-6 text-end d-none d-md-block">
                 <div class="mobile-social-icon">
                     <h6>Follow Us</h6>
-                    <a href="#"><img src="/assets-nest/nest-fe/imgs/theme/icons/icon-facebook-white.svg" alt="" /></a>
-                    <a href="#"><img src="/assets-nest/nest-fe/imgs/theme/icons/icon-twitter-white.svg" alt="" /></a>
-                    <a href="#"><img src="/assets-nest/nest-fe/imgs/theme/icons/icon-instagram-white.svg" alt="" /></a>
-                    <a href="#"><img src="/assets-nest/nest-fe/imgs/theme/icons/icon-pinterest-white.svg" alt="" /></a>
-                    <a href="#"><img src="/assets-nest/nest-fe/imgs/theme/icons/icon-youtube-white.svg" alt="" /></a>
+                    <a href="#"><i class="bi bi-facebook"></i></a>
+                    <a href="#"><i class="bi bi-whatsapp"></i></a>
+                    <a href="#"><i class="bi bi-tiktok"></i></a>
+                    <a href="#"><i class="bi bi-youtube"></i></a>
                 </div>
                 <!-- <p class="font-sm">Up to 15% discount on your first subscribe</p> -->
             </div>

@@ -18,7 +18,7 @@ class EbookSeeder extends Seeder
      * Run the database seeds.
      */
     public function run(): void
-    { 
+    {
         // 1. Cek apakah data master sudah ada
         if (City::count() === 0 || Category::count() === 0) {
             $this->command->error('Jalankan CitySeeder dan CategorySeeder terlebih dahulu!');
@@ -50,6 +50,7 @@ class EbookSeeder extends Seeder
                 'language' => 'id',
                 'city_slug' => 'jakarta', // Gunakan slug
                 'category_slugs' => ['kuliner', 'panduan-wisata'], // Gunakan array slug
+                'total_pages' => 10,
                 'status' => 'published',
             ],
             [
@@ -63,6 +64,7 @@ class EbookSeeder extends Seeder
                 'language' => 'id',
                 'city_slug' => 'bandung',
                 'category_slugs' => ['budaya-sejarah'],
+                'total_pages' => 10,
                 'status' => 'published',
             ],
             [
@@ -76,6 +78,7 @@ class EbookSeeder extends Seeder
                 'language' => 'id',
                 'city_slug' => 'jakarta',
                 'category_slugs' => ['budaya-sejarah', 'wisata-religi'],
+                'total_pages' => 10,
                 'status' => 'published',
             ],
             [
@@ -89,6 +92,7 @@ class EbookSeeder extends Seeder
                 'language' => 'id',
                 'city_slug' => 'denpasar', // Asumsi ada kota Denpasar
                 'category_slugs' => ['budget-travel', 'tips-trik'],
+                'total_pages' => 10,
                 'status' => 'published',
             ],
             [
@@ -102,6 +106,7 @@ class EbookSeeder extends Seeder
                 'language' => 'id',
                 'city_slug' => 'padang', // Asumsi ada kota Padang
                 'category_slugs' => ['wisata-alam', 'petualangan'],
+                'total_pages' => 10,
                 'status' => 'published',
             ],
             [
@@ -115,6 +120,7 @@ class EbookSeeder extends Seeder
                 'language' => 'id',
                 'city_slug' => 'surabaya',
                 'category_slugs' => ['kuliner'],
+                'total_pages' => 10,
                 'status' => 'published',
             ],
             [
@@ -128,6 +134,7 @@ class EbookSeeder extends Seeder
                 'language' => 'id',
                 'city_slug' => 'yogyakarta',
                 'category_slugs' => ['fotografi', 'tips-trik'],
+                'total_pages' => 10,
                 'status' => 'published',
             ],
             [
@@ -141,6 +148,7 @@ class EbookSeeder extends Seeder
                 'language' => 'id',
                 'city_slug' => 'yogyakarta',
                 'category_slugs' => ['akomodasi'],
+                'total_pages' => 10,
                 'status' => 'published',
             ],
             [
@@ -154,6 +162,7 @@ class EbookSeeder extends Seeder
                 'language' => 'id',
                 'city_slug' => 'jakarta',
                 'category_slugs' => ['transportasi', 'tips-trik'],
+                'total_pages' => 10,
                 'status' => 'published',
             ],
             [
@@ -167,6 +176,7 @@ class EbookSeeder extends Seeder
                 'language' => 'id',
                 'city_slug' => 'manado',
                 'category_slugs' => ['wisata-alam', 'petualangan'],
+                'total_pages' => 10,
                 'status' => 'published',
             ],
             [
@@ -180,6 +190,7 @@ class EbookSeeder extends Seeder
                 'language' => 'id',
                 'city_slug' => 'mojokerto', // Asumsi ada kota Mojokerto
                 'category_slugs' => ['budaya-sejarah'],
+                'total_pages' => 10,
                 'status' => 'published',
             ],
             [
@@ -193,6 +204,7 @@ class EbookSeeder extends Seeder
                 'language' => 'id',
                 'city_slug' => 'bandung',
                 'category_slugs' => ['family-travel', 'tips-trik'],
+                'total_pages' => 10,
                 'status' => 'published',
             ],
             [
@@ -206,6 +218,7 @@ class EbookSeeder extends Seeder
                 'language' => 'id',
                 'city_slug' => 'jakarta',
                 'category_slugs' => ['musim-festival'],
+                'total_pages' => 10,
                 'status' => 'published',
             ],
             [
@@ -219,6 +232,7 @@ class EbookSeeder extends Seeder
                 'language' => 'id',
                 'city_slug' => 'surabaya',
                 'category_slugs' => ['kesehatan-keamanan', 'tips-trik'],
+                'total_pages' => 10,
                 'status' => 'published',
             ],
             [
@@ -232,6 +246,7 @@ class EbookSeeder extends Seeder
                 'language' => 'id',
                 'city_slug' => 'bali',
                 'category_slugs' => ['digital-nomad', 'tips-trik'],
+                'total_pages' => 10,
                 'status' => 'published',
             ],
             [
@@ -245,6 +260,7 @@ class EbookSeeder extends Seeder
                 'language' => 'id',
                 'city_slug' => 'jakarta', // Karena ini buku panduan, lokasi penerbitan tidak harus Bangkok
                 'category_slugs' => ['belanja-shopping', 'luxury-travel'],
+                'total_pages' => 10,
                 'status' => 'published',
             ],
             [
@@ -258,6 +274,7 @@ class EbookSeeder extends Seeder
                 'language' => 'id',
                 'city_slug' => 'jakarta',
                 'category_slugs' => ['kehidupan-malam'],
+                'total_pages' => 10,
                 'status' => 'published',
             ],
             [
@@ -271,6 +288,7 @@ class EbookSeeder extends Seeder
                 'language' => 'id',
                 'city_slug' => 'bandung',
                 'category_slugs' => ['wisata-anak', 'family-travel'],
+                'total_pages' => 10,
                 'status' => 'published',
             ],
             [
@@ -284,6 +302,7 @@ class EbookSeeder extends Seeder
                 'language' => 'id',
                 'city_slug' => 'yogyakarta',
                 'category_slugs' => ['wisata-edukasi', 'budaya-sejarah'],
+                'total_pages' => 10,
                 'status' => 'published',
             ],
             [
@@ -297,6 +316,7 @@ class EbookSeeder extends Seeder
                 'language' => 'id',
                 'city_slug' => 'jakarta',
                 'category_slugs' => ['luxury-travel'],
+                'total_pages' => 10,
                 'status' => 'published',
             ],
             [
@@ -310,6 +330,7 @@ class EbookSeeder extends Seeder
                 'language' => 'id',
                 'city_slug' => 'mataram', // Asumsi ada kota Mataram
                 'category_slugs' => ['petualangan', 'wisata-alam'],
+                'total_pages' => 10,
                 'status' => 'published',
             ],
             [
@@ -323,6 +344,7 @@ class EbookSeeder extends Seeder
                 'language' => 'id',
                 'city_slug' => 'jakarta',
                 'category_slugs' => ['kuliner'],
+                'total_pages' => 10,
                 'status' => 'published',
             ],
             [
@@ -336,6 +358,7 @@ class EbookSeeder extends Seeder
                 'language' => 'id',
                 'city_slug' => 'demak',
                 'category_slugs' => ['wisata-religi'],
+                'total_pages' => 10,
                 'status' => 'published',
             ],
             // 'pdf_file' => '',
@@ -386,7 +409,7 @@ class EbookSeeder extends Seeder
 
             // Handle categories - detach lalu attach dengan UUID
             $ebook->categories()->detach();
-            
+
             if (!empty($categoryIds)) {
                 foreach ($categoryIds as $categoryId) {
                     DB::table('ebook_categories')->insert([

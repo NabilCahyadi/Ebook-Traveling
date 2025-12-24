@@ -303,20 +303,6 @@
                                     </select>
                                 </form>
                             </div>
-                            <!-- <div class="header-action-icon-2">
-                                <a href="shop-compare.html">
-                                    <img class="svgInject" alt="Nest" src="assets-nest/nest-fe/imgs/theme/icons/icon-compare.svg" />
-                                    <span class="pro-count blue">3</span>
-                                </a>
-                                <a href="shop-compare.html"><span class="lable ml-0">Compare</span></a>
-                            </div> -->
-                            <!-- <div class="header-action-icon-2">
-                                <a href="shop-wishlist.html">
-                                    <img class="svgInject" alt="Nest" src="assets-nest/nest-fe/imgs/theme/icons/icon-heart.svg" />
-                                    <span class="pro-count blue">6</span>
-                                </a>
-                                <a href="shop-wishlist.html"><span class="lable">Wishlist</span></a>
-                            </div> -->
                             <div class="header-action-icon-2">
                                 <a class="mini-cart-icon" href="#">
                                     <i class="bi bi-bell mr-5"></i>
@@ -384,16 +370,12 @@
                                         <li>
                                             <a href="<?php echo e(route('page-account')); ?>"><i class="fi fi-rs-user mr-10"></i>Account</a>
                                         </li>
-                                        <?php if(hasPermission('access_wishlist')): ?>
                                         <li>
                                             <a href="<?php echo e(route('page-account')); ?>?tab=orders"><i class="fi fi-rs-label mr-10"></i>Wishlist</a>
                                         </li>
-                                        <?php endif; ?>
-                                        <?php if(hasPermission('access_creator_dashboard')): ?>
                                         <li>
                                             <a href="<?php echo e(route('page-account')); ?>?tab=creator"><i class="fi-rs-edit mr-10"></i>Creator</a>
                                         </li>
-                                        <?php endif; ?>
                                         <li>
                                             
                                             <form method="POST" action="<?php echo e(route('user.logout')); ?>" id="logout-form" style="display: none;">
@@ -407,27 +389,27 @@
                                                     // Try to submit logout form
                                                     const form = document.getElementById('logout-form');
                                                     const formData = new FormData(form);
-                                                    
+
                                                     fetch(form.action, {
-                                                        method: 'POST',
-                                                        body: formData,
-                                                        headers: {
-                                                            'X-Requested-With': 'XMLHttpRequest'
-                                                        }
-                                                    })
-                                                    .then(response => {
-                                                        if (response.ok || response.status === 419) {
-                                                            // Success or CSRF expired, redirect to login
+                                                            method: 'POST',
+                                                            body: formData,
+                                                            headers: {
+                                                                'X-Requested-With': 'XMLHttpRequest'
+                                                            }
+                                                        })
+                                                        .then(response => {
+                                                            if (response.ok || response.status === 419) {
+                                                                // Success or CSRF expired, redirect to login
+                                                                window.location.href = '/login';
+                                                            } else {
+                                                                throw new Error('Logout failed');
+                                                            }
+                                                        })
+                                                        .catch(error => {
+                                                            // If anything fails, just redirect to login
+                                                            console.log('Logout error, redirecting to login', error);
                                                             window.location.href = '/login';
-                                                        } else {
-                                                            throw new Error('Logout failed');
-                                                        }
-                                                    })
-                                                    .catch(error => {
-                                                        // If anything fails, just redirect to login
-                                                        console.log('Logout error, redirecting to login', error);
-                                                        window.location.href = '/login';
-                                                    });
+                                                        });
                                                 }
                                             </script>
                                         </li>
@@ -493,46 +475,37 @@
                         <nav>
                             <ul>
                                 <?php
-                                    // Debug: check user and role
-                                    $currentUser = auth()->user();
-                                    $debugInfo = '';
-                                    if ($currentUser) {
-                                        $userType = $currentUser->user_type ?? 'unknown';
-                                        $debugInfo = "User: {$currentUser->name}, Type: {$userType}";
-                                    } else {
-                                        $debugInfo = "Guest User";
-                                    }
+                                // Debug: check user and role
+                                $currentUser = auth()->user();
+                                $debugInfo = '';
+                                if ($currentUser) {
+                                $userType = $currentUser->user_type ?? 'unknown';
+                                $debugInfo = "User: {$currentUser->name}, Type: {$userType}";
+                                } else {
+                                $debugInfo = "Guest User";
+                                }
                                 ?>
-                                
-                                <?php if(hasPermission('access_home')): ?>
+
                                 <li class="<?php echo e(request()->routeIs('home') ? 'active' : ''); ?>">
                                     <a href="/">Home</a>
                                 </li>
-                                <?php endif; ?>
-                                
-                                <?php if(hasPermission('access_destinations')): ?>
+
                                 <li class="<?php echo e(request()->routeIs('destinations*') ? 'active' : ''); ?>">
                                     <a href="<?php echo e(route('destinations')); ?>">Destinations</a>
                                 </li>
-                                <?php endif; ?>
-                                
-                                <?php if(hasPermission('access_blog')): ?>
+
                                 <li class="<?php echo e(request()->routeIs('blogs.*') ? 'active' : ''); ?>">
                                     <a href="<?php echo e(route('blogs.index')); ?>">Blog</a>
                                 </li>
-                                <?php endif; ?>
-                                
-                                <?php if(hasPermission('access_pricing')): ?>
+
                                 <li class="<?php echo e(request()->routeIs('pricing') ? 'active' : ''); ?>">
                                     <a href="<?php echo e(route('pricing')); ?>">Pricing</a>
                                 </li>
-                                <?php endif; ?>
-                                
-                                <?php if(hasPermission('access_promo')): ?>
+
                                 <li class="<?php echo e(request()->routeIs('promo') ? 'active' : ''); ?>">
                                     <a href="<?php echo e(route('promo')); ?>">Promo</a>
                                 </li>
-                                <?php endif; ?>
+
                             </ul>
                         </nav>
                     </div>
@@ -609,7 +582,7 @@
     <div class="mobile-header-wrapper-inner">
         <div class="mobile-header-top">
             <div class="mobile-header-logo">
-                <a href="index.html"><img src="assets/imgs/theme/logo.svg" alt="logo" /></a>
+                <a href="index.html"><img src="<?php echo e(asset('images/only-logoo.png')); ?>" alt="logo" /></a>
             </div>
             <div class="mobile-menu-close close-style-wrap close-style-position-inherit">
                 <button class="close-style search-close">
@@ -777,11 +750,10 @@
             </div>
             <div class="mobile-social-icon mb-50">
                 <h6 class="mb-15">Follow Us</h6>
-                <a href="#"><img src="assets/imgs/theme/icons/icon-facebook-white.svg" alt="" /></a>
-                <a href="#"><img src="assets/imgs/theme/icons/icon-twitter-white.svg" alt="" /></a>
-                <a href="#"><img src="assets/imgs/theme/icons/icon-instagram-white.svg" alt="" /></a>
-                <a href="#"><img src="assets/imgs/theme/icons/icon-pinterest-white.svg" alt="" /></a>
-                <a href="#"><img src="assets/imgs/theme/icons/icon-youtube-white.svg" alt="" /></a>
+                <a href="#"><i class="bi bi-facebook"></i></a>
+                <a href="#"><i class="bi bi-whatsapp"></i></a>
+                <a href="#"><i class="bi bi-tiktok"></i></a>
+                <a href="#"><i class="bi bi-youtube"></i></a>
             </div>
             <div class="site-copyright">Copyright 2022 © Nest. All rights reserved. Powered by AliThemes.</div>
         </div>
@@ -815,5 +787,4 @@
             }, 100); // Tunggu 100ms setelah scroll berhenti
         }, false);
     });
-</script>
-<?php /**PATH D:\PROJEK PROJEK\Ebook-Traveling\resources\views/layouts_lp/components/header.blade.php ENDPATH**/ ?>
+</script><?php /**PATH D:\PROJEK PROJEK\Ebook-Traveling\resources\views/layouts_lp/components/header.blade.php ENDPATH**/ ?>

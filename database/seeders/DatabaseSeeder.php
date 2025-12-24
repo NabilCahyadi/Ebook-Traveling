@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             
             // 2. DATA PENGGUNA (Bergantung pada RoleSeeder)
             // Membuat pengguna setelah role tersedia.
+            CreatorSeeder::class,
             UserSeeder::class,           // Membuat user (creator, member)
             AdminSeeder::class,          // Membuat user admin khusus
 

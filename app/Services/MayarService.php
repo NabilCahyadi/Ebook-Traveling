@@ -29,46 +29,38 @@ class MayarService
      */
     public function generatePaymentLink(User $user, SubscriptionPlan $plan, ?string $notes = null): PaymentLink
     {
-        try {
-            // Generate invoice number
-            $invoiceNumber = $this->generateInvoiceNumber();
+        // Generate invoice
+        $invoiceNumber = $this->generateInvoiceNumber();
+        $expiresAt = now()->addHours(24);
 
-            // Calculate expiry time
-            $expiresAt = now()->addHours(config('mayar.link_expiry_hours', 24));
+        // Simpan record (untuk webhook & audit)
+        $paymentLink = PaymentLink::create([
+            'invoice_number' => $invoiceNumber,
+            'user_id' => $user->id,
+            'plan_id' => $plan->id,
+            'amount' => $plan->price,
+            'status' => 'pending',
+            'expires_at' => $expiresAt,
+            'notes' => $notes,
+        ]);
 
-            // Create payment link record
-            $paymentLink = PaymentLink::create([
-                'invoice_number' => $invoiceNumber,
-                'user_id' => $user->id,
-                'plan_id' => $plan->id,
-                'amount' => $plan->price,
-                'status' => 'pending',
-                'expires_at' => $expiresAt,
-                'notes' => $notes,
-            ]);
-
-            // Call Mayar.id API to create payment
-            $response = $this->createPaymentOnMayar($paymentLink, $user, $plan);
-
-            if ($response['success']) {
-                $paymentLink->update([
-                    'payment_url' => $response['data']['payment_url'] ?? null,
-                    'mayar_payment_id' => $response['data']['payment_id'] ?? null,
-                    'mayar_response' => $response['data'],
-                ]);
-            } else {
-                throw new \Exception($response['message'] ?? 'Failed to create payment link');
-            }
-
-            return $paymentLink->fresh();
-        } catch (\Exception $e) {
-            Log::error('Mayar Payment Link Generation Failed', [
-                'user_id' => $user->id,
-                'plan_id' => $plan->id,
-                'error' => $e->getMessage()
-            ]);
-            throw $e;
+        // Dapatkan link checkout dari plan (simpan di kolom `mayar_payment_link`)
+        if (!$plan->mayar_payment_link) {
+            throw new \Exception("Mayar payment link belum diatur untuk plan: {$plan->name}");
         }
+
+        // Bangun URL dengan data user
+        $url = $plan->mayar_payment_link . '?' . http_build_query([
+            'name' => $user->name,
+            'email' => $user->email,
+            'phone' => $user->phone ?? '',
+            'external_id' => $paymentLink->invoice_number, // dikirim ke webhook
+        ]);
+
+        // Simpan URL
+        $paymentLink->update(['payment_url' => $url]);
+
+        return $paymentLink->fresh();
     }
 
     /**
@@ -87,14 +79,20 @@ class MayarService
                 'callback_url' => $this->callbackUrl,
                 'return_url' => $this->returnUrl,
                 'expired_at' => $paymentLink->expires_at->toIso8601String(),
+                'is_test' => true, // ← INI KRUSIAL!
             ];
+
+            Log::info('MayarService: URL yang akan dipanggil', [
+                'url' => $this->baseUrl . '/v1/payment-links',
+                'payload' => $payload
+            ]);
 
             // Note: Adjust endpoint sesuai dokumentasi Mayar.id
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
-            ])->post($this->baseUrl . '/v1/payment/create', $payload);
+            ])->post($this->baseUrl . '/v1/payment-links', $payload);
 
             if ($response->successful()) {
                 return [
@@ -106,6 +104,13 @@ class MayarService
                     'message' => 'Payment link created successfully'
                 ];
             }
+
+            // TAMBAHKAN LOG INI UNTUK DEBUGGING
+            Log::error('MayarService: Response dari Mayar tidak successful', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+                'json' => $response->json()
+            ]);
 
             return [
                 'success' => false,
@@ -166,51 +171,44 @@ class MayarService
     public function handleCallback(array $data): bool
     {
         try {
-            $externalId = $data['external_id'] ?? null;
-            $status = $data['status'] ?? null;
+            // Ambil external_id dari payload
+            $externalId = $data['external_id'] ?? ($data['metadata']['external_id'] ?? null);
+            $status = strtoupper($data['status'] ?? '');
 
             if (!$externalId) {
-                throw new \Exception('External ID not found in callback data');
+                Log::warning('Mayar callback tanpa external_id', ['data' => $data]);
+                return false;
             }
 
             $paymentLink = PaymentLink::where('invoice_number', $externalId)->first();
-
             if (!$paymentLink) {
-                throw new \Exception("Payment link not found: {$externalId}");
+                Log::warning("Payment link tidak ditemukan: {$externalId}");
+                return false;
             }
 
-            // Update payment link status
-            if ($status === 'PAID' || $status === 'SUCCESS' || $status === 'paid' || $status === 'success') {
-                $paymentLink->update([
-                    'status' => 'paid',
-                    'paid_at' => now(),
-                    'payment_method' => $data['payment_method'] ?? null,
-                    'mayar_response' => $data,
-                ]);
+            // Update status
+            $newStatus = match ($status) {
+                'PAID', 'SUCCESS' => 'paid',
+                'EXPIRED' => 'expired',
+                'CANCELLED' => 'cancelled',
+                default => 'pending',
+            };
 
-                // Auto activate subscription if enabled
-                if (config('mayar.auto_activate_subscription')) {
-                    $this->activateSubscription($paymentLink);
-                }
+            $paymentLink->update([
+                'status' => $newStatus,
+                'paid_at' => $newStatus === 'paid' ? now() : null,
+                'mayar_response' => $data,
+            ]);
 
-                return true;
-            } elseif ($status === 'EXPIRED' || $status === 'expired') {
-                $paymentLink->update([
-                    'status' => 'expired',
-                    'mayar_response' => $data,
-                ]);
-            } elseif ($status === 'CANCELLED' || $status === 'cancelled') {
-                $paymentLink->update([
-                    'status' => 'cancelled',
-                    'mayar_response' => $data,
-                ]);
+            if ($newStatus === 'paid' && config('mayar.auto_activate_subscription')) {
+                $this->activateSubscription($paymentLink);
             }
 
             return true;
         } catch (\Exception $e) {
             Log::error('Mayar Callback Error', [
                 'data' => $data,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             return false;
         }

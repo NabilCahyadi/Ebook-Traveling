@@ -433,6 +433,212 @@
             }
         }, 500);
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- GANTI VARIABEL INI SESUAIKAN DENGAN IMPLEMENTASI ANDA ---
+            // Anda perlu cara untuk mendapatkan ebook_id dan halaman saat ini dari PDF viewer Anda
+            const ebookId = "{{ $ebook->id }}"; // Sudah benar
+            let currentPage = 1; // Ganti ini dengan cara mendapatkan halaman saat ini dari viewer Anda
+
+            // Fungsi untuk mengirim progress ke server
+            function sendProgress() {
+                fetch('{{ route("reader.updateProgress") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            ebook_id: ebookId,
+                            last_page: currentPage
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            console.log('Progress saved:', data.data);
+                        }
+                    })
+                    .catch(error => console.error('Error saving progress:', error));
+            }
+
+            // --- ANDA HARUS MENYESUAIKAN BAGIAN INI ---
+            // Contoh: Jika menggunakan PDF.js, Anda bisa mendapatkan event saat halaman berubah
+            // pdfViewer.currentPageLabel = (val) => {
+            //     currentPage = parseInt(val, 10);
+            //     sendProgress(); // Kirim progress setiap halaman berubah
+            // };
+
+            // Simpan progress saat pengguna akan menutup tab
+            window.addEventListener('beforeunload', function(e) {
+                // Kirim request sinkron agar tidak terpotong saat tab ditutup
+                navigator.sendBeacon('{{ route("reader.updateProgress") }}', JSON.stringify({
+                    ebook_id: ebookId,
+                    last_page: currentPage
+                }));
+            });
+        });
+    </script>
+    <script>
+        // Atur worker source untuk PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        // --- Variabel Utama ---
+        const url = "{{ asset($ebook->pdf_file) }}";
+        let pdfDoc = null,
+            pageNum = 1,
+            pageRendering = false,
+            pageNumPending = null,
+            currentScale = 1.0;
+
+        // --- Elemen DOM ---
+        const canvas = document.getElementById('pdf-canvas');
+        const ctx = canvas.getContext('2d');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const fitWidthBtn = document.getElementById('fit-width');
+
+        // --- Variabel untuk Progress ---
+        const ebookId = "{{ $ebook->id }}";
+        const updateUrl = '{{ route("reader.updateProgress") }}';
+        const csrfToken = '{{ csrf_token() }}';
+
+        // --- Fungsi untuk Mengirim Progress ke Server ---
+        function sendProgress() {
+            console.log(`Sending progress: ebook_id=${ebookId}, last_page=${pageNum}`);
+
+            fetch(updateUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        ebook_id: ebookId,
+                        last_page: pageNum
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Progress saved:', data.data);
+                    } else {
+                        console.error('Server returned an error:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error saving progress:', error);
+                });
+        }
+
+        // --- Logika Render Halaman PDF.js ---
+        function renderPage(num) {
+            pageRendering = true;
+            pdfDoc.getPage(num).then(function(page) {
+                const viewport = page.getViewport({
+                    scale: currentScale
+                });
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+                const renderTask = page.render(renderContext);
+
+                renderTask.promise.then(function() {
+                    pageRendering = false;
+                    if (pageNumPending !== null) {
+                        renderPage(pageNumPending);
+                        pageNumPending = null;
+                    }
+                });
+            });
+
+            // Update nomor halaman di UI
+            document.getElementById('page-num').textContent = num;
+        }
+
+        function queueRenderPage(num) {
+            if (pageRendering) {
+                pageNumPending = num;
+            } else {
+                renderPage(num);
+            }
+        }
+
+        // --- Event Listener untuk Navigasi Halaman ---
+        function onPrevPage() {
+            if (pageNum <= 1) return;
+            pageNum--;
+            queueRenderPage(pageNum);
+            sendProgress(); // Kirim progress saat halaman berubah
+        }
+
+        function onNextPage() {
+            if (pageNum >= pdfDoc.numPages) return;
+            pageNum++;
+            queueRenderPage(pageNum);
+            sendProgress(); // Kirim progress saat halaman berubah
+        }
+
+        document.getElementById('prev-page').addEventListener('click', onPrevPage);
+        document.getElementById('next-page').addEventListener('click', onNextPage);
+
+        // Simpan progress saat pengguna akan menutup tab
+        window.addEventListener('beforeunload', function(e) {
+            navigator.sendBeacon(updateUrl, JSON.stringify({
+                ebook_id: ebookId,
+                last_page: pageNum
+            }));
+        });
+
+        // --- Logika PDF.js Lainnya (Zoom, dll) ---
+        function fitToWidth() {
+            if (!pdfDoc) return;
+            pdfDoc.getPage(pageNum).then(function(page) {
+                const viewport = page.getViewport({
+                    scale: 1.0
+                });
+                const containerWidth = document.getElementById('pdf-canvas-container').clientWidth - 40;
+                currentScale = containerWidth / viewport.width;
+                fitWidthBtn.textContent = Math.round(currentScale * 100) + '%';
+                queueRenderPage(pageNum);
+            });
+        }
+        document.getElementById('fit-width').addEventListener('click', fitToWidth);
+        document.getElementById('zoom-in').addEventListener('click', () => {
+            currentScale += 0.25;
+            fitWidthBtn.textContent = Math.round(currentScale * 100) + '%';
+            queueRenderPage(pageNum);
+        });
+        document.getElementById('zoom-out').addEventListener('click', () => {
+            if (currentScale <= 0.5) return;
+            currentScale -= 0.25;
+            fitWidthBtn.textContent = Math.round(currentScale * 100) + '%';
+            queueRenderPage(pageNum);
+        });
+        document.getElementById('fullscreen').addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        });
+
+        // --- Muat Dokumen PDF ---
+        pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
+            pdfDoc = pdfDoc_;
+            document.getElementById('page-count').textContent = pdfDoc.numPages;
+            loadingIndicator.style.display = 'none';
+            fitToWidth();
+        }).catch(function(error) {
+            console.error('Error loading PDF:', error);
+            loadingIndicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Gagal memuat PDF. File mungkin rusak atau tidak ditemukan.</span>';
+        });
+    </script>
 </body>
 
 </html>
