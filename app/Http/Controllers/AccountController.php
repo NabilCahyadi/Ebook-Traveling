@@ -23,9 +23,10 @@ class AccountController extends Controller
     /**
      * Show account dashboard
      */
-    public function index()
+    public function index(Request $request)
     {
-        $accountData = $this->userService->getAccountData(Auth::id());
+        // $accountData = $this->userService->getAccountData(Auth::id());
+        $accountData = $this->userService->getAccountData(Auth::id(), $request);
 
         return view('page-account', $accountData);
     }

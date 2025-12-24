@@ -205,8 +205,10 @@
     :root {
         --primary-color: #FF4C61;
         --primary-color-dark: #e53e4a;
+        --secondary-color: #FF416C;
+        /* Warna untuk tombol secondary */
         --light-color: #f8f9fa;
-        --dark-color: #343a40;
+        --dark-color: rgba(86, 86, 86, 1);
         --text-muted: #6c757d;
     }
 
@@ -243,43 +245,31 @@
     /* --- Style untuk Grid Kartu --- */
     .pricing-grid {
         display: grid;
-        /* Untuk layar lebar (Desktop), paksa 4 kolom */
         grid-template-columns: repeat(4, 1fr);
         gap: 2rem;
-        /* Jarak antar kartu */
         margin-top: 2rem;
-
-        /* --- TAMBAHKAN INI UNTUK MENENGahkan KARTU --- */
         justify-content: center;
     }
 
-    /* Untuk layar sedang (Tablet & Desktop kecil) */
     @media (max-width: 1200px) {
         .pricing-grid {
             grid-template-columns: repeat(3, 1fr);
-            /* 3 kolom */
         }
     }
 
-    /* Untuk layar kecil (Tablet besar) */
     @media (max-width: 992px) {
         .pricing-grid {
             grid-template-columns: repeat(2, 1fr);
-            /* 2 kolom */
         }
     }
 
-    /* Untuk layar sangat kecil (Mobile) */
     @media (max-width: 576px) {
         .pricing-grid {
             grid-template-columns: 1fr;
-            /* 1 kolom */
             gap: 1.5rem;
-            /* Kurangi jarak di mobile */
         }
     }
 
-    /* --- Style untuk Kartu Harga --- */
     /* --- Style untuk Kartu Harga (DIPERBAIKI) --- */
     .pricing-card {
         background-color: #fff;
@@ -292,8 +282,6 @@
         text-align: center;
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;
-        min-height: 600px;
     }
 
     .pricing-card:hover {
@@ -301,13 +289,12 @@
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
     }
 
-    /* --- Style untuk Kartu yang Diunggulkan (Featured) --- */
-    .pricing-card--featured {
+    /* .pricing-card--featured {
         border-color: var(--primary-color);
         transform: scale(1.05);
-    }
+    } */
 
-    .pricing-card--featured::before {
+    /* .pricing-card--featured::before {
         content: 'MOST POPULAR';
         position: absolute;
         top: -15px;
@@ -320,7 +307,7 @@
         font-size: 0.75rem;
         font-weight: 700;
         letter-spacing: 1px;
-    }
+    } */
 
     /* --- Typography di dalam Kartu --- */
     .pricing-card .card-title {
@@ -349,10 +336,8 @@
         color: var(--text-muted);
         margin-bottom: 2.5rem;
         flex-grow: 1;
-        /* Mendorong konten ke tengah */
     }
 
-    /* --- Style untuk Daftar Fitur --- */
     .pricing-card .card-features {
         list-style: none;
         padding: 0;
@@ -373,42 +358,66 @@
         border-bottom: none;
     }
 
-    /* Tambahkan icon Font Awesome untuk checklist */
     .pricing-card .card-features li .feature-check {
         color: #28a745;
-        /* Warna hijau untuk centang */
         margin-right: 1rem;
         font-size: 1.1rem;
+    }
+
+    /* --- Style untuk Container Tombol --- */
+    .pricing-button-container {
+        margin-top: auto;
+        /* Dorong container tombol ke bawah */
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        /* Jarak antar tombol */
     }
 
     /* --- Style untuk Tombol --- */
     .pricing-button {
         width: 100%;
         padding: 15px 30px;
-        background-color: var(--dark-color);
-        color: #fff;
         border: none;
         border-radius: 50px;
-        font-size: 1rem;
+        font-size: 0.9rem;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
         text-transform: uppercase;
         letter-spacing: 1px;
+        text-decoration: none;
+        /* Hapus underline untuk link */
+        text-align: center;
+        display: inline-block;
+        /* Agar padding dan height bekerja dengan baik di link */
     }
 
-    .pricing-card--featured .pricing-button {
+    .pricing-button--primary {
+        background-color: #FF4C61;
+        color: #fff;
+    }
+
+    .pricing-card--featured .pricing-button--primary {
         background-color: var(--primary-color);
         box-shadow: 0 5px 15px rgba(255, 76, 97, 0.3);
     }
 
-    .pricing-button:hover {
+    .pricing-button--primary:hover {
         background-color: var(--primary-color-dark);
         transform: translateY(-3px);
     }
 
-    .pricing-card--featured .pricing-button:hover {
-        background-color: var(--primary-color-dark);
+    .pricing-button--secondary {
+        background-color: transparent;
+        color: var(--secondary-color);
+        border: 2px solid var(--secondary-color);
+    }
+
+    .pricing-button--secondary:hover {
+        background-color: var(--secondary-color);
+        color: #fff;
+        transform: translateY(-3px);
     }
 </style>
 <div class="container">
@@ -452,7 +461,6 @@
         </div>
     </section>
     <!-- end banner pricing -->
-
     {{-- resources/views/pricing/index.blade.php --}}
     <section class="benefits-section py-5">
         <div class="container text-center">
@@ -505,20 +513,24 @@
                 <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ $categoryKey }}" role="tabpanel" aria-labelledby="{{ $categoryKey }}-tab">
                     <div class="pricing-grid">
                         @foreach($plans as $plan)
-                        <!-- Tambahkan class 'pricing-card--featured' jika plan ini diunggulkan -->
                         <div class="pricing-card {{ $plan->is_featured ? 'pricing-card--featured' : '' }}">
                             <p class="card-title">{{ $plan->name }}</p>
-
                             <h2>Rp {{ number_format($plan->price, 0, ',', '.') }}</h2>
                             <p class="card-price-description">{{ $plan->price_description }}</p>
-
                             <p class="desc-plan">{{ $plan->description }}</p>
+                            <div class="pricing-button-container">
+                                <!-- Tombol untuk Mayar.id -->
+                                <button class="pricing-button pricing-button--primary" onclick="subscribeWithMayar('{{ $plan->id }}', this)">
+                                    {{ $plan->button_text ?? 'Subscribe Now' }}
+                                </button>
 
-                            <!-- DAFTAR FITUR SUDAH DIHAPUS -->
-
-                            <button class="pricing-button">
-                                {{ $plan->button_text }}
-                            </button>
+                                <!-- Tombol untuk WhatsApp -->
+                                <a href="https://wa.me/6289657571177?text=Halo%20Admin%2C%20saya%20tertarik%20berlangganan%20paket%20{{ urlencode($plan->name) }}."
+                                    class="btn bg-success text-white rounded-pill py-3 w-100 mb-2"
+                                    target="_blank">
+                                    <i class="bi bi-whatsapp"></i> Call Admin
+                                </a>
+                            </div>
                         </div>
                         @endforeach
                     </div>
@@ -639,5 +651,57 @@
             }, 100); // 100ms delay
         }
     });
+</script>
+<script>
+    async function subscribeWithMayar(planId, buttonElement) {
+        const originalText = buttonElement.innerText;
+        buttonElement.disabled = true;
+        buttonElement.innerText = 'Memproses...';
+
+        try {
+            const response = await fetch('/api/subscription/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    plan_id: planId
+                })
+            });
+
+            // CEK 1: Jika response status-nya 500 (server error)
+            if (response.status === 500) {
+                throw new Error('Server mengalami kesalahan internal. Coba lihat log Laravel.');
+            }
+
+            // CEK 2: Jika response adalah redirect ke login (status 302)
+            if (response.redirected && response.url.includes('login')) {
+                window.location.href = response.url;
+                return; // Hentikan eksekusi
+            }
+
+            // CEK 3: Jika response-nya bukan 200 OK
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.status} ${response.statusText}`);
+            }
+
+            // Jika sampai sini, berarti response-nya OK dan berupa JSON
+            const result = await response.json();
+
+            if (result.success) {
+                window.location.href = result.data.payment_url;
+            } else {
+                alert('Error: ' + result.message);
+                buttonElement.disabled = false;
+                buttonElement.innerText = originalText;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan: ' + error.message);
+            buttonElement.disabled = false;
+            buttonElement.innerText = originalText;
+        }
+    }
 </script>
 @endsection

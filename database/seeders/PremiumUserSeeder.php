@@ -22,22 +22,22 @@ class PremiumUserSeeder extends Seeder
             [
                 'name' => 'Premium User',
                 'email' => 'premium@gmail.com',
-                'plan_slug' => 'monthly-explorer',
+                'plan_slug' => 'yearly-voyager-66003',
             ],
             [
                 'name' => 'Star Premium',
                 'email' => 'premium1@gmail.com',
-                'plan_slug' => 'yearly-voyager',
+                'plan_slug' => 'yearly-voyager-66003',
             ],
             [
                 'name' => 'Gold Premium',
                 'email' => 'premium2@gmail.com',
-                'plan_slug' => 'monthly-explorer',
+                'plan_slug' => 'yearly-voyager-66003',6
             ],
             [
                 'name' => 'Kahla Luthfiyah',
                 'email' => 'premium3@gmail.com',
-                'plan_slug' => 'monthly-explorer',
+                'plan_slug' => 'yearly-voyager-66003',
             ],
         ];
 

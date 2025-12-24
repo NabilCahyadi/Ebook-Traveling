@@ -11,12 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Pertama, kita harus menghapus foreign key LAMA yang mungkin ada
+        // untuk menghindari error "Duplicate foreign key constraint".
+        // Nama constraint biasanya mengikuti format 'tabel_kolom_foreign'.
         Schema::table('ebooks', function (Blueprint $table) {
-            // Buat foreign key yang benar ke creators table
+            $table->dropForeign(['creator_id']);
+        });
+
+        // Setelah foreign key lama dihapus, sekarang kita bisa membuat yang BARU
+        // yang mengarah ke tabel 'creators'.
+        Schema::table('ebooks', function (Blueprint $table) {
             $table->foreign('creator_id')
-                  ->references('id')
-                  ->on('creators')
-                  ->onDelete('set null');
+                ->references('id')
+                ->on('creators')
+                ->onDelete('set null');
         });
     }
 
@@ -25,15 +33,17 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Untuk membalikkan, kita harus menghapus foreign key BARU yang kita buat
         Schema::table('ebooks', function (Blueprint $table) {
-            // Drop foreign key baru
             $table->dropForeign(['creator_id']);
-            
-            // Kembalikan ke foreign key lama (ke users)
+        });
+
+        // Lalu, kita kembalikan foreign key LAMA (yang mengarah ke tabel 'users')
+        Schema::table('ebooks', function (Blueprint $table) {
             $table->foreign('creator_id')
-                  ->references('id')
-                  ->on('users')
-                  ->onDelete('set null');
+                ->references('id')
+                ->on('users')
+                ->onDelete('set null');
         });
     }
 };

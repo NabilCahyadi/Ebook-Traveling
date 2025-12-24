@@ -47,6 +47,10 @@ use App\Services\SubscriptionPlanService;
 use App\Services\Contracts\PromoServiceInterface;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\Interfaces\SubscriptionRepositoryInterface;
+use App\Repositories\SubscriptionRepository;
+use App\Repositories\Interfaces\SubscriptionProcessInterface;
+use App\Repositories\SubscriptionProcessRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -86,6 +90,11 @@ class AppServiceProvider extends ServiceProvider
             SubscriptionPlanService::class,
             SubscriptionPlanService::class
         );
+        // Binding untuk repository lama (jangan dihapus!)
+        $this->app->bind(SubscriptionRepositoryInterface::class, SubscriptionRepository::class);
+
+        // TAMBAHKAN binding baru untuk repository proses pembayaran
+        $this->app->bind(SubscriptionProcessInterface::class, SubscriptionProcessRepository::class);
     }
 
     /**

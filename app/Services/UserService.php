@@ -7,6 +7,9 @@ use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Ebook;
+use App\Models\City;
+use Illuminate\Http\Request;
 
 class UserService
 {
@@ -306,7 +309,11 @@ class UserService
     /**
      * Get user account data for dashboard (NEW METHOD)
      */
-    public function getAccountData(string $userId): array
+    // Di dalam file app/Services/UserService.php
+
+    // Di dalam file app/Services/UserService.php
+
+    public function getAccountData(string $userId, Request $request): array
     {
         $user = User::with([
             'profile',
@@ -315,58 +322,91 @@ class UserService
             'readings.ebook',
             'subscriptions.plan',
             'ratings.ebook',
-            'createdEbooks.categories', // Untuk creator
-            'blogs' // Untuk creator blog posts
+            'createdEbooks.categories',
+            'blogs'
         ])->findOrFail($userId);
 
-        $data = [
-            'user' => $user,
-            'ordersCount' => $user->orders->count(),
-            'wishlistCount' => $user->savedBooks->count(),
-            'readingProgressCount' => $user->readings->count(),
-            'wishlistItems' => $user->savedBooks,
-            'orders' => $user->orders()->latest()->get(),
-            'userReadings' => $user->readings()->with('ebook')->latest()->get(),
-            'userRatings' => $user->ratings()->with('ebook')->latest()->get(),
-            'createdEbooks' => $user->createdEbooks()->with('categories')->get(),
-        ];
+        // 1. Inisialisasi $allEbooks sebagai koleksi kosong
+        $allEbooks = collect();
 
-        // Data untuk premium users
+        // 2. JIKA USER PREMIUM, jalankan logika query dan filter
         if ($user->hasActiveSubscription()) {
+            // 1. Buat query dasar dengan JOIN
+            // 1. Buat query dasar dengan JOIN ke tabel yang dibutuhkan
+            $query = Ebook::leftJoin('creators', 'ebooks.creator_id', '=', 'creators.id')
+                ->leftJoin('users', 'creators.user_id', '=', 'users.id')
+                ->leftJoin('cities', 'ebooks.city_id', '=', 'cities.id'); // <-- JOIN ke tabel cities
+
+            // 2. Terapkan filter pencarian jika ada
+            if ($request->filled('search')) {
+                $searchTerm = '%' . $request->search . '%';
+                $query->where(function ($q) use ($searchTerm) {
+                    $q->where('ebooks.title', 'LIKE', $searchTerm)
+                        ->orWhere('ebooks.description', 'LIKE', $searchTerm)
+                        ->orWhere('creators.pen_name', 'LIKE', $searchTerm)
+                        ->orWhere('users.name', 'LIKE', $searchTerm);
+                });
+            }
+
+            // 3. Terapkan filter status
+            $query->where('ebooks.status', 'published');
+
+            // 4. Terapkan filter kota (INI YANG DIPERBAIKI)
+            if ($request->filled('city_slug')) {
+                // Filter berdasarkan slug dari tabel 'cities' yang sudah di-join
+                $query->where('cities.slug', $request->city_slug);
+            }
+
+            // 5. Pastikan SoftDeletes tetap berjalan
+            $query->whereNull('ebooks.deleted_at');
+
+            // 6. Ambil hasil query
+            $allEbooks = $query->select('ebooks.*')->distinct()->get(); // Tambahkan distinct() untuk keamanan
+            // Data premium lainnya
             $data['activeSubscription'] = $user->subscriptions()
                 ->where('status', 'active')
                 ->where('end_date', '>=', now())
                 ->with('plan')
                 ->first();
 
-            // Ebooks yang sudah dibeli/diakses
-            $data['purchasedEbooks'] = $user->orders()
-                ->where('status', 'completed')
-                ->with('items.ebook.categories')
-                ->get()
-                ->pluck('items')
-                ->flatten()
-                ->pluck('ebook')
-                ->unique('id');
-
-            // Reading statistics
             $data['readingStats'] = [
-                'total_books_read' => $user->readings->count(),
-                'total_pages_read' => $user->readings->sum('last_page'),
-                'average_progress' => $user->readings->avg('progress_percentage'),
+                'total_books_read' => $user->readings->where('is_completed', true)->count(),
                 'currently_reading' => $user->readings()
+                    ->where('progress_percentage', '>', 0)
                     ->where('progress_percentage', '<', 100)
                     ->with('ebook')
                     ->latest('last_read_at')
-                    ->get()
+                    ->get(),
             ];
 
-            // Creator data jika user adalah creator
             if ($user->isCreator()) {
                 $data['createdEbooks'] = $user->createdEbooks()->with('categories')->get();
                 $data['creatorBlogs'] = $user->blogs()->where('status', true)->get();
             }
         }
+
+        // 3. Ambil semua kota untuk dropdown filter (selalu diambil)
+        $cities = City::orderBy('name')->get();
+
+        // 4. Kompilasi semua data ke dalam array
+        $data = [
+            'user' => $user,
+            'allEbooks' => $allEbooks,
+            'cities' => $cities,
+            'ordersCount' => $user->orders->count(),
+            'wishlistCount' => $user->savedBooks->count(),
+            'wishlistItems' => $user->savedBooks,
+            'orders' => $user->orders()->latest()->get(),
+
+            // Ini untuk progress di tab My Library (tetap seperti ini)
+            'userReadings' => $user->readings()->pluck('progress_percentage', 'ebook_id'),
+
+            // TAMBAHKAN BARIS INI: Variabel baru untuk tabel Reading History
+            'readingHistory' => $user->readings()->with('ebook.creator')->latest('last_read_at')->get(),
+
+            'userRatings' => $user->ratings()->with('ebook')->latest()->get(),
+            'createdEbooks' => $user->createdEbooks()->with('categories')->get(),
+        ];
 
         return $data;
     }

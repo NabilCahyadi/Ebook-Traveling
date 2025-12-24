@@ -639,7 +639,11 @@ $collections = collect();
                 <div class="{{ $colClass }}">
                     <div class="banner-img wow animate__animated animate__fadeInUp" data-wow-delay="{{ $delay }}s">
                         <a href="{{ route('pricing') }}#pricing-plans">
-                            <img src="{{ asset($plan->image) }}" alt="{{ $plan->name }}" />
+                            @if(!empty($plan->cover_image))
+                            <img src="{{ Storage::url($plan->cover_image) }}" alt="{{ $plan->name }}">
+                            @else
+                            <img src="{{ asset('/images/banner-subs-1.webp') }}" alt="{{ $plan->name }}">
+                            @endif
                         </a>
                     </div>
                 </div>
@@ -833,145 +837,145 @@ $collections = collect();
         </div>
     </section>
     @endif
-<script>
-    // Scroll functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        const scrollWrapper = document.querySelector('.scroll-wrapper');
-        const scrollLeftBtn = document.querySelector('.scroll-left');
-        const scrollRightBtn = document.querySelector('.scroll-right');
-        const scrollItems = document.querySelectorAll('.scroll-item');
+    <script>
+        // Scroll functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const scrollWrapper = document.querySelector('.scroll-wrapper');
+            const scrollLeftBtn = document.querySelector('.scroll-left');
+            const scrollRightBtn = document.querySelector('.scroll-right');
+            const scrollItems = document.querySelectorAll('.scroll-item');
 
-        if (!scrollWrapper || !scrollLeftBtn || !scrollRightBtn) return;
+            if (!scrollWrapper || !scrollLeftBtn || !scrollRightBtn) return;
 
-        const itemWidth = scrollItems[0].offsetWidth + 20; // width + margin
-        const visibleItems = 5; // Number of items visible at once
-        const totalItems = scrollItems.length;
-        let currentPosition = 0;
-        const maxPosition = Math.max(0, totalItems - visibleItems);
+            const itemWidth = scrollItems[0].offsetWidth + 20; // width + margin
+            const visibleItems = 5; // Number of items visible at once
+            const totalItems = scrollItems.length;
+            let currentPosition = 0;
+            const maxPosition = Math.max(0, totalItems - visibleItems);
 
-        // Update button states
-        function updateButtonStates() {
-            scrollLeftBtn.disabled = currentPosition === 0;
-            scrollRightBtn.disabled = currentPosition >= maxPosition;
-        }
-
-        // Scroll to position
-        function scrollToPosition(position) {
-            currentPosition = Math.max(0, Math.min(position, maxPosition));
-            const translateX = -currentPosition * itemWidth;
-            scrollWrapper.style.transform = `translateX(${translateX}px)`;
-            updateButtonStates();
-        }
-
-        // Event listeners
-        scrollLeftBtn.addEventListener('click', function() {
-            if (currentPosition > 0) {
-                scrollToPosition(currentPosition - 1);
-            }
-        });
-
-        scrollRightBtn.addEventListener('click', function() {
-            if (currentPosition < maxPosition) {
-                scrollToPosition(currentPosition + 1);
-            }
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', function() {
-            // Recalculate on resize
-            const newItemWidth = scrollItems[0].offsetWidth + 20;
-            itemWidth = newItemWidth;
-            scrollToPosition(currentPosition);
-        });
-
-        // Initialize
-        updateButtonStates();
-    });
-</script>
-<style>
-    /* style untuk banner */
-    /* CSS untuk menyembunyikan konten slider di awal */
-    .hero-slider-1 .slider-content {
-        opacity: 0;
-        transition: opacity 0.8s ease-in-out;
-    }
-
-    /* CSS untuk menampilkan konten setelah JS dipicu */
-    .hero-slider-1 .content-loaded {
-        opacity: 1;
-    }
-</style>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const sliderWrapper = document.querySelector('.hero-slider-1');
-        const sliderContents = document.querySelectorAll('.hero-slider-1 .slider-content');
-
-        // 1. Hapus kelas penyembunyi sementara
-        if (sliderWrapper) {
-            // Hapus temp-hidden agar slider library bisa menata semua slide
-            sliderWrapper.classList.remove('temp-hidden');
-            setTimeout(() => {
-                sliderContents.forEach(content => {
-                    content.classList.add('content-loaded');
-                });
-            }, 0);
-        }
-    });
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const sections = document.querySelectorAll('.product-tabs');
-
-        sections.forEach(section => {
-            const scrollContainer = section.querySelector('.products-scroll-container');
-            const scrollLeftBtn = section.querySelector('.scroll-left');
-            const scrollRightBtn = section.querySelector('.scroll-right');
-
-            if (!scrollContainer || !scrollLeftBtn || !scrollRightBtn) {
-                return;
+            // Update button states
+            function updateButtonStates() {
+                scrollLeftBtn.disabled = currentPosition === 0;
+                scrollRightBtn.disabled = currentPosition >= maxPosition;
             }
 
-            // Fungsi untuk memperbarui status tombol (enable/disable)
-            const updateButtonStates = () => {
-                // Nonaktifkan tombol kiri jika di posisi paling kiri
-                if (scrollContainer.scrollLeft <= 0) {
-                    scrollLeftBtn.disabled = true;
-                } else {
-                    scrollLeftBtn.disabled = false;
+            // Scroll to position
+            function scrollToPosition(position) {
+                currentPosition = Math.max(0, Math.min(position, maxPosition));
+                const translateX = -currentPosition * itemWidth;
+                scrollWrapper.style.transform = `translateX(${translateX}px)`;
+                updateButtonStates();
+            }
+
+            // Event listeners
+            scrollLeftBtn.addEventListener('click', function() {
+                if (currentPosition > 0) {
+                    scrollToPosition(currentPosition - 1);
                 }
-
-                // Nonaktifkan tombol kanan jika di posisi paling kanan
-                // scrollWidth adalah total lebar konten, clientWidth adalah lebar yang terlihat
-                if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth - scrollContainer.clientWidth) {
-                    scrollRightBtn.disabled = true;
-                } else {
-                    scrollRightBtn.disabled = false;
-                }
-            };
-
-            // Event listener untuk tombol scroll
-            scrollRightBtn.addEventListener('click', () => {
-                // Geser sejauh lebar container yang terlihat
-                scrollContainer.scrollBy({
-                    left: scrollContainer.clientWidth,
-                    behavior: 'smooth'
-                });
             });
 
-            scrollLeftBtn.addEventListener('click', () => {
-                scrollContainer.scrollBy({
-                    left: -scrollContainer.clientWidth,
-                    behavior: 'smooth'
-                });
+            scrollRightBtn.addEventListener('click', function() {
+                if (currentPosition < maxPosition) {
+                    scrollToPosition(currentPosition + 1);
+                }
             });
 
-            // Event listener untuk memperbarui tombol saat konten di-scroll
-            scrollContainer.addEventListener('scroll', updateButtonStates);
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                // Recalculate on resize
+                const newItemWidth = scrollItems[0].offsetWidth + 20;
+                itemWidth = newItemWidth;
+                scrollToPosition(currentPosition);
+            });
 
-            // Panggil sekali saat halaman dimuat untuk set status awal
+            // Initialize
             updateButtonStates();
         });
-    });
-</script>
-@endsection
+    </script>
+    <style>
+        /* style untuk banner */
+        /* CSS untuk menyembunyikan konten slider di awal */
+        .hero-slider-1 .slider-content {
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        /* CSS untuk menampilkan konten setelah JS dipicu */
+        .hero-slider-1 .content-loaded {
+            opacity: 1;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sliderWrapper = document.querySelector('.hero-slider-1');
+            const sliderContents = document.querySelectorAll('.hero-slider-1 .slider-content');
+
+            // 1. Hapus kelas penyembunyi sementara
+            if (sliderWrapper) {
+                // Hapus temp-hidden agar slider library bisa menata semua slide
+                sliderWrapper.classList.remove('temp-hidden');
+                setTimeout(() => {
+                    sliderContents.forEach(content => {
+                        content.classList.add('content-loaded');
+                    });
+                }, 0);
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('.product-tabs');
+
+            sections.forEach(section => {
+                const scrollContainer = section.querySelector('.products-scroll-container');
+                const scrollLeftBtn = section.querySelector('.scroll-left');
+                const scrollRightBtn = section.querySelector('.scroll-right');
+
+                if (!scrollContainer || !scrollLeftBtn || !scrollRightBtn) {
+                    return;
+                }
+
+                // Fungsi untuk memperbarui status tombol (enable/disable)
+                const updateButtonStates = () => {
+                    // Nonaktifkan tombol kiri jika di posisi paling kiri
+                    if (scrollContainer.scrollLeft <= 0) {
+                        scrollLeftBtn.disabled = true;
+                    } else {
+                        scrollLeftBtn.disabled = false;
+                    }
+
+                    // Nonaktifkan tombol kanan jika di posisi paling kanan
+                    // scrollWidth adalah total lebar konten, clientWidth adalah lebar yang terlihat
+                    if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth - scrollContainer.clientWidth) {
+                        scrollRightBtn.disabled = true;
+                    } else {
+                        scrollRightBtn.disabled = false;
+                    }
+                };
+
+                // Event listener untuk tombol scroll
+                scrollRightBtn.addEventListener('click', () => {
+                    // Geser sejauh lebar container yang terlihat
+                    scrollContainer.scrollBy({
+                        left: scrollContainer.clientWidth,
+                        behavior: 'smooth'
+                    });
+                });
+
+                scrollLeftBtn.addEventListener('click', () => {
+                    scrollContainer.scrollBy({
+                        left: -scrollContainer.clientWidth,
+                        behavior: 'smooth'
+                    });
+                });
+
+                // Event listener untuk memperbarui tombol saat konten di-scroll
+                scrollContainer.addEventListener('scroll', updateButtonStates);
+
+                // Panggil sekali saat halaman dimuat untuk set status awal
+                updateButtonStates();
+            });
+        });
+    </script>
+    @endsection

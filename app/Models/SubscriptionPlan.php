@@ -17,6 +17,7 @@ class SubscriptionPlan extends Model
     protected $fillable = [
         'name',
         'slug',
+        'mayar_payment_link', 
         'description',
         'cover_image',
         'price',
