@@ -40,4 +40,13 @@ class PricingController extends Controller
 
         return view('pricing', compact('bannerData', 'benefits', 'groupedSubscriptionPlans', 'faqs'));
     }
+
+    public function about()
+    {
+        // Hanya ambil data benefits yang diperlukan
+        $benefits = $this->pricingBenefitService->getActiveBenefitsForDisplay();
+
+        // Kirim ke view about-us
+        return view('about-us', compact('benefits'));
+    }
 }

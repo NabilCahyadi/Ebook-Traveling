@@ -323,27 +323,6 @@
                 <div class="col-md-3">
                     <div class="dashboard-menu">
                         <ul class="nav flex-column" role="tablist">
-                            <!-- ========== DASHBOARD (SEMUA USER) ========== -->
-                            <li class="nav-item">
-                                <a class="nav-link <?php echo e(request('tab', 'dashboard') == 'dashboard' ? 'active' : ''); ?>"
-                                    href="<?php echo e(route('page-account')); ?>?tab=dashboard">
-                                    <i class="fi-rs-settings-sliders mr-10"></i>Dashboard Member
-                                </a>
-                            </li>
-
-                            <!-- ========== WISHLIST (SEMUA USER, jika punya permission) ========== -->
-                            <?php if(hasPermission('access_wishlist')): ?>
-                            <li class="nav-item">
-                                <a class="nav-link <?php echo e(request('tab') == 'wishlist' ? 'active' : ''); ?>"
-                                    href="<?php echo e(route('page-account')); ?>?tab=wishlist">
-                                    <i class="fi fi-rs-heart mr-10"></i>Wishlist
-                                    <?php if($wishlistCount > 0): ?>
-                                    <span class="badge bg-primary ms-1"><?php echo e($wishlistCount); ?></span>
-                                    <?php endif; ?>
-                                </a>
-                            </li>
-                            <?php endif; ?>
-
                             <!-- ========== MENU KHUSUS PREMIUM MEMBER ========== -->
                             <?php if(auth()->user()->hasActiveSubscription()): ?>
                             <li class="nav-item">
@@ -379,6 +358,23 @@
                             <?php endif; ?>
 
                             <!-- ========== MENU UNTUK SEMUA USER (DILUAR IF-ELSE) ========== -->
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo e(request('tab', 'dashboard') == 'dashboard' ? 'active' : ''); ?>"
+                                    href="<?php echo e(route('page-account')); ?>?tab=dashboard">
+                                    <i class="fi-rs-settings-sliders mr-10"></i>Dashboard Member
+                                </a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo e(request('tab') == 'wishlist' ? 'active' : ''); ?>"
+                                    href="<?php echo e(route('page-account')); ?>?tab=wishlist">
+                                    <i class="fi fi-rs-heart mr-10"></i>Wishlist
+                                    <?php if($wishlistCount > 0): ?>
+                                    <span class="badge bg-primary ms-1"><?php echo e($wishlistCount); ?></span>
+                                    <?php endif; ?>
+                                </a>
+                            </li>
+
                             <li class="nav-item">
                                 <a class="nav-link <?php echo e(request('tab') == 'creator' ? 'active' : ''); ?>"
                                     href="<?php echo e(route('page-account')); ?>?tab=creator">

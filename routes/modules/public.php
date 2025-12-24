@@ -13,6 +13,7 @@ use App\Http\Controllers\ReaderController;
 use App\Http\Controllers\FrontendCategoryController;
 use App\Http\Controllers\PricingController;
 use App\Http\Controllers\PromoController;
+use App\Http\Controllers\AboutController;
 use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\PromoDetailController;
 
@@ -49,11 +50,6 @@ Route::get('/contact', function () {
 Route::get('/help-center', function () {
     return view('help-center');
 })->name('help-center');
-
-// About Us
-Route::get('/about-us', function () {
-    return view('about-us');
-})->name('about-us');
 
 // Terms & Conditions
 Route::get('/terms-conditions', function () {
@@ -104,7 +100,7 @@ Route::get('/pricing', [PricingController::class, 'index'])->name('pricing');
 Route::get('/promo', [PromoController::class, 'index'])->name('promo');
 Route::get('/promo/{slug}', [PromoController::class, 'showDetail'])->name('promo.detail.show');
 Route::post('/reader/update-progress', [ReaderController::class, 'updateProgress'])->name('reader.updateProgress');
-
+Route::get('/about-us', [AboutController::class, 'index'])->name('about-us');
 
 // Bungkus dengan prefix 'api'
 Route::prefix('api')->group(function () {

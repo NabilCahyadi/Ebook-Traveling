@@ -16,9 +16,12 @@ class PricingBenefitRepository implements PricingBenefitRepositoryInterface
         $this->model = $model;
     }
 
+    // untuk "Why Choose Our MeatMap Guides ? di HEADER"
     public function getAllActiveBenefits()
     {
-        return $this->model->where('status', 'active')->orderBy('sort_order', 'asc')->get();
+        return PricingBenefit::where('status', 'active')
+            ->orderBy('sort_order', 'asc')
+            ->get();
     }
 
     public function getAll()

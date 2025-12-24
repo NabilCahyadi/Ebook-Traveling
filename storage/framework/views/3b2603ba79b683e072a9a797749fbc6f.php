@@ -461,33 +461,6 @@
         </div>
     </section>
     <!-- end banner pricing -->
-    
-    <section class="benefits-section py-5">
-        <div class="container text-center">
-            <h3 class="mb-40">Why Choose Our MeatMap Guides ?</h3>
-
-            
-            <?php if($benefits && $benefits->isNotEmpty()): ?>
-            <div class="row justify-content-center">
-                
-                <?php $__currentLoopData = $benefits; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $benefit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <div class="col-md-4 mb-4">
-                    <div class="benefit-card p-4 rounded shadow-sm">
-                        <div class="icon-wrapper mb-3">
-                            <i class="<?php echo e($benefit->icon); ?>"></i>
-                        </div>
-                        <h3 class="h5 mb-2"><?php echo e($benefit->title); ?></h3>
-                        <p class="text-muted"><?php echo e($benefit->description); ?></p>
-                    </div>
-                </div>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-            </div>
-            <?php else: ?>
-            <p>Benefits information is currently unavailable.</p>
-            <?php endif; ?>
-        </div>
-    </section>
-    <!-- end why choose our -->
     <section id="pricing-plans" class="benefits-section py-5">
         <div class="container text-center">
             <h3>Our Flexible Subscription Plans</h3>
@@ -658,7 +631,7 @@
     async function subscribeWithMayar(planId, buttonElement) {
         const originalText = buttonElement.innerText;
         buttonElement.disabled = true;
-        buttonElement.innerText = 'Processing...';
+        buttonElement.innerText = 'Memproses...';
 
         try {
             const response = await fetch('/api/subscription/create', {

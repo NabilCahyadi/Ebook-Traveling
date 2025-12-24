@@ -11,7 +11,10 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            /* object-position: 10% center;  */
+        }
+
+        .row .col{
+            margin: 1rem 2rem 1rem 2rem !important;
         }
     </style>
     <section class="section-padding footer-mid">
@@ -51,16 +54,6 @@
                         <li><a href="{{route('faq')}}">FAQs</a></li>
                     </ul>
                 </div>
-                <!-- <div class="footer-link-widget widget-install-app col">
-                    <h4 class="widget-title">Install App</h4>
-                    <p class="wow fadeIn animated">From App Store or Google Play</p>
-                    <div class="download-app">
-                        <a href="#" class="hover-up mb-sm-2 mb-lg-0"><img class="active" src="assets/imgs/theme/app-store.jpg" alt="" /></a>
-                        <a href="#" class="hover-up mb-sm-2"><img src="assets/imgs/theme/google-play.jpg" alt="" /></a>
-                    </div>
-                    <p class="mb-20">Secured Payment Gateways</p>
-                    <img class="wow fadeIn animated" src="assets/imgs/theme/payment-method.png" alt="" />
-                </div> -->
             </div>
         </div>
     </section>
@@ -72,16 +65,6 @@
             <div class="col-xl-6 col-lg-6 col-md-6">
                 <p class="font-sm mb-0">&copy; <span id="year"></span> <strong class="fw-bold">MeatMap</strong> — Vacation Guide E-Book<br /><!--All rights reserved --> </p> 
             </div>
-            <!-- <div class="col-xl-4 col-lg-6 text-center d-none d-xl-block">
-                <div class="hotline d-lg-inline-flex mr-30">
-                    <img src="assets-nest/nest-fe/imgs/theme/icons/phone-call.svg" alt="hotline" />
-                    <p>1900 - 6666<span>Working 8:00 - 22:00</span></p>
-                </div>
-                <div class="hotline d-lg-inline-flex">
-                    <img src="assets-nest/nest-fe/imgs/theme/icons/phone-call.svg" alt="hotline" />
-                    <p>1900 - 8888<span>24/7 Support Center</span></p>
-                </div>
-            </div> -->
             <div class="col-xl-6 col-lg-6 col-md-6 text-end d-none d-md-block">
                 <div class="mobile-social-icon">
                     <h6>Follow Us</h6>
@@ -90,7 +73,6 @@
                     <a href="#"><i class="bi bi-tiktok"></i></a>
                     <a href="#"><i class="bi bi-youtube"></i></a>
                 </div>
-                <!-- <p class="font-sm">Up to 15% discount on your first subscribe</p> -->
             </div>
         </div>
     </div>

@@ -461,33 +461,6 @@
         </div>
     </section>
     <!-- end banner pricing -->
-    {{-- resources/views/pricing/index.blade.php --}}
-    <section class="benefits-section py-5">
-        <div class="container text-center">
-            <h3 class="mb-40">Why Choose Our MeatMap Guides ?</h3>
-
-            {{-- Periksa apakah ada data benefits --}}
-            @if($benefits && $benefits->isNotEmpty())
-            <div class="row justify-content-center">
-                {{-- Loop melalui setiap benefit --}}
-                @foreach($benefits as $benefit)
-                <div class="col-md-4 mb-4">
-                    <div class="benefit-card p-4 rounded shadow-sm">
-                        <div class="icon-wrapper mb-3">
-                            <i class="{{ $benefit->icon }}"></i>
-                        </div>
-                        <h3 class="h5 mb-2">{{ $benefit->title }}</h3>
-                        <p class="text-muted">{{ $benefit->description }}</p>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-            @else
-            <p>Benefits information is currently unavailable.</p>
-            @endif
-        </div>
-    </section>
-    <!-- end why choose our -->
     <section id="pricing-plans" class="benefits-section py-5">
         <div class="container text-center">
             <h3>Our Flexible Subscription Plans</h3>

@@ -19,11 +19,19 @@ class FrontendCategoryController extends Controller
      */
     public function show($slug)
     {
-        // Gunakan service untuk mendapatkan data kategori berdasarkan slug
+        // Ambil data kategori
         $category = $this->categoryService->getCategoryBySlug($slug);
 
-        // Pastikan kita juga memuat relasi ebooks untuk ditampilkan
-        $category->load(['ebooks.creator', 'ebooks.city']); 
+        // --- SOLUSI SEMENTARA: Query Manual untuk Menghindari Error ---
+        $ebooks = \App\Models\Ebook::select('ebooks.*')
+            ->join('ebook_categories', 'ebooks.id', '=', 'ebook_categories.ebook_id')
+            ->where('ebook_categories.category_id', $category->id)
+            ->whereNull('ebooks.deleted_at')
+            ->with(['creator', 'city'])
+            ->get();
+
+        // Lampirkan hasil query manual ke objek kategori
+        $category->setRelation('ebooks', $ebooks);
 
         return view('components.categories.show', compact('category'));
     }
