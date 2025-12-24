@@ -12,7 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('ebooks', function (Blueprint $table) {
-            // Tambah foreign key ke users (tidak perlu drop karena tidak ada)
+            // Drop existing foreign key jika ada
+            try {
+                $table->dropForeign(['creator_id']);
+            } catch (\Exception $e) {
+                // Ignore jika tidak ada
+            }
+        });
+
+        Schema::table('ebooks', function (Blueprint $table) {
+            // Tambah foreign key ke users
             $table->foreign('creator_id')
                   ->references('id')
                   ->on('users')
