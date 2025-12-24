@@ -226,16 +226,6 @@
             </a>
             <ul class="menu-sub">
                 <!-- Admin Management (Only for Superadmin) -->
-                
-                
-                <!-- TEMPORARY DEBUG - REMOVE LATER -->
-                <li class="menu-item">
-                    <a href="#" class="menu-link">
-                        <small>DEBUG: Type = <?php echo e(auth('admin')->user()->type ?? 'NULL'); ?></small>
-                    </a>
-                </li>
-                <!-- END DEBUG -->
-                
                 <?php if(auth('admin')->check() && auth('admin')->user()->type === 'superadmin'): ?>
                 <li class="menu-item <?php echo e(Request::is('admin/admins*') ? 'active' : ''); ?>">
                     <a href="<?php echo e(route('admin.admins.index')); ?>" class="menu-link">
