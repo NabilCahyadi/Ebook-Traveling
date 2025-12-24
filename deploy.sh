@@ -27,14 +27,9 @@ $PHP_BIN artisan cache:clear
 $PHP_BIN artisan view:clear
 $PHP_BIN artisan route:clear
 
-# Jalankan migrate
-echo "🗄️  Running database migrations..."
-$PHP_BIN artisan migrate --force
-
-# Run seeders (only if needed for updates)
-echo "🌱 Running database seeders..."
-$PHP_BIN artisan db:seed --class=AdminSeeder --force
-$PHP_BIN artisan db:seed --class=DefaultAdminSeeder --force
+# Jalankan migrate:fresh dengan semua seeder
+echo "🗄️  Running fresh migrations with seeders..."
+$PHP_BIN artisan migrate:fresh --seed --force
 
 
 # Create storage symlink (PENTING untuk akses file dari public)
