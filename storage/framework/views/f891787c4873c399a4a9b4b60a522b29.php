@@ -9,12 +9,12 @@
                     <div class="d-flex align-items-center">
                         <div class="avatar avatar-xl me-4">
                             <span class="avatar-initial rounded-circle bg-label-light">
-                                <?php echo e(substr(auth()->user()->name ?? 'A', 0, 1)); ?>
+                                <?php echo e(substr(auth('admin')->user()->name ?? 'A', 0, 1)); ?>
 
                             </span>
                         </div>
                         <div>
-                            <h4 class="text-white mb-1"><?php echo e(__('admin.dashboard.welcome', ['name' => auth()->user()->name ?? 'Admin'])); ?></h4>
+                            <h4 class="text-white mb-1"><?php echo e(__('admin.dashboard.welcome', ['name' => auth('admin')->user()->name ?? 'Admin'])); ?></h4>
                             <p class="text-white mb-0 opacity-75"><?php echo e(__('admin.dashboard.subtitle')); ?></p>
                         </div>
                     </div>

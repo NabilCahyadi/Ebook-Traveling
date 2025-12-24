@@ -249,13 +249,15 @@
                 <div data-i18n="Website Management">{{ __('admin.menu.website_setting') }}</div>
             </a>
             <ul class="menu-sub">
-                <!-- Admin Management -->
+                <!-- Admin Management (Only for Superadmin) -->
+                @if(auth('admin')->check() && auth('admin')->user()->type === 'superadmin')
                 <li class="menu-item {{ Request::is('admin/admins*') ? 'active' : '' }}">
                     <a href="{{ route('admin.admins.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-user-shield"></i>
                         <div data-i18n="Admin Management">Manajemen Admin</div>
                     </a>
                 </li>
+                @endif
                 <!-- Landing Page Content -->
                 <li class="menu-item {{ Request::is('admin/landing-page-content*') ? 'active' : '' }}">
                     <a href="{{ route('admin.landing-page-content.index') }}" class="menu-link">

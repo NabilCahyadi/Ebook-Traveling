@@ -219,12 +219,31 @@
 
         <!-- Website Management -->
         <li
-            class="menu-item <?php echo e(Request::is('admin/collection-order*') || Request::is('admin/banners*') || Request::is('admin/collections*') || Request::is('admin/landing-page-content*') || Request::is('admin/pricing-benefits*') ? 'active open' : ''); ?>">
+            class="menu-item <?php echo e(Request::is('admin/collection-order*') || Request::is('admin/banners*') || Request::is('admin/collections*') || Request::is('admin/landing-page-content*') || Request::is('admin/pricing-benefits*') || Request::is('admin/admins*') ? 'active open' : ''); ?>">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-settings"></i>
                 <div data-i18n="Website Management"><?php echo e(__('admin.menu.website_setting')); ?></div>
             </a>
             <ul class="menu-sub">
+                <!-- Admin Management (Only for Superadmin) -->
+                
+                
+                <!-- TEMPORARY DEBUG - REMOVE LATER -->
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <small>DEBUG: Type = <?php echo e(auth('admin')->user()->type ?? 'NULL'); ?></small>
+                    </a>
+                </li>
+                <!-- END DEBUG -->
+                
+                <?php if(auth('admin')->check() && auth('admin')->user()->type === 'superadmin'): ?>
+                <li class="menu-item <?php echo e(Request::is('admin/admins*') ? 'active' : ''); ?>">
+                    <a href="<?php echo e(route('admin.admins.index')); ?>" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-user-shield"></i>
+                        <div data-i18n="Admin Management">Manajemen Admin</div>
+                    </a>
+                </li>
+                <?php endif; ?>
                 <!-- Landing Page Content -->
                 <li class="menu-item <?php echo e(Request::is('admin/landing-page-content*') ? 'active' : ''); ?>">
                     <a href="<?php echo e(route('admin.landing-page-content.index')); ?>" class="menu-link">

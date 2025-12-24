@@ -14,10 +14,14 @@ class AuthActivityListener
     public function handleLogin(Login $event)
     {
         if ($event->user) {
+            $isAdmin = $event->guard === 'admin' || $event->user instanceof \App\Models\Admin;
+            
             ActionLog::create([
-                'user_id' => $event->user->id,
+                'user_id' => $isAdmin ? null : $event->user->id,
+                'admin_id' => $isAdmin ? $event->user->id : null,
+                'user_type' => $isAdmin ? 'admin' : 'user',
                 'action_type' => 'login',
-                'table_name' => 'users',
+                'table_name' => $isAdmin ? 'admins' : 'users',
                 'record_id' => $event->user->id,
                 'ip_address' => request()->ip(),
                 'user_agent' => request()->userAgent(),
@@ -33,10 +37,14 @@ class AuthActivityListener
     public function handleLogout(Logout $event)
     {
         if ($event->user) {
+            $isAdmin = $event->guard === 'admin' || $event->user instanceof \App\Models\Admin;
+            
             ActionLog::create([
-                'user_id' => $event->user->id,
+                'user_id' => $isAdmin ? null : $event->user->id,
+                'admin_id' => $isAdmin ? $event->user->id : null,
+                'user_type' => $isAdmin ? 'admin' : 'user',
                 'action_type' => 'logout',
-                'table_name' => 'users',
+                'table_name' => $isAdmin ? 'admins' : 'users',
                 'record_id' => $event->user->id,
                 'ip_address' => request()->ip(),
                 'user_agent' => request()->userAgent(),

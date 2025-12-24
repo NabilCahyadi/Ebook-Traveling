@@ -33,10 +33,9 @@ $PHP_BIN artisan migrate --force
 
 # Run seeders (only if needed for updates)
 echo "🌱 Running database seeders..."
-$PHP_BIN artisan db:seed --class=RoleSeeder --force
-$PHP_BIN artisan db:seed --class=PermissionSeeder --force
-$PHP_BIN artisan db:seed --class=CreatorSeeder --force
-$PHP_BIN artisan db:seed --class=EbookSeeder --force
+$PHP_BIN artisan db:seed --class=AdminSeeder --force
+$PHP_BIN artisan db:seed --class=DefaultAdminSeeder --force
+
 
 # Create storage symlink (PENTING untuk akses file dari public)
 echo "🔗 Creating storage symbolic link..."
