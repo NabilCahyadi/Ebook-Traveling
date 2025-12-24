@@ -217,14 +217,10 @@
                 <div class="col-xl-3 col-lg-4">
                     <div class="header-info">
                         <ul>
-                            @if(hasPermission('access_about_us'))
+                            
                             <li><a href="{{route('about-us')}}">About Us</a></li>
-                            @endif
-                            <!-- <li><a href="page-account.html">Promo</a></li> -->
-                            @if(hasPermission('access_contact_us'))
                             <li><a href="{{route('contact')}}">Customer Service</a></li>
-                            @endif
-                            <li><a href="#">E-book</a></li>
+                            <!-- <li><a href="#">E-book</a></li> -->
                         </ul>
                     </div>
                 </div>
@@ -368,10 +364,10 @@
                                 <div class="cart-dropdown-wrap cart-dropdown-hm2 account-dropdown">
                                     <ul>
                                         <li>
-                                            <a href="{{ route('page-account') }}"><i class="fi fi-rs-user mr-10"></i>Account</a>
+                                            <a href="{{ route('page-account') }}?tab=account-detail"><i class="fi fi-rs-user mr-10"></i>Account</a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('page-account') }}?tab=orders"><i class="fi fi-rs-label mr-10"></i>Wishlist</a>
+                                            <a href="{{ route('page-account') }}?tab=wishlist"><i class="fi fi-rs-label mr-10"></i>Wishlist</a>
                                         </li>
                                         <li>
                                             <a href="{{ route('page-account') }}?tab=creator"><i class="fi-rs-edit mr-10"></i>Creator</a>

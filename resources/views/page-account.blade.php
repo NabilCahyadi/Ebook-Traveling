@@ -325,27 +325,6 @@
                 <div class="col-md-3">
                     <div class="dashboard-menu">
                         <ul class="nav flex-column" role="tablist">
-                            <!-- ========== DASHBOARD (SEMUA USER) ========== -->
-                            <li class="nav-item">
-                                <a class="nav-link {{ request('tab', 'dashboard') == 'dashboard' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=dashboard">
-                                    <i class="fi-rs-settings-sliders mr-10"></i>Dashboard Member
-                                </a>
-                            </li>
-
-                            <!-- ========== WISHLIST (SEMUA USER, jika punya permission) ========== -->
-                            @if(hasPermission('access_wishlist'))
-                            <li class="nav-item">
-                                <a class="nav-link {{ request('tab') == 'wishlist' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=wishlist">
-                                    <i class="fi fi-rs-heart mr-10"></i>Wishlist
-                                    @if($wishlistCount > 0)
-                                    <span class="badge bg-primary ms-1">{{ $wishlistCount }}</span>
-                                    @endif
-                                </a>
-                            </li>
-                            @endif
-
                             <!-- ========== MENU KHUSUS PREMIUM MEMBER ========== -->
                             @if(auth()->user()->hasActiveSubscription())
                             <li class="nav-item">
@@ -381,6 +360,23 @@
                             @endif
 
                             <!-- ========== MENU UNTUK SEMUA USER (DILUAR IF-ELSE) ========== -->
+                            <li class="nav-item">
+                                <a class="nav-link {{ request('tab', 'dashboard') == 'dashboard' ? 'active' : '' }}"
+                                    href="{{ route('page-account') }}?tab=dashboard">
+                                    <i class="fi-rs-settings-sliders mr-10"></i>Dashboard Member
+                                </a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a class="nav-link {{ request('tab') == 'wishlist' ? 'active' : '' }}"
+                                    href="{{ route('page-account') }}?tab=wishlist">
+                                    <i class="fi fi-rs-heart mr-10"></i>Wishlist
+                                    @if($wishlistCount > 0)
+                                    <span class="badge bg-primary ms-1">{{ $wishlistCount }}</span>
+                                    @endif
+                                </a>
+                            </li>
+
                             <li class="nav-item">
                                 <a class="nav-link {{ request('tab') == 'creator' ? 'active' : '' }}"
                                     href="{{ route('page-account') }}?tab=creator">

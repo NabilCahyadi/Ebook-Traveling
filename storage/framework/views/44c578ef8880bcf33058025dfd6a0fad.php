@@ -1,7 +1,6 @@
-@extends('layouts_lp.app')
-@section('title', 'About Us - MeatMap')
+<?php $__env->startSection('title', 'About Us - MeatMap'); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <style>
     .featured-card img {
         width: 60px;
@@ -55,25 +54,25 @@
                 <section class="benefits-section py-5">
                     <div class="container text-center">
                         <h3 class="mb-40">Why Choose Our MeatMap Guides ?</h3>
-                        {{-- Periksa apakah ada data benefits --}}
-                        @if($benefits && $benefits->isNotEmpty())
+                        
+                        <?php if($benefits && $benefits->isNotEmpty()): ?>
                         <div class="row justify-content-center">
-                            {{-- Loop melalui setiap benefit --}}
-                            @foreach($benefits as $benefit)
+                            
+                            <?php $__currentLoopData = $benefits; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $benefit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <div class="col-md-4 mb-4">
                                 <div class="benefit-card p-4 rounded shadow-sm">
                                     <div class="icon-wrapper mb-3">
-                                        <i class="{{ $benefit->icon }}"></i>
+                                        <i class="<?php echo e($benefit->icon); ?>"></i>
                                     </div>
-                                    <h3 class="h5 mb-2">{{ $benefit->title }}</h3>
-                                    <p class="text-muted">{{ $benefit->description }}</p>
+                                    <h3 class="h5 mb-2"><?php echo e($benefit->title); ?></h3>
+                                    <p class="text-muted"><?php echo e($benefit->description); ?></p>
                                 </div>
                             </div>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
-                        @else
+                        <?php else: ?>
                         <p>Benefits information is currently unavailable.</p>
-                        @endif
+                        <?php endif; ?>
                     </div>
                 </section>
                 <section class="row align-items-center mb-50">
@@ -107,4 +106,5 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts_lp.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\PROJEK PROJEK\Ebook-Traveling\resources\views/about-us.blade.php ENDPATH**/ ?>
