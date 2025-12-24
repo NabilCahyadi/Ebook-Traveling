@@ -11,6 +11,19 @@ use Illuminate\Validation\Rule;
 class AdminController extends Controller
 {
     /**
+     * Constructor - Only superadmin can access this controller
+     */
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (auth('admin')->check() && auth('admin')->user()->type !== 'superadmin') {
+                abort(403, 'Hanya Super Admin yang dapat mengakses halaman ini.');
+            }
+            return $next($request);
+        });
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index(Request $request)

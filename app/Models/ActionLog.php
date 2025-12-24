@@ -37,6 +37,8 @@ class ActionLog extends Model
 
     protected $fillable = [
         'user_id',
+        'admin_id',
+        'user_type',
         'action_type',
         'table_name',
         'record_id',
@@ -54,6 +56,22 @@ class ActionLog extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the admin that performed the action.
+     */
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class, 'admin_id');
+    }
+
+    /**
+     * Get the actor (user or admin) that performed the action.
+     */
+    public function actor()
+    {
+        return $this->user_type === 'admin' ? $this->admin : $this->user;
     }
 
     /**

@@ -13,7 +13,7 @@ use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 */
 
 // User Authentication (Guest Only)
-Route::middleware('guest')->group(function () {
+Route::middleware('guest:web')->group(function () {
     // Login Routes
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login'])->name('login.post');
@@ -34,7 +34,7 @@ Route::middleware('guest')->group(function () {
 });
 
 // Admin Authentication (Guest Only)
-Route::prefix('admin')->name('admin.')->middleware('guest')->group(function () {
+Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AdminAuthController::class, 'login'])->name('login.post');
 
@@ -45,7 +45,7 @@ Route::prefix('admin')->name('admin.')->middleware('guest')->group(function () {
 
 // Logout Routes (Authenticated)
 Route::post('/logout', [LoginController::class, 'userLogout'])->name('user.logout')->middleware('auth');
-Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout')->middleware('auth');
+Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout')->middleware('auth:admin');
 
 // Dashboard Redirect (Auto-redirect based on user type)
 Route::get('/dashboard', function () {

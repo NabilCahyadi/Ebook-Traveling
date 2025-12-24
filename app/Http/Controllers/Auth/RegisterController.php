@@ -69,8 +69,10 @@ class RegisterController extends Controller
      */
     public function redirectToGoogleRegister()
     {
+        $callbackUrl = request()->getSchemeAndHttpHost() . '/register/google/callback';
+        
         return Socialite::driver('google')
-            ->redirectUrl(url('/register/google/callback'))
+            ->redirectUrl($callbackUrl)
             ->stateless()
             ->redirect();
     }
