@@ -11,16 +11,13 @@ use Illuminate\Validation\Rule;
 class AdminController extends Controller
 {
     /**
-     * Constructor - Only superadmin can access this controller
+     * Check if current admin is superadmin
      */
-    public function __construct()
+    private function checkSuperAdmin()
     {
-        $this->middleware(function ($request, $next) {
-            if (auth('admin')->check() && auth('admin')->user()->type !== 'superadmin') {
-                abort(403, 'Hanya Super Admin yang dapat mengakses halaman ini.');
-            }
-            return $next($request);
-        });
+        if (!auth('admin')->check() || auth('admin')->user()->type !== 'superadmin') {
+            abort(403, 'Hanya Super Admin yang dapat mengakses halaman ini.');
+        }
     }
 
     /**
@@ -28,6 +25,8 @@ class AdminController extends Controller
      */
     public function index(Request $request)
     {
+        $this->checkSuperAdmin();
+
         $search = $request->input('search');
         $type = $request->input('type');
 
@@ -53,6 +52,7 @@ class AdminController extends Controller
      */
     public function create()
     {
+        $this->checkSuperAdmin();
         return view('admin.admins.create');
     }
 
@@ -61,6 +61,7 @@ class AdminController extends Controller
      */
     public function store(Request $request)
     {
+        $this->checkSuperAdmin();
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:admins,email',
@@ -83,6 +84,7 @@ class AdminController extends Controller
      */
     public function show(string $id)
     {
+        $this->checkSuperAdmin();
         $admin = Admin::findOrFail($id);
         return view('admin.admins.show', compact('admin'));
     }
@@ -92,6 +94,7 @@ class AdminController extends Controller
      */
     public function edit(string $id)
     {
+        $this->checkSuperAdmin();
         $admin = Admin::findOrFail($id);
         return view('admin.admins.edit', compact('admin'));
     }
@@ -101,6 +104,7 @@ class AdminController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $this->checkSuperAdmin();
         $admin = Admin::findOrFail($id);
 
         $validated = $request->validate([
@@ -129,6 +133,8 @@ class AdminController extends Controller
      */
     public function destroy(string $id)
     {
+        $this->checkSuperAdmin();
+        
         $admin = Admin::findOrFail($id);
         
         // Prevent deleting yourself
