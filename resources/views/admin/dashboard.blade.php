@@ -15,8 +15,8 @@
                             </span>
                         </div>
                         <div>
-                            <h4 class="text-white mb-1">Welcome back, {{ auth()->user()->name ?? 'Admin' }}!</h4>
-                            <p class="text-white mb-0 opacity-75">Here's what's happening with your ebook store today.</p>
+                            <h4 class="text-white mb-1">{{ __('admin.dashboard.welcome', ['name' => auth()->user()->name ?? 'Admin']) }}</h4>
+                            <p class="text-white mb-0 opacity-75">{{ __('admin.dashboard.subtitle') }}</p>
                         </div>
                     </div>
                 </div>
@@ -50,8 +50,8 @@
                     </div>
                     <div class="card-info mt-4">
                         <h4 class="mb-1">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</h4>
-                        <p class="mb-0">Total Revenue</p>
-                        <small class="text-success"><i class="ti ti-trending-up"></i> From completed orders</small>
+                        <p class="mb-0">{{ __('admin.dashboard.total_revenue') }}</p>
+                        <small class="text-success"><i class="ti ti-trending-up"></i> {{ __('admin.dashboard.from_completed_orders') }}</small>
                     </div>
                 </div>
             </div>
@@ -81,11 +81,11 @@
                     </div>
                     <div class="card-info mt-4">
                         <h4 class="mb-1">{{ number_format($totalOrders) }}</h4>
-                        <p class="mb-0">Total Orders</p>
+                        <p class="mb-0">{{ __('admin.dashboard.total_orders') }}</p>
                         @if ($pendingOrders > 0)
-                            <small class="text-warning"><i class="ti ti-clock"></i> {{ $pendingOrders }} pending</small>
+                            <small class="text-warning"><i class="ti ti-clock"></i> {{ $pendingOrders }} {{ __('admin.dashboard.pending') }}</small>
                         @else
-                            <small class="text-muted">All orders processed</small>
+                            <small class="text-muted">{{ __('admin.dashboard.all_orders_processed') }}</small>
                         @endif
                     </div>
                 </div>
@@ -120,8 +120,8 @@
                     </div>
                     <div class="card-info mt-4">
                         <h4 class="mb-1">{{ number_format($activeSubscribers) }}</h4>
-                        <p class="mb-0">Active Subscribers</p>
-                        <small class="text-success"><i class="ti ti-check"></i> Premium members</small>
+                        <p class="mb-0">{{ __('admin.dashboard.active_subscribers') }}</p>
+                        <small class="text-success"><i class="ti ti-check"></i> {{ __('admin.dashboard.premium_members') }}</small>
                     </div>
                 </div>
             </div>
@@ -150,7 +150,7 @@
                     </div>
                     <div class="card-info mt-4">
                         <h4 class="mb-1">{{ number_format($pendingOrders) }}</h4>
-                        <p class="mb-0">Pending Orders</p>
+                        <p class="mb-0">{{ __('admin.dashboard.pending_orders') }}</p>
                         @if ($pendingOrders > 0)
                             @if (Route::has('admin.orders.index'))
                                 <a href="{{ route('admin.orders.index', ['status' => 'pending']) }}"
@@ -159,7 +159,7 @@
                                 <small class="text-danger">Needs attention</small>
                             @endif
                         @else
-                            <small class="text-muted">All caught up!</small>
+                            <small class="text-muted">{{ __('admin.dashboard.all_caught_up') }}</small>
                         @endif
                     </div>
                 </div>
@@ -192,8 +192,8 @@
                     </div>
                     <div class="card-info mt-4">
                         <h4 class="mb-1">{{ number_format($totalEbooks) }}</h4>
-                        <p class="mb-0">Total Ebooks</p>
-                        <a href="{{ route('admin.ebooks.index') }}" class="text-primary small">View all ebooks →</a>
+                        <p class="mb-0">{{ __('admin.dashboard.total_ebooks') }}</p>
+                        <a href="{{ route('admin.ebooks.index') }}" class="text-primary small">{{ __('admin.dashboard.view_all_ebooks') }}</a>
                     </div>
                 </div>
             </div>
@@ -221,8 +221,8 @@
                     </div>
                     <div class="card-info mt-4">
                         <h4 class="mb-1">{{ number_format($totalUsers) }}</h4>
-                        <p class="mb-0">Total Users</p>
-                        <a href="{{ route('admin.users.index') }}" class="text-success small">View all users →</a>
+                        <p class="mb-0">{{ __('admin.dashboard.total_users') }}</p>
+                        <a href="{{ route('admin.users.index') }}" class="text-success small">{{ __('admin.dashboard.view_all_users') }}</a>
                     </div>
                 </div>
             </div>
@@ -250,8 +250,8 @@
                     </div>
                     <div class="card-info mt-4">
                         <h4 class="mb-1">{{ number_format($totalCategories) }}</h4>
-                        <p class="mb-0">Total Categories</p>
-                        <a href="{{ route('admin.categories.index') }}" class="text-info small">Manage categories →</a>
+                        <p class="mb-0">{{ __('admin.dashboard.total_categories') }}</p>
+                        <a href="{{ route('admin.categories.index') }}" class="text-info small">{{ __('admin.dashboard.manage_categories') }}</a>
                     </div>
                 </div>
             </div>
@@ -279,8 +279,8 @@
                     </div>
                     <div class="card-info mt-4">
                         <h4 class="mb-1">{{ number_format($totalCities) }}</h4>
-                        <p class="mb-0">Total Cities</p>
-                        <a href="{{ route('admin.cities.index') }}" class="text-warning small">Manage cities →</a>
+                        <p class="mb-0">{{ __('admin.dashboard.total_cities') }}</p>
+                        <a href="{{ route('admin.cities.index') }}" class="text-warning small">{{ __('admin.dashboard.manage_cities') }}</a>
                     </div>
                 </div>
             </div>
@@ -289,30 +289,32 @@
 
     <!-- Charts Row -->
     <div class="row g-4 mb-4">
-        <!-- Revenue Chart -->
-        <div class="col-xl-8 col-12">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
+        <!-- Category Distribution -->
+        <div class="col-xl-6 col-12">
+            <div class="card h-100">
+                <div class="card-header">
                     <div>
-                        <h5 class="card-title mb-1">Revenue Overview</h5>
-                        <p class="card-subtitle mb-0">Monthly revenue for the last 6 months</p>
+                        <h5 class="card-title mb-1">{{ __('admin.dashboard.ebook_by_category') }}</h5>
+                        <p class="card-subtitle mb-0">{{ __('admin.dashboard.top_categories') }}</p>
                     </div>
                 </div>
                 <div class="card-body">
-                    <canvas id="revenueChart" style="max-height: 300px;"></canvas>
+                    <canvas id="categoryChart" style="max-height: 300px;"></canvas>
                 </div>
             </div>
         </div>
 
-        <!-- Category Distribution -->
-        <div class="col-xl-4 col-12">
-            <div class="card">
+        <!-- Revenue Chart -->
+        <div class="col-xl-6 col-12">
+            <div class="card h-100">
                 <div class="card-header">
-                    <h5 class="card-title mb-1">Ebook by Category</h5>
-                    <p class="card-subtitle mb-0">Top 5 categories</p>
+                    <div>
+                        <h5 class="card-title mb-1">{{ __('admin.dashboard.revenue_overview') }}</h5>
+                        <p class="card-subtitle mb-0">{{ __('admin.dashboard.monthly_revenue_subtitle') }}</p>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <canvas id="categoryChart" style="max-height: 300px;"></canvas>
+                    <canvas id="revenueChart" style="max-height: 300px;"></canvas>
                 </div>
             </div>
         </div>

@@ -27,7 +27,9 @@ Route::middleware('guest')->group(function () {
     Route::get('/login/google/callback', [LoginController::class, 'handleGoogleCallback']);
 
     // Google Registration Routes
-    Route::get('/register/google', [RegisterController::class, 'showGoogleRegistrationForm'])->name('register.google');
+    Route::get('/register/google', [RegisterController::class, 'redirectToGoogleRegister'])->name('register.google');
+    Route::get('/register/google/callback', [RegisterController::class, 'handleGoogleRegisterCallback'])->name('register.google.callback');
+    Route::get('/register/google/form', [RegisterController::class, 'showGoogleRegistrationForm'])->name('register.google.form');
     Route::post('/register/google', [RegisterController::class, 'completeGoogleRegistration'])->name('register.google.complete');
 });
 

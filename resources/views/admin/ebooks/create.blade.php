@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Create New Ebook')
+@section('title', __('admin.ebooks.create_new_ebook'))
 
 @push('styles')
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.css" />
@@ -83,11 +83,11 @@
     <!-- I will keep your form exactly as before; only ids/classes matter to JS -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h4 class="fw-bold py-3 mb-2"><span class="text-muted fw-light">Ebook /</span> Create New Ebook</h4>
+            <h4 class="fw-bold py-3 mb-2"><span class="text-muted fw-light">{{ __('admin.menu.ebooks') }} /</span> {{ __('admin.ebooks.create_new_ebook') }}</h4>
         </div>
         <div>
             <a href="{{ route('admin.ebooks.index') }}" class="btn btn-secondary"><i class="ti ti-arrow-left me-1"></i>
-                Back</a>
+                {{ __('admin.ebooks.back') }}</a>
         </div>
     </div>
 
@@ -125,24 +125,24 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="card-title mb-4">
-                            <i class="ti ti-book"></i> Informasi Ebook
+                            <i class="ti ti-book"></i> {{ __('admin.ebooks.ebook_info') }}
                         </h5>
 
                         <div class="mb-3">
-                            <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+                            <label for="title" class="form-label">{{ __('admin.ebooks.title_field') }} <span class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('title') is-invalid @enderror" id="title"
-                                name="title" value="{{ old('title') }}" placeholder="Masukkan judul ebook" required>
+                                name="title" value="{{ old('title') }}" placeholder="{{ __('admin.ebooks.title_placeholder') }}" required>
                             @error('title')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="mb-3">
-                            <label for="creator_search" class="form-label">Creator <span class="text-danger">*</span></label>
+                            <label for="creator_search" class="form-label">{{ __('admin.ebooks.creator') }} <span class="text-danger">*</span></label>
                             <input type="text" 
                                 class="form-control @error('creator_id') is-invalid @enderror" 
                                 id="creator_search" 
-                                placeholder="Ketik nama atau email creator..."
+                                placeholder="{{ __('admin.ebooks.creator_search_placeholder') }}"
                                 autocomplete="off">
                             <input type="hidden" name="creator_id" id="creator_id" value="{{ old('creator_id') }}">
                             
@@ -159,11 +159,11 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="category_selector" class="form-label">Category <span
+                                <label for="category_selector" class="form-label">{{ __('admin.ebooks.category') }} <span
                                         class="text-danger">*</span></label>
                                 <select class="form-select @error('category_ids') is-invalid @enderror" 
                                     id="category_selector">
-                                    <option value="">Pilih Kategori</option>
+                                    <option value="">{{ __('admin.ebooks.select_category') }}</option>
                                     @if (isset($categories))
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}" data-name="{{ $category->name }}">
@@ -190,10 +190,10 @@
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label for="city_id" class="form-label">City</label>
+                                <label for="city_id" class="form-label">{{ __('admin.ebooks.city') }}</label>
                                 <select class="form-select @error('city_id') is-invalid @enderror" id="city_id"
                                     name="city_id">
-                                    <option value="">Pilih Kota (Optional)</option>
+                                    <option value="">{{ __('admin.ebooks.select_city') }}</option>
                                     @if (isset($cities))
                                         @foreach ($cities as $city)
                                             <option value="{{ $city->id }}"
@@ -210,10 +210,10 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="description" class="form-label">Description <span
+                            <label for="description" class="form-label">{{ __('admin.ebooks.description') }} <span
                                     class="text-danger">*</span></label>
                             <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
-                                rows="5" placeholder="Deskripsi singkat tentang ebook">{{ old('description') }}</textarea>
+                                rows="5" placeholder="{{ __('admin.ebooks.description_placeholder') }}">{{ old('description') }}</textarea>
                             @error('description')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -221,16 +221,16 @@
 
                         <div class="row">
                             <div class="col-md-12 mb-3">
-                                <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
+                                <label for="status" class="form-label">{{ __('admin.ebooks.status') }} <span class="text-danger">*</span></label>
                                 <select class="form-select @error('status') is-invalid @enderror" id="status"
                                     name="status" required>
-                                    <option value="draft" {{ old('status', 'draft') == 'draft' ? 'selected' : '' }}>Draft
+                                    <option value="draft" {{ old('status', 'draft') == 'draft' ? 'selected' : '' }}>{{ __('admin.ebooks.draft') }}
                                     </option>
                                     <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>
-                                        Published</option>
+                                        {{ __('admin.ebooks.published') }}</option>
                                     <option value="unpublished" {{ old('status') == 'unpublished' ? 'selected' : '' }}>
-                                        Unpublished</option>
-                                    <option value="archived" {{ old('status') == 'archived' ? 'selected' : '' }}>Archived
+                                        {{ __('admin.ebooks.unpublished') }}</option>
+                                    <option value="archived" {{ old('status') == 'archived' ? 'selected' : '' }}>{{ __('admin.ebooks.archived') }}
                                     </option>
                                 </select>
                                 <!-- <small class="text-muted">Admin dapat langsung publish tanpa approval</small> -->
@@ -249,11 +249,11 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="card-title mb-3">
-                            <i class="ti ti-photo"></i> Cover Image
+                            <i class="ti ti-photo"></i> {{ __('admin.ebooks.cover_image') }}
                         </h5>
 
                         <div class="mb-3">
-                            <label class="form-label">Cover Image (Ratio 1:1.6)</label>
+                            <label class="form-label">{{ __('admin.ebooks.cover_image_ratio') }}</label>
                             <input type="file" class="form-control @error('cover_image') is-invalid @enderror"
                                 id="coverImageInput" name="cover_image" accept="image/*">
                             <!-- <small class="text-muted">Rasio 1:1.6 (contoh: 650x965px). 
@@ -265,13 +265,13 @@
 
                         <!-- Preview Area -->
                         <div id="previewArea" style="display: none;" class="mt-3">
-                            <label class="form-label">Preview (Auto-cropped)</label>
+                            <label class="form-label">{{ __('admin.ebooks.preview') }}</label>
                             <div style="max-width: 200px;">
                                 <img id="previewImage" src="" alt="Preview"
                                     style="width: 100%; border: 2px solid #ddd; border-radius: 8px;">
                             </div>
                             <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="resetCrop()">
-                                <i class="ti ti-x me-1"></i> Hapus
+                                <i class="ti ti-x me-1"></i> {{ __('admin.ebooks.remove') }}
                             </button>
                         </div>
 
@@ -283,11 +283,11 @@
                 <!-- File and submit same as original -->
                 <div class="card mb-4">
                     <div class="card-body">
-                        <h5 class="card-title mb-3">PDF File</h5>
+                        <h5 class="card-title mb-3">{{ __('admin.ebooks.pdf_file') }}</h5>
                         <div class="mb-0">
                             <input type="file" class="form-control @error('pdf_file') is-invalid @enderror"
                                 id="pdf_file" name="pdf_file" accept=".pdf">
-                            <small class="text-muted">Max 10MB. PDF format only</small>
+                            <small class="text-muted">{{ __('admin.ebooks.pdf_hint') }}</small>
                             <div id="pdfLoadingInfo" class="mt-2" style="display: none;">
                                 <small class="text-info">
                                     <i class="ti ti-loader ti-spin me-1"></i> Membaca jumlah halaman...
@@ -309,10 +309,10 @@
                 <div class="card">
                     <div class="card-body">
                         <button type="submit" class="btn btn-primary w-100 mb-2">
-                            <i class="ti ti-check me-1"></i> Create Ebook
+                            <i class="ti ti-check me-1"></i> {{ __('admin.ebooks.create_ebook') }}
                         </button>
                         <a href="{{ route('admin.ebooks.index') }}" class="btn btn-label-secondary w-100">
-                            <i class="ti ti-x me-1"></i> Cancel
+                            <i class="ti ti-x me-1"></i> {{ __('admin.ebooks.cancel') }}
                         </a>
                     </div>
                 </div>

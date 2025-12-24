@@ -54,14 +54,6 @@ class LoginController extends Controller
         $user = \App\Models\User::where($fieldType, $loginField)->first();
         Log::info('User found', ['user' => $user ? $user->toArray() : 'null']);
 
-        // Block admin from logging in via user form
-        if ($user && isset($user->user_type) && $user->user_type === 'admin') {
-            Log::warning('Admin attempted to login via user form', ['email' => $loginField]);
-            throw ValidationException::withMessages([
-                'email' => __('Please use the admin login page to access your account.'),
-            ]);
-        }
-
         if (Auth::attempt([$fieldType => $loginField, 'password' => $password], $remember)) {
             // $request->session()->regenerate(); DIHAPUS SOALNYA INI CONFLICT yang bikin session user tidak terbaca
 
@@ -87,28 +79,12 @@ class LoginController extends Controller
 
     /**
      * Get redirect route based on user type/role.
+     * For user login form, always redirect to home even if user is admin.
      */
     protected function getRedirectRoute($user)
     {
-        // Check user_type field (if exists in User model)
-        if (isset($user->user_type)) {
-            switch ($user->user_type) {
-                case 'admin':
-                case 'superadmin':
-                    return 'admin.dashboard';
-                case 'member':
-                case 'user':
-                default:
-                    return 'home';
-            }
-        }
-
-        // Fallback: Check email domain or other criteria
-        if (str_contains($user->email, '@admin.')) {
-            return 'admin.dashboard';
-        }
-
-        // Default to user dashboard
+        // Always redirect to home for user login form
+        // Admin should use /admin/login to access admin dashboard
         return 'home';
     }
 
@@ -168,7 +144,10 @@ class LoginController extends Controller
      */
     public function redirectToGoogle()
     {
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver('google')
+            ->redirectUrl(url('/login/google/callback'))
+            ->stateless()
+            ->redirect();
     }
 
     /**
@@ -177,27 +156,29 @@ class LoginController extends Controller
     public function handleGoogleCallback()
     {
         try {
-            $googleUser = Socialite::driver('google')->user();
+            $googleUser = Socialite::driver('google')->stateless()->user();
 
             $result = $this->authService->handleGoogleCallback($googleUser);
 
             if ($result['exists']) {
                 Auth::login($result['user'], true);
 
-                return redirect()->route('dashboard')
+                // Redirect to home (user dashboard) for Google login from user form
+                return redirect()->route('home')
                     ->with('success', 'Welcome back, ' . $result['user']->name . '!');
             } else {
-                // Store Google user data in session for registration
-                session(['google_user' => $result['google_data']]);
-
-                // Redirect to registration page with Google data
-                return redirect()->route('register.google')
-                    ->with('info', 'Please complete your registration to continue.');
+                // User doesn't exist - redirect to login with clear message
+                return redirect()->route('login', ['form' => 'register'])
+                    ->with('error', 'Akun Google Anda (' . $googleUser->getEmail() . ') belum terdaftar. Silakan daftar terlebih dahulu menggunakan form di bawah ini.');
             }
         } catch (\Exception $e) {
-            Log::error('Google OAuth Error: ' . $e->getMessage());
+            Log::error('Google OAuth Error: ' . $e->getMessage(), [
+                'exception' => get_class($e),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
             return redirect()->route('login')
-                ->with('error', 'Google sign-in failed. Please try again or use email/password login.');
+                ->with('error', 'Google sign-in failed: ' . $e->getMessage());
         }
     }
 }

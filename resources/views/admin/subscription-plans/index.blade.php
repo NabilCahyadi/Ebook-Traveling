@@ -1,15 +1,15 @@
 @extends('layouts.admin')
 
-@section('title', 'Subscription Plans')
+@section('title', __('admin.subscription_plans.title'))
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="fw-bold py-3 mb-0">
-                <span class="text-muted fw-light">Admin /</span> Subscription Plans
+                <span class="text-muted fw-light">{{ __('admin.menu.dashboard') }} /</span> {{ __('admin.subscription_plans.title') }}
             </h4>
             <a href="{{ route('admin.subscription-plans.create') }}" class="btn btn-primary">
-                <i class="bx bx-plus me-1"></i> Add New Plan
+                <i class="bx bx-plus me-1"></i> {{ __('admin.subscription_plans.add_plan') }}
             </a>
         </div>
 
@@ -29,19 +29,19 @@
 
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">All Subscription Plans</h5>
+                <h5 class="mb-0">{{ __('admin.subscription_plans.title') }}</h5>
             </div>
 
             <div class="table-responsive text-nowrap">
                 <table class="table table-hover align-middle">
                     <thead>
                         <tr>
-                            <th>Plan Name</th>
-                            <th>Duration</th>
-                            <th>Price</th>
-                            <th>Status</th>
-                            <th>Subscribers</th>
-                            <th>Actions</th>
+                            <th>{{ __('admin.subscription_plans.plan_name') }}</th>
+                            <th>{{ __('admin.subscription_plans.duration_days') }}</th>
+                            <th>{{ __('admin.subscription_plans.price') }}</th>
+                            <th>{{ __('admin.ebooks.status') }}</th>
+                            <th>{{ __('admin.subscription_plans.subscribers') }}</th>
+                            <th>{{ __('admin.users.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -66,13 +66,13 @@
                                 <td>
                                     <span class="badge bg-label-info">
                                         @if ($plan->duration_days == 30)
-                                            1 Month
+                                            1 {{ __('admin.receipt.month') }}
                                         @elseif($plan->duration_days == 180)
-                                            6 Months
+                                            6 {{ __('admin.receipt.months') }}
                                         @elseif($plan->duration_days == 365)
-                                            1 Year
+                                            1 {{ __('admin.receipt.year') }}
                                         @else
-                                            {{ $plan->duration_days }} Days
+                                            {{ $plan->duration_days }} {{ __('admin.receipt.days') }}
                                         @endif
                                     </span>
                                 </td>
@@ -81,9 +81,9 @@
                                 </td>
                                 <td>
                                     @if ($plan->is_active)
-                                        <span class="badge bg-success">Active</span>
+                                        <span class="badge bg-success">{{ __('admin.status.active') }}</span>
                                     @else
-                                        <span class="badge bg-secondary">Inactive</span>
+                                        <span class="badge bg-secondary">{{ __('admin.status.inactive') }}</span>
                                     @endif
                                 </td>
                                 <td>
@@ -99,11 +99,11 @@
                                         <div class="dropdown-menu dropdown-menu-end">
                                             <a class="dropdown-item"
                                                 href="{{ route('admin.subscription-plans.show', $plan->id) }}">
-                                                <i class="ti ti-eye me-2"></i> View Details
+                                                <i class="ti ti-eye me-2"></i> {{ __('admin.actions.view_details') }}
                                             </a>
                                             <a class="dropdown-item"
                                                 href="{{ route('admin.subscription-plans.edit', $plan->id) }}">
-                                                <i class="ti ti-pencil me-2"></i> Edit
+                                                <i class="ti ti-pencil me-2"></i> {{ __('admin.actions.edit') }}
                                             </a>
                                             <div class="dropdown-divider"></div>
                                             <form action="{{ route('admin.subscription-plans.destroy', $plan->id) }}"
@@ -113,7 +113,7 @@
                                             </form>
                                             <a class="dropdown-item text-danger" href="javascript:void(0);"
                                                 onclick="if(confirm('Are you sure you want to delete this plan?')) document.getElementById('delete-plan-{{ $plan->id }}').submit();">
-                                                <i class="ti ti-trash me-2"></i> Delete
+                                                <i class="ti ti-trash me-2"></i> {{ __('admin.actions.delete') }}
                                             </a>
                                         </div>
                                     </div>
@@ -125,7 +125,7 @@
                                     <i class="bx bx-package" style="font-size: 48px; color: #ddd;"></i>
                                     <p class="mt-2 text-muted">No subscription plans found</p>
                                     <a href="{{ route('admin.subscription-plans.create') }}"
-                                        class="btn btn-sm btn-primary">Add Your First Plan</a>
+                                        class="btn btn-sm btn-primary">{{ __('admin.subscription_plans.add_plan') }}</a>
                                 </td>
                             </tr>
                         @endforelse

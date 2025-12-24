@@ -217,7 +217,7 @@
                 <div class="col-xl-3 col-lg-4">
                     <div class="header-info">
                         <ul>
-                            
+
                             <li><a href="{{route('about-us')}}">About Us</a></li>
                             <li><a href="{{route('contact')}}">Customer Service</a></li>
                             <!-- <li><a href="#">E-book</a></li> -->
@@ -299,6 +299,20 @@
                                     </select>
                                 </form>
                             </div>
+                            <!-- <div class="header-action-icon-2">
+                                <a href="shop-compare.html">
+                                    <img class="svgInject" alt="Nest" src="assets-nest/nest-fe/imgs/theme/icons/icon-compare.svg" />
+                                    <span class="pro-count blue">3</span>
+                                </a>
+                                <a href="shop-compare.html"><span class="lable ml-0">Compare</span></a>
+                            </div> -->
+                            <!-- <div class="header-action-icon-2">
+                                <a href="shop-wishlist.html">
+                                    <img class="svgInject" alt="Nest" src="assets-nest/nest-fe/imgs/theme/icons/icon-heart.svg" />
+                                    <span class="pro-count blue">6</span>
+                                </a>
+                                <a href="shop-wishlist.html"><span class="lable">Wishlist</span></a>
+                            </div> -->
                             <div class="header-action-icon-2">
                                 <a class="mini-cart-icon" href="#">
                                     <i class="bi bi-bell mr-5"></i>
@@ -505,7 +519,6 @@
                                 <li class="{{ request()->routeIs('promo') ? 'active' : '' }}">
                                     <a href="{{ route('promo') }}">Promo</a>
                                 </li>
-
                             </ul>
                         </nav>
                     </div>
@@ -582,7 +595,7 @@
     <div class="mobile-header-wrapper-inner">
         <div class="mobile-header-top">
             <div class="mobile-header-logo">
-                <a href="index.html"><img src="{{ asset('images/only-logoo.png') }}" alt="logo" /></a>
+                <a href="index.html"><img src="assets/imgs/theme/logo.svg" alt="logo" /></a>
             </div>
             <div class="mobile-menu-close close-style-wrap close-style-position-inherit">
                 <button class="close-style search-close">
@@ -750,10 +763,11 @@
             </div>
             <div class="mobile-social-icon mb-50">
                 <h6 class="mb-15">Follow Us</h6>
-                <a href="#"><i class="bi bi-facebook"></i></a>
-                <a href="#"><i class="bi bi-whatsapp"></i></a>
-                <a href="#"><i class="bi bi-tiktok"></i></a>
-                <a href="#"><i class="bi bi-youtube"></i></a>
+                <a href="#"><img src="assets/imgs/theme/icons/icon-facebook-white.svg" alt="" /></a>
+                <a href="#"><img src="assets/imgs/theme/icons/icon-twitter-white.svg" alt="" /></a>
+                <a href="#"><img src="assets/imgs/theme/icons/icon-instagram-white.svg" alt="" /></a>
+                <a href="#"><img src="assets/imgs/theme/icons/icon-pinterest-white.svg" alt="" /></a>
+                <a href="#"><img src="assets/imgs/theme/icons/icon-youtube-white.svg" alt="" /></a>
             </div>
             <div class="site-copyright">Copyright 2022 © Nest. All rights reserved. Powered by AliThemes.</div>
         </div>

@@ -26,9 +26,15 @@ class RoleSeeder extends Seeder
                 'is_active' => true,
             ],
             [
+                'name' => 'Free User',
+                'slug' => 'free-user',
+                'description' => 'Free user without subscription',
+                'is_active' => true,
+            ],
+            [
                 'name' => 'Member',
                 'slug' => 'member',
-                'description' => 'Regular member user',
+                'description' => 'Premium member with active subscription',
                 'is_active' => true,
             ],
         ];

@@ -1,11 +1,11 @@
 @extends('layouts.admin')
 
-@section('title', 'Role Permissions Management')
+@section('title', __('admin.role_permissions.title'))
 
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold">Role Permissions Management</h4>
+        <h4 class="fw-bold">{{ __('admin.role_permissions.title') }}</h4>
     </div>
 
     @if(session('success'))
@@ -38,20 +38,20 @@
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="roleMenu{{ $role->id }}">
                                 <li>
                                     <a class="dropdown-item" href="{{ route('admin.role-permissions.edit', $role->id) }}">
-                                        <i class="ti ti-settings me-2"></i>Configure Permissions
+                                        <i class="ti ti-settings me-2"></i>{{ __('admin.role_permissions.configure_permissions') }}
                                     </a>
                                 </li>
                             </ul>
                         </div>
                     </div>
                     <h5 class="card-title mb-1">{{ $role->name }}</h5>
-                    <p class="text-muted small mb-3">{{ $role->description ?? 'No description' }}</p>
+                    <p class="text-muted small mb-3">{{ $role->description ?? __('admin.role_permissions.no_description') }}</p>
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="badge bg-label-info">
-                            {{ $role->permissions->count() }} permissions
+                            {{ $role->permissions->count() }} {{ __('admin.role_permissions.permissions') }}
                         </span>
                         <a href="{{ route('admin.role-permissions.edit', $role->id) }}" class="btn btn-sm btn-primary">
-                            <i class="ti ti-settings me-1"></i>Configure
+                            <i class="ti ti-settings me-1"></i>{{ __('admin.role_permissions.configure') }}
                         </a>
                     </div>
                 </div>

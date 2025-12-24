@@ -1,22 +1,22 @@
 @extends('layouts.admin')
 
-@section('title', 'Configure Permissions - ' . $role->name)
+@section('title', __('admin.role_permissions.title') . ' - ' . $role->name)
 
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h4 class="fw-bold mb-1">Configure Permissions</h4>
-            <p class="text-muted mb-0">Managing permissions for <strong>{{ $role->name }}</strong> role</p>
+            <h4 class="fw-bold mb-1">{{ __('admin.role_permissions.title') }}</h4>
+            <p class="text-muted mb-0">{{ __('admin.role_permissions.managing_permissions') }} <strong>{{ $role->name }}</strong> role</p>
             @if(isset($isGuestRole) && $isGuestRole)
             <div class="alert alert-info mt-2 mb-0">
                 <i class="ti ti-info-circle me-1"></i>
-                <strong>Guest Role:</strong> Controls what visitors can access before logging in
+                <strong>{{ $role->name }} {{ __('admin.role_permissions.role_info') }}</strong>
             </div>
             @endif
         </div>
         <a href="{{ route('admin.role-permissions.index') }}" class="btn btn-label-secondary">
-            <i class="ti ti-arrow-left me-1"></i>Back to Roles
+            <i class="ti ti-arrow-left me-1"></i>{{ __('admin.role_permissions.back_to_roles') }}
         </a>
     </div>
 
@@ -41,9 +41,9 @@
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">
-                    <i class="ti ti-lock-access me-2"></i>Permission Modules
+                    <i class="ti ti-lock-access me-2"></i>{{ __('admin.role_permissions.permission_modules') }}
                 </h5>
-                <span class="badge bg-primary" id="selectedCount">0 permissions selected</span>
+                <span class="badge bg-primary" id="selectedCount">0 {{ __('admin.role_permissions.permissions_selected') }}</span>
             </div>
             <div class="card-body">
                 <div class="row g-4">
@@ -55,7 +55,7 @@
                                 <div class="form-check">
                                     <input class="form-check-input select-all-group" type="checkbox" 
                                            data-group="{{ Str::slug($module['name']) }}">
-                                    <label class="form-check-label small">Select All</label>
+                                    <label class="form-check-label small">{{ __('admin.role_permissions.select_all') }}</label>
                                 </div>
                             </div>
                             <div class="card-body pt-3" style="max-height: 400px; overflow-y: auto;">

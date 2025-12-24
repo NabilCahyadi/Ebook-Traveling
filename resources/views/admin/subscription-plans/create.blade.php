@@ -1,26 +1,26 @@
 @extends('layouts.admin')
 
-@section('title', 'Create Subscription Plan')
+@section('title', __('admin.subscription_plans.add_plan'))
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="fw-bold py-3 mb-0">
-                <span class="text-muted fw-light">Admin / Subscription Plans /</span> Create New
+                <span class="text-muted fw-light">{{ __('admin.menu.dashboard') }} / {{ __('admin.subscription_plans.title') }} /</span> {{ __('admin.subscription_plans.add_plan') }}
             </h4>
             <a href="{{ route('admin.subscription-plans.index') }}" class="btn btn-secondary">
-                <i class="bx bx-arrow-back me-1"></i> Back
+                <i class="bx bx-arrow-back me-1"></i> {{ __('admin.actions.back') }}
             </a>
         </div>
 
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">New Subscription Plan</h5>
+                <h5 class="mb-0">{{ __('admin.subscription_plans.add_plan') }}</h5>
             </div>
             <div class="card-body">
                 @if ($errors->any())
                     <div class="alert alert-danger alert-dismissible" role="alert">
-                        <h6 class="alert-heading mb-1">Error!</h6>
+                        <h6 class="alert-heading mb-1">{{ __('admin.messages.error_title') }}</h6>
                         <ul class="mb-0">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
@@ -41,7 +41,7 @@
                     @csrf
 
                     <div class="row mb-3">
-                        <label class="col-sm-2 col-form-label" for="name">Plan Name <span
+                        <label class="col-sm-2 col-form-label" for="name">{{ __('admin.subscription_plans.plan_name') }} <span
                                 class="text-danger">*</span></label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
@@ -50,21 +50,20 @@
                             @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                            <div class="form-text">Enter a descriptive name for the subscription plan</div>
+                            <div class="form-text">{{ __('admin.subscription_plans.name_help') }}</div>
                         </div>
                     </div>
 
                     <!-- Banner Image Upload -->
                     <div class="row mb-3">
-                        <label class="col-sm-2 col-form-label" for="cover_image">Banner Image</label>
+                        <label class="col-sm-2 col-form-label" for="cover_image">{{ __('admin.subscription_plans.banner_image') }}</label>
                         <div class="col-sm-10">
                             <input type="file" class="form-control @error('cover_image') is-invalid @enderror"
                                 id="cover_image" name="cover_image" accept="image/*" onchange="previewBanner(event)">
                             @error('cover_image')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                            <div class="form-text">Upload a banner image for this plan (Optional, recommended size:
-                                1200x400px)</div>
+                            <div class="form-text">{{ __('admin.subscription_plans.banner_help') }}</div>
 
                             <!-- Preview -->
                             <div id="bannerPreview" class="mt-3" style="display: none;">
@@ -75,7 +74,7 @@
                                     </div>
                                     <button type="button" class="btn btn-sm btn-label-danger mt-2"
                                         onclick="removeBanner()">
-                                        <i class="ti ti-x me-1"></i> Remove
+                                        <i class="ti ti-x me-1"></i> {{ __('admin.actions.delete') }}
                                     </button>
                                 </div>
                             </div>
@@ -83,7 +82,7 @@
                     </div>
 
                     <div class="row mb-3">
-                        <label class="col-sm-2 col-form-label" for="description">Description</label>
+                        <label class="col-sm-2 col-form-label" for="description">{{ __('admin.form.description') }}</label>
                         <div class="col-sm-10">
                             <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
                                 rows="3" placeholder="Enter plan description">{{ old('description') }}</textarea>
@@ -94,7 +93,7 @@
                     </div>
 
                     <div class="row mb-3">
-                        <label class="col-sm-2 col-form-label" for="price">Price (Rp) <span
+                        <label class="col-sm-2 col-form-label" for="price">{{ __('admin.subscription_plans.price') }} (Rp) <span
                                 class="text-danger">*</span></label>
                         <div class="col-sm-10">
                             <input type="number" class="form-control @error('price') is-invalid @enderror" id="price"
@@ -103,22 +102,22 @@
                             @error('price')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                            <div class="form-text">Enter the subscription price in Rupiah</div>
+                            <div class="form-text">{{ __('admin.subscription_plans.price_help') }}</div>
                         </div>
                     </div>
 
                     <div class="row mb-3">
-                        <label class="col-sm-2 col-form-label" for="duration_days">Duration (Days) <span
+                        <label class="col-sm-2 col-form-label" for="duration_days">{{ __('admin.subscription_plans.duration_days') }} <span
                                 class="text-danger">*</span></label>
                         <div class="col-sm-10">
                             <div class="row g-2">
                                 <div class="col-md-6">
                                     <select class="form-select @error('duration_days') is-invalid @enderror" id="duration_select"
                                         required>
-                                        <option value="">Select Duration</option>
-                                        <option value="30" {{ old('duration_days') == 30 ? 'selected' : '' }}>1 Month (30 Days)</option>
-                                        <option value="180" {{ old('duration_days') == 180 ? 'selected' : '' }}>6 Months (180 Days)</option>
-                                        <option value="365" {{ old('duration_days') == 365 ? 'selected' : '' }}>1 Year (365 Days)</option>
+                                        <option value="">{{ __('admin.common.select') }} {{ __('admin.subscription_history.duration') }}</option>
+                                        <option value="30" {{ old('duration_days') == 30 ? 'selected' : '' }}>1 {{ __('admin.receipt.month') }} (30 {{ __('admin.receipt.days') }})</option>
+                                        <option value="180" {{ old('duration_days') == 180 ? 'selected' : '' }}>6 {{ __('admin.receipt.months') }} (180 {{ __('admin.receipt.days') }})</option>
+                                        <option value="365" {{ old('duration_days') == 365 ? 'selected' : '' }}>1 {{ __('admin.receipt.year') }} (365 {{ __('admin.receipt.days') }})</option>
                                         <option value="custom">Custom Duration</option>
                                     </select>
                                     @error('duration_days')
@@ -138,7 +137,7 @@
                     {{-- Features input removed as requested --}}
 
                     <div class="row mb-3">
-                        <label class="col-sm-2 col-form-label" for="button_text">Button Text</label>
+                        <label class="col-sm-2 col-form-label" for="button_text">{{ __('admin.subscription_plans.button_text') }}</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control @error('button_text') is-invalid @enderror" 
                                 id="button_text" name="button_text" value="{{ old('button_text') }}" 
@@ -146,18 +145,18 @@
                             @error('button_text')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                            <div class="form-text">Text that will appear on the button in pricing page (optional)</div>
+                            <div class="form-text">{{ __('admin.subscription_plans.button_text_help') }}</div>
                         </div>
                     </div>
 
                     <div class="row mb-3">
-                        <label class="col-sm-2 col-form-label">Status</label>
+                        <label class="col-sm-2 col-form-label">{{ __('admin.ebooks.status') }}</label>
                         <div class="col-sm-10">
                             <div class="form-check form-switch mt-2">
                                 <input class="form-check-input" type="checkbox" id="is_active" name="is_active"
                                     {{ old('is_active', true) ? 'checked' : '' }}>
                                 <label class="form-check-label" for="is_active">
-                                    Active (Available for users to subscribe)
+                                    {{ __('admin.status.active') }} ({{ __('admin.subscription_plans.available_to_subscribe') }})
                                 </label>
                             </div>
                         </div>
@@ -166,10 +165,10 @@
                     <div class="row">
                         <div class="col-sm-10 offset-sm-2">
                             <button type="submit" class="btn btn-primary">
-                                <i class="bx bx-save me-1"></i> Create Plan
+                                <i class="bx bx-save me-1"></i> {{ __('admin.subscription_plans.add_plan') }}
                             </button>
                             <a href="{{ route('admin.subscription-plans.index') }}" class="btn btn-secondary">
-                                Cancel
+                                {{ __('admin.actions.cancel') }}
                             </a>
                         </div>
                     </div>

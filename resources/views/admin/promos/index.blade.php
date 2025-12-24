@@ -1,17 +1,17 @@
 @extends('layouts.admin')
 
-@section('title', 'Promo Management')
+@section('title', __('admin.promos.title'))
 
 @section('content')
     <div class="container-fluid">
         <!-- Page Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h4 class="mb-1">Promo Management</h4>
-                <p class="text-muted mb-0">Manage subscription promo codes and discounts</p>
+                <h4 class="mb-1">{{ __('admin.promos.title') }}</h4>
+                <p class="text-muted mb-0">{{ __('admin.promos.description') }}</p>
             </div>
             <a href="{{ route('admin.promos.create') }}" class="btn btn-primary">
-                <i class="ti ti-plus me-1"></i> Create New Promo
+                <i class="ti ti-plus me-1"></i> {{ __('admin.promos.create_promo') }}
             </a>
         </div>
 
@@ -33,22 +33,22 @@
         <!-- Promo List Card -->
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">All Promos</h5>
-                <span class="badge bg-label-primary">Total: {{ $promos->total() }}</span>
+                <h5 class="mb-0">{{ __('admin.promos.all_promos') }}</h5>
+                <span class="badge bg-label-primary">{{ __('admin.common.total') }}: {{ $promos->total() }}</span>
             </div>
             <div class="card-datatable table-responsive">
                 <table class="table">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Name</th>
-                            <th>Code</th>
-                            <th>Type</th>
-                            <th>Value</th>
-                            <th>Date Range</th>
-                            <th>Usage</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th>{{ __('admin.form.name') }}</th>
+                            <th>{{ __('admin.promos.code') }}</th>
+                            <th>{{ __('admin.promos.type') }}</th>
+                            <th>{{ __('admin.promos.value') }}</th>
+                            <th>{{ __('admin.promos.date_range') }}</th>
+                            <th>{{ __('admin.promos.usage') }}</th>
+                            <th>{{ __('admin.form.status') }}</th>
+                            <th>{{ __('admin.ebooks.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -67,7 +67,7 @@
                                     @if ($promo->code)
                                         <span class="badge bg-label-secondary">{{ $promo->code }}</span>
                                     @else
-                                        <span class="text-muted">Auto-apply</span>
+                                        <span class="text-muted">{{ __('admin.promos.auto_apply') }}</span>
                                     @endif
                                 </td>
                                 <td>
@@ -159,10 +159,10 @@
                                     <div class="mb-4">
                                         <i class="ti ti-ticket-off" style="font-size: 4rem; color: var(--bs-gray-400);"></i>
                                     </div>
-                                    <h5 class="text-muted mb-2">No promos found</h5>
-                                    <p class="text-muted mb-3">Create your first promo to get started!</p>
+                                    <h5 class="text-muted mb-2">{{ __('admin.promos.no_promos') }}</h5>
+                                    <p class="text-muted mb-3">{{ __('admin.promos.create_first_promo') }}</p>
                                     <a href="{{ route('admin.promos.create') }}" class="btn btn-primary">
-                                        <i class="ti ti-plus me-1"></i> Create Promo
+                                        <i class="ti ti-plus me-1"></i> {{ __('admin.promos.create_promo') }}
                                     </a>
                                 </td>
                             </tr>

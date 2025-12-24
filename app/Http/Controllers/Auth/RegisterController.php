@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Log;
+use Laravel\Socialite\Facades\Socialite;
 
 class RegisterController extends Controller
 {
@@ -60,6 +61,52 @@ class RegisterController extends Controller
                 ->with('success', 'Welcome to Ebook Traveling, ' . $user->name . '! Your account has been created successfully.');
         } catch (\Exception $e) {
             return back()->with('error', 'Registration failed. Please try again.');
+        }
+    }
+
+    /**
+     * Redirect to Google for registration.
+     */
+    public function redirectToGoogleRegister()
+    {
+        return Socialite::driver('google')
+            ->redirectUrl(url('/register/google/callback'))
+            ->stateless()
+            ->redirect();
+    }
+
+    /**
+     * Handle Google callback for registration.
+     */
+    public function handleGoogleRegisterCallback()
+    {
+        try {
+            $googleUser = Socialite::driver('google')->stateless()->user();
+
+            $result = $this->authService->handleGoogleCallback($googleUser);
+
+            if ($result['exists']) {
+                // User already exists - redirect to login page with instruction
+                return redirect()->route('login')
+                    ->with('info', 'Akun Google Anda (' . $googleUser->getEmail() . ') sudah terdaftar. Silakan login menggunakan tombol Google di bawah ini.');
+            } else {
+                // User doesn't exist - proceed with registration
+                // Store Google user data in session for registration
+                session(['google_user' => $result['google_data']]);
+
+                // Redirect to registration form
+                return redirect()->route('register.google.form')
+                    ->with('info', 'Silakan lengkapi data Anda untuk menyelesaikan pendaftaran.');
+            }
+        } catch (\Exception $e) {
+            Log::error('Google Registration Error: ' . $e->getMessage(), [
+                'exception' => get_class($e),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return redirect()->route('login', ['form' => 'register'])
+                ->with('error', 'Registrasi dengan Google gagal: ' . $e->getMessage());
         }
     }
 

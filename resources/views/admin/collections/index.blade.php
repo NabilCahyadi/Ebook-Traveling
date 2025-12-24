@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Collections Management')
+@section('title', __('admin.collections.title'))
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -8,14 +8,14 @@
         <!-- Success/Error Messages -->
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>Success!</strong> {{ session('success') }}
+                <strong>{{ __('admin.messages.success_title') }}</strong> {{ session('success') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
         @if (session('error'))
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Error!</strong> {{ session('error') }}
+                <strong>{{ __('admin.messages.error_title') }}</strong> {{ session('error') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
@@ -24,12 +24,12 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h4 class="fw-bold py-3 mb-2">
-                    <span class="text-muted fw-light">Website Management /</span> Collections
+                    <span class="text-muted fw-light">{{ __('admin.menu.website_management') }} /</span> {{ __('admin.collections.title') }}
                 </h4>
             </div>
             <div>
                 <a href="{{ route('admin.collections.create') }}" class="btn btn-primary">
-                    <i class="ti ti-plus me-1"></i> Add New Collection
+                    <i class="ti ti-plus me-1"></i> {{ __('admin.collections.add_collection') }}
                 </a>
             </div>
         </div>
@@ -37,28 +37,28 @@
         <!-- Collections Table -->
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">All Collections</h5>
+                <h5 class="mb-0">{{ __('admin.collections.all_collections') }}</h5>
                 <div>
-                    <span class="badge bg-label-primary me-2">{{ $collections->total() }} Total</span>
-                    <small class="text-muted"><i class="ti ti-grip-vertical"></i> Drag to reorder</small>
+                    <span class="badge bg-label-primary me-2">{{ $collections->total() }} {{ __('admin.common.total') }}</span>
+                    <small class="text-muted"><i class="ti ti-grip-vertical"></i> {{ __('admin.collections.drag_to_reorder') }}</small>
                 </div>
             </div>
             <div class="card-body">
                 <div class="alert alert-info">
                     <i class="ti ti-info-circle me-2"></i>
-                    <strong>Drag & Drop</strong> to reorder collections. Changes will be saved automatically.
+                    <strong>{{ __('admin.collections.drag_drop') }}</strong> {{ __('admin.collections.reorder_info') }}
                 </div>
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th width="50">Drag</th>
-                                <th>Order</th>
-                                <th>Name</th>
-                                <th>Slug</th>
-                                <th>Ebooks Count</th>
-                                <th>Status</th>
-                                <th>Actions</th>
+                                <th width="50">{{ __('admin.collections.drag') }}</th>
+                                <th>{{ __('admin.collections.order') }}</th>
+                                <th>{{ __('admin.form.name') }}</th>
+                                <th>{{ __('admin.form.slug') }}</th>
+                                <th>{{ __('admin.collections.ebooks_count') }}</th>
+                                <th>{{ __('admin.form.status') }}</th>
+                                <th>{{ __('admin.ebooks.actions') }}</th>
                             </tr>
                         </thead>
                         <tbody id="sortable-collections">

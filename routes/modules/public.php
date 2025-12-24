@@ -34,7 +34,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Destinations Page
 Route::get('/destinations', [DestinationController::class, 'index'])->name('destinations');
-Route::get('/destinations/{slug}', [DestinationController::class, 'show'])->name('destination.show')->middleware(['record.view']);
+Route::get('/destinations/{slug}', [DestinationController::class, 'show'])->name('destination.show')->middleware('record.view');
 
 // Promo Page
 // Route::get('/promo', function () {

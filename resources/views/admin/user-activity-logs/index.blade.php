@@ -1,18 +1,18 @@
 @extends('layouts.admin')
 
-@section('title', 'User Activity Logs')
+@section('title', __('admin.activity_logs.title'))
 
 @section('content')
     <div class="container-fluid">
         <!-- Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h4 class="mb-1">User Activity Logs</h4>
-                <p class="text-muted mb-0">Monitor all user activities including admin actions</p>
+                <h4 class="mb-1">{{ __('admin.activity_logs.title') }}</h4>
+                <p class="text-muted mb-0">{{ __('admin.activity_logs.description') }}</p>
             </div>
             <div>
                 <a href="{{ route('admin.user-activity-logs.export', request()->all()) }}" class="btn btn-outline-primary">
-                    <i class="ti ti-download me-1"></i> Export CSV
+                    <i class="ti ti-download me-1"></i> {{ __('admin.activity_logs.export_csv') }}
                 </a>
             </div>
         </div>
@@ -22,9 +22,9 @@
             <div class="card-body">
                 <form method="GET" action="{{ route('admin.user-activity-logs.index') }}" class="row g-3">
                     <div class="col-md-3">
-                        <label for="user_id" class="form-label">User</label>
+                        <label for="user_id" class="form-label">{{ __('admin.activity_logs.user') }}</label>
                         <select name="user_id" id="user_id" class="form-select">
-                            <option value="">All Users</option>
+                            <option value="">{{ __('admin.activity_logs.all_users') }}</option>
                             @foreach ($users as $user)
                                 <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
                                     {{ $user->name }} ({{ $user->roles->first()->name ?? 'No Role' }})
@@ -34,7 +34,7 @@
                     </div>
 
                     <div class="col-md-2">
-                        <label for="action" class="form-label">Action</label>
+                        <label for="action" class="form-label">{{ __('admin.activity_logs.action') }}</label>
                         <select name="action" id="action" class="form-select">
                             @foreach ($actions as $action)
                                 <option value="{{ $action }}" {{ request('action') == $action ? 'selected' : '' }}>
@@ -45,20 +45,20 @@
                     </div>
 
                     <div class="col-md-2">
-                        <label for="date_from" class="form-label">Date From</label>
+                        <label for="date_from" class="form-label">{{ __('admin.activity_logs.date_from') }}</label>
                         <input type="date" name="date_from" id="date_from" class="form-control"
                             value="{{ request('date_from') }}">
                     </div>
 
                     <div class="col-md-2">
-                        <label for="date_to" class="form-label">Date To</label>
+                        <label for="date_to" class="form-label">{{ __('admin.activity_logs.date_to') }}</label>
                         <input type="date" name="date_to" id="date_to" class="form-control"
                             value="{{ request('date_to') }}">
                     </div>
 
                     <div class="col-md-2">
-                        <label for="search" class="form-label">Search</label>
-                        <input type="text" name="search" id="search" class="form-control" placeholder="Search..."
+                        <label for="search" class="form-label">{{ __('admin.activity_logs.search') }}</label>
+                        <input type="text" name="search" id="search" class="form-control" placeholder="{{ __('admin.activity_logs.search') }}..."
                             value="{{ request('search') }}">
                     </div>
 
@@ -79,14 +79,14 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>Time</th>
-                                    <th>User</th>
-                                    <th>Role</th>
-                                    <th>Action</th>
-                                    <th>URL</th>
-                                    <th>Model</th>
+                                    <th>{{ __('admin.activity_logs.time') }}</th>
+                                    <th>{{ __('admin.activity_logs.user') }}</th>
+                                    <th>{{ __('admin.activity_logs.role') }}</th>
+                                    <th>{{ __('admin.activity_logs.action') }}</th>
+                                    <th>{{ __('admin.activity_logs.url') }}</th>
+                                    <th>{{ __('admin.activity_logs.model') }}</th>
                                     <th>IP Address</th>
-                                    <th>Actions</th>
+                                    <th>{{ __('admin.actions.actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody>

@@ -1,21 +1,21 @@
 @extends('layouts.admin')
 
-@section('title', 'Create New User')
+@section('title', __('admin.users.add_user'))
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="fw-bold py-3 mb-0">
-                <span class="text-muted fw-light">User Management /</span> Create New User
+                <span class="text-muted fw-light">{{ __('admin.menu.user_management') }} /</span> {{ __('admin.users.add_user') }}
             </h4>
             <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">
-                <i class="ti ti-arrow-left me-1"></i> Back to List
+                <i class="ti ti-arrow-left me-1"></i> {{ __('admin.manual_subscription.back_to_list') }}
             </a>
         </div>
 
         @if ($errors->any())
             <div class="alert alert-danger alert-dismissible" role="alert">
-                <strong>Error!</strong> Please fix the following errors:
+                <strong>{{ __('admin.messages.error_title') }}</strong> {{ __('admin.messages.validation_error') }}
                 <ul class="mb-0 mt-2">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -33,7 +33,7 @@
                     <div class="row">
                         <!-- Name -->
                         <div class="col-md-6 mb-3">
-                            <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
+                            <label for="name" class="form-label">{{ __('admin.form.name') }} <span class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
                                 name="name" value="{{ old('name') }}" required>
                             @error('name')
@@ -43,7 +43,7 @@
 
                         <!-- Email -->
                         <div class="col-md-6 mb-3">
-                            <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                            <label for="email" class="form-label">{{ __('admin.form.email') }} <span class="text-danger">*</span></label>
                             <input type="email" class="form-control @error('email') is-invalid @enderror" id="email"
                                 name="email" value="{{ old('email') }}" required>
                             @error('email')
@@ -53,9 +53,9 @@
 
                         <!-- Phone -->
                         <div class="col-md-6 mb-3">
-                            <label for="phone" class="form-label">Phone Number</label>
+                            <label for="phone" class="form-label">{{ __('admin.users.phone') }}</label>
                             <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone"
-                                name="phone" value="{{ old('phone') }}" placeholder="Optional">
+                                name="phone" value="{{ old('phone') }}" placeholder="{{ __('admin.common.optional') }}">
                             @error('phone')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -63,10 +63,10 @@
 
                         <!-- Role -->
                         <div class="col-md-6 mb-3">
-                            <label for="role" class="form-label">Role <span class="text-danger">*</span></label>
+                            <label for="role" class="form-label">{{ __('admin.form.role') }} <span class="text-danger">*</span></label>
                             <select class="form-select @error('role') is-invalid @enderror" id="role" name="role"
                                 required>
-                                <option value="">Select Role</option>
+                                <option value="">{{ __('admin.common.select') }} {{ __('admin.form.role') }}</option>
                                 @php
                                     $roles = \App\Models\Role::all();
                                     $selectedRole = old('role') ?? ($roleSlug ?? '');
@@ -84,7 +84,7 @@
 
                         <!-- Password -->
                         <div class="col-md-6 mb-3">
-                            <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                            <label for="password" class="form-label">{{ __('admin.form.password') }} <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <input type="password" class="form-control @error('password') is-invalid @enderror"
                                     id="password" name="password" required>
@@ -100,7 +100,7 @@
 
                         <!-- Confirm Password -->
                         <div class="col-md-6 mb-3">
-                            <label for="password_confirmation" class="form-label">Confirm Password <span
+                            <label for="password_confirmation" class="form-label">{{ __('admin.form.password_confirmation') }} <span
                                     class="text-danger">*</span></label>
                             <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror"
                                 id="password_confirmation" name="password_confirmation" required>
@@ -112,10 +112,10 @@
 
                     <div class="mt-4">
                         <button type="submit" class="btn btn-primary">
-                            <i class="ti ti-check me-1"></i> Create User
+                            <i class="ti ti-check me-1"></i> {{ __('admin.users.add_user') }}
                         </button>
                         <a href="{{ route('admin.users.index') }}" class="btn btn-label-secondary">
-                            Cancel
+                            {{ __('admin.actions.cancel') }}
                         </a>
                     </div>
                 </form>
