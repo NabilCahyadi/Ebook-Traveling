@@ -96,9 +96,14 @@ class CityRepository implements CityRepositoryInterface
     {
         // Cari kota berdasarkan slug, lalu muat (load) relasi 'ebooks'
         // Juga muat relasi 'creator' di dalam setiap ebook agar tidak error di view
+        // Filter hanya ebooks yang published
         return $this->model
-            ->with('ebooks')
+            ->with(['ebooks' => function($query) {
+                $query->where('status', 'published')
+                      ->orderBy('created_at', 'desc');
+            }])
             ->with('ebooks.creator')
+            ->with('ebooks.ratings')
             ->where('slug', $slug)
             ->firstOrFail();
     }

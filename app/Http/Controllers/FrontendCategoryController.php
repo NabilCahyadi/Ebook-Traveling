@@ -26,6 +26,7 @@ class FrontendCategoryController extends Controller
         $ebooks = \App\Models\Ebook::select('ebooks.*')
             ->join('ebook_categories', 'ebooks.id', '=', 'ebook_categories.ebook_id')
             ->where('ebook_categories.category_id', $category->id)
+            ->where('ebooks.status', 'published')
             ->whereNull('ebooks.deleted_at')
             ->with(['creator', 'city'])
             ->get();

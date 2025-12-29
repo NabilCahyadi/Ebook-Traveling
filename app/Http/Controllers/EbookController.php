@@ -16,8 +16,10 @@ class EbookController extends Controller
     // Di EbookController.php
     public function show($slug)
     {
-        // Mendapatkan data ebook
-        $ebook = Ebook::where('slug', $slug)->firstOrFail();
+        // Mendapatkan data ebook - hanya yang published
+        $ebook = Ebook::where('slug', $slug)
+                     ->where('status', 'published')
+                     ->firstOrFail();
 
         // Mendapatkan rating yang sudah disetujui dengan pagination (3 per halaman)
         $ratings = EbookRating::where('ebook_id', $ebook->id)

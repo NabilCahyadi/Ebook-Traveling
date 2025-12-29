@@ -90,6 +90,9 @@ Route::post('/reader/update-progress', [ReaderController::class, 'updateProgress
 Route::get('/about-us', [AboutController::class, 'index'])->name('about-us');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 
+// Search Ebooks
+Route::get('/search', [HomeController::class, 'search'])->name('search');
+
 // Bungkus dengan prefix 'api'
 Route::prefix('api')->group(function () {
     Route::post('/subscription/create', [SubscriptionController::class, 'create'])
