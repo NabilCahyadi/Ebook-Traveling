@@ -53,7 +53,7 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0"><?php echo e(__('admin.roles.roles_list')); ?></h5>
-            <div class="text-muted"><?php echo e(__('admin.common.total')); ?>: <?php echo e($roles->total()); ?> <?php echo e(__('admin.roles.roles')); ?></div>
+            <div class="text-muted">Total: <?php echo e($roles->total()); ?> roles</div>
         </div>
         <div class="card-body">
             <?php if($roles->count() > 0): ?>

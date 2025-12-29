@@ -49,7 +49,7 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">{{ __('admin.roles.roles_list') }}</h5>
-            <div class="text-muted">{{ __('admin.common.total') }}: {{ $roles->total() }} {{ __('admin.roles.roles') }}</div>
+            <div class="text-muted">Total: {{ $roles->total() }} roles</div>
         </div>
         <div class="card-body">
             @if ($roles->count() > 0)
