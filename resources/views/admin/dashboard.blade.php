@@ -420,16 +420,9 @@
                                     @foreach ($recentEbooks as $ebook)
                                         <tr>
                                             <td>
-                                                @if ($ebook->cover_image)
-                                                    <img src="{{ Storage::url($ebook->cover_image) }}"
-                                                        alt="{{ $ebook->title }}" class="rounded"
-                                                        style="width: 40px; height: 56px; object-fit: cover;">
-                                                @else
-                                                    <div class="bg-label-secondary rounded d-flex align-items-center justify-content-center"
-                                                        style="width: 40px; height: 56px;">
-                                                        <i class="ti ti-book"></i>
-                                                    </div>
-                                                @endif
+                                                <img src="{{ $ebook->cover_image_url }}"
+                                                    alt="{{ $ebook->title }}" class="rounded"
+                                                    style="width: 40px; height: 56px; object-fit: cover;">
                                             </td>
                                             <td>
                                                 <div class="fw-medium">{{ Str::limit($ebook->title, 40) }}</div>

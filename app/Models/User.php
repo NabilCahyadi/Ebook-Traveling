@@ -85,6 +85,35 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Append accessors to JSON
+     */
+    protected $appends = ['avatar_url'];
+
+    /**
+     * Get the avatar URL attribute.
+     * Supports both external URLs and local storage paths.
+     */
+    public function getAvatarUrlAttribute()
+    {
+        if (empty($this->avatar)) {
+            return asset('images/default-avatar.png'); // Default avatar
+        }
+
+        // Check if it's an external URL
+        if (filter_var($this->avatar, FILTER_VALIDATE_URL)) {
+            return $this->avatar;
+        }
+
+        // Check if starts with http:// or https://
+        if (\Illuminate\Support\Str::startsWith($this->avatar, ['http://', 'https://'])) {
+            return $this->avatar;
+        }
+
+        // Local storage path
+        return asset('storage/' . $this->avatar);
+    }
+
     // ==================== RELATIONSHIPS ====================
 
     /**

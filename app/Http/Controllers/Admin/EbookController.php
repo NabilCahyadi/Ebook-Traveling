@@ -81,9 +81,9 @@ class EbookController extends Controller
                 'status.in' => 'Status publikasi tidak valid.',
             ]);
 
-            // Check if user is admin
-            $user = Auth::user();
-            $isAdmin = $user->roles()->where('name', 'admin')->exists();
+            // Check if user is admin (using admin guard)
+            $admin = Auth::guard('admin')->user();
+            $isAdmin = $admin ? true : false;
 
             // If user is not admin and tries to publish, change to waiting_approval
             if (!$isAdmin && $validated['status'] === 'published') {

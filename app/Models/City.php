@@ -32,6 +32,32 @@ class City extends Model
     ];
 
     /**
+     * Append accessors to JSON
+     */
+    protected $appends = ['image_url'];
+
+    /**
+     * Get the image URL attribute.
+     * Supports both external URLs and local storage paths.
+     */
+    public function getImageUrlAttribute()
+    {
+        if (empty($this->image)) {
+            return asset('images/no-city-image.png');
+        }
+
+        if (filter_var($this->image, FILTER_VALIDATE_URL)) {
+            return $this->image;
+        }
+
+        if (\Illuminate\Support\Str::startsWith($this->image, ['http://', 'https://'])) {
+            return $this->image;
+        }
+
+        return asset('storage/' . $this->image);
+    }
+
+    /**
      * Boot method untuk auto-generate unique slug dengan index
      */
     protected static function boot()

@@ -73,15 +73,9 @@
                                                     <i class="ti ti-grip-vertical text-muted"></i>
                                                 </td>
                                                 <td>
-                                                    @if($ebook->cover_image)
-                                                        <img src="{{ asset('storage/' . $ebook->cover_image) }}" 
-                                                             alt="{{ $ebook->title }}" 
-                                                             class="cover-img">
-                                                    @else
-                                                        <div class="bg-light d-flex align-items-center justify-content-center cover-img">
-                                                            <i class="ti ti-book"></i>
-                                                        </div>
-                                                    @endif
+                                                    <img src="{{ $ebook->cover_image_url }}" 
+                                                         alt="{{ $ebook->title }}" 
+                                                         class="cover-img">
                                                 </td>
                                                 <td>
                                                     <strong>{{ $ebook->title }}</strong>
