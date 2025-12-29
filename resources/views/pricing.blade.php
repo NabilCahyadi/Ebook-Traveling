@@ -512,11 +512,7 @@
                                 <a href="https://wa.me/{{ $waNumber }}?text={{ urlencode("Halo Admin, saya ingin berlangganan.\n\nNama\t: " . $user->name . "\nEmail\t: " . $user->email . "\nPaket\t: " . $plan->name . "\nPembayaran\t: _Silakan saya sebutkan metode pembayaran_\n\nMohon bantuannya. Terima kasih!") }}"
                                     class="btn bg-success text-white rounded-pill py-3 w-100 mb-2"
                                     target="_blank">
-                                    <i class="bi bi-whatsapp"></i> Hubungi Admin via WhatsApp
-                                </a>
-                                @else
-                                <a href="{{ route('login') }}" class="btn bg-success text-white rounded-pill py-3 w-100 mb-2">
-                                    <i class="bi bi-box-arrow-in-right"></i> Login untuk Hubungi Admin
+                                    <i class="bi bi-whatsapp"></i> Call Us - WhatsApp
                                 </a>
                                 @endif
                             </div>
