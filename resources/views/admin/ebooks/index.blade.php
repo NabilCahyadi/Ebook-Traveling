@@ -139,7 +139,7 @@
                             <th style="width: 35%;">{{ __('admin.ebooks.title') }}</th>
                             <th style="width: 20%;">{{ __('admin.ebooks.creator') }}</th>
                             <th style="width: 12%;">{{ __('admin.ebooks.status') }}</th>
-                            <th style="width: 12%;">{{ __('admin.ebooks.views') }}</th>
+                            <th style="width: 12%; display: none;">{{ __('admin.ebooks.views') }}</th>
                             <th style="width: 100px;">{{ __('admin.ebooks.actions') }}</th>
                         </tr>
                     </thead>
@@ -185,7 +185,7 @@
                                         <span class="badge bg-secondary" style="font-size: 0.8125rem;">Archived</span>
                                     @endif
                                 </td>
-                                <td>
+                                <td style="display: none;">
                                     <span class="text-muted d-flex align-items-center" style="font-size: 0.875rem;">
                                         <i class="ti ti-eye me-1"></i> {{ number_format($ebook->view_count ?? 0) }}
                                     </span>
@@ -220,7 +220,7 @@
                             </tr>
                         @empty
                             <tr id="noDataRow">
-                                <td colspan="6" class="text-center py-5">
+                                <td colspan="5" class="text-center py-5">
                                     <i class="ti ti-book" style="font-size: 48px; color: #ddd;"></i>
                                     <p class="mt-2 text-muted">{{ __('admin.ebooks.no_data') }}</p>
                                     <a href="{{ route('admin.ebooks.create') }}" class="btn btn-sm btn-primary">{{ __('admin.ebooks.add_new') }}</a>
