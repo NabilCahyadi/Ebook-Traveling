@@ -1,7 +1,6 @@
-@extends('layouts_lp.app')
-@section('title', 'About Us - MeatMap')
+<?php $__env->startSection('title', 'About Us - MeatMap'); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <style>
     .featured-card img {
         width: 60px;
@@ -32,89 +31,92 @@
         <div class="row">
             <div class="col-xl-10 col-lg-12 m-auto">
                 <!-- SECTION 1: WELCOME -->
-                @if(isset($aboutSections['welcome']))
+                <?php if(isset($aboutSections['welcome'])): ?>
                 <section class="row align-items-center mb-50">
                     <div class="col-lg-6">
-                        <img src="{{ asset($aboutSections['welcome']->image) }}" alt="{{ $aboutSections['welcome']->title }}" class="border-radius-15 mb-md-3 mb-lg-0 mb-sm-4" />
+                        <img src="<?php echo e(asset($aboutSections['welcome']->image)); ?>" alt="<?php echo e($aboutSections['welcome']->title); ?>" class="border-radius-15 mb-md-3 mb-lg-0 mb-sm-4" />
                     </div>
                     <div class="col-lg-6">
                         <div class="pl-25">
-                            <h2 class="mb-30">{{ $aboutSections['welcome']->title }}</h2>
-                            {!! $aboutSections['welcome']->content !!}
+                            <h2 class="mb-30"><?php echo e($aboutSections['welcome']->title); ?></h2>
+                            <?php echo $aboutSections['welcome']->content; ?>
+
                             <div class="carausel-3-columns-cover position-relative">
                                 <div id="carausel-3-columns-arrows"></div>
                                 <div class="carausel-3-columns" id="carausel-3-columns">
-                                    @if($latestBlogImages && $latestBlogImages->isNotEmpty())
-                                    @foreach($latestBlogImages as $blogImage)
-                                    <img src="{{ asset($blogImage) }}" alt="Latest Blog Image" />
-                                    @endforeach
-                                    @else
+                                    <?php if($latestBlogImages && $latestBlogImages->isNotEmpty()): ?>
+                                    <?php $__currentLoopData = $latestBlogImages; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $blogImage): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <img src="<?php echo e(asset($blogImage)); ?>" alt="Latest Blog Image" />
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php else: ?>
                                     <!-- Tampilkan gambar default jika tidak ada blog -->
                                     <img src="/images/blogs/1.webp" alt="Default Image" />
                                     <img src="/images/blogs/1.webp" alt="Default Image" />
                                     <img src="/images/blogs/1.webp" alt="Default Image" />
                                     <img src="/images/blogs/1.webp" alt="Default Image" />
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
-                @endif
+                <?php endif; ?>
 
                 <!-- SECTION BENEFITS (sudah dinamis) -->
                 <section class="benefits-section py-5">
                     <div class="container text-center">
                         <h3 class="mb-40">Why Choose Our MeatMap Guides ?</h3>
-                        @if($benefits && $benefits->isNotEmpty())
+                        <?php if($benefits && $benefits->isNotEmpty()): ?>
                         <div class="row justify-content-center">
-                            @foreach($benefits as $benefit)
+                            <?php $__currentLoopData = $benefits; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $benefit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <div class="col-md-4 mb-4">
                                 <div class="benefit-card p-4 rounded shadow-sm">
                                     <div class="icon-wrapper mb-3">
-                                        <i class="{{ $benefit->icon }}"></i>
+                                        <i class="<?php echo e($benefit->icon); ?>"></i>
                                     </div>
-                                    <h3 class="h5 mb-2">{{ $benefit->title }}</h3>
-                                    <p class="text-muted">{{ $benefit->description }}</p>
+                                    <h3 class="h5 mb-2"><?php echo e($benefit->title); ?></h3>
+                                    <p class="text-muted"><?php echo e($benefit->description); ?></p>
                                 </div>
                             </div>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
-                        @else
+                        <?php else: ?>
                         <p>Benefits information is currently unavailable.</p>
-                        @endif
+                        <?php endif; ?>
                     </div>
                 </section>
 
                 <!-- SECTION 2: PERFORMANCE & ABOUT DETAILS -->
-                @if(isset($aboutSections['performance']) && isset($aboutSections['about_details']))
+                <?php if(isset($aboutSections['performance']) && isset($aboutSections['about_details'])): ?>
                 <section class="row align-items-center mb-50">
                     <div class="row mb-50 align-items-center">
                         <div class="col-lg-7 pr-30">
-                            <img src="{{ asset($aboutSections['performance']->image) }}" alt="{{ $aboutSections['performance']->title }}" class="mb-md-3 mb-lg-0 mb-sm-4" />
+                            <img src="<?php echo e(asset($aboutSections['performance']->image)); ?>" alt="<?php echo e($aboutSections['performance']->title); ?>" class="mb-md-3 mb-lg-0 mb-sm-4" />
                         </div>
                         <div class="col-lg-5">
                             <h4 class="mb-20 text-muted">Our performance</h4>
-                            <h1 class="heading-1 mb-40">{{ $aboutSections['performance']->title }}</h1>
-                            {!! $aboutSections['performance']->content !!}
+                            <h1 class="heading-1 mb-40"><?php echo e($aboutSections['performance']->title); ?></h1>
+                            <?php echo $aboutSections['performance']->content; ?>
+
                         </div>
                     </div>
-                    @php
+                    <?php
                     // Decode JSON untuk 3 kolom
                     $details = json_decode($aboutSections['about_details']->content, true);
-                    @endphp
+                    ?>
                     <div class="row">
-                        @foreach($details as $detail)
+                        <?php $__currentLoopData = $details; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $detail): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="col-lg-4 pr-30 mb-md-5 mb-lg-0 mb-sm-5">
-                            <h3 class="mb-30">{{ $detail['title'] }}</h3>
-                            <p>{{ $detail['description'] }}</p>
+                            <h3 class="mb-30"><?php echo e($detail['title']); ?></h3>
+                            <p><?php echo e($detail['description']); ?></p>
                         </div>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
                 </section>
-                @endif
+                <?php endif; ?>
             </div>
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts_lp.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\PROJEK PROJEK\Ebook-Traveling\resources\views/about-us.blade.php ENDPATH**/ ?>

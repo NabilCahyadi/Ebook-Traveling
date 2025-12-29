@@ -51,6 +51,7 @@ use App\Repositories\Interfaces\SubscriptionRepositoryInterface;
 use App\Repositories\SubscriptionRepository;
 use App\Repositories\Interfaces\SubscriptionProcessInterface;
 use App\Repositories\SubscriptionProcessRepository;
+use App\Services\SettingService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -95,6 +96,9 @@ class AppServiceProvider extends ServiceProvider
 
         // TAMBAHKAN binding baru untuk repository proses pembayaran
         $this->app->bind(SubscriptionProcessInterface::class, SubscriptionProcessRepository::class);
+        $this->app->singleton('settings', function ($app) {
+            return new SettingService();
+        });
     }
 
     /**

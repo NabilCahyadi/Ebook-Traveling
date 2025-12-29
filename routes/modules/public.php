@@ -15,6 +15,8 @@ use App\Http\Controllers\PricingController;
 use App\Http\Controllers\PromoController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\Api\SubscriptionController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ContactController as ControllersContactController;
 use App\Http\Controllers\PromoDetailController;
 
 /*
@@ -27,24 +29,9 @@ use App\Http\Controllers\PromoDetailController;
 // Homepage
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Pricing Page
-// Route::get('/pricing', function () {
-//     return view('pricing');
-// })->name('pricing');
-
 // Destinations Page
 Route::get('/destinations', [DestinationController::class, 'index'])->name('destinations');
 Route::get('/destinations/{slug}', [DestinationController::class, 'show'])->name('destination.show')->middleware('record.view');
-
-// Promo Page
-// Route::get('/promo', function () {
-//     return view('promo');
-// })->name('promo');
-
-// Contact Page
-Route::get('/contact', function () {
-    return view('contact');
-})->name('contact');
 
 // Help Center
 Route::get('/help-center', function () {
@@ -101,6 +88,7 @@ Route::get('/promo', [PromoController::class, 'index'])->name('promo');
 Route::get('/promo/{slug}', [PromoController::class, 'showDetail'])->name('promo.detail.show');
 Route::post('/reader/update-progress', [ReaderController::class, 'updateProgress'])->name('reader.updateProgress');
 Route::get('/about-us', [AboutController::class, 'index'])->name('about-us');
+Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 
 // Bungkus dengan prefix 'api'
 Route::prefix('api')->group(function () {

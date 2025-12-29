@@ -25,14 +25,13 @@ class DatabaseSeeder extends Seeder
             CollectionSeeder::class,     // Membuat koleksi (best-seller, featured, dll)
             SubscriptionPlanSeeder::class, // Membuat paket berlangganan (basic, premium)
             SubscriptionPromoSeeder::class,
-            
             // 2. PERMISSIONS & SYSTEM SETTINGS
             PermissionSeeder::class,     // Membuat permissions untuk role-based access
             AdminPermissionSeeder::class, // Membuat permissions untuk admin panel
             SystemSettingSeeder::class,  // Membuat system settings
             PanelAccessPermissionSeeder::class, // Panel access permissions
             
-            // 3. DATA PENGGUNA (Bergantung pada RoleSeeder)
+            // 2. DATA PENGGUNA (Bergantung pada RoleSeeder)
             // Membuat pengguna setelah role tersedia.
             CreatorSeeder::class,
             UserSeeder::class,           // Membuat user (creator, member)
@@ -60,6 +59,9 @@ class DatabaseSeeder extends Seeder
             PricingBannerSeeder::class,
             PricingBenefitSeeder::class,
             FaqSeeder::class,
+            AboutUsSectionsSeeder::class,
+            ContactInfoSeeder::class,
+            SiteSettingsSeeder::class,
         ]);
     }
 }

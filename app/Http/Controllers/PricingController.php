@@ -7,6 +7,7 @@ use App\Services\PricingBenefitService;
 use App\Services\SubscriptionPlanService;
 use App\Services\FaqService;
 use App\Repositories\BannerRepository;
+use Illuminate\Support\Facades\Auth;
 
 class PricingController extends Controller
 {
@@ -29,16 +30,17 @@ class PricingController extends Controller
         $this->faqService = $faqService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         // Get banner pricing from banners table
         $bannerData = $this->bannerRepository->getActiveBannerPricing();
         $benefits = $this->pricingBenefitService->getActiveBenefitsForDisplay();
-        // $plans = $this->subscriptionPlanService->getActivePlansForDisplay();
         $groupedSubscriptionPlans = $this->subscriptionPlanService->getPlansGroupedByCategory();
         $faqs = $this->faqService->getPricingFaqs();
 
-        return view('pricing', compact('bannerData', 'benefits', 'groupedSubscriptionPlans', 'faqs'));
+        $user = Auth::user();
+
+        return view('pricing', compact('bannerData', 'benefits', 'groupedSubscriptionPlans', 'faqs', 'user'));
     }
 
     public function about()

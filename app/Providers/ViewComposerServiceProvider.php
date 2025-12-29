@@ -6,6 +6,8 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Services\CategoryService;
 use App\Services\CityService;
+use App\Models\ContactInfo;
+use App\Models\SiteSetting;
 
 class ViewComposerServiceProvider extends ServiceProvider
 {
@@ -46,6 +48,23 @@ class ViewComposerServiceProvider extends ServiceProvider
             $allCities = $cityService->getAllCitiesForCards();
 
             $view->with('allCities', $allCities);
+        });
+
+        View::composer('layouts_lp.app', function ($view) {
+            // Ambil HANYA kontak yang TIDAK ditandai untuk halaman contact
+            $footerContacts = ContactInfo::where('is_active', true)
+                ->where('show_in_contact_page', false) // ---> INI KUNCI
+                ->get();
+
+            $view->with('footerContacts', $footerContacts);
+        });
+
+        View::composer('layouts_lp.app', function ($view) {
+            // Ambil semua pengaturan dan buat menjadi array asosiatif ['key' => 'value']
+            $siteSettings = SiteSetting::pluck('value', 'key');
+
+            // Kirim ke view
+            $view->with('siteSettings', $siteSettings);
         });
     }
 }
