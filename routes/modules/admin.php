@@ -32,6 +32,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
 
     // Admin Management
     Route::resource('admins', \App\Http\Controllers\Admin\AdminController::class);
+    
+    // Admin Activity Logs
+    Route::get('admin-activity-logs', [\App\Http\Controllers\Admin\AdminActivityLogController::class, 'index'])->name('admin-activity-logs.index');
+    Route::get('admin-activity-logs/export', [\App\Http\Controllers\Admin\AdminActivityLogController::class, 'export'])->name('admin-activity-logs.export');
+    Route::delete('admin-activity-logs/cleanup', [\App\Http\Controllers\Admin\AdminActivityLogController::class, 'cleanup'])->name('admin-activity-logs.cleanup');
+    Route::get('admin-activity-logs/{id}', [\App\Http\Controllers\Admin\AdminActivityLogController::class, 'show'])->name('admin-activity-logs.show');
 
     // User Management (All users: admin, creator, customer)
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
