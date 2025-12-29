@@ -107,13 +107,26 @@ class Ebook extends Model
 
     /**
      * Get the cover image URL attribute.
+     * Supports both external URLs and local storage paths.
      */
     public function getCoverImageUrlAttribute()
     {
-        if ($this->cover_image) {
-            return Storage::url($this->cover_image);
+        if (empty($this->cover_image)) {
+            return asset('images/no-cover.png'); // Default placeholder
         }
-        return null;
+
+        // Check if it's an external URL
+        if (filter_var($this->cover_image, FILTER_VALIDATE_URL)) {
+            return $this->cover_image;
+        }
+
+        // Check if starts with http:// or https://
+        if (\Illuminate\Support\Str::startsWith($this->cover_image, ['http://', 'https://'])) {
+            return $this->cover_image;
+        }
+
+        // Local storage path
+        return Storage::url($this->cover_image);
     }
 
     /**

@@ -17,34 +17,20 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Check if user is authenticated
-        if (!Auth::check()) {
+        // Check if admin is authenticated with admin guard
+        if (!Auth::guard('admin')->check()) {
             return redirect()->route('admin.login')->with('error', 'Please login first.');
         }
 
-        $user = Auth::user();
+        $admin = Auth::guard('admin')->user();
 
-        // Admin always has full access (bypass permission check)
-        if (isset($user->user_type) && $user->user_type === 'admin') {
-            return $next($request);
+        // Check if admin is active
+        if ($admin->status !== 'active') {
+            Auth::guard('admin')->logout();
+            return redirect()->route('admin.login')
+                ->with('error', 'Your account is inactive. Please contact the administrator.');
         }
 
-        // Check if user has 'panel.access' permission
-        if (method_exists($user, 'hasPermission')) {
-            if ($user->hasPermission('panel.access')) {
-                return $next($request);
-            }
-        }
-
-        // Fallback: Check roles relationship for admin role
-        if (method_exists($user, 'roles') && $user->roles()->where('name', 'admin')->exists()) {
-            return $next($request);
-        }
-
-        // Not authorized - logout and redirect
-        Auth::logout();
-        
-        return redirect()->route('admin.login')
-            ->with('error', 'You do not have permission to access the management panel. Please contact administrator.');
+        return $next($request);
     }
 }

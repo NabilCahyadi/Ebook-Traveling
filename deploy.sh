@@ -4,7 +4,7 @@
 PROJECT_PATH="/home/u778058510/domains/mappy.id/ebook_traveling_core"
 
 # Path ke PHP (ubah jika hosting berbeda)
-PHP_BIN="/usr/bin/php"
+PHP_BIN="/usr/bin/php" 
 
 # Masuk ke folder project
 cd $PROJECT_PATH
@@ -27,16 +27,11 @@ $PHP_BIN artisan cache:clear
 $PHP_BIN artisan view:clear
 $PHP_BIN artisan route:clear
 
-# Jalankan migrate
-echo "🗄️  Running database migrations..."
+# Jalankan migrate:fresh dengan semua seeder
+echo "🗄️  Running fresh migrations with seeders..."
 $PHP_BIN artisan migrate --force
 
-# Run seeders (only if needed for updates)
-echo "🌱 Running database seeders..."
-$PHP_BIN artisan db:seed --class=RoleSeeder --force
-$PHP_BIN artisan db:seed --class=PermissionSeeder --force
-$PHP_BIN artisan db:seed --class=CreatorSeeder --force
-$PHP_BIN artisan db:seed --class=EbookSeeder --force
+
 
 # Create storage symlink (PENTING untuk akses file dari public)
 echo "🔗 Creating storage symbolic link..."

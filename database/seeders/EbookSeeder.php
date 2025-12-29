@@ -33,9 +33,8 @@ class EbookSeeder extends Seeder
         // 2. Ambil semua ID dari cities, categories, dan creators untuk efisiensi
         $cityMap = City::pluck('id', 'slug')->all();
         $categoryMap = Category::pluck('id', 'slug')->all();
-        $creatorMap = Creator::join('users', 'creators.user_id', '=', 'users.id')
-            ->pluck('creators.id', 'creators.pen_name')
-            ->all();
+        // Ambil user_id dari creators karena FK ebooks.creator_id mengarah ke users
+        $creatorMap = Creator::pluck('user_id', 'pen_name')->all();
 
         // 3. Definisikan data e-book dengan slug untuk kemudahan
         $ebooks = [

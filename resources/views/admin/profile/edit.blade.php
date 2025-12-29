@@ -23,7 +23,7 @@
                             @method('PUT')
 
                             <div class="d-flex align-items-start align-items-sm-center gap-4 mb-4">
-                                <img src="{{ $user->avatar ? asset('storage/' . $user->avatar) : asset('assets/admin/img/avatars/default.jpeg') }}"
+                                <img src="{{ $admin->avatar ? asset('storage/' . $admin->avatar) : asset('assets/admin/img/avatars/default.jpeg') }}"
                                     alt="user-avatar" class="d-block w-px-100 h-px-100 rounded" id="uploadedAvatar" />
                                 <div class="button-wrapper">
                                     <label for="upload" class="btn btn-primary me-2 mb-3" tabindex="0">
@@ -35,7 +35,8 @@
                                     <button type="button" class="btn btn-label-secondary account-image-reset mb-3"
                                         id="resetAvatar">
                                         <i class="ti ti-refresh d-block d-sm-none"></i>
-                                        <span class="d-none d-sm-block">Reset</span>f
+                                        <span class="d-none d-sm-block">Reset</span>
+                                    </button>
                                     </button>
 
                                     <div class="text-muted small">Allowed JPG, GIF or PNG. Max size of 2MB</div>
@@ -49,7 +50,7 @@
                                 <div class="mb-3 col-md-6">
                                     <label for="name" class="form-label">Name</label>
                                     <input class="form-control @error('name') is-invalid @enderror" type="text"
-                                        id="name" name="name" value="{{ old('name', $user->name) }}" autofocus
+                                        id="name" name="name" value="{{ old('name', $admin->name) }}" autofocus
                                         required />
                                     @error('name')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -58,7 +59,7 @@
                                 <div class="mb-3 col-md-6">
                                     <label for="email" class="form-label">E-mail</label>
                                     <input class="form-control @error('email') is-invalid @enderror" type="email"
-                                        id="email" name="email" value="{{ old('email', $user->email) }}" required />
+                                        id="email" name="email" value="{{ old('email', $admin->email) }}" required />
                                     @error('email')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -69,46 +70,11 @@
                                         <span class="input-group-text">ID (+62)</span>
                                         <input type="text" id="phone" name="phone"
                                             class="form-control @error('phone') is-invalid @enderror"
-                                            placeholder="812 3456 7890" value="{{ old('phone', $user->phone) }}" />
+                                            placeholder="812 3456 7890" value="{{ old('phone', $admin->phone) }}" />
                                         @error('phone')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                </div>
-                                <div class="mb-3 col-md-6">
-                                    <label for="city" class="form-label">City</label>
-                                    <input type="text" class="form-control @error('city') is-invalid @enderror"
-                                        id="city" name="city" value="{{ old('city', $profile->city ?? '') }}" />
-                                    @error('city')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="mb-3 col-md-6">
-                                    <label for="address" class="form-label">Address</label>
-                                    <input type="text" class="form-control @error('address') is-invalid @enderror"
-                                        id="address" name="address"
-                                        value="{{ old('address', $profile->address ?? '') }}" />
-                                    @error('address')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="mb-3 col-md-6">
-                                    <label for="country" class="form-label">Country</label>
-                                    <input type="text" class="form-control @error('country') is-invalid @enderror"
-                                        id="country" name="country"
-                                        value="{{ old('country', $profile->country ?? 'Indonesia') }}" />
-                                    @error('country')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="mb-3 col-md-12">
-                                    <label for="bio" class="form-label">Bio</label>
-                                    <textarea class="form-control @error('bio') is-invalid @enderror" id="bio" name="bio" rows="3"
-                                        maxlength="1000">{{ old('bio', $profile->bio ?? '') }}</textarea>
-                                    <div class="form-text">Brief description for your profile. Max 1000 characters.</div>
-                                    @error('bio')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
                                 </div>
                             </div>
                             <div class="mt-2">

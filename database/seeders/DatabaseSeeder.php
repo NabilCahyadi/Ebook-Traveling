@@ -25,24 +25,32 @@ class DatabaseSeeder extends Seeder
             CollectionSeeder::class,     // Membuat koleksi (best-seller, featured, dll)
             SubscriptionPlanSeeder::class, // Membuat paket berlangganan (basic, premium)
             SubscriptionPromoSeeder::class,
-
+            // 2. PERMISSIONS & SYSTEM SETTINGS
+            PermissionSeeder::class,     // Membuat permissions untuk role-based access
+            AdminPermissionSeeder::class, // Membuat permissions untuk admin panel
+            SystemSettingSeeder::class,  // Membuat system settings
+            PanelAccessPermissionSeeder::class, // Panel access permissions
+            
             // 2. DATA PENGGUNA (Bergantung pada RoleSeeder)
             // Membuat pengguna setelah role tersedia.
             CreatorSeeder::class,
             UserSeeder::class,           // Membuat user (creator, member)
-            AdminSeeder::class,          // Membuat user admin khusus
+            DefaultAdminSeeder::class,          // Membuat user admin khusus
 
-            // 3. DATA KONTEN UTAMA (Bergantung pada data dasar & pengguna)
+            // 4. DATA KONTEN UTAMA (Bergantung pada data dasar & pengguna)
             // Membuat konten setelah kategori, kota, dan creator tersedia.
             EbookSeeder::class,         // Membuat data ebook (BUTUH: Category, City, User)
             BlogSeeder::class,           // Membuat data blog (BUTUH: Category, User)
 
-            // 4. TABEL HUBUNGAN / PIVOT (Bergantung pada data konten)
+            // 5. TABEL HUBUNGAN / PIVOT (Bergantung pada data konten)
             // Menghubungkan konten setelah konten itu sendiri dibuat.
             EbookCategorySeeder::class, // Menghubungkan ebook ke kategori (BUTUH: Ebook, Category)
             CollectionEbookSeeder::class, // Menghubungkan ebook ke koleksi (BUTUH: Ebook, Collection)
 
-            // 5. DATA TAMBAHAN & LAINNYA
+            // 6. LANDING PAGE & UI
+            LandingPageSectionsSeeder::class, // Membuat landing page sections
+
+            // 7. DATA TAMBAHAN & LAINNYA
             // Seeder yang tidak terlalu kritis atau bergantung pada data sebelumnya.
             BannerSeeder::class,         // Membuat banner di homepage
             SubscriptionSeeder::class,   // Menghubungkan user ke paket berlangganan (BUTUH: User, Plan)

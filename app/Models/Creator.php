@@ -32,6 +32,32 @@ class Creator extends Model
     ];
 
     /**
+     * Append accessors to JSON
+     */
+    protected $appends = ['avatar_url'];
+
+    /**
+     * Get the avatar URL attribute.
+     * Supports both external URLs and local storage paths.
+     */
+    public function getAvatarUrlAttribute()
+    {
+        if (empty($this->avatar)) {
+            return asset('images/default-creator-avatar.png');
+        }
+
+        if (filter_var($this->avatar, FILTER_VALIDATE_URL)) {
+            return $this->avatar;
+        }
+
+        if (\Illuminate\Support\Str::startsWith($this->avatar, ['http://', 'https://'])) {
+            return $this->avatar;
+        }
+
+        return asset('storage/' . $this->avatar);
+    }
+
+    /**
      * Dapatkan user yang memiliki profil creator ini.
      */
     public function user(): BelongsTo

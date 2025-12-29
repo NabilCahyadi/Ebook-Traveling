@@ -10,7 +10,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 | Routes untuk management panel yang bisa diakses berdasarkan permission
 */
 
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     
@@ -29,6 +29,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/profile', [\App\Http\Controllers\Admin\ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [\App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [\App\Http\Controllers\Admin\ProfileController::class, 'updatePassword'])->name('profile.password.update');
+
+    // Admin Management
+    Route::resource('admins', \App\Http\Controllers\Admin\AdminController::class);
+    
+    // Admin Activity Logs
+    Route::get('admin-activity-logs', [\App\Http\Controllers\Admin\AdminActivityLogController::class, 'index'])->name('admin-activity-logs.index');
+    Route::get('admin-activity-logs/export', [\App\Http\Controllers\Admin\AdminActivityLogController::class, 'export'])->name('admin-activity-logs.export');
+    Route::delete('admin-activity-logs/cleanup', [\App\Http\Controllers\Admin\AdminActivityLogController::class, 'cleanup'])->name('admin-activity-logs.cleanup');
+    Route::get('admin-activity-logs/{id}', [\App\Http\Controllers\Admin\AdminActivityLogController::class, 'show'])->name('admin-activity-logs.show');
 
     // User Management (All users: admin, creator, customer)
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class);

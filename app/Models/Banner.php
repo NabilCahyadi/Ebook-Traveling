@@ -55,12 +55,25 @@ class Banner extends Model
 
     /**
      * Get image URL with fallback
+     * Supports both external URLs and local storage paths.
      */
     public function getImageUrlAttribute()
     {
-        if ($this->image) {
-            return asset('storage/' . $this->image);
+        if (empty($this->image)) {
+            return asset('/images/bg-default.webp');
         }
-        return asset('/images/bg-default.webp');
+
+        // Check if it's an external URL
+        if (filter_var($this->image, FILTER_VALIDATE_URL)) {
+            return $this->image;
+        }
+
+        // Check if starts with http:// or https://
+        if (\Illuminate\Support\Str::startsWith($this->image, ['http://', 'https://'])) {
+            return $this->image;
+        }
+
+        // Local storage path
+        return asset('storage/' . $this->image);
     }
 }

@@ -360,7 +360,7 @@
                                 </div>
                                 <div class="font-xs">
                                     <ul class="mr-50 float-start">
-                                        <li class="mb-5">Creator : <span class="text-brand">{{ $ebook->creator->pen_name ?? $ebook->author }}</span></li>
+                                        <li class="mb-5">Creator : <span class="text-brand">{{ $ebook->creator->name ?? $ebook->author ?? 'Unknown' }}</span></li>
                                         <li class="mb-5">
                                             Language :
                                             <span class="text-brand">
@@ -622,7 +622,7 @@
 
                                         <div class="product-author" style="margin-bottom:-4px;">
                                             @if($ebook->creator)
-                                            <span>by {{ $ebook->creator->pen_name ?? $ebook->creator->user->name }}</span>
+                                            <span>by {{ $ebook->creator->name }}</span>
                                             @else
                                             <span>by Unknown Author</span>
                                             @endif

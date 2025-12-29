@@ -35,6 +35,32 @@ class Blog extends Model
     ];
 
     /**
+     * Append accessors to JSON
+     */
+    protected $appends = ['featured_image_url'];
+
+    /**
+     * Get the featured image URL attribute.
+     * Supports both external URLs and local storage paths.
+     */
+    public function getFeaturedImageUrlAttribute()
+    {
+        if (empty($this->featured_image)) {
+            return asset('images/no-blog-image.png');
+        }
+
+        if (filter_var($this->featured_image, FILTER_VALIDATE_URL)) {
+            return $this->featured_image;
+        }
+
+        if (\Illuminate\Support\Str::startsWith($this->featured_image, ['http://', 'https://'])) {
+            return $this->featured_image;
+        }
+
+        return asset('storage/' . $this->featured_image);
+    }
+
+    /**
      * Get the author of the blog.
      */
     public function author()
