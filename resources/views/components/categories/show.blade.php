@@ -35,6 +35,16 @@
     .product-cart-wrap {
         border: 1px solid rgba(255, 255, 255, 0.05);
         transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        min-height: 520px;
+    }
+
+    .product-content-wrap {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
     }
 
     /* Gaya untuk Judul Buku (digabung dari 2 aturan) */
@@ -63,11 +73,16 @@
         font-size: 0.85rem;
         color: var(--text-color-muted);
         margin-bottom: 1rem;
-        min-height: 2.6em;
+        min-height: 2.8em;
         /* Untuk konsistensi tinggi */
         display: -webkit-box;
         -webkit-line-clamp: 2;
         /* Maksimal 2 baris */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        flex-grow: 1;
+    }
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -127,6 +142,7 @@
         font-weight: 600;
         text-decoration: none;
         transition: all 0.3s ease;
+        margin-top: auto;
     }
 
     .btn-read-now {
@@ -234,7 +250,12 @@
                                             <div class="product-img-action-wrap">
                                                 <div class="product-img product-img-zoom">
                                                     <a href="{{ route('ebooks.show', $ebook->slug) }}">
-                                                        <img class="default-img" src="{{ $ebook->cover_image ?: asset('assets-nest/nest-fe/imgs/shop/product-1-1.jpg') }}" alt="{{ $ebook->title }}" />
+                                                        @php
+                                                            $coverImage = $ebook->external_cover_url 
+                                                                ? $ebook->external_cover_url 
+                                                                : ($ebook->cover_image_url ?? asset('assets-nest/nest-fe/imgs/shop/product-1-1.jpg'));
+                                                        @endphp
+                                                        <img class="default-img" src="{{ $coverImage }}" alt="{{ $ebook->title }}" />
                                                     </a>
                                                 </div>
                                                 <div class="product-badges product-badges-position product-badges-mrg">
@@ -285,7 +306,7 @@
                                                     </div>
                                                 </div>
 
-                                                <p class="product-description">{{ Str::limit($ebook->short_description ?? $ebook->description, 80) }}</p>
+                                                <p class="product-description">{{ Str::limit(strip_tags($ebook->short_description ?? $ebook->description), 80) }}</p>
 
                                                 {{-- LOGIKA TOMBOL AKSI --}}
                                                 @if(auth()->check() && auth()->user()->hasActiveSubscription())

@@ -111,6 +111,11 @@ class EbookController extends Controller
                 $validated['cover_image'] = $this->saveBase64Image($request->cover_image_cropped);
                 unset($validated['cover_image_cropped']); // Remove temporary field
             }
+
+            // Handle PDF file upload
+            if ($request->hasFile('pdf_file')) {
+                $validated['pdf_file'] = $this->savePdfFile($request->file('pdf_file'));
+            }
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Ebook Validation Error:', [
                 'errors' => $e->errors(),
@@ -233,6 +238,27 @@ class EbookController extends Controller
     }
 
     /**
+     * Save uploaded PDF file to storage
+     */
+    private function savePdfFile($file)
+    {
+        // Generate unique filename
+        $filename = 'ebook_' . time() . '_' . uniqid() . '.pdf';
+        $path = 'pdf/' . $filename;
+
+        // Save to storage/app/public/pdf/
+        $file->storeAs('pdf', $filename, 'public');
+
+        Log::info('PDF uploaded', [
+            'filename' => $filename,
+            'size' => round($file->getSize() / 1024 / 1024, 2) . 'MB',
+            'path' => $path
+        ]);
+
+        return $path;
+    }
+
+    /**
      * Display the specified ebook.
      */
     public function show($id)
@@ -295,6 +321,16 @@ class EbookController extends Controller
             if ($request->has('cover_image_cropped') && !empty($request->cover_image_cropped)) {
                 $validated['cover_image'] = $this->saveBase64Image($request->cover_image_cropped);
                 unset($validated['cover_image_cropped']); // Remove temporary field
+            }
+
+            // Handle PDF file upload
+            if ($request->hasFile('pdf_file')) {
+                // Delete old PDF if exists
+                $ebook = $this->ebookService->getEbookById($id);
+                if ($ebook->pdf_file && Storage::disk('public')->exists($ebook->pdf_file)) {
+                    Storage::disk('public')->delete($ebook->pdf_file);
+                }
+                $validated['pdf_file'] = $this->savePdfFile($request->file('pdf_file'));
             }
 
             $this->ebookService->updateEbook($id, $validated);

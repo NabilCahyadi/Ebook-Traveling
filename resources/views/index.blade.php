@@ -313,6 +313,15 @@ $collections = collect();
     .product-cart-wrap {
         border: 1px solid rgba(255, 255, 255, 0.05);
         transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .product-content-wrap {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
     }
 
     /* --- Gaya Umum untuk Elemen Kartu --- */
@@ -324,7 +333,8 @@ $collections = collect();
     }
 
     .product-cart-wrap .product-description {
-        min-height: 3.2em;
+        min-height: 2.8em;
+        flex-grow: 1;
     }
 
     .product-author {
@@ -472,6 +482,13 @@ $collections = collect();
         height: 100%;
         object-fit: cover;
         object-position: center;
+    }
+
+    /* Make columns flex to support equal height cards */
+    .product-grid-4 > [class*="col-"],
+    .scroll-wrapper > [class*="col-"] {
+        display: flex;
+        flex-direction: column;
     }
 
     /* Untuk membuat gambar blog post seragam dan rapi */
@@ -700,7 +717,12 @@ $collections = collect();
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="/ebooks/{{ $ebook->slug }}">
-                                                <img class="default-img" src="{{ $ebook->cover_image ?: 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg' }}" alt="{{ $ebook->title }}" />
+                                                @php
+                                                    $coverImage = $ebook->external_cover_url 
+                                                        ? $ebook->external_cover_url 
+                                                        : ($ebook->cover_image_url ?? 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg');
+                                                @endphp
+                                                <img class="default-img" src="{{ $coverImage }}" alt="{{ $ebook->title }}" />
                                             </a>
                                         </div>
                                         <div class="product-badges product-badges-position product-badges-mrg">
@@ -756,8 +778,8 @@ $collections = collect();
 
                                         <!-- <p class="product-description">{{ Str::limit($ebook->short_description ?? $ebook->description, 80) }}</p> -->
                                         @php
-                                        // Ambil teks deskripsi
-                                        $descriptionText = $ebook->short_description ?? $ebook->description;
+                                        // Ambil teks deskripsi dan strip HTML tags
+                                        $descriptionText = strip_tags($ebook->short_description ?? $ebook->description);
 
                                         // Cek apakah teks pendek (kira-kira 1 baris). Sesuaikan angka 40 jika perlu.
                                         $isSingleLine = strlen($descriptionText) <= 29;

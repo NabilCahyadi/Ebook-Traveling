@@ -24,6 +24,30 @@
         object-position: center;
     }
 
+    /* Make all cards same height */
+    .product-grid {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .product-grid > [class*="col-"] {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 30px;
+    }
+
+    .product-cart-wrap {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .product-content-wrap {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
     .product-cart-wrap h2 {
         display: -webkit-box;
         -webkit-line-clamp: 2;
@@ -39,6 +63,13 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
+        min-height: 2.8em;
+        flex-grow: 1;
+        margin-bottom: 1rem;
+    }
+
+    .action-btn {
+        margin-top: auto;
     }
 
     .badge-language {
@@ -105,7 +136,12 @@
                         <div class="product-img-action-wrap">
                             <div class="product-img product-img-zoom">
                                 <a href="/ebooks/{{ $ebook->slug }}">
-                                    <img class="default-img" src="{{ $ebook->cover_image ?: 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg' }}" alt="{{ $ebook->title }}" />
+                                    @php
+                                        $coverImage = $ebook->external_cover_url 
+                                            ? $ebook->external_cover_url 
+                                            : ($ebook->cover_image_url ?? 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg');
+                                    @endphp
+                                    <img class="default-img" src="{{ $coverImage }}" alt="{{ $ebook->title }}" />
                                 </a>
                             </div>
                             <div class="product-badges product-badges-position product-badges-mrg">
@@ -154,7 +190,7 @@
                                 </div>
                             </div>
 
-                            <p class="product-description">{{ Str::limit($ebook->short_description ?? $ebook->description, 75) }}</p>
+                            <p class="product-description">{{ Str::limit(strip_tags($ebook->short_description ?? $ebook->description), 75) }}</p>
 
                             {{-- Tombol Aksi --}}
                             @auth

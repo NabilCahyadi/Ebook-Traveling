@@ -630,7 +630,12 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="{{ route('ebooks.show', $ebook->slug) }}">
-                                                <img class="default-img" src="{{ $ebook->cover_image ?: 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg' }}" alt="{{ $ebook->title }}" />
+                                                @php
+                                                    $coverImage = $ebook->external_cover_url 
+                                                        ? $ebook->external_cover_url 
+                                                        : ($ebook->cover_image_url ?? 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg');
+                                                @endphp
+                                                <img class="default-img" src="{{ $coverImage }}" alt="{{ $ebook->title }}" />
                                             </a>
                                         </div>
                                         <div class="product-badges product-badges-position product-badges-mrg">
@@ -681,7 +686,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="product-description">{!! $ebook->short_description !!}</div>
+                                        <div class="product-description">{{ Str::limit(strip_tags($ebook->short_description ?? $ebook->description), 75) }}</div>
 
                                         {{-- LOGIKA HANYA PADA TOMBOL AKSI --}}
                                         @if(auth()->check() && auth()->user()->hasActiveSubscription())

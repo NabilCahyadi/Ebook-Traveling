@@ -233,6 +233,7 @@
         font-weight: 600;
         text-decoration: none;
         transition: all 0.3s ease;
+        margin-top: auto;
     }
 
     .btn-read-now {
@@ -317,7 +318,12 @@
                                 <div class="product-img-action-wrap">
                                     <div class="product-img product-img-zoom">
                                         <a href="/ebooks/{{ $ebook->slug }}">
-                                            <img class="default-img" src="{{ $ebook->cover_image ?: 'https://via.placeholder.com/300x400.png?text=No+Cover' }}" alt="{{ $ebook->title }}" />
+                                            @php
+                                                $coverImage = $ebook->external_cover_url 
+                                                    ? $ebook->external_cover_url 
+                                                    : ($ebook->cover_image_url ?? 'https://via.placeholder.com/300x400.png?text=No+Cover');
+                                            @endphp
+                                            <img class="default-img" src="{{ $coverImage }}" alt="{{ $ebook->title }}" />
                                         </a>
                                     </div>
                                     <div class="product-badges product-badges-position product-badges-mrg">
@@ -362,8 +368,8 @@
                                         </div>
                                     </div>
                                     @php
-                                    // Ambil teks deskripsi
-                                    $descriptionText = $ebook->short_description ?? $ebook->description;
+                                    // Ambil teks deskripsi dan strip HTML tags
+                                    $descriptionText = strip_tags($ebook->short_description ?? $ebook->description);
 
                                     // Cek apakah teks pendek (kira-kira 1 baris). Sesuaikan angka 40 jika perlu.
                                     $isSingleLine = strlen($descriptionText) <= 35;
