@@ -259,6 +259,26 @@
         text-transform: uppercase;
     }
 
+    /* Fixed ukuran cover ebook agar konsisten */
+    .product-img {
+        position: relative;
+        width: 100%;
+        padding-top: 140%; /* Rasio 5:7 (tinggi 140% dari lebar) untuk cover buku */
+        overflow: hidden;
+        border-radius: 15px;
+        background-color: #f5f5f5;
+    }
+
+    .product-img img.default-img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
     /* --- Gaya untuk Tombol Aksi --- */
     .action-btn {
         display: flex;
