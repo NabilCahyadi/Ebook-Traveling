@@ -89,7 +89,7 @@
                                                         <br><small class="text-muted">{{ Str::limit($ebook->description, 50) }}</small>
                                                     @endif
                                                 </td>
-                                                <td>{{ $ebook->creator->user->name ?? 'Unknown' }}</td>
+                                                <td>{{ $ebook->creator->name ?? 'Unknown' }}</td>
                                                 <td>
                                                     @if($ebook->categories->isNotEmpty())
                                                         <span class="badge bg-label-info">{{ $ebook->categories->first()->name }}</span>

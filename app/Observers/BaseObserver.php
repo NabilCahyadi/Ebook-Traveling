@@ -13,9 +13,26 @@ abstract class BaseObserver
      */
     protected function logActivity($action, $table, $recordId, $additionalData = [])
     {
-        if (Auth::check()) {
+        // Check if admin is authenticated
+        if (Auth::guard('admin')->check()) {
+            ActionLog::create([
+                'admin_id' => Auth::guard('admin')->id(),
+                'user_type' => 'admin',
+                'action_type' => $action,
+                'table_name' => $table,
+                'record_id' => $recordId,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'url' => request()->fullUrl(),
+                'method' => request()->method(),
+                'new_values' => !empty($additionalData) ? json_encode($additionalData) : null,
+            ]);
+        }
+        // Check if regular user is authenticated
+        elseif (Auth::check()) {
             ActionLog::create([
                 'user_id' => Auth::id(),
+                'user_type' => 'user',
                 'action_type' => $action,
                 'table_name' => $table,
                 'record_id' => $recordId,

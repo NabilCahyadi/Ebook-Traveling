@@ -696,7 +696,7 @@ $collections = collect();
 
                                         <div class="product-author" style="margin-bottom:-12px;">
                                             <?php if($ebook->creator): ?>
-                                            <span>by <?php echo e($ebook->creator->pen_name ?? $ebook->creator->user->name); ?></span>
+                                            <span>by <?php echo e($ebook->creator->creator->pen_name ?? $ebook->creator->name); ?></span>
                                             <?php else: ?>
                                             <span>by Unknown Author</span>
                                             <?php endif; ?>

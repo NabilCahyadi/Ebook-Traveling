@@ -695,7 +695,7 @@ $collections = collect();
 
                                         <div class="product-author" style="margin-bottom:-12px;">
                                             @if($ebook->creator)
-                                            <span>by {{ $ebook->creator->pen_name ?? $ebook->creator->user->name }}</span>
+                                            <span>by {{ $ebook->creator->creator->pen_name ?? $ebook->creator->name }}</span>
                                             @else
                                             <span>by Unknown Author</span>
                                             @endif
