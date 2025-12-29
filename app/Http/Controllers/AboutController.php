@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PricingBenefit;
-use App\Services\PricingBenefitService; 
+use App\Services\PricingBenefitService;
+use App\Models\AboutUsSection;
+use App\Models\Blog;
 
 class AboutController extends Controller
 {
@@ -21,10 +23,16 @@ class AboutController extends Controller
      */
     public function index()
     {
-        // Panggil method dari Service untuk mendapatkan data
+        // Ambil data benefits
+        $benefits = PricingBenefit::where('status', 'active')->orderBy('sort_order')->get();
         $benefits = $this->pricingBenefitService->getActiveBenefitsForDisplay();
+        // Ambil data section About Us
+        $aboutSections = AboutUsSection::where('is_active', true)
+            ->orderBy('order_index', 'asc')
+            ->get()
+            ->keyBy('section_key'); // Ubah menjadi array asosiatif
+        $latestBlogImages = Blog::latest()->take(4)->pluck('featured_image');
 
-        // Kirim data ke view
-        return view('about-us', compact('benefits'));
+        return view('about-us', compact('benefits', 'aboutSections', 'latestBlogImages'));
     }
 }

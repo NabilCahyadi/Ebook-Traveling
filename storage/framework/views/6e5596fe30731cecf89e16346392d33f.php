@@ -1,7 +1,6 @@
-@extends('layouts_lp.app')
-@section('title', 'Contact - MeatMap')
+<?php $__env->startSection('title', 'Contact - MeatMap'); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <style>
     .contact-container {
         padding: 2rem 0;
@@ -126,30 +125,31 @@
                                 We're here to help! Reach out to us through any of these channels for prompt assistance.
                             </p>
                             <div class="contact-list">
-                                @forelse ($contacts as $type => $contact)
+                                <?php $__empty_1 = true; $__currentLoopData = $contacts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type => $contact): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                 <div class="contact-item">
                                     <div class="contact-icon">
-                                        <i class="{{ $contact->icon_class }}"></i>
+                                        <i class="<?php echo e($contact->icon_class); ?>"></i>
                                     </div>
                                     <div class="contact-detail">
-                                        <h3>{{ $contact->title }}</h3>
-                                        <p>{!! $contact->description !!}</p>
-                                        <a href="{{ $contact->link }}" target="_blank">
-                                            @if($type === 'whatsapp')
+                                        <h3><?php echo e($contact->title); ?></h3>
+                                        <p><?php echo $contact->description; ?></p>
+                                        <a href="<?php echo e($contact->link); ?>" target="_blank">
+                                            <?php if($type === 'whatsapp'): ?>
                                             Message Us on WhatsApp
-                                            @elseif($type === 'email')
-                                            {{ $contact->link }}
-                                            @elseif($type === 'phone')
+                                            <?php elseif($type === 'email'): ?>
+                                            <?php echo e($contact->link); ?>
+
+                                            <?php elseif($type === 'phone'): ?>
                                             Call Us
-                                            @else
+                                            <?php else: ?>
                                             Follow Us
-                                            @endif
+                                            <?php endif; ?>
                                         </a>
                                     </div>
                                 </div>
-                                @empty
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <p>Contact information is currently unavailable.</p>
-                                @endforelse
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -158,4 +158,5 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts_lp.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\PROJEK PROJEK\Ebook-Traveling\resources\views/contact.blade.php ENDPATH**/ ?>

@@ -1,7 +1,6 @@
-@extends('layouts_lp.app')
-@section('title', 'Pricing - MeatMap')
+<?php $__env->startSection('title', 'Pricing - MeatMap'); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <style>
     .icon-wrapper {
         width: 80px;
@@ -425,8 +424,8 @@
         <div>
             <div class="style-4">
                 <div class="rectangle single-animation-wrap rounded mt-15" style="position: relative;">
-                    @if($bannerData)
-                    <img src="{{ asset('storage/' . $bannerData->image) }}" alt="Banner" class="img-fluid w-100 rounded" id="pricing-banner-img" style="aspect-ratio: 2.5/1; object-fit: cover;">
+                    <?php if($bannerData): ?>
+                    <img src="<?php echo e(asset('storage/' . $bannerData->image)); ?>" alt="Banner" class="img-fluid w-100 rounded" id="pricing-banner-img" style="aspect-ratio: 2.5/1; object-fit: cover;">
 
                     <div id="pricing-banner-content" class="js-fade-in" style="
                         position: absolute; 
@@ -446,16 +445,17 @@
                     ">
                         <div style="max-width: 800px; width: 90%;">
                             <h1 class="mb-30">
-                                {!! nl2br(e($bannerData->title)) !!}
+                                <?php echo nl2br(e($bannerData->title)); ?>
+
                             </h1>
-                            @if($bannerData->description)
-                            <p class="mb-65 lh-base" style="font-size: 25px;">{{ $bannerData->description }}</p>
-                            @endif
+                            <?php if($bannerData->description): ?>
+                            <p class="mb-65 lh-base" style="font-size: 25px;"><?php echo e($bannerData->description); ?></p>
+                            <?php endif; ?>
                         </div>
                     </div>
-                    @else
+                    <?php else: ?>
                     <p>Banner pricing tidak ditemukan.</p>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -468,67 +468,69 @@
                 Choose the best plan to power your projects, from small personal websites to large-scale enterprise applications.
             </p>
 
-            @if(isset($groupedSubscriptionPlans) && $groupedSubscriptionPlans->isNotEmpty())
+            <?php if(isset($groupedSubscriptionPlans) && $groupedSubscriptionPlans->isNotEmpty()): ?>
             <!-- Tab Navigation (menggunakan nav-pills) -->
             <ul class="nav nav-pills justify-content-center mb-5" id="pricingTab" role="tablist">
-                @foreach($groupedSubscriptionPlans as $categoryKey => $plans)
+                <?php $__currentLoopData = $groupedSubscriptionPlans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $categoryKey => $plans): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{ $loop->first ? 'active' : '' }}" id="{{ $categoryKey }}-tab" data-bs-toggle="pill" data-bs-target="#{{ $categoryKey }}" type="button" role="tab" aria-controls="{{ $categoryKey }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}">
-                        {{ App\Models\SubscriptionPlan::CATEGORIES[$categoryKey] ?? ucfirst($categoryKey) }}
+                    <button class="nav-link <?php echo e($loop->first ? 'active' : ''); ?>" id="<?php echo e($categoryKey); ?>-tab" data-bs-toggle="pill" data-bs-target="#<?php echo e($categoryKey); ?>" type="button" role="tab" aria-controls="<?php echo e($categoryKey); ?>" aria-selected="<?php echo e($loop->first ? 'true' : 'false'); ?>">
+                        <?php echo e(App\Models\SubscriptionPlan::CATEGORIES[$categoryKey] ?? ucfirst($categoryKey)); ?>
+
                     </button>
                 </li>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </ul>
 
             <!-- Tab Content -->
             <div class="tab-content" id="pricingTabContent">
-                @foreach($groupedSubscriptionPlans as $categoryKey => $plans)
-                <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ $categoryKey }}" role="tabpanel" aria-labelledby="{{ $categoryKey }}-tab">
+                <?php $__currentLoopData = $groupedSubscriptionPlans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $categoryKey => $plans): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <div class="tab-pane fade <?php echo e($loop->first ? 'show active' : ''); ?>" id="<?php echo e($categoryKey); ?>" role="tabpanel" aria-labelledby="<?php echo e($categoryKey); ?>-tab">
                     <div class="pricing-grid">
-                        @foreach($plans as $plan)
-                        <div class="pricing-card {{ $plan->is_featured ? 'pricing-card--featured' : '' }}">
-                            <p class="card-title">{{ $plan->name }}</p>
-                            <h2>Rp {{ number_format($plan->price, 0, ',', '.') }}</h2>
-                            <p class="card-price-description">{{ $plan->price_description }}</p>
-                            <p class="desc-plan">{{ $plan->description }}</p>
+                        <?php $__currentLoopData = $plans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $plan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <div class="pricing-card <?php echo e($plan->is_featured ? 'pricing-card--featured' : ''); ?>">
+                            <p class="card-title"><?php echo e($plan->name); ?></p>
+                            <h2>Rp <?php echo e(number_format($plan->price, 0, ',', '.')); ?></h2>
+                            <p class="card-price-description"><?php echo e($plan->price_description); ?></p>
+                            <p class="desc-plan"><?php echo e($plan->description); ?></p>
                             <div class="pricing-button-container">
                                 <!-- Tombol untuk Mayar.id -->
-                                <button class="pricing-button pricing-button--primary" onclick="subscribeWithMayar('{{ $plan->id }}', this)">
-                                    {{ $plan->button_text ?? 'Subscribe Now' }}
+                                <button class="pricing-button pricing-button--primary" onclick="subscribeWithMayar('<?php echo e($plan->id); ?>', this)">
+                                    <?php echo e($plan->button_text ?? 'Subscribe Now'); ?>
+
                                 </button>
 
                                 <!-- Tombol untuk WhatsApp -->
-                                {{-- resources/views/components/whatsapp-link.blade.php --}}
-                                @php
+                                
+                                <?php
                                 $settingService = app('settings');
                                 $waNumber = $settingService->get('whatsapp_number', '6289657571177');
 
                                 $selectedPlan = request('plan')
                                 ? ucwords(str_replace('-', ' ', request('plan')))
                                 : 'Pilih Paket';
-                                @endphp
+                                ?>
 
-                                @if($user)
-                                <a href="https://wa.me/{{ $waNumber }}?text={{ urlencode("Halo Admin, saya ingin berlangganan.\n\nNama\t: " . $user->name . "\nEmail\t: " . $user->email . "\nPaket\t: " . $selectedPlan . "\nPembayaran\t: _Silakan saya sebutkan metode pembayaran_\n\nMohon bantuannya. Terima kasih!") }}"
+                                <?php if($user): ?>
+                                <a href="https://wa.me/<?php echo e($waNumber); ?>?text=<?php echo e(urlencode("Halo Admin, saya ingin berlangganan.\n\nNama\t: " . $user->name . "\nEmail\t: " . $user->email . "\nPaket\t: " . $plan->name . "\nPembayaran\t: _Silakan saya sebutkan metode pembayaran_\n\nMohon bantuannya. Terima kasih!")); ?>"
                                     class="btn bg-success text-white rounded-pill py-3 w-100 mb-2"
                                     target="_blank">
-                                    <i class="bi bi-whatsapp"></i> Hubungi Admin via WhatsApp
+                                    <i class="bi bi-whatsapp"></i> Call Us via WhatsApp
                                 </a>
-                                @else
-                                <a href="{{ route('login') }}" class="btn bg-success text-white rounded-pill py-3 w-100 mb-2">
-                                    <i class="bi bi-box-arrow-in-right"></i> Login untuk Hubungi Admin
+                                <?php else: ?>
+                                <a href="<?php echo e(route('login')); ?>" class="btn bg-success text-white rounded-pill py-3 w-100 mb-2">
+                                    <i class="bi bi-box-arrow-in-right"></i> Login to Call Us
                                 </a>
-                                @endif
+                                <?php endif; ?>
                             </div>
                         </div>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
                 </div>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
-            @else
+            <?php else: ?>
             <p>Subscription plans are currently unavailable.</p>
-            @endif
+            <?php endif; ?>
         </div>
     </section>
     <!-- end pricing cards-->
@@ -539,21 +541,21 @@
             <p class="text-center text-muted mb-4" style="max-width:54rem;margin:0 auto;">Common questions about subscriptions, billing, and accessing your guides. If you need further help, contact our support team.</p>
 
             <div class="accordion" role="tablist" style="max-width:900px;margin:0 auto;">
-                @if($faqs && $faqs->isNotEmpty())
-                @foreach($faqs as $faq)
+                <?php if($faqs && $faqs->isNotEmpty()): ?>
+                <?php $__currentLoopData = $faqs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $faq): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div class="accordion-item rounded shadow-sm mb-3 p-0">
                     <div class="accordion-header d-flex justify-content-between align-items-center px-3 py-3" style="cursor:pointer;" onclick="toggleAccordion(this)">
-                        <h6 class="mb-0">{{ $faq->question }}</h6>
+                        <h6 class="mb-0"><?php echo e($faq->question); ?></h6>
                         <i class="fas fa-plus" aria-hidden="true"></i>
                     </div>
                     <div class="accordion-content" style="max-height:0px; overflow:hidden; padding:0 1rem;">
-                        <p class="mb-3 mt-3">{{ $faq->answer }}</p>
+                        <p class="mb-3 mt-3"><?php echo e($faq->answer); ?></p>
                     </div>
                 </div>
-                @endforeach
-                @else
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                <?php else: ?>
                 <p class="text-center">No pricing FAQs available at the moment.</p>
-                @endif
+                <?php endif; ?>
             </div>
         </div>
     </section>
@@ -562,7 +564,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="position-relative newsletter-inner" style="background-image: url('{{ asset($ctaBackground) }}'); background-size: cover; background-position: center; color: #ffffff; padding: 5rem 5rem 5rem 5rem; text-align: left; border-radius: 1rem;">
+                    <div class="position-relative newsletter-inner" style="background-image: url('<?php echo e(asset($ctaBackground)); ?>'); background-size: cover; background-position: center; color: #ffffff; padding: 5rem 5rem 5rem 5rem; text-align: left; border-radius: 1rem;">
                         <div class="newsletter-content">
                             <h3 class="mb-20">
                                 Still confused about which subscription<br />
@@ -629,7 +631,7 @@
         });
     });
 </script>
-{{-- JavaScript untuk animasi fade-in --}}
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const contentElement = document.getElementById('pricing-banner-content');
@@ -652,7 +654,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
                 },
                 body: JSON.stringify({
                     plan_id: planId
@@ -693,4 +695,5 @@
         }
     }
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts_lp.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\PROJEK PROJEK\Ebook-Traveling\resources\views/pricing.blade.php ENDPATH**/ ?>

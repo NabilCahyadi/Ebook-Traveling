@@ -1,7 +1,6 @@
-@extends('layouts_lp.app')
-@section('title', 'Pusat Bantuan - MeatMap')
+<?php $__env->startSection('title', 'Pusat Bantuan - MeatMap'); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <style>
     .help-container {
         padding: 2rem 0;
@@ -282,4 +281,5 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts_lp.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\PROJEK PROJEK\Ebook-Traveling\resources\views/help-center.blade.php ENDPATH**/ ?>

@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
             CollectionSeeder::class,     // Membuat koleksi (best-seller, featured, dll)
             SubscriptionPlanSeeder::class, // Membuat paket berlangganan (basic, premium)
             SubscriptionPromoSeeder::class,
-            
+
             // 2. DATA PENGGUNA (Bergantung pada RoleSeeder)
             // Membuat pengguna setelah role tersedia.
             CreatorSeeder::class,
@@ -51,6 +51,9 @@ class DatabaseSeeder extends Seeder
             PricingBannerSeeder::class,
             PricingBenefitSeeder::class,
             FaqSeeder::class,
+            AboutUsSectionsSeeder::class,
+            ContactInfoSeeder::class,
+            SiteSettingsSeeder::class,
         ]);
     }
 }
