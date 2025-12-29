@@ -779,7 +779,7 @@
                                                     <!-- HILANGKAN INLINE STYLE, GUNAKAN CSS -->
                                                     <div class="product-author">
                                                         @if($ebook->creator)
-                                                        <span>by {{ $ebook->creator->pen_name ?? $ebook->creator->user->name }}</span>
+                                                        <span>by {{ $ebook->creator->creator->pen_name ?? $ebook->creator->name }}</span>
                                                         @else
                                                         <span>by Unknown Author</span>
                                                         @endif
@@ -900,7 +900,7 @@
                                                         <strong>{{ $reading->ebook->title }}</strong><br>
                                                         <small class="text-muted">by
                                                             @if($reading->ebook->creator)
-                                                            {{ $reading->ebook->creator->pen_name ?? $reading->ebook->creator->user->name }}
+                                                            {{ $reading->ebook->creator->creator->pen_name ?? $reading->ebook->creator->name }}
                                                             @else
                                                             Unknown Author
                                                             @endif
