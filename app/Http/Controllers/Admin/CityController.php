@@ -167,13 +167,10 @@ class CityController extends Controller
     {
         $city = City::findOrFail($id);
 
-        if ($city->ebooks()->count() > 0) {
-            return back()->with('error', 'Cannot delete city with existing ebooks!');
-        }
-
+        // Foreign key constraint will automatically set city_id to null in related ebooks
         $city->delete();
 
         return redirect()->route('admin.cities.index')
-            ->with('success', 'City deleted successfully!');
+            ->with('success', 'City deleted successfully! Related ebooks city reference has been cleared.');
     }
 }

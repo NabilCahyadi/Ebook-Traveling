@@ -24,9 +24,11 @@ class EbookService
         string $sortBy = 'created_at',
         string $sortOrder = 'desc',
         ?string $search = null,
-        ?string $status = null
+        ?string $status = null,
+        ?string $categoryId = null,
+        ?string $cityId = null
     ) {
-        return $this->ebookRepository->getAllPaginated($perPage, $sortBy, $sortOrder, $search, $status);
+        return $this->ebookRepository->getAllPaginated($perPage, $sortBy, $sortOrder, $search, $status, $categoryId, $cityId);
     }
 
     /**

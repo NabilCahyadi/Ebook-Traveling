@@ -31,9 +31,14 @@ class EbookController extends Controller
         $sortOrder = $request->get('sort_order', 'desc');
         $search = $request->get('search');
         $status = $request->get('status');
+        $categoryId = $request->get('category_id');
+        $cityId = $request->get('city_id');
 
-        $ebooks = $this->ebookService->getAllEbooks($perPage, $sortBy, $sortOrder, $search, $status);
-        return view('admin.ebooks.index', compact('ebooks'));
+        $ebooks = $this->ebookService->getAllEbooks($perPage, $sortBy, $sortOrder, $search, $status, $categoryId, $cityId);
+        $categories = \App\Models\Category::orderBy('name')->get();
+        $cities = \App\Models\City::orderBy('name')->get();
+        
+        return view('admin.ebooks.index', compact('ebooks', 'categories', 'cities'));
     }
 
     /**

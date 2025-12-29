@@ -131,7 +131,7 @@
                                         <ul class="dropdown-menu dropdown-menu-end">
                                             <li>
                                                 <a class="dropdown-item" href="javascript:void(0);"
-                                                    onclick="editCity('{{ $city->id }}', '{{ $city->name }}', '{{ $city->province }}', '{{ $city->image ? Storage::url($city->image) : '' }}')">
+                                                    onclick="editCity('{{ $city->id }}', '{{ $city->name }}', '{{ $city->province }}', '{{ $city->image_url }}')">
                                                     <i class="ti ti-pencil me-2"></i> Edit
                                                 </a>
                                             </li>
@@ -153,20 +153,8 @@
                                     </div>
                                 </div>
                                 <!-- City Image -->
-                                @if ($city->image)
-                                    <img src="{{ Storage::url($city->image) }}" alt="{{ $city->name }}"
-                                        style="width: 100%; height: 100%; object-fit: cover;">
-                                @else
-                                    <div class="d-flex align-items-center justify-content-center h-100">
-                                        <div class="text-center text-white">
-                                            <i class="ti ti-map-pin" style="font-size: 64px; opacity: 0.3;"></i>
-                                            <div class="mt-2"
-                                                style="font-size: 24px; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-                                                {{ $city->name }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
+                                <img src="{{ $city->image_url }}" alt="{{ $city->name }}"
+                                    style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
 
                             <!-- Card Body -->
@@ -202,20 +190,11 @@
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                @if ($city->image)
-                                                    <div class="avatar avatar-sm me-2">
-                                                        <img src="{{ Storage::url($city->image) }}" alt="{{ $city->name }}"
-                                                            class="rounded"
-                                                            style="width: 38px; height: 38px; object-fit: cover;">
-                                                    </div>
-                                                @else
-                                                    <div class="avatar avatar-sm me-2"
-                                                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                                                        <span class="avatar-initial rounded">
-                                                            <i class="ti ti-map-pin text-white"></i>
-                                                        </span>
-                                                    </div>
-                                                @endif
+                                                <div class="avatar avatar-sm me-2">
+                                                    <img src="{{ $city->image_url }}" alt="{{ $city->name }}"
+                                                        class="rounded"
+                                                        style="width: 38px; height: 38px; object-fit: cover;">
+                                                </div>
                                                 <div>
                                                     <div class="fw-medium">{{ $city->name }}</div>
                                                 </div>
@@ -236,7 +215,7 @@
                                                 </button>
                                                 <div class="dropdown-menu dropdown-menu-end">
                                                     <a class="dropdown-item" href="javascript:void(0);"
-                                                        onclick="editCity('{{ $city->id }}', '{{ $city->name }}', '{{ $city->province }}', '{{ $city->image ? Storage::url($city->image) : '' }}')">
+                                                        onclick="editCity('{{ $city->id }}', '{{ $city->name }}', '{{ $city->province }}', '{{ $city->image_url }}')">
                                                         <i class="ti ti-pencil me-2"></i> Edit
                                                     </a>
                                                     <div class="dropdown-divider"></div>

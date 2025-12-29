@@ -17,7 +17,9 @@ class EbookRepository implements EbookRepositoryInterface
         string $sortBy = 'created_at',
         string $sortOrder = 'desc',
         ?string $search = null,
-        ?string $status = null
+        ?string $status = null,
+        ?string $categoryId = null,
+        ?string $cityId = null
     ): mixed {
         $query = Ebook::with(['category', 'city']);
 
@@ -32,6 +34,22 @@ class EbookRepository implements EbookRepositoryInterface
         // Apply status filter
         if ($status) {
             $query->where('status', $status);
+        }
+
+        // Apply category filter
+        if ($categoryId) {
+            $query->whereHas('categories', function ($q) use ($categoryId) {
+                $q->where('categories.id', $categoryId);
+            });
+        }
+
+        // Apply city filter
+        if ($cityId) {
+            if ($cityId === 'null') {
+                $query->whereNull('city_id');
+            } else {
+                $query->where('city_id', $cityId);
+            }
         }
 
         return $query->orderBy($sortBy, $sortOrder)->paginate($perPage);
