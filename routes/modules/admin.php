@@ -10,7 +10,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 | Routes untuk management panel yang bisa diakses berdasarkan permission
 */
 
-Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin', 'admin'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     

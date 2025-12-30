@@ -1,8 +1,8 @@
-@extends('layouts_lp.app') {{-- Sesuaikan dengan layout utama Anda --}}
+ 
 
-@section('title', 'Blog - MeatMap')
+<?php $__env->startSection('title', 'Blog - MeatMap'); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <style>
     /* Untuk memperbesar gambar utama di halaman detail blog */
     .single-thumbnail {
@@ -29,10 +29,10 @@
     <div class="page-header breadcrumb-wrap">
         <div class="container">
             <div class="breadcrumb">
-                <a href="{{ route('home') }}" rel="nofollow"><i class="fi-rs-home mr-5"></i></a>
+                <a href="<?php echo e(route('home')); ?>" rel="nofollow"><i class="fi-rs-home mr-5"></i></a>
                 <span></span>
-                <a href="{{ route('blogs.index') }}">Blog & News</a>
-                <span class="active">‎ ‎ {{ $blog->title }}</span>
+                <a href="<?php echo e(route('blogs.index')); ?>">Blog & News</a>
+                <span class="active">‎ ‎ <?php echo e($blog->title); ?></span>
             </div>
         </div>
     </div>
@@ -46,18 +46,18 @@
                                 <div class="single-header style-2">
                                     <div class="row">
                                         <div class="col-xl-10 col-lg-12 m-auto">
-                                            <h6 class="mb-10"><a href="#">{{ $blog->category }}</a></h6>
-                                            <h2 class="mb-10">{{ $blog->title }}</h2>
+                                            <h6 class="mb-10"><a href="#"><?php echo e($blog->category); ?></a></h6>
+                                            <h2 class="mb-10"><?php echo e($blog->title); ?></h2>
                                             <div class="single-header-meta">
                                                 <div class="entry-meta meta-1 font-xs mt-15 mb-15">
                                                     <a class="author-avatar fs-4" href="#">
                                                         <i class="bi bi-person-circle mr-10"></i>
                                                     </a>
-                                                    <!-- <span class="post-by">By <a href="">{{ optional($blog->author)->name ?? 'Anonymous' }}</a></span> -->
+                                                    <!-- <span class="post-by">By <a href=""><?php echo e(optional($blog->author)->name ?? 'Anonymous'); ?></a></span> -->
                                                     <span class="post-by">By <a href="">MeatMap Team</a></span>
-                                                    <span class="post-on has-dot">{{ \Carbon\Carbon::parse($blog->published_at)->diffInHours() < 24 ? $blog->published_at->diffForHumans() : $blog->published_at->format('d M Y') }}</span>
+                                                    <span class="post-on has-dot"><?php echo e(\Carbon\Carbon::parse($blog->published_at)->diffInHours() < 24 ? $blog->published_at->diffForHumans() : $blog->published_at->format('d M Y')); ?></span>
                                                     <span class="post-on has-dot">
-                                                        @php
+                                                        <?php
                                                         $views = $blog->view_count;
                                                         if ($views >= 1000000000) { // 1 Miliar
                                                         $formattedViews = number_format($views / 1000000000, 1) . 'B';
@@ -68,8 +68,8 @@
                                                         } else {
                                                         $formattedViews = $views;
                                                         }
-                                                        @endphp
-                                                        {{ $formattedViews }} Views
+                                                        ?>
+                                                        <?php echo e($formattedViews); ?> Views
                                                     </span>
                                                 </div>
                                             </div>
@@ -78,38 +78,59 @@
                                 </div>
                                 <figure class="single-thumbnail">
                                     <div class="col-xl-10 col-lg-12 m-auto">
-                                        @php
-                                            // Check if image is external URL or local storage
-                                            $imageUrl = $blog->featured_image
-                                                ? (filter_var($blog->featured_image, FILTER_VALIDATE_URL) 
-                                                    ? $blog->featured_image 
-                                                    : asset('storage/' . $blog->featured_image))
-                                                : asset('images/blog-placeholder.webp');
-                                        @endphp
-                                        <img src="{{ $imageUrl }}" alt="{{ $blog->title }}" />
+                                        <img src="<?php echo e($blog->featured_image); ?>" alt="" />
                                     </div>
                                 </figure>
                                 <div class="single-content">
                                     <div class="row">
                                         <div class="col-xl-10 col-lg-12 m-auto">
-                                            <p>{!! $blog->content !!}</p>
+                                            <p><?php echo $blog->content; ?></p>
                                             <!--Entry bottom / tags-->
-                                            {{-- resources/views/components/blogs/blog-tags.blade.php --}}
+                                            
 
-                                            @props(['blog'])
-                                            @if(isset($blog) && $blog->tags && count($blog->tags) > 0)
+                                            <?php $attributes ??= new \Illuminate\View\ComponentAttributeBag;
+
+$__newAttributes = [];
+$__propNames = \Illuminate\View\ComponentAttributeBag::extractPropNames((['blog']));
+
+foreach ($attributes->all() as $__key => $__value) {
+    if (in_array($__key, $__propNames)) {
+        $$__key = $$__key ?? $__value;
+    } else {
+        $__newAttributes[$__key] = $__value;
+    }
+}
+
+$attributes = new \Illuminate\View\ComponentAttributeBag($__newAttributes);
+
+unset($__propNames);
+unset($__newAttributes);
+
+foreach (array_filter((['blog']), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
+    $$__key = $$__key ?? $__value;
+}
+
+$__defined_vars = get_defined_vars();
+
+foreach ($attributes->all() as $__key => $__value) {
+    if (array_key_exists($__key, $__defined_vars)) unset($$__key);
+}
+
+unset($__defined_vars, $__key, $__value); ?>
+                                            <?php if(isset($blog) && $blog->tags && count($blog->tags) > 0): ?>
                                             <div class="entry-bottom mt-50 mb-30">
-                                                {{-- PERUBAHAN UTAMA DI SINI --}}
+                                                
                                                 <div class="d-flex flex-wrap align-items-center">
-                                                    @foreach($blog->tags as $tag)
-                                                    {{-- PERUBAHAN KELAS MARGIN DI SINI --}}
-                                                    <a href="{{ route('blogs.by.tag', ['tag' => $tag]) }}" rel="tag" class="hover-up btn btn-sm btn-rounded me-2 mb-2">
-                                                        {{ $tag }}
+                                                    <?php $__currentLoopData = $blog->tags; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tag): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    
+                                                    <a href="<?php echo e(route('blogs.by.tag', ['tag' => $tag])); ?>" rel="tag" class="hover-up btn btn-sm btn-rounded me-2 mb-2">
+                                                        <?php echo e($tag); ?>
+
                                                     </a>
-                                                    @endforeach
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                 </div>
                                             </div>
-                                            @endif
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>
@@ -129,33 +150,33 @@
                                 <div class="sidebar-widget product-sidebar mb-50 p-30 bg-grey border-radius-10">
                                     <h5 class="section-title style-1 mb-30">Related E-Books</h5>
 
-                                    @if($blog->ebooks->isNotEmpty())
-                                    @foreach($blog->ebooks as $ebook)
+                                    <?php if($blog->ebooks->isNotEmpty()): ?>
+                                    <?php $__currentLoopData = $blog->ebooks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ebook): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <div class="single-post clearfix">
                                         <div class="image">
-                                            <img src="{{ asset($ebook->cover_image) }}" alt="{{ $ebook->title }}" />
+                                            <img src="<?php echo e(asset($ebook->cover_image)); ?>" alt="<?php echo e($ebook->title); ?>" />
                                         </div>
                                         <div class="content pt-10">
-                                            {{-- PERBAIKAN: Buat link ke halaman detail e-book --}}
-                                            <h6><a href="{{ route('ebooks.show', $ebook->slug) }}">{{ $ebook->title }}</a></h6>
+                                            
+                                            <h6><a href="<?php echo e(route('ebooks.show', $ebook->slug)); ?>"><?php echo e($ebook->title); ?></a></h6>
                                             <div class="product-detail-rating">
                                                 <div class="product-rate-cover text-end">
                                                     <div class="product-rate-cover">
                                                         <div class="product-rate d-inline-block">
-                                                            {{-- HITUNG RATA-RATA LANGSUNG DARI TABEL ebook_ratings --}}
-                                                            <div class="product-rating" style="width: {{ ($ebook->ratings()->avg('rating') / 5) * 100 }}%"></div>
+                                                            
+                                                            <div class="product-rating" style="width: <?php echo e(($ebook->ratings()->avg('rating') / 5) * 100); ?>%"></div>
                                                         </div>
-                                                        {{-- TAMPILKAN JUGA RATA-RATA YANG SAMA --}}
-                                                        <span class="font-small ml-5 text-muted">({{ round($ebook->ratings()->avg('rating'), 2) }})</span>
+                                                        
+                                                        <span class="font-small ml-5 text-muted">(<?php echo e(round($ebook->ratings()->avg('rating'), 2)); ?>)</span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    @endforeach
-                                    @else
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php else: ?>
                                     <p>Belum ada e-book terkait untuk artikel ini.</p>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -165,4 +186,5 @@
         </div>
     </div>
 </main>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts_lp.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\ebook_traveling\resources\views/blog-detail.blade.php ENDPATH**/ ?>

@@ -1,38 +1,38 @@
-@extends('layouts.admin')
+<?php $__env->startSection('title', 'Kelola Latest Blogs Content'); ?>
 
-@section('title', 'Kelola Latest Blogs Content')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <div class="container-xxl flex-grow-1 container-p-y">
         <!-- Success/Error Messages -->
-        @if (session('success'))
+        <?php if(session('success')): ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>Success!</strong> {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
+                <strong>Success!</strong> <?php echo e(session('success')); ?>
 
-        @if (session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Error!</strong> {{ session('error') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-        @endif
+        <?php endif; ?>
+
+        <?php if(session('error')): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Error!</strong> <?php echo e(session('error')); ?>
+
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
 
         <!-- Page Header -->
         <div class="mb-4">
             <h4 class="fw-bold py-3 mb-2">
                 <span class="text-muted fw-light">
-                    <a href="{{ route('admin.landing-page-content.index') }}" class="text-muted">Landing Page Content</a> /
+                    <a href="<?php echo e(route('admin.landing-page-content.index')); ?>" class="text-muted">Landing Page Content</a> /
                 </span>
                 Latest Blogs
             </h4>
             <p class="text-muted">Pilih dan atur urutan blog yang akan ditampilkan di landing page</p>
         </div>
 
-        <form action="{{ route('admin.landing-page-content.latest-blogs.update') }}" method="POST" id="blogsForm">
-            @csrf
-            @method('PUT')
+        <form action="<?php echo e(route('admin.landing-page-content.latest-blogs.update')); ?>" method="POST" id="blogsForm">
+            <?php echo csrf_field(); ?>
+            <?php echo method_field('PUT'); ?>
 
             <div class="row">
                 <!-- Selected Blogs (Sortable) -->
@@ -42,11 +42,11 @@
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h5 class="mb-0">
                                     <i class="ti ti-list-check me-2"></i>
-                                    Blog Terpilih (<span id="selected-count">{{ $selectedBlogs->count() }}</span>)
+                                    Blog Terpilih (<span id="selected-count"><?php echo e($selectedBlogs->count()); ?></span>)
                                 </h5>
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" id="is_visible" name="is_visible" 
-                                           value="1" {{ old('is_visible', $section->is_visible) ? 'checked' : '' }}>
+                                           value="1" <?php echo e(old('is_visible', $section->is_visible) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="is_visible">
                                         Tampilkan di Landing Page
                                     </label>
@@ -55,16 +55,30 @@
                             <div class="mb-0">
                                 <label for="display_count" class="form-label">Jumlah Blog yang Ditampilkan</label>
                                 <input type="number" 
-                                       class="form-control @error('display_count') is-invalid @enderror" 
+                                       class="form-control <?php $__errorArgs = ['display_count'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                        id="display_count" 
                                        name="display_count" 
                                        min="1" 
                                        max="12" 
-                                       value="{{ old('display_count', $displayCount) }}"
+                                       value="<?php echo e(old('display_count', $displayCount)); ?>"
                                        required>
-                                @error('display_count')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['display_count'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 <small class="form-text text-muted">
                                     Maksimal 12 blog. Hanya blog yang dipilih akan ditampilkan.
                                 </small>
@@ -77,44 +91,52 @@
                             </div>
 
                             <div id="selected-blogs" class="sortable-list">
-                                @forelse($selectedBlogs as $index => $blog)
-                                    <div class="sortable-item" data-id="{{ $blog->id }}">
+                                <?php $__empty_1 = true; $__currentLoopData = $selectedBlogs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $blog): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                    <div class="sortable-item" data-id="<?php echo e($blog->id); ?>">
                                         <div class="d-flex align-items-start justify-content-between p-3 mb-2 border rounded">
                                             <div class="d-flex align-items-start flex-grow-1">
                                                 <i class="ti ti-grip-vertical text-muted me-3 mt-2" style="cursor: grab;"></i>
-                                                <img src="@if($blog->featured_image && filter_var($blog->featured_image, FILTER_VALIDATE_URL)){{ $blog->featured_image }}@elseif($blog->featured_image){{ asset('storage/' . $blog->featured_image) }}@else{{ asset('images/blog-placeholder.webp') }}@endif" 
-                                                     alt="{{ $blog->title }}" 
+                                                <img src="<?php if($blog->featured_image && filter_var($blog->featured_image, FILTER_VALIDATE_URL)): ?><?php echo e($blog->featured_image); ?><?php elseif($blog->featured_image): ?><?php echo e(asset('storage/' . $blog->featured_image)); ?><?php else: ?><?php echo e(asset('images/blog-placeholder.webp')); ?><?php endif; ?>" 
+                                                     alt="<?php echo e($blog->title); ?>" 
                                                      class="rounded me-3" 
                                                      style="width: 80px; height: 60px; object-fit: cover;">
                                                 <div class="flex-grow-1">
-                                                    <strong>{{ Str::limit($blog->title, 60) }}</strong>
+                                                    <strong><?php echo e(Str::limit($blog->title, 60)); ?></strong>
                                                     <br>
                                                     <small class="text-muted">
                                                         <i class="ti ti-calendar-event me-1"></i>
-                                                        {{ $blog->published_at->format('d M Y') }}
+                                                        <?php echo e($blog->published_at->format('d M Y')); ?>
+
                                                     </small>
                                                     <br>
-                                                    <span class="badge bg-label-primary mt-1">{{ $blog->category }}</span>
+                                                    <span class="badge bg-label-primary mt-1"><?php echo e($blog->category); ?></span>
                                                 </div>
                                             </div>
-                                            <button type="button" class="btn btn-sm btn-icon btn-danger remove-blog" data-id="{{ $blog->id }}">
+                                            <button type="button" class="btn btn-sm btn-icon btn-danger remove-blog" data-id="<?php echo e($blog->id); ?>">
                                                 <i class="ti ti-x"></i>
                                             </button>
                                         </div>
-                                        <input type="hidden" name="selected_blogs[]" value="{{ $blog->id }}">
+                                        <input type="hidden" name="selected_blogs[]" value="<?php echo e($blog->id); ?>">
                                     </div>
-                                @empty
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                     <div id="empty-state" class="text-center py-5">
                                         <i class="ti ti-article-off" style="font-size: 3rem; color: #ddd;"></i>
                                         <p class="text-muted mt-2">Belum ada blog yang dipilih</p>
                                         <small class="text-muted">Pilih blog dari daftar di sebelah kanan</small>
                                     </div>
-                                @endforelse
+                                <?php endif; ?>
                             </div>
 
-                            @error('selected_blogs')
-                                <div class="text-danger mt-2">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['selected_blogs'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger mt-2"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
                 </div>
@@ -135,31 +157,31 @@
                                    placeholder="Cari blog...">
 
                             <div id="available-blogs" style="max-height: 600px; overflow-y: auto;">
-                                @forelse($allBlogs as $blog)
+                                <?php $__empty_1 = true; $__currentLoopData = $allBlogs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $blog): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                     <div class="available-blog-item border rounded p-2 mb-2" 
-                                         data-id="{{ $blog->id }}"
-                                         data-title="{{ strtolower($blog->title) }}"
-                                         style="cursor: pointer; {{ $selectedBlogs->contains('id', $blog->id) ? 'display: none;' : '' }}">
+                                         data-id="<?php echo e($blog->id); ?>"
+                                         data-title="<?php echo e(strtolower($blog->title)); ?>"
+                                         style="cursor: pointer; <?php echo e($selectedBlogs->contains('id', $blog->id) ? 'display: none;' : ''); ?>">
                                         <div class="d-flex align-items-start">
-                                            <img src="@if($blog->featured_image && filter_var($blog->featured_image, FILTER_VALIDATE_URL)){{ $blog->featured_image }}@elseif($blog->featured_image){{ asset('storage/' . $blog->featured_image) }}@else{{ asset('images/blog-placeholder.webp') }}@endif" 
-                                                 alt="{{ $blog->title }}" 
+                                            <img src="<?php if($blog->featured_image && filter_var($blog->featured_image, FILTER_VALIDATE_URL)): ?><?php echo e($blog->featured_image); ?><?php elseif($blog->featured_image): ?><?php echo e(asset('storage/' . $blog->featured_image)); ?><?php else: ?><?php echo e(asset('images/blog-placeholder.webp')); ?><?php endif; ?>" 
+                                                 alt="<?php echo e($blog->title); ?>" 
                                                  class="rounded me-2" 
                                                  style="width: 60px; height: 45px; object-fit: cover;">
                                             <div class="flex-grow-1">
-                                                <div><strong>{{ Str::limit($blog->title, 50) }}</strong></div>
-                                                <small class="text-muted">{{ $blog->published_at->format('d M Y') }}</small>
+                                                <div><strong><?php echo e(Str::limit($blog->title, 50)); ?></strong></div>
+                                                <small class="text-muted"><?php echo e($blog->published_at->format('d M Y')); ?></small>
                                                 <br>
-                                                <span class="badge bg-label-primary" style="font-size: 0.7rem;">{{ $blog->category }}</span>
+                                                <span class="badge bg-label-primary" style="font-size: 0.7rem;"><?php echo e($blog->category); ?></span>
                                             </div>
                                             <i class="ti ti-plus text-danger mt-2"></i>
                                         </div>
                                     </div>
-                                @empty
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                     <div class="text-center py-5">
                                         <i class="ti ti-article-off" style="font-size: 3rem; color: #ddd;"></i>
                                         <p class="text-muted mt-2">Tidak ada blog yang dipublikasi</p>
                                     </div>
-                                @endforelse
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -172,20 +194,20 @@
                     <button type="submit" class="btn btn-danger me-2">
                         <i class="ti ti-device-floppy me-1"></i> Simpan Perubahan
                     </button>
-                    <a href="{{ route('admin.landing-page-content.index') }}" class="btn btn-label-secondary">
+                    <a href="<?php echo e(route('admin.landing-page-content.index')); ?>" class="btn btn-label-secondary">
                         <i class="ti ti-arrow-left me-1"></i> Kembali
                     </a>
                 </div>
             </div>
         </form>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
     $(document).ready(function() {
-        let selectedCount = {{ $selectedBlogs->count() }};
+        let selectedCount = <?php echo e($selectedBlogs->count()); ?>;
 
         // Initialize Sortable
         const sortable = new Sortable(document.getElementById('selected-blogs'), {
@@ -314,4 +336,6 @@
         transition: all 0.3s ease;
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\ebook_traveling\resources\views/admin/landing-page-content/latest-blogs.blade.php ENDPATH**/ ?>

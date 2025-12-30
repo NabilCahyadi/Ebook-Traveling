@@ -66,13 +66,12 @@ class BlogRepository implements BlogRepositoryInterface
     {
         $query = $this->model->with('author');
 
-        // Exclude archived by default
-        if (isset($filters['exclude_archived']) && $filters['exclude_archived']) {
-            $query->where('status', '!=', 'archived');
-        }
+        // ALWAYS exclude archived blogs from main listing, regardless of any filter
+        // Archived blogs should ONLY appear in the archived page
+        $query->whereIn('status', ['draft', 'published', 'unpublished']);
 
-        // Filter by status
-        if (isset($filters['status']) && $filters['status']) {
+        // Filter by specific status if provided (but never show archived)
+        if (isset($filters['status']) && $filters['status'] && in_array($filters['status'], ['draft', 'published', 'unpublished'])) {
             $query->where('status', $filters['status']);
         }
 

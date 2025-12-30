@@ -26,11 +26,12 @@ class BlogController extends Controller
         $category = $request->get('category');
         $search = $request->get('search');
 
+        // Always exclude archived blogs from main listing
         $blogs = $this->blogService->getFilteredBlogs([
             'status' => $status,
             'category' => $category,
             'search' => $search,
-            'exclude_archived' => true,
+            'exclude_archived' => true, // This ensures archived blogs never appear here
         ], 15);
 
         $categories = $this->blogService->getAllCategories();

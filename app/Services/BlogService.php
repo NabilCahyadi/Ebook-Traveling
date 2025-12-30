@@ -29,8 +29,9 @@ class BlogService
 
     public function getPublishedBlogs(int $perPage = 10)
     {
-        // return $this->blogRepository->getPublished($perPage);
+        // Only show published blogs on frontend
         return \App\Models\Blog::where('status', 'published')
+            ->whereNotNull('published_at')
             ->orderBy('published_at', 'desc')
             ->paginate($perPage);
     }
@@ -54,8 +55,9 @@ class BlogService
     // --- TAMBAHKAN METHOD INI ---
     public function getPublishedBlogsByTag(string $tag, int $perPage = 10)
     {
-        // Bisa langsung di service atau lewat repository
+        // Only show published blogs with published_at date
         return Blog::where('status', 'published')
+            ->whereNotNull('published_at')
             ->whereJsonContains('tags', $tag)
             ->orderBy('published_at', 'desc')
             ->paginate($perPage);

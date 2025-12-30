@@ -13,8 +13,14 @@
             object-fit: cover;
         }
 
-        .row .col{
+        .row .col {
             margin: 1rem 2rem 1rem 2rem !important;
+        }
+
+        .mobile-social-icon a i {
+            color: white;
+            text-align: center;
+            margin: 8px 10px 11px 11px;
         }
     </style>
     <section class="section-padding footer-mid">
@@ -26,13 +32,13 @@
                             <a href="/" class="mb-15">
                                 <img src="/images/logo_horizontall.png" alt="logo" style="width: 180px; height: auto;">
                             </a>
-                            <p class="font-lg text-heading">The Most Comprehensive Indonesia Destination Guide</p>
+                            <p class="font-lg text-heading"><?php echo e($siteSettings['tagline'] ?? 'Tagline tidak tersedia'); ?></p>
                         </div>
                         <ul class="contact-infor">
-                            <li><strong>Address : </strong> <span>Perumahan Jati Indah, Jl. Otista No.57 Blok. B, Panyingkiran, Kab. Ciamis, Jawa Barat</span></li>
-                            <li><strong>Call Us :</strong><span>(+62) - 540-025-124553</span></li>
-                            <li><strong>Email :</strong><span>smactactic@gmail.com</span></li>
-                            <li><strong>Hours :</strong><span>08:00 - 16:30, EveryDay</span></li>
+                            <li><strong>Address : </strong> <span><?php echo e($siteSettings['address'] ?? 'Alamat tidak tersedia'); ?></span></li>
+                            <li><strong>Call Us :</strong><span><?php echo e($siteSettings['phone'] ?? 'Nomor telepon tidak tersedia'); ?></span></li>
+                            <li><strong>Email :</strong><span><?php echo e($siteSettings['email'] ?? 'Email tidak tersedia'); ?></span></li>
+                            <li><strong>Hours :</strong><span><?php echo e($siteSettings['hours'] ?? 'Jam operasional tidak tersedia'); ?></span></li>
                         </ul>
                     </div>
                 </div>
@@ -63,15 +69,22 @@
                 <div class="footer-bottom"></div>
             </div>
             <div class="col-xl-6 col-lg-6 col-md-6">
-                <p class="font-sm mb-0">&copy; <span id="year"></span> <strong class="fw-bold">MeatMap</strong> — Vacation Guide E-Book<br /><!--All rights reserved --> </p> 
+                <p class="font-sm mb-0">&copy; <span id="year"></span> <strong class="fw-bold">MeatMap</strong> — <?php echo e($siteSettings['short_tagline'] ?? 'Short Tagline is Empty'); ?><br /><!--All rights reserved --> </p>
             </div>
             <div class="col-xl-6 col-lg-6 col-md-6 text-end d-none d-md-block">
                 <div class="mobile-social-icon">
                     <h6>Follow Us</h6>
+                    <?php $__empty_1 = true; $__currentLoopData = $footerContacts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $contact): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                    <a href="<?php echo e($contact->link); ?>" target="_blank" title="<?php echo e($contact->title); ?>">
+                        <i class="<?php echo e($contact->icon_class); ?>"></i>
+                    </a>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                    <!-- Opsional: Tampilkan link statis jika tidak ada data di database -->
                     <a href="#"><i class="bi bi-facebook"></i></a>
                     <a href="#"><i class="bi bi-whatsapp"></i></a>
                     <a href="#"><i class="bi bi-tiktok"></i></a>
                     <a href="#"><i class="bi bi-youtube"></i></a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

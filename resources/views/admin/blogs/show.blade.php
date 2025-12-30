@@ -22,7 +22,13 @@
             <div class="col-lg-8">
                 <div class="card mb-4">
                     @if ($blog->featured_image)
-                        <img src="{{ asset('storage/' . $blog->featured_image) }}" alt="{{ $blog->title }}"
+                        @php
+                            // Check if image is external URL or local storage
+                            $imageUrl = filter_var($blog->featured_image, FILTER_VALIDATE_URL) 
+                                ? $blog->featured_image 
+                                : asset('storage/' . $blog->featured_image);
+                        @endphp
+                        <img src="{{ $imageUrl }}" alt="{{ $blog->title }}"
                             class="card-img-top" style="max-height: 400px; object-fit: cover;">
                     @endif
 
@@ -49,8 +55,10 @@
                                 <span class="badge bg-warning">Draft</span>
                             @elseif($blog->status === 'unpublished')
                                 <span class="badge bg-secondary">Unpublished</span>
-                            @else
+                            @elseif($blog->status === 'archived')
                                 <span class="badge bg-dark">Archived</span>
+                            @else
+                                <span class="badge bg-danger">{{ $blog->status ?: 'Unknown' }}</span>
                             @endif
                         </div>
 
@@ -124,8 +132,10 @@
                                 <span class="badge bg-warning">Draft</span>
                             @elseif($blog->status === 'unpublished')
                                 <span class="badge bg-secondary">Unpublished</span>
-                            @else
+                            @elseif($blog->status === 'archived')
                                 <span class="badge bg-dark">Archived</span>
+                            @else
+                                <span class="badge bg-danger">{{ $blog->status ?: 'Unknown' }}</span>
                             @endif
                         </div>
 

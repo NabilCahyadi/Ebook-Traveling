@@ -314,6 +314,7 @@ return [
         'excerpt' => 'Excerpt',
         'featured_image' => 'Featured Image',
         'author' => 'Author',
+        'creator' => 'Creator',
         'category' => 'Category',
         'published_at' => 'Published Date',
         'views' => 'Views',

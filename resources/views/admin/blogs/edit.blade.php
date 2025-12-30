@@ -124,7 +124,13 @@
                         <div class="card-body">
                             @if ($blog->featured_image)
                                 <div class="mb-3">
-                                    <img src="{{ asset('storage/' . $blog->featured_image) }}" alt="{{ $blog->title }}"
+                                    @php
+                                        // Check if image is external URL or local storage
+                                        $imageUrl = filter_var($blog->featured_image, FILTER_VALIDATE_URL) 
+                                            ? $blog->featured_image 
+                                            : asset('storage/' . $blog->featured_image);
+                                    @endphp
+                                    <img src="{{ $imageUrl }}" alt="{{ $blog->title }}"
                                         class="img-fluid rounded">
                                     <div class="form-check mt-2">
                                         <input class="form-check-input" type="checkbox" id="remove_image"
