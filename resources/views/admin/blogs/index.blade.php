@@ -124,7 +124,7 @@
                                             </div>
                                             <small class="text-muted">{{ $blog->slug }}</small>
                                         </td>
-                                        <td>{{ $blog->author->name ?? 'Unknown' }}</td>
+                                        <td>{{ $blog->author->name ?? __('admin.blogs.unknown') }}</td>
                                         <td>
                                             @if ($blog->category)
                                                 <span class="badge bg-label-info">{{ $blog->category }}</span>
@@ -137,15 +137,15 @@
                                         </td>
                                         <td>
                                             @if ($blog->status === 'published')
-                                                <span class="badge bg-success">Published</span>
+                                                <span class="badge bg-success">{{ __('admin.blogs.published') }}</span>
                                             @elseif($blog->status === 'draft')
-                                                <span class="badge bg-warning">Draft</span>
+                                                <span class="badge bg-warning">{{ __('admin.blogs.draft') }}</span>
                                             @elseif($blog->status === 'unpublished')
-                                                <span class="badge bg-secondary">Unpublished</span>
+                                                <span class="badge bg-secondary">{{ __('admin.blogs.unpublished') }}</span>
                                             @elseif($blog->status === 'archived')
-                                                <span class="badge bg-dark">Archived</span>
+                                                <span class="badge bg-dark">{{ __('admin.blogs.archived') }}</span>
                                             @else
-                                                <span class="badge bg-danger">{{ $blog->status ?: 'Unknown' }}</span>
+                                                <span class="badge bg-danger">{{ $blog->status ?: __('admin.blogs.unknown') }}</span>
                                             @endif
                                         </td>
                                         <td>
@@ -165,11 +165,11 @@
                                                 <div class="dropdown-menu dropdown-menu-end">
                                                     <a class="dropdown-item"
                                                         href="{{ route('admin.blogs.show', $blog->id) }}">
-                                                        <i class="ti ti-eye me-2"></i> View
+                                                        <i class="ti ti-eye me-2"></i> {{ __('admin.blogs.view') }}
                                                     </a>
                                                     <a class="dropdown-item"
                                                         href="{{ route('admin.blogs.edit', $blog->id) }}">
-                                                        <i class="ti ti-pencil me-2"></i> Edit
+                                                        <i class="ti ti-pencil me-2"></i> {{ __('admin.blogs.edit') }}
                                                     </a>
                                                     <div class="dropdown-divider"></div>
                                                     <form action="{{ route('admin.blogs.destroy', $blog->id) }}"
@@ -179,8 +179,8 @@
                                                         @method('DELETE')
                                                     </form>
                                                     <a class="dropdown-item text-danger" href="javascript:void(0);"
-                                                        onclick="if(confirm('Are you sure you want to delete this blog?')) document.getElementById('delete-blog-{{ $blog->id }}').submit();">
-                                                        <i class="ti ti-trash me-2"></i> Delete
+                                                        onclick="if(confirm('{{ __('admin.blogs.delete_confirm') }}')) document.getElementById('delete-blog-{{ $blog->id }}').submit();">
+                                                        <i class="ti ti-trash me-2"></i> {{ __('admin.blogs.delete') }}
                                                     </a>
                                                     </form>
                                                 </div>
@@ -198,9 +198,9 @@
                 @else
                     <div class="text-center py-5">
                         <i class="bx bx-news display-1 text-muted"></i>
-                        <p class="mt-3 text-muted">No blogs found. Create your first blog!</p>
+                        <p class="mt-3 text-muted">{{ __('admin.blogs.no_blogs_found') }}</p>
                         <a href="{{ route('admin.blogs.create') }}" class="btn btn-primary">
-                            <i class="bx bx-plus me-1"></i> Create New Blog
+                            <i class="bx bx-plus me-1"></i> {{ __('admin.blogs.create_new_blog') }}
                         </a>
                     </div>
                 @endif

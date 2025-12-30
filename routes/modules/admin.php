@@ -125,11 +125,11 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     Route::delete('blogs/{blog}/force-delete', [\App\Http\Controllers\Admin\BlogController::class, 'forceDelete'])->name('blogs.force-delete');
     Route::resource('blogs', \App\Http\Controllers\Admin\BlogController::class);
 
-    // Blog Category Management (Disabled - Controller not found)
-    // Route::get('blog-categories/trashed', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'trashed'])->name('blog-categories.trashed');
-    // Route::patch('blog-categories/{id}/restore', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'restore'])->name('blog-categories.restore');
-    // Route::delete('blog-categories/{id}/force-delete', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'forceDelete'])->name('blog-categories.force-delete');
-    // Route::resource('blog-categories', \App\Http\Controllers\Admin\BlogCategoryController::class);
+    // Blog Category Management
+    Route::get('blog-categories/trashed', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'trashed'])->name('blog-categories.trashed');
+    Route::patch('blog-categories/{id}/restore', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'restore'])->name('blog-categories.restore');
+    Route::delete('blog-categories/{id}/force-delete', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'forceDelete'])->name('blog-categories.force-delete');
+    Route::resource('blog-categories', \App\Http\Controllers\Admin\BlogCategoryController::class);
 
     // System Settings
     // Route::get('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings');

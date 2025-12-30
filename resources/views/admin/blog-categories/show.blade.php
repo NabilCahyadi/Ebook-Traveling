@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Blog Category Details')
+@section('title', __('admin.blog_categories.details'))
 
 @section('content')
 
@@ -8,15 +8,15 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h4 class="fw-bold py-3 mb-2">
-                <span class="text-muted fw-light">Admin / Content Management / Blog Categories /</span> Details
+                <span class="text-muted fw-light">Admin / Content Management / Blog Categories /</span> {{ __('admin.blog_categories.details') }}
             </h4>
         </div>
         <div>
             <a href="{{ route('admin.blog-categories.index') }}" class="btn btn-secondary me-2">
-                <i class="ti ti-arrow-left me-1"></i> Back to List
+                <i class="ti ti-arrow-left me-1"></i> {{ __('admin.blog_categories.back_to_list') }}
             </a>
-            <a href="{{ route('admin.blog-categories.edit', $blogCategory->id) }}" class="btn btn-primary">
-                <i class="ti ti-edit me-1"></i> Edit Category
+            <a href="{{ route('admin.blog-categories.edit', $category->id) }}" class="btn btn-primary">
+                <i class="ti ti-edit me-1"></i> {{ __('admin.blog_categories.edit_category') }}
             </a>
         </div>
     </div>
@@ -26,73 +26,73 @@
         <div class="col-md-8">
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0">Category Information</h5>
+                    <h5 class="mb-0">{{ __('admin.blog_categories.category_information') }}</h5>
                 </div>
                 <div class="card-body">
                     <div class="row mb-3">
                         <div class="col-md-3">
-                            <strong>Name:</strong>
+                            <strong>{{ __('admin.blog_categories.name') }}:</strong>
                         </div>
                         <div class="col-md-9">
-                            {{ $blogCategory->name }}
+                            {{ $category->name }}
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-3">
-                            <strong>Slug:</strong>
+                            <strong>{{ __('admin.blog_categories.slug') }}:</strong>
                         </div>
                         <div class="col-md-9">
-                            <code>{{ $blogCategory->slug }}</code>
+                            <code>{{ $category->slug }}</code>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-3">
-                            <strong>Description:</strong>
+                            <strong>{{ __('admin.blog_categories.description') }}:</strong>
                         </div>
                         <div class="col-md-9">
-                            {{ $blogCategory->description ?? '-' }}
+                            {{ $category->description ?? '-' }}
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-3">
-                            <strong>Status:</strong>
+                            <strong>{{ __('admin.blog_categories.status') }}:</strong>
                         </div>
                         <div class="col-md-9">
-                            @if ($blogCategory->is_active)
-                                <span class="badge bg-success">Active</span>
+                            @if ($category->is_active)
+                                <span class="badge bg-success">{{ __('admin.blog_categories.active') }}</span>
                             @else
-                                <span class="badge bg-secondary">Inactive</span>
+                                <span class="badge bg-secondary">{{ __('admin.blog_categories.inactive') }}</span>
                             @endif
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-3">
-                            <strong>Total Blogs:</strong>
+                            <strong>{{ __('admin.blog_categories.total_blogs') }}:</strong>
                         </div>
                         <div class="col-md-9">
-                            <span class="badge bg-label-primary">{{ $blogCategory->blogs->count() }}</span>
+                            <span class="badge bg-label-primary">{{ $category->blogs->count() }}</span>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-3">
-                            <strong>Created At:</strong>
+                            <strong>{{ __('admin.blog_categories.created_at') }}:</strong>
                         </div>
                         <div class="col-md-9">
-                            {{ $blogCategory->created_at->format('d M Y H:i:s') }}
+                            {{ $category->created_at->format('d M Y H:i:s') }}
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-3">
-                            <strong>Updated At:</strong>
+                            <strong>{{ __('admin.blog_categories.updated_at') }}:</strong>
                         </div>
                         <div class="col-md-9">
-                            {{ $blogCategory->updated_at->format('d M Y H:i:s') }}
+                            {{ $category->updated_at->format('d M Y H:i:s') }}
                         </div>
                     </div>
                 </div>
@@ -101,31 +101,31 @@
             <!-- Associated Blogs -->
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">Blogs in This Category</h5>
+                    <h5 class="mb-0">{{ __('admin.blog_categories.blogs_in_category') }}</h5>
                 </div>
                 <div class="card-body">
-                    @if ($blogCategory->blogs->count() > 0)
+                    @if ($category->blogs->count() > 0)
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Title</th>
-                                        <th>Author</th>
-                                        <th>Status</th>
-                                        <th>Created</th>
-                                        <th>Actions</th>
+                                        <th>{{ __('admin.blog_categories.blog_title') }}</th>
+                                        <th>{{ __('admin.blog_categories.author') }}</th>
+                                        <th>{{ __('admin.blog_categories.status') }}</th>
+                                        <th>{{ __('admin.blog_categories.created') }}</th>
+                                        <th>{{ __('admin.blog_categories.actions') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($blogCategory->blogs as $blog)
+                                    @foreach ($category->blogs as $blog)
                                         <tr>
                                             <td>{{ $blog->title }}</td>
-                                            <td>{{ $blog->author ?? '-' }}</td>
+                                            <td>{{ $blog->author->name ?? '-' }}</td>
                                             <td>
                                                 @if ($blog->status)
-                                                    <span class="badge bg-success">Published</span>
+                                                    <span class="badge bg-success">{{ __('admin.blogs.published') }}</span>
                                                 @else
-                                                    <span class="badge bg-warning">Draft</span>
+                                                    <span class="badge bg-warning">{{ __('admin.blogs.draft') }}</span>
                                                 @endif
                                             </td>
                                             <td>
@@ -133,7 +133,7 @@
                                             </td>
                                             <td>
                                                 <a href="{{ route('admin.blogs.edit', $blog->id) }}" class="btn btn-sm btn-primary">
-                                                    <i class="ti ti-edit"></i> Edit
+                                                    <i class="ti ti-edit"></i> {{ __('admin.blog_categories.edit') }}
                                                 </a>
                                             </td>
                                         </tr>
@@ -144,7 +144,7 @@
                     @else
                         <div class="text-center py-4">
                             <i class="ti ti-file-off" style="font-size: 2rem; opacity: 0.3;"></i>
-                            <p class="text-muted mt-2">No blogs in this category yet.</p>
+                            <p class="text-muted mt-2">{{ __('admin.blog_categories.no_blogs_in_category') }}</p>
                         </div>
                     @endif
                 </div>
@@ -155,20 +155,20 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">Actions</h5>
+                    <h5 class="mb-0">{{ __('admin.blog_categories.actions') }}</h5>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a href="{{ route('admin.blog-categories.edit', $blogCategory->id) }}" class="btn btn-primary">
-                            <i class="ti ti-edit me-1"></i> Edit Category
+                        <a href="{{ route('admin.blog-categories.edit', $category->id) }}" class="btn btn-primary">
+                            <i class="ti ti-edit me-1"></i> {{ __('admin.blog_categories.edit_category') }}
                         </a>
 
-                        <form action="{{ route('admin.blog-categories.destroy', $blogCategory->id) }}" method="POST"
-                            onsubmit="return confirm('Are you sure you want to move this category to trash?');">
+                        <form action="{{ route('admin.blog-categories.destroy', $category->id) }}" method="POST"
+                            onsubmit="return confirm('{{ __('admin.blog_categories.delete_confirm') }}');">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger w-100">
-                                <i class="ti ti-trash me-1"></i> Move to Trash
+                                <i class="ti ti-trash me-1"></i> {{ __('admin.blog_categories.move_to_trash') }}
                             </button>
                         </form>
                     </div>
@@ -178,8 +178,7 @@
                     <div class="alert alert-info mb-0">
                         <i class="ti ti-info-circle me-1"></i>
                         <small>
-                            <strong>Note:</strong> You cannot delete a category that has blogs associated with it.
-                            Please reassign or delete the blogs first.
+                            <strong>{{ __('admin.blog_categories.note') }}:</strong> {{ __('admin.blog_categories.delete_note') }}
                         </small>
                     </div>
                 </div>
@@ -188,3 +187,4 @@
     </div>
 
 @endsection
+

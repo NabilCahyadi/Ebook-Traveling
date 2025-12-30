@@ -34,67 +34,32 @@
                 <div data-i18n="Dashboard">{{ __('admin.menu.dashboard') }}</div>
             </a>
         </li>
-
-        <!-- Ebooks Management -->
-        <li
-            class="menu-item open {{ Request::is('admin/ebooks*') || Request::is('admin/categories*') || Request::is('admin/cities*') ? 'active' : '' }}">
+                <!-- Admin Management (Only for Superadmin) -->
+        @if(auth('admin')->check() && auth('admin')->user()->type === 'superadmin')
+        <li class="menu-item {{ Request::is('admin/admins*') || Request::is('admin/admin-activity-logs*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons ti ti-books"></i>
-                <div data-i18n="Ebook Management">{{ __('admin.menu.ebook_management') }}</div>
+                <i class="menu-icon tf-icons ti ti-user-shield"></i>
+                <div data-i18n="Admin Management">Admin Management</div>
             </a>
             <ul class="menu-sub">
-                <!-- Ebooks -->
-                <li class="menu-item {{ Request::is('admin/ebooks*') ? 'active open' : '' }}">
-                    <a href="javascript:void(0);" class="menu-link menu-toggle">
-                        <i class="menu-icon tf-icons ti ti-book"></i>
-                        <div data-i18n="Ebooks">{{ __('admin.menu.ebooks') }}</div>
-                    </a>
-                    <ul class="menu-sub">
-                        <li
-                            class="menu-item {{ Request::is('admin/ebooks') && !Request::is('admin/ebooks/create') && !Request::is('admin/ebooks/pending-approval') ? 'active' : '' }}">
-                            <a href="{{ route('admin.ebooks.index') }}" class="menu-link">
-                                <i class="menu-icon tf-icons ti ti-list"></i>
-                                <div data-i18n="All Ebooks">{{ __('admin.ebooks.all_ebooks') }}</div>
-                            </a>
-                        </li>
-                        <li class="menu-item {{ Request::is('admin/ebooks/create') ? 'active' : '' }}">
-                            <a href="{{ route('admin.ebooks.create') }}" class="menu-link">
-                                <i class="menu-icon tf-icons ti ti-plus"></i>
-                                <div data-i18n="Add New">{{ __('admin.ebooks.add_new') }}</div>
-                            </a>
-                        </li>
-                        <!-- <li class="menu-item {{ Request::is('admin/ebooks/pending-approval') ? 'active' : '' }}">
-                            <a href="{{ route('admin.ebooks.pending-approval') }}" class="menu-link">
-                                <div data-i18n="Pending Approval">Pending Approval</div>
-                                @php
-                                    $pendingCount = \App\Models\Ebook::where('status', 'waiting_approval')->count();
-                                @endphp
-                                @if ($pendingCount > 0)
-                                    <span class="badge bg-warning rounded-pill ms-auto">{{ $pendingCount }}</span>
-                                @endif
-                            </a>
-                        </li> -->
-                    </ul>
-                </li>
-
-                <!-- Categories -->
-                <li class="menu-item {{ Request::is('admin/categories*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.categories.index') }}" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-tags"></i>
-                        <div data-i18n="Categories">{{ __('admin.menu.categories') }}</div>
+                <!-- Admin List -->
+                <li class="menu-item {{ Request::is('admin/admins*') && !Request::is('admin/admin-activity-logs*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.admins.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-users"></i>
+                        <div data-i18n="Admins">Admin List</div>
                     </a>
                 </li>
-
-                <!-- Cities -->
-                <li class="menu-item {{ Request::is('admin/cities*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.cities.index') }}" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-map-pin"></i>
-                        <div data-i18n="Cities">{{ __('admin.menu.cities') }}</div>
+                
+                <!-- Admin Activity Logs -->
+                <li class="menu-item {{ Request::is('admin/admin-activity-logs*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.admin-activity-logs.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-activity"></i>
+                        <div data-i18n="Admin Activity Logs">Activity Logs</div>
                     </a>
                 </li>
             </ul>
         </li>
-
+        @endif
         <!-- Users Management -->
         <li
             class="menu-item open {{ Request::is('admin/users*') || Request::is('admin/roles*') || Request::is('admin/role-permissions*') ? 'active' : '' }}">
@@ -156,7 +121,88 @@
                 </li>
             </ul>
         </li>
+        <!-- Ebooks Management -->
+        <li
+            class="menu-item open {{ Request::is('admin/ebooks*') || Request::is('admin/categories*') || Request::is('admin/cities*') ? 'active' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-books"></i>
+                <div data-i18n="Ebook Management">{{ __('admin.menu.ebook_management') }}</div>
+            </a>
+            <ul class="menu-sub">
+                <!-- Ebooks -->
+                <li class="menu-item {{ Request::is('admin/ebooks*') ? 'active open' : '' }}">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons ti ti-book"></i>
+                        <div data-i18n="Ebooks">{{ __('admin.menu.ebooks') }}</div>
+                    </a>
+                    <ul class="menu-sub">
+                        <li
+                            class="menu-item {{ Request::is('admin/ebooks') && !Request::is('admin/ebooks/create') && !Request::is('admin/ebooks/pending-approval') ? 'active' : '' }}">
+                            <a href="{{ route('admin.ebooks.index') }}" class="menu-link">
+                                <i class="menu-icon tf-icons ti ti-list"></i>
+                                <div data-i18n="All Ebooks">{{ __('admin.ebooks.all_ebooks') }}</div>
+                            </a>
+                        </li>
+                        <li class="menu-item {{ Request::is('admin/ebooks/create') ? 'active' : '' }}">
+                            <a href="{{ route('admin.ebooks.create') }}" class="menu-link">
+                                <i class="menu-icon tf-icons ti ti-plus"></i>
+                                <div data-i18n="Add New">{{ __('admin.ebooks.add_new') }}</div>
+                            </a>
+                        </li>
+                        <!-- <li class="menu-item {{ Request::is('admin/ebooks/pending-approval') ? 'active' : '' }}">
+                            <a href="{{ route('admin.ebooks.pending-approval') }}" class="menu-link">
+                                <div data-i18n="Pending Approval">Pending Approval</div>
+                                @php
+                                    $pendingCount = \App\Models\Ebook::where('status', 'waiting_approval')->count();
+                                @endphp
+                                @if ($pendingCount > 0)
+                                    <span class="badge bg-warning rounded-pill ms-auto">{{ $pendingCount }}</span>
+                                @endif
+                            </a>
+                        </li> -->
+                    </ul>
+                </li>
 
+                <!-- Categories -->
+                <li class="menu-item {{ Request::is('admin/categories*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.categories.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-tags"></i>
+                        <div data-i18n="Categories">{{ __('admin.menu.categories') }}</div>
+                    </a>
+                </li>
+
+                <!-- Cities -->
+                <li class="menu-item {{ Request::is('admin/cities*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.cities.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-map-pin"></i>
+                        <div data-i18n="Cities">{{ __('admin.menu.cities') }}</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <!-- Blog Management -->
+        <li class="menu-item {{ Request::is('admin/blogs*') || Request::is('admin/blog-categories*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-news"></i>
+                <div data-i18n="Blog Management">{{ __('admin.menu.blog_management') }}</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ Request::is('admin/blogs*') && !Request::is('admin/blog-categories*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.blogs.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-article"></i>
+                        <div data-i18n="Blogs">{{ __('admin.menu.blogs') }}</div>
+                    </a>
+                </li>
+
+                <li class="menu-item {{ Request::is('admin/blog-categories*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.blog-categories.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-category"></i>
+                        <div data-i18n="Blog Categories">{{ __('admin.menu.blog_categories') }}</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
         <!-- Subscription Management -->
         <li
             class="menu-item open {{ Request::is('admin/subscription-plans*') || Request::is('admin/manual-subscriptions*') || Request::is('admin/active-subscribers*') || Request::is('admin/subscription-history*') || Request::is('admin/promos*') ? 'active' : '' }}">
@@ -207,66 +253,6 @@
             </ul>
         </li>
 
-        <!-- Content Management -->
-        <li class="menu-item {{ Request::is('admin/blogs*') ? 'active' : '' }}">
-            <a href="{{ route('admin.blogs.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-news"></i>
-                <div data-i18n="Blogs">{{ __('admin.menu.blogs') }}</div>
-            </a>
-        </li>
-
-        <!-- Admin Management (Only for Superadmin) -->
-        @if(auth('admin')->check() && auth('admin')->user()->type === 'superadmin')
-        <li class="menu-item {{ Request::is('admin/admins*') || Request::is('admin/admin-activity-logs*') ? 'active open' : '' }}">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons ti ti-user-shield"></i>
-                <div data-i18n="Admin Management">Admin Management</div>
-            </a>
-            <ul class="menu-sub">
-                <!-- Admin List -->
-                <li class="menu-item {{ Request::is('admin/admins*') && !Request::is('admin/admin-activity-logs*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.admins.index') }}" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-users"></i>
-                        <div data-i18n="Admins">Admin List</div>
-                    </a>
-                </li>
-                
-                <!-- Admin Activity Logs -->
-                <li class="menu-item {{ Request::is('admin/admin-activity-logs*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.admin-activity-logs.index') }}" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-activity"></i>
-                        <div data-i18n="Admin Activity Logs">Activity Logs</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        @endif
-
-        {{-- Blog Categories - Disabled (Controller not found)
-        <li
-            class="menu-item open {{ Request::is('admin/blogs*') || Request::is('admin/blog-categories*') ? 'active' : '' }}">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons ti ti-file-text"></i>
-                <div data-i18n="Content Management">Content Management</div>
-            </a>
-            <ul class="menu-sub">
-                <li
-                    class="menu-item {{ Request::is('admin/blogs*') && !Request::is('admin/blog-categories*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.blogs.index') }}" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-article"></i>
-                        <div data-i18n="Blogs">Blogs</div>
-                    </a>
-                </li>
-
-                <li class="menu-item {{ Request::is('admin/blog-categories*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.blog-categories.index') }}" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-category"></i>
-                        <div data-i18n="Blog Categories">Blog Categories</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        --}}
 
         <!-- Website Management -->
         <li
