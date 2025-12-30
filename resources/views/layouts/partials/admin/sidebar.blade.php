@@ -256,7 +256,7 @@
 
         <!-- Website Management -->
         <li
-            class="menu-item {{ Request::is('admin/collection-order*') || Request::is('admin/banners*') || Request::is('admin/collections*') || Request::is('admin/landing-page-content*') || Request::is('admin/pricing-benefits*') ? 'active open' : '' }}">
+            class="menu-item {{ Request::is('admin/collection-order*') || Request::is('admin/banners*') || Request::is('admin/collections*') || Request::is('admin/landing-page-content*') || Request::is('admin/pricing-benefits*') || Request::is('admin/contact-info*') || Request::is('admin/site-settings*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-settings"></i>
                 <div data-i18n="Website Management">{{ __('admin.menu.website_setting') }}</div>
@@ -288,6 +288,20 @@
                     <a href="{{ route('admin.collections.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-folders"></i>
                         <div data-i18n="Collection Ebook">{{ __('admin.menu.collection_ebook') }}</div>
+                    </a>
+                </li>
+                <!-- Contact Info -->
+                <li class="menu-item {{ Request::is('admin/contact-info*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.contact-info.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-address-book"></i>
+                        <div data-i18n="Contact Info">Contact Info</div>
+                    </a>
+                </li>
+                <!-- Site Settings -->
+                <li class="menu-item {{ Request::is('admin/site-settings*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.site-settings.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-adjustments"></i>
+                        <div data-i18n="Site Settings">Site Settings</div>
                     </a>
                 </li>
             </ul>

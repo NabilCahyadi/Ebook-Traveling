@@ -91,7 +91,7 @@
                                     <th>{{ __('admin.blogs.title') }}</th>
                                     <th>{{ __('admin.blogs.creator') }}</th>
                                     <th>{{ __('admin.blogs.category') }}</th>
-                                    <th>{{ __('admin.blogs.views') }}</th>
+                                    <!-- <th>{{ __('admin.blogs.views') }}</th> -->
                                     <th>{{ __('admin.blogs.status') }}</th>
                                     <th>{{ __('admin.blogs.published') }}</th>
                                     <th>{{ __('admin.actions.actions') }}</th>
@@ -120,9 +120,9 @@
                                         </td>
                                         <td>
                                             <div>
-                                                <strong>{{ Str::limit($blog->title, 50) }}</strong>
+                                                <strong>{{ Str::limit($blog->title, 30) }}</strong>
                                             </div>
-                                            <small class="text-muted">{{ $blog->slug }}</small>
+                                            <small class="text-muted">{{ Str::limit($blog->slug, 35) }}</small>
                                         </td>
                                         <td>{{ $blog->author->name ?? __('admin.blogs.unknown') }}</td>
                                         <td>
@@ -132,9 +132,9 @@
                                                 <span class="text-muted">-</span>
                                             @endif
                                         </td>
-                                        <td>
+                                        <!-- <td>
                                             <i class="bx bx-show me-1"></i>{{ number_format($blog->view_count) }}
-                                        </td>
+                                        </td> -->
                                         <td>
                                             @if ($blog->status === 'published')
                                                 <span class="badge bg-success">{{ __('admin.blogs.published') }}</span>

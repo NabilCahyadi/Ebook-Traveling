@@ -34,67 +34,32 @@
                 <div data-i18n="Dashboard"><?php echo e(__('admin.menu.dashboard')); ?></div>
             </a>
         </li>
-
-        <!-- Ebooks Management -->
-        <li
-            class="menu-item open <?php echo e(Request::is('admin/ebooks*') || Request::is('admin/categories*') || Request::is('admin/cities*') ? 'active' : ''); ?>">
+                <!-- Admin Management (Only for Superadmin) -->
+        <?php if(auth('admin')->check() && auth('admin')->user()->type === 'superadmin'): ?>
+        <li class="menu-item <?php echo e(Request::is('admin/admins*') || Request::is('admin/admin-activity-logs*') ? 'active open' : ''); ?>">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons ti ti-books"></i>
-                <div data-i18n="Ebook Management"><?php echo e(__('admin.menu.ebook_management')); ?></div>
+                <i class="menu-icon tf-icons ti ti-user-shield"></i>
+                <div data-i18n="Admin Management">Admin Management</div>
             </a>
             <ul class="menu-sub">
-                <!-- Ebooks -->
-                <li class="menu-item <?php echo e(Request::is('admin/ebooks*') ? 'active open' : ''); ?>">
-                    <a href="javascript:void(0);" class="menu-link menu-toggle">
-                        <i class="menu-icon tf-icons ti ti-book"></i>
-                        <div data-i18n="Ebooks"><?php echo e(__('admin.menu.ebooks')); ?></div>
-                    </a>
-                    <ul class="menu-sub">
-                        <li
-                            class="menu-item <?php echo e(Request::is('admin/ebooks') && !Request::is('admin/ebooks/create') && !Request::is('admin/ebooks/pending-approval') ? 'active' : ''); ?>">
-                            <a href="<?php echo e(route('admin.ebooks.index')); ?>" class="menu-link">
-                                <i class="menu-icon tf-icons ti ti-list"></i>
-                                <div data-i18n="All Ebooks"><?php echo e(__('admin.ebooks.all_ebooks')); ?></div>
-                            </a>
-                        </li>
-                        <li class="menu-item <?php echo e(Request::is('admin/ebooks/create') ? 'active' : ''); ?>">
-                            <a href="<?php echo e(route('admin.ebooks.create')); ?>" class="menu-link">
-                                <i class="menu-icon tf-icons ti ti-plus"></i>
-                                <div data-i18n="Add New"><?php echo e(__('admin.ebooks.add_new')); ?></div>
-                            </a>
-                        </li>
-                        <!-- <li class="menu-item <?php echo e(Request::is('admin/ebooks/pending-approval') ? 'active' : ''); ?>">
-                            <a href="<?php echo e(route('admin.ebooks.pending-approval')); ?>" class="menu-link">
-                                <div data-i18n="Pending Approval">Pending Approval</div>
-                                <?php
-                                    $pendingCount = \App\Models\Ebook::where('status', 'waiting_approval')->count();
-                                ?>
-                                <?php if($pendingCount > 0): ?>
-                                    <span class="badge bg-warning rounded-pill ms-auto"><?php echo e($pendingCount); ?></span>
-                                <?php endif; ?>
-                            </a>
-                        </li> -->
-                    </ul>
-                </li>
-
-                <!-- Categories -->
-                <li class="menu-item <?php echo e(Request::is('admin/categories*') ? 'active' : ''); ?>">
-                    <a href="<?php echo e(route('admin.categories.index')); ?>" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-tags"></i>
-                        <div data-i18n="Categories"><?php echo e(__('admin.menu.categories')); ?></div>
+                <!-- Admin List -->
+                <li class="menu-item <?php echo e(Request::is('admin/admins*') && !Request::is('admin/admin-activity-logs*') ? 'active' : ''); ?>">
+                    <a href="<?php echo e(route('admin.admins.index')); ?>" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-users"></i>
+                        <div data-i18n="Admins">Admin List</div>
                     </a>
                 </li>
-
-                <!-- Cities -->
-                <li class="menu-item <?php echo e(Request::is('admin/cities*') ? 'active' : ''); ?>">
-                    <a href="<?php echo e(route('admin.cities.index')); ?>" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-map-pin"></i>
-                        <div data-i18n="Cities"><?php echo e(__('admin.menu.cities')); ?></div>
+                
+                <!-- Admin Activity Logs -->
+                <li class="menu-item <?php echo e(Request::is('admin/admin-activity-logs*') ? 'active' : ''); ?>">
+                    <a href="<?php echo e(route('admin.admin-activity-logs.index')); ?>" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-activity"></i>
+                        <div data-i18n="Admin Activity Logs">Activity Logs</div>
                     </a>
                 </li>
             </ul>
         </li>
-
+        <?php endif; ?>
         <!-- Users Management -->
         <li
             class="menu-item open <?php echo e(Request::is('admin/users*') || Request::is('admin/roles*') || Request::is('admin/role-permissions*') ? 'active' : ''); ?>">
@@ -156,7 +121,88 @@
                 </li>
             </ul>
         </li>
+        <!-- Ebooks Management -->
+        <li
+            class="menu-item open <?php echo e(Request::is('admin/ebooks*') || Request::is('admin/categories*') || Request::is('admin/cities*') ? 'active' : ''); ?>">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-books"></i>
+                <div data-i18n="Ebook Management"><?php echo e(__('admin.menu.ebook_management')); ?></div>
+            </a>
+            <ul class="menu-sub">
+                <!-- Ebooks -->
+                <li class="menu-item <?php echo e(Request::is('admin/ebooks*') ? 'active open' : ''); ?>">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons ti ti-book"></i>
+                        <div data-i18n="Ebooks"><?php echo e(__('admin.menu.ebooks')); ?></div>
+                    </a>
+                    <ul class="menu-sub">
+                        <li
+                            class="menu-item <?php echo e(Request::is('admin/ebooks') && !Request::is('admin/ebooks/create') && !Request::is('admin/ebooks/pending-approval') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('admin.ebooks.index')); ?>" class="menu-link">
+                                <i class="menu-icon tf-icons ti ti-list"></i>
+                                <div data-i18n="All Ebooks"><?php echo e(__('admin.ebooks.all_ebooks')); ?></div>
+                            </a>
+                        </li>
+                        <li class="menu-item <?php echo e(Request::is('admin/ebooks/create') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('admin.ebooks.create')); ?>" class="menu-link">
+                                <i class="menu-icon tf-icons ti ti-plus"></i>
+                                <div data-i18n="Add New"><?php echo e(__('admin.ebooks.add_new')); ?></div>
+                            </a>
+                        </li>
+                        <!-- <li class="menu-item <?php echo e(Request::is('admin/ebooks/pending-approval') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('admin.ebooks.pending-approval')); ?>" class="menu-link">
+                                <div data-i18n="Pending Approval">Pending Approval</div>
+                                <?php
+                                    $pendingCount = \App\Models\Ebook::where('status', 'waiting_approval')->count();
+                                ?>
+                                <?php if($pendingCount > 0): ?>
+                                    <span class="badge bg-warning rounded-pill ms-auto"><?php echo e($pendingCount); ?></span>
+                                <?php endif; ?>
+                            </a>
+                        </li> -->
+                    </ul>
+                </li>
 
+                <!-- Categories -->
+                <li class="menu-item <?php echo e(Request::is('admin/categories*') ? 'active' : ''); ?>">
+                    <a href="<?php echo e(route('admin.categories.index')); ?>" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-tags"></i>
+                        <div data-i18n="Categories"><?php echo e(__('admin.menu.categories')); ?></div>
+                    </a>
+                </li>
+
+                <!-- Cities -->
+                <li class="menu-item <?php echo e(Request::is('admin/cities*') ? 'active' : ''); ?>">
+                    <a href="<?php echo e(route('admin.cities.index')); ?>" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-map-pin"></i>
+                        <div data-i18n="Cities"><?php echo e(__('admin.menu.cities')); ?></div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <!-- Blog Management -->
+        <li class="menu-item <?php echo e(Request::is('admin/blogs*') || Request::is('admin/blog-categories*') ? 'active open' : ''); ?>">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-news"></i>
+                <div data-i18n="Blog Management"><?php echo e(__('admin.menu.blog_management')); ?></div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item <?php echo e(Request::is('admin/blogs*') && !Request::is('admin/blog-categories*') ? 'active' : ''); ?>">
+                    <a href="<?php echo e(route('admin.blogs.index')); ?>" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-article"></i>
+                        <div data-i18n="Blogs"><?php echo e(__('admin.menu.blogs')); ?></div>
+                    </a>
+                </li>
+
+                <li class="menu-item <?php echo e(Request::is('admin/blog-categories*') ? 'active' : ''); ?>">
+                    <a href="<?php echo e(route('admin.blog-categories.index')); ?>" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-category"></i>
+                        <div data-i18n="Blog Categories"><?php echo e(__('admin.menu.blog_categories')); ?></div>
+                    </a>
+                </li>
+            </ul>
+        </li>
         <!-- Subscription Management -->
         <li
             class="menu-item open <?php echo e(Request::is('admin/subscription-plans*') || Request::is('admin/manual-subscriptions*') || Request::is('admin/active-subscribers*') || Request::is('admin/subscription-history*') || Request::is('admin/promos*') ? 'active' : ''); ?>">
@@ -207,46 +253,10 @@
             </ul>
         </li>
 
-        <!-- Content Management -->
-        <li class="menu-item <?php echo e(Request::is('admin/blogs*') ? 'active' : ''); ?>">
-            <a href="<?php echo e(route('admin.blogs.index')); ?>" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-news"></i>
-                <div data-i18n="Blogs"><?php echo e(__('admin.menu.blogs')); ?></div>
-            </a>
-        </li>
-
-        <!-- Admin Management (Only for Superadmin) -->
-        <?php if(auth('admin')->check() && auth('admin')->user()->type === 'superadmin'): ?>
-        <li class="menu-item <?php echo e(Request::is('admin/admins*') || Request::is('admin/admin-activity-logs*') ? 'active open' : ''); ?>">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons ti ti-user-shield"></i>
-                <div data-i18n="Admin Management">Admin Management</div>
-            </a>
-            <ul class="menu-sub">
-                <!-- Admin List -->
-                <li class="menu-item <?php echo e(Request::is('admin/admins*') && !Request::is('admin/admin-activity-logs*') ? 'active' : ''); ?>">
-                    <a href="<?php echo e(route('admin.admins.index')); ?>" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-users"></i>
-                        <div data-i18n="Admins">Admin List</div>
-                    </a>
-                </li>
-                
-                <!-- Admin Activity Logs -->
-                <li class="menu-item <?php echo e(Request::is('admin/admin-activity-logs*') ? 'active' : ''); ?>">
-                    <a href="<?php echo e(route('admin.admin-activity-logs.index')); ?>" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-activity"></i>
-                        <div data-i18n="Admin Activity Logs">Activity Logs</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <?php endif; ?>
-
-        
 
         <!-- Website Management -->
         <li
-            class="menu-item <?php echo e(Request::is('admin/collection-order*') || Request::is('admin/banners*') || Request::is('admin/collections*') || Request::is('admin/landing-page-content*') || Request::is('admin/pricing-benefits*') ? 'active open' : ''); ?>">
+            class="menu-item <?php echo e(Request::is('admin/collection-order*') || Request::is('admin/banners*') || Request::is('admin/collections*') || Request::is('admin/landing-page-content*') || Request::is('admin/pricing-benefits*') || Request::is('admin/contact-info*') || Request::is('admin/site-settings*') ? 'active open' : ''); ?>">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-settings"></i>
                 <div data-i18n="Website Management"><?php echo e(__('admin.menu.website_setting')); ?></div>
@@ -278,6 +288,20 @@
                     <a href="<?php echo e(route('admin.collections.index')); ?>" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-folders"></i>
                         <div data-i18n="Collection Ebook"><?php echo e(__('admin.menu.collection_ebook')); ?></div>
+                    </a>
+                </li>
+                <!-- Contact Info -->
+                <li class="menu-item <?php echo e(Request::is('admin/contact-info*') ? 'active' : ''); ?>">
+                    <a href="<?php echo e(route('admin.contact-info.index')); ?>" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-address-book"></i>
+                        <div data-i18n="Contact Info">Contact Info</div>
+                    </a>
+                </li>
+                <!-- Site Settings -->
+                <li class="menu-item <?php echo e(Request::is('admin/site-settings*') ? 'active' : ''); ?>">
+                    <a href="<?php echo e(route('admin.site-settings.index')); ?>" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-adjustments"></i>
+                        <div data-i18n="Site Settings">Site Settings</div>
                     </a>
                 </li>
             </ul>

@@ -96,7 +96,7 @@
                                     <th><?php echo e(__('admin.blogs.title')); ?></th>
                                     <th><?php echo e(__('admin.blogs.creator')); ?></th>
                                     <th><?php echo e(__('admin.blogs.category')); ?></th>
-                                    <th><?php echo e(__('admin.blogs.views')); ?></th>
+                                    <!-- <th><?php echo e(__('admin.blogs.views')); ?></th> -->
                                     <th><?php echo e(__('admin.blogs.status')); ?></th>
                                     <th><?php echo e(__('admin.blogs.published')); ?></th>
                                     <th><?php echo e(__('admin.actions.actions')); ?></th>
@@ -125,11 +125,11 @@
                                         </td>
                                         <td>
                                             <div>
-                                                <strong><?php echo e(Str::limit($blog->title, 50)); ?></strong>
+                                                <strong><?php echo e(Str::limit($blog->title, 30)); ?></strong>
                                             </div>
-                                            <small class="text-muted"><?php echo e($blog->slug); ?></small>
+                                            <small class="text-muted"><?php echo e(Str::limit($blog->slug, 35)); ?></small>
                                         </td>
-                                        <td><?php echo e($blog->author->name ?? 'Unknown'); ?></td>
+                                        <td><?php echo e($blog->author->name ?? __('admin.blogs.unknown')); ?></td>
                                         <td>
                                             <?php if($blog->category): ?>
                                                 <span class="badge bg-label-info"><?php echo e($blog->category); ?></span>
@@ -137,21 +137,21 @@
                                                 <span class="text-muted">-</span>
                                             <?php endif; ?>
                                         </td>
-                                        <td>
+                                        <!-- <td>
                                             <i class="bx bx-show me-1"></i><?php echo e(number_format($blog->view_count)); ?>
 
-                                        </td>
+                                        </td> -->
                                         <td>
                                             <?php if($blog->status === 'published'): ?>
-                                                <span class="badge bg-success">Published</span>
+                                                <span class="badge bg-success"><?php echo e(__('admin.blogs.published')); ?></span>
                                             <?php elseif($blog->status === 'draft'): ?>
-                                                <span class="badge bg-warning">Draft</span>
+                                                <span class="badge bg-warning"><?php echo e(__('admin.blogs.draft')); ?></span>
                                             <?php elseif($blog->status === 'unpublished'): ?>
-                                                <span class="badge bg-secondary">Unpublished</span>
+                                                <span class="badge bg-secondary"><?php echo e(__('admin.blogs.unpublished')); ?></span>
                                             <?php elseif($blog->status === 'archived'): ?>
-                                                <span class="badge bg-dark">Archived</span>
+                                                <span class="badge bg-dark"><?php echo e(__('admin.blogs.archived')); ?></span>
                                             <?php else: ?>
-                                                <span class="badge bg-danger"><?php echo e($blog->status ?: 'Unknown'); ?></span>
+                                                <span class="badge bg-danger"><?php echo e($blog->status ?: __('admin.blogs.unknown')); ?></span>
                                             <?php endif; ?>
                                         </td>
                                         <td>
@@ -172,11 +172,13 @@
                                                 <div class="dropdown-menu dropdown-menu-end">
                                                     <a class="dropdown-item"
                                                         href="<?php echo e(route('admin.blogs.show', $blog->id)); ?>">
-                                                        <i class="ti ti-eye me-2"></i> View
+                                                        <i class="ti ti-eye me-2"></i> <?php echo e(__('admin.blogs.view')); ?>
+
                                                     </a>
                                                     <a class="dropdown-item"
                                                         href="<?php echo e(route('admin.blogs.edit', $blog->id)); ?>">
-                                                        <i class="ti ti-pencil me-2"></i> Edit
+                                                        <i class="ti ti-pencil me-2"></i> <?php echo e(__('admin.blogs.edit')); ?>
+
                                                     </a>
                                                     <div class="dropdown-divider"></div>
                                                     <form action="<?php echo e(route('admin.blogs.destroy', $blog->id)); ?>"
@@ -186,8 +188,9 @@
                                                         <?php echo method_field('DELETE'); ?>
                                                     </form>
                                                     <a class="dropdown-item text-danger" href="javascript:void(0);"
-                                                        onclick="if(confirm('Are you sure you want to delete this blog?')) document.getElementById('delete-blog-<?php echo e($blog->id); ?>').submit();">
-                                                        <i class="ti ti-trash me-2"></i> Delete
+                                                        onclick="if(confirm('<?php echo e(__('admin.blogs.delete_confirm')); ?>')) document.getElementById('delete-blog-<?php echo e($blog->id); ?>').submit();">
+                                                        <i class="ti ti-trash me-2"></i> <?php echo e(__('admin.blogs.delete')); ?>
+
                                                     </a>
                                                     </form>
                                                 </div>
@@ -206,9 +209,10 @@
                 <?php else: ?>
                     <div class="text-center py-5">
                         <i class="bx bx-news display-1 text-muted"></i>
-                        <p class="mt-3 text-muted">No blogs found. Create your first blog!</p>
+                        <p class="mt-3 text-muted"><?php echo e(__('admin.blogs.no_blogs_found')); ?></p>
                         <a href="<?php echo e(route('admin.blogs.create')); ?>" class="btn btn-primary">
-                            <i class="bx bx-plus me-1"></i> Create New Blog
+                            <i class="bx bx-plus me-1"></i> <?php echo e(__('admin.blogs.create_new_blog')); ?>
+
                         </a>
                     </div>
                 <?php endif; ?>

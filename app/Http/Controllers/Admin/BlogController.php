@@ -32,7 +32,7 @@ class BlogController extends Controller
             'category' => $category,
             'search' => $search,
             'exclude_archived' => true, // This ensures archived blogs never appear here
-        ], 15);
+        ], 10);
 
         $categories = $this->blogService->getAllCategories();
 
@@ -76,6 +76,7 @@ class BlogController extends Controller
             'excerpt' => 'nullable|string',
             'featured_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
             'category' => 'nullable|string|max:100',
+            'author_id' => 'required|exists:users,id',
             'status' => 'required|in:draft,published,unpublished,archived',
         ], [
             'title.required' => 'Judul blog wajib diisi.',
@@ -85,11 +86,11 @@ class BlogController extends Controller
             'featured_image.mimes' => 'Format gambar harus JPEG, JPG, PNG, atau WebP.',
             'featured_image.max' => 'Ukuran gambar maksimal 2MB.',
             'category.max' => 'Kategori maksimal 100 karakter.',
+            'author_id.required' => 'Author (Creator) wajib dipilih.',
+            'author_id.exists' => 'Author (Creator) yang dipilih tidak valid.',
             'status.required' => 'Status publikasi wajib dipilih.',
             'status.in' => 'Status publikasi tidak valid.',
         ]);
-
-        $validated['author_id'] = Auth::id();
 
         // Set published_at if status is published
         if ($validated['status'] === 'published' && !isset($validated['published_at'])) {
@@ -234,5 +235,25 @@ class BlogController extends Controller
             return redirect()->back()
                 ->with('error', 'Failed to permanently delete blog: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Search authors for autocomplete
+     */
+    public function searchAuthors(Request $request)
+    {
+        $query = $request->get('q', '');
+        
+        $authors = \App\Models\User::where('user_type', 'creator')
+            ->when($query, function ($q) use ($query) {
+                $q->where('name', 'LIKE', "%{$query}%")
+                  ->orWhere('email', 'LIKE', "%{$query}%");
+            })
+            ->select('id', 'name', 'email')
+            ->orderBy('name')
+            ->limit(20)
+            ->get();
+        
+        return response()->json($authors);
     }
 }

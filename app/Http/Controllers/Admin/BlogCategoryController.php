@@ -17,6 +17,7 @@ class BlogCategoryController extends Controller
         $search = $request->get('search');
 
         $categories = Category::where('type', 'blog')
+            ->withCount('blogs')
             ->when($search, function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
