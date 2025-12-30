@@ -49,6 +49,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Session Cookie Names
+    |--------------------------------------------------------------------------
+    |
+    | Separate session cookie names for each guard to prevent conflicts
+    | when admin and regular users are logged in simultaneously.
+    |
+    */
+
+    'session_names' => [
+        'web' => 'user_session',
+        'admin' => 'admin_session',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | User Providers
     |--------------------------------------------------------------------------
     |

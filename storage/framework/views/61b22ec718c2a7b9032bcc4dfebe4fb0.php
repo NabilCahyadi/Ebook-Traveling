@@ -257,6 +257,26 @@
         text-transform: uppercase;
     }
 
+    /* Fixed ukuran cover ebook agar konsisten */
+    .product-img {
+        position: relative;
+        width: 100%;
+        padding-top: 140%; /* Rasio 5:7 (tinggi 140% dari lebar) untuk cover buku */
+        overflow: hidden;
+        border-radius: 15px;
+        background-color: #f5f5f5;
+    }
+
+    .product-img img.default-img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
     /* --- Gaya untuk Tombol Aksi --- */
     .action-btn {
         display: flex;
@@ -609,7 +629,12 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="<?php echo e(route('ebooks.show', $ebook->slug)); ?>">
-                                                <img class="default-img" src="<?php echo e($ebook->cover_image ?: 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg'); ?>" alt="<?php echo e($ebook->title); ?>" />
+                                                <?php
+                                                    $coverImage = $ebook->external_cover_url 
+                                                        ? $ebook->external_cover_url 
+                                                        : ($ebook->cover_image_url ?? 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg');
+                                                ?>
+                                                <img class="default-img" src="<?php echo e($coverImage); ?>" alt="<?php echo e($ebook->title); ?>" />
                                             </a>
                                         </div>
                                         <div class="product-badges product-badges-position product-badges-mrg">
@@ -661,7 +686,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="product-description"><?php echo $ebook->short_description; ?></div>
+                                        <div class="product-description"><?php echo e(Str::limit(strip_tags($ebook->short_description ?? $ebook->description), 75)); ?></div>
 
                                         
                                         <?php if(auth()->check() && auth()->user()->hasActiveSubscription()): ?>

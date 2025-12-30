@@ -326,6 +326,7 @@ return [
         'excerpt' => 'Kutipan',
         'featured_image' => 'Gambar Unggulan',
         'author' => 'Penulis',
+        'creator' => 'Kreator',
         'category' => 'Kategori',
         'published_at' => 'Tanggal Publikasi',
         'views' => 'Dilihat',

@@ -610,7 +610,6 @@ $collections = collect();
         </div>
     </section>
     <!-- top 10 ibu kota di indonesia -->
-    @if(hasPermission('access_destinations'))
     <section class="popular-categories section-padding">
         <div class="container wow animate__animated animate__fadeIn">
             <div class="section-title style-2 flex-container-custom">
@@ -643,7 +642,6 @@ $collections = collect();
             </div>
         </div>
     </section>
-    @endif
     <!-- 3 subscriprion plans -->
     <!-- Subscription Plans -->
     <section class="banners mb-25">
@@ -821,7 +819,6 @@ $collections = collect();
     @endforeach
     @endif
     <!-- blogs -->
-    @if(hasPermission('access_blog'))
     <section class="section-padding pb-5">
         <div class="container mb-30">
             <div class="section-title style-2 flex-container-custom">
@@ -836,7 +833,7 @@ $collections = collect();
                     <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
                         <div class="post-thumb">
                             <a href="{{ route('blogs.show', $blog->slug) }}">
-                                <img class="border-radius-15" src="{{ $blog->featured_image ?: asset('images/blog-placeholder.webp') }}" alt="{{ $blog->title }}" />
+                                <img class="border-radius-15" src="@if($blog->featured_image && filter_var($blog->featured_image, FILTER_VALIDATE_URL)){{ $blog->featured_image }}@elseif($blog->featured_image){{ asset('storage/' . $blog->featured_image) }}@else{{ asset('images/blog-placeholder.webp') }}@endif" alt="{{ $blog->title }}" />
                             </a>
                         </div>
                         <div class="entry-content-2">
@@ -878,7 +875,6 @@ $collections = collect();
             </div>
         </div>
     </section>
-    @endif
     <script>
         // Scroll functionality
         document.addEventListener('DOMContentLoaded', function() {

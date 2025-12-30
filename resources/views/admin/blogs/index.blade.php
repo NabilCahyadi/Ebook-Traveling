@@ -75,7 +75,7 @@
 
                 <!-- Stats -->
                 <div class="d-flex justify-content-between align-items-center mt-3">
-                    <span class="badge bg-primary">{{ $blogs->total() }} {{ __('admin.common.total') }}</span>
+                    <span class="badge bg-primary">Total: {{ $blogs->total() }} Blog</span>
                     <a href="{{ route('admin.blogs.archived') }}" class="btn btn-sm btn-outline-secondary">
                         <i class="bx bx-archive me-1"></i> {{ __('admin.blogs.view_archived') }}
                     </a>
@@ -89,7 +89,7 @@
                                 <tr>
                                     <th>{{ __('admin.blogs.image') }}</th>
                                     <th>{{ __('admin.blogs.title') }}</th>
-                                    <th>{{ __('admin.blogs.author') }}</th>
+                                    <th>{{ __('admin.blogs.creator') }}</th>
                                     <th>{{ __('admin.blogs.category') }}</th>
                                     <th>{{ __('admin.blogs.views') }}</th>
                                     <th>{{ __('admin.blogs.status') }}</th>
@@ -102,7 +102,13 @@
                                     <tr>
                                         <td>
                                             @if ($blog->featured_image)
-                                                <img src="{{ asset('storage/' . $blog->featured_image) }}"
+                                                @php
+                                                    // Check if image is external URL or local storage
+                                                    $imageUrl = filter_var($blog->featured_image, FILTER_VALIDATE_URL) 
+                                                        ? $blog->featured_image 
+                                                        : asset('storage/' . $blog->featured_image);
+                                                @endphp
+                                                <img src="{{ $imageUrl }}"
                                                     alt="{{ $blog->title }}" class="rounded"
                                                     style="width: 60px; height: 60px; object-fit: cover;">
                                             @else
@@ -136,8 +142,10 @@
                                                 <span class="badge bg-warning">Draft</span>
                                             @elseif($blog->status === 'unpublished')
                                                 <span class="badge bg-secondary">Unpublished</span>
-                                            @else
+                                            @elseif($blog->status === 'archived')
                                                 <span class="badge bg-dark">Archived</span>
+                                            @else
+                                                <span class="badge bg-danger">{{ $blog->status ?: 'Unknown' }}</span>
                                             @endif
                                         </td>
                                         <td>

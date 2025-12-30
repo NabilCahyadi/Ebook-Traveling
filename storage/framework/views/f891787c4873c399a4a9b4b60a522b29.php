@@ -420,16 +420,9 @@
                                     <?php $__currentLoopData = $recentEbooks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ebook): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <tr>
                                             <td>
-                                                <?php if($ebook->cover_image): ?>
-                                                    <img src="<?php echo e(Storage::url($ebook->cover_image)); ?>"
-                                                        alt="<?php echo e($ebook->title); ?>" class="rounded"
-                                                        style="width: 40px; height: 56px; object-fit: cover;">
-                                                <?php else: ?>
-                                                    <div class="bg-label-secondary rounded d-flex align-items-center justify-content-center"
-                                                        style="width: 40px; height: 56px;">
-                                                        <i class="ti ti-book"></i>
-                                                    </div>
-                                                <?php endif; ?>
+                                                <img src="<?php echo e($ebook->cover_image_url); ?>"
+                                                    alt="<?php echo e($ebook->title); ?>" class="rounded"
+                                                    style="width: 40px; height: 56px; object-fit: cover;">
                                             </td>
                                             <td>
                                                 <div class="fw-medium"><?php echo e(Str::limit($ebook->title, 40)); ?></div>

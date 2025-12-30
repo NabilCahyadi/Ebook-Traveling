@@ -130,11 +130,11 @@
                             </div>
 
                             <div class="mb-3">
-                                <div class="form-check">
+                                <!-- <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="remember"
                                         name="remember" />
                                     <label class="form-check-label" for="remember"> Remember Me </label>
-                                </div>
+                                </div> -->
                             </div>
 
                             <div class="mb-3">

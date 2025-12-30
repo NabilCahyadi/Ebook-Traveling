@@ -1,42 +1,42 @@
-@extends('layouts.admin')
+<?php $__env->startSection('title', 'Archived Blogs'); ?>
 
-@section('title', 'Archived Blogs')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="fw-bold py-3 mb-0">
                 <span class="text-muted fw-light">Admin / Blogs /</span> Archived
             </h4>
-            <a href="{{ route('admin.blogs.index') }}" class="btn btn-outline-secondary">
+            <a href="<?php echo e(route('admin.blogs.index')); ?>" class="btn btn-outline-secondary">
                 <i class="bx bx-arrow-back me-1"></i> Back to All Blogs
             </a>
         </div>
 
-        @if (session('success'))
+        <?php if(session('success')): ?>
             <div class="alert alert-success alert-dismissible" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
+                <?php echo e(session('success')); ?>
 
-        @if (session('error'))
-            <div class="alert alert-danger alert-dismissible" role="alert">
-                {{ session('error') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-        @endif
+        <?php endif; ?>
+
+        <?php if(session('error')): ?>
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <?php echo e(session('error')); ?>
+
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
 
         <div class="card">
             <div class="card-header">
                 <h5 class="mb-3">Archived Blogs</h5>
 
                 <!-- Search Section -->
-                <form method="GET" action="{{ route('admin.blogs.archived') }}" class="row g-3">
+                <form method="GET" action="<?php echo e(route('admin.blogs.archived')); ?>" class="row g-3">
                     <div class="col-md-10">
                         <label for="search" class="form-label">Search</label>
                         <input type="text" class="form-control" id="search" name="search"
-                            placeholder="Search archived blogs..." value="{{ $search ?? '' }}">
+                            placeholder="Search archived blogs..." value="<?php echo e($search ?? ''); ?>">
                     </div>
                     <div class="col-md-2">
                         <label class="form-label">&nbsp;</label>
@@ -44,22 +44,22 @@
                             <button type="submit" class="btn btn-primary">
                                 <i class="bx bx-search-alt me-1"></i> Search
                             </button>
-                            @if ($search)
-                                <a href="{{ route('admin.blogs.archived') }}" class="btn btn-outline-secondary">
+                            <?php if($search): ?>
+                                <a href="<?php echo e(route('admin.blogs.archived')); ?>" class="btn btn-outline-secondary">
                                     <i class="bx bx-x"></i>
                                 </a>
-                            @endif
+                            <?php endif; ?>
                         </div>
                     </div>
                 </form>
 
                 <!-- Stats -->
                 <div class="mt-3">
-                    <span class="badge bg-dark">{{ $blogs->total() }} Archived</span>
+                    <span class="badge bg-dark"><?php echo e($blogs->total()); ?> Archived</span>
                 </div>
             </div>
             <div class="card-body">
-                @if ($blogs->count() > 0)
+                <?php if($blogs->count() > 0): ?>
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
@@ -74,45 +74,47 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($blogs as $blog)
+                                <?php $__currentLoopData = $blogs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $blog): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <tr>
                                         <td>
-                                            @if ($blog->featured_image)
-                                                @php
+                                            <?php if($blog->featured_image): ?>
+                                                <?php
                                                     // Check if image is external URL or local storage
                                                     $imageUrl = filter_var($blog->featured_image, FILTER_VALIDATE_URL) 
                                                         ? $blog->featured_image 
                                                         : asset('storage/' . $blog->featured_image);
-                                                @endphp
-                                                <img src="{{ $imageUrl }}"
-                                                    alt="{{ $blog->title }}" class="rounded"
+                                                ?>
+                                                <img src="<?php echo e($imageUrl); ?>"
+                                                    alt="<?php echo e($blog->title); ?>" class="rounded"
                                                     style="width: 60px; height: 60px; object-fit: cover;">
-                                            @else
+                                            <?php else: ?>
                                                 <div class="bg-light rounded d-flex align-items-center justify-content-center"
                                                     style="width: 60px; height: 60px;">
                                                     <i class="bx bx-image text-muted fs-4"></i>
                                                 </div>
-                                            @endif
+                                            <?php endif; ?>
                                         </td>
                                         <td>
                                             <div>
-                                                <strong>{{ Str::limit($blog->title, 50) }}</strong>
+                                                <strong><?php echo e(Str::limit($blog->title, 50)); ?></strong>
                                             </div>
-                                            <small class="text-muted">{{ $blog->slug }}</small>
+                                            <small class="text-muted"><?php echo e($blog->slug); ?></small>
                                         </td>
-                                        <td>{{ $blog->author->name ?? 'Unknown' }}</td>
+                                        <td><?php echo e($blog->author->name ?? 'Unknown'); ?></td>
                                         <td>
-                                            @if ($blog->category)
-                                                <span class="badge bg-label-info">{{ $blog->category }}</span>
-                                            @else
+                                            <?php if($blog->category): ?>
+                                                <span class="badge bg-label-info"><?php echo e($blog->category); ?></span>
+                                            <?php else: ?>
                                                 <span class="text-muted">-</span>
-                                            @endif
+                                            <?php endif; ?>
                                         </td>
                                         <td>
-                                            <i class="bx bx-show me-1"></i>{{ number_format($blog->view_count) }}
+                                            <i class="bx bx-show me-1"></i><?php echo e(number_format($blog->view_count)); ?>
+
                                         </td>
                                         <td>
-                                            {{ $blog->updated_at->format('d M Y') }}
+                                            <?php echo e($blog->updated_at->format('d M Y')); ?>
+
                                         </td>
                                         <td>
                                             <div class="dropdown">
@@ -123,46 +125,49 @@
                                                 </button>
                                                 <div class="dropdown-menu dropdown-menu-end">
                                                     <a class="dropdown-item"
-                                                        href="{{ route('admin.blogs.show', $blog->id) }}">
+                                                        href="<?php echo e(route('admin.blogs.show', $blog->id)); ?>">
                                                         <i class="ti ti-eye me-2"></i> View
                                                     </a>
                                                     <a class="dropdown-item"
-                                                        href="{{ route('admin.blogs.edit', $blog->id) }}">
+                                                        href="<?php echo e(route('admin.blogs.edit', $blog->id)); ?>">
                                                         <i class="ti ti-pencil me-2"></i> Edit
                                                     </a>
                                                     <div class="dropdown-divider"></div>
-                                                    <form action="{{ route('admin.blogs.destroy', $blog->id) }}"
+                                                    <form action="<?php echo e(route('admin.blogs.destroy', $blog->id)); ?>"
                                                         method="POST" style="display: none;"
-                                                        id="delete-blog-{{ $blog->id }}">
-                                                        @csrf
-                                                        @method('DELETE')
+                                                        id="delete-blog-<?php echo e($blog->id); ?>">
+                                                        <?php echo csrf_field(); ?>
+                                                        <?php echo method_field('DELETE'); ?>
                                                     </form>
                                                     <a class="dropdown-item text-danger" href="javascript:void(0);"
-                                                        onclick="if(confirm('Are you sure you want to permanently delete this archived blog?')) document.getElementById('delete-blog-{{ $blog->id }}').submit();">
+                                                        onclick="if(confirm('Are you sure you want to permanently delete this archived blog?')) document.getElementById('delete-blog-<?php echo e($blog->id); ?>').submit();">
                                                         <i class="ti ti-trash me-2"></i> Delete
                                                     </a>
                                                 </div>
                                             </div>
                                         </td>
                                     </tr>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tbody>
                         </table>
                     </div>
 
                     <div class="mt-3">
-                        {{ $blogs->appends(['search' => $search])->links() }}
+                        <?php echo e($blogs->appends(['search' => $search])->links()); ?>
+
                     </div>
-                @else
+                <?php else: ?>
                     <div class="text-center py-5">
                         <i class="bx bx-archive display-1 text-muted"></i>
                         <p class="mt-3 text-muted">No archived blogs found.</p>
-                        <a href="{{ route('admin.blogs.index') }}" class="btn btn-outline-secondary">
+                        <a href="<?php echo e(route('admin.blogs.index')); ?>" class="btn btn-outline-secondary">
                             <i class="bx bx-arrow-back me-1"></i> Back to All Blogs
                         </a>
                     </div>
-                @endif
+                <?php endif; ?>
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\ebook_traveling\resources\views/admin/blogs/archived.blade.php ENDPATH**/ ?>

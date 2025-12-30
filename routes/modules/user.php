@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 | Routes untuk pelanggan yang membeli dan membaca ebook
 */
 
-Route::prefix('user')->name('user.')->middleware('auth')->group(function () {
+Route::prefix('user')->name('user.')->middleware(['user.session', 'auth'])->group(function () {
 
 
     // Ebook Reader Routes
