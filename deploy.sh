@@ -25,10 +25,6 @@ $PHP_BIN artisan route:clear
 # Jalankan migrate:fresh dengan semua seeder
 $PHP_BIN artisan migrate --force
 
-$PHP_BIN artisan db:seed --class=SiteSettingsSeeder --force
-$PHP_BIN artisan db:seed --class=ContactInfoSeeder --force
-
-
 # Create storage symlink (PENTING untuk akses file dari public)
 $PHP_BIN artisan storage:link
 
