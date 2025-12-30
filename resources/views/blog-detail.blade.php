@@ -133,7 +133,7 @@
                                     @foreach($blog->ebooks as $ebook)
                                     <div class="single-post clearfix">
                                         <div class="image">
-                                            <img src="{{ asset($ebook->cover_image) }}" alt="{{ $ebook->title }}" />
+                                            <img src="@if($ebook->cover_image && filter_var($ebook->cover_image, FILTER_VALIDATE_URL)){{ $ebook->cover_image }}@elseif($ebook->cover_image){{ asset('storage/' . $ebook->cover_image) }}@else{{ asset('images/ebook-placeholder.webp') }}@endif" alt="{{ $ebook->title }}" />
                                         </div>
                                         <div class="content pt-10">
                                             {{-- PERBAIKAN: Buat link ke halaman detail e-book --}}

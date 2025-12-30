@@ -353,7 +353,7 @@
                             <div class="detail-gallery">
                                 <!-- GAMBAR DIBUNGKUS DENGAN FRAME KHUSUS -->
                                 <div class="ebook-cover-frame">
-                                    <img src="{{ asset($ebook->cover_image) }}" alt="{{ $ebook->title }}" />
+                                    <img src="@if($ebook->cover_image && filter_var($ebook->cover_image, FILTER_VALIDATE_URL)){{ $ebook->cover_image }}@elseif($ebook->cover_image){{ asset('storage/' . $ebook->cover_image) }}@else{{ asset('images/ebook-placeholder.webp') }}@endif" alt="{{ $ebook->title }}" />
                                 </div>
                             </div>
                         </div>

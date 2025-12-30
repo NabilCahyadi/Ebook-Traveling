@@ -351,7 +351,7 @@
                             <div class="detail-gallery">
                                 <!-- GAMBAR DIBUNGKUS DENGAN FRAME KHUSUS -->
                                 <div class="ebook-cover-frame">
-                                    <img src="<?php echo e(asset($ebook->cover_image)); ?>" alt="<?php echo e($ebook->title); ?>" />
+                                    <img src="<?php if($ebook->cover_image && filter_var($ebook->cover_image, FILTER_VALIDATE_URL)): ?><?php echo e($ebook->cover_image); ?><?php elseif($ebook->cover_image): ?><?php echo e(asset('storage/' . $ebook->cover_image)); ?><?php else: ?><?php echo e(asset('images/ebook-placeholder.webp')); ?><?php endif; ?>" alt="<?php echo e($ebook->title); ?>" />
                                 </div>
                             </div>
                         </div>

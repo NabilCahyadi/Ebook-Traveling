@@ -1110,7 +1110,7 @@
                                         @foreach($createdEbooks as $ebook)
                                         <div class="col-md-4 mb-4">
                                             <div class="card h-100">
-                                                <img src="{{ $ebook->cover_image ?? '/images/ebook-placeholder.jpg' }}"
+                                                <img src="@if($ebook->cover_image && filter_var($ebook->cover_image, FILTER_VALIDATE_URL)){{ $ebook->cover_image }}@elseif($ebook->cover_image){{ asset('storage/' . $ebook->cover_image) }}@else{{ asset('images/ebook-placeholder.webp') }}@endif"
                                                     class="card-img-top" alt="{{ $ebook->title }}"
                                                     style="height: 200px; object-fit: cover;">
                                                 <div class="card-body">
