@@ -1,13 +1,15 @@
-<?php $__env->startSection('title', 'Archived Blogs'); ?>
+<?php $__env->startSection('title', __('admin.blogs.archived_blogs')); ?>
 
 <?php $__env->startSection('content'); ?>
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="fw-bold py-3 mb-0">
-                <span class="text-muted fw-light">Admin / Blogs /</span> Archived
+                <span class="text-muted fw-light">Admin / Blogs /</span> <?php echo e(__('admin.blogs.archived')); ?>
+
             </h4>
             <a href="<?php echo e(route('admin.blogs.index')); ?>" class="btn btn-outline-secondary">
-                <i class="bx bx-arrow-back me-1"></i> Back to All Blogs
+                <i class="bx bx-arrow-back me-1"></i> <?php echo e(__('admin.blogs.back_to_all')); ?>
+
             </a>
         </div>
 
@@ -29,20 +31,21 @@
 
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-3">Archived Blogs</h5>
+                <h5 class="mb-3"><?php echo e(__('admin.blogs.archived_blogs')); ?></h5>
 
                 <!-- Search Section -->
                 <form method="GET" action="<?php echo e(route('admin.blogs.archived')); ?>" class="row g-3">
                     <div class="col-md-10">
-                        <label for="search" class="form-label">Search</label>
+                        <label for="search" class="form-label"><?php echo e(__('admin.common.search')); ?></label>
                         <input type="text" class="form-control" id="search" name="search"
-                            placeholder="Search archived blogs..." value="<?php echo e($search ?? ''); ?>">
+                            placeholder="<?php echo e(__('admin.blogs.search_archived')); ?>" value="<?php echo e($search ?? ''); ?>">
                     </div>
                     <div class="col-md-2">
                         <label class="form-label">&nbsp;</label>
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary">
-                                <i class="bx bx-search-alt me-1"></i> Search
+                                <i class="bx bx-search-alt me-1"></i> <?php echo e(__('admin.common.search')); ?>
+
                             </button>
                             <?php if($search): ?>
                                 <a href="<?php echo e(route('admin.blogs.archived')); ?>" class="btn btn-outline-secondary">
@@ -55,7 +58,7 @@
 
                 <!-- Stats -->
                 <div class="mt-3">
-                    <span class="badge bg-dark"><?php echo e($blogs->total()); ?> Archived</span>
+                    <span class="badge bg-dark"><?php echo e($blogs->total()); ?> <?php echo e(__('admin.blogs.archived')); ?></span>
                 </div>
             </div>
             <div class="card-body">
@@ -64,13 +67,13 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>Image</th>
-                                    <th>Title</th>
-                                    <th>Author</th>
-                                    <th>Category</th>
-                                    <th>Views</th>
-                                    <th>Archived Date</th>
-                                    <th>Actions</th>
+                                    <th><?php echo e(__('admin.blogs.image')); ?></th>
+                                    <th><?php echo e(__('admin.blogs.title')); ?></th>
+                                    <th><?php echo e(__('admin.blogs.author')); ?></th>
+                                    <th><?php echo e(__('admin.blogs.category')); ?></th>
+                                    <th><?php echo e(__('admin.blogs.views')); ?></th>
+                                    <th><?php echo e(__('admin.blogs.archived_date')); ?></th>
+                                    <th><?php echo e(__('admin.blogs.actions')); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -100,7 +103,7 @@
                                             </div>
                                             <small class="text-muted"><?php echo e($blog->slug); ?></small>
                                         </td>
-                                        <td><?php echo e($blog->author->name ?? 'Unknown'); ?></td>
+                                        <td><?php echo e($blog->author->name ?? __('admin.blogs.unknown')); ?></td>
                                         <td>
                                             <?php if($blog->category): ?>
                                                 <span class="badge bg-label-info"><?php echo e($blog->category); ?></span>
@@ -126,11 +129,13 @@
                                                 <div class="dropdown-menu dropdown-menu-end">
                                                     <a class="dropdown-item"
                                                         href="<?php echo e(route('admin.blogs.show', $blog->id)); ?>">
-                                                        <i class="ti ti-eye me-2"></i> View
+                                                        <i class="ti ti-eye me-2"></i> <?php echo e(__('admin.blogs.view')); ?>
+
                                                     </a>
                                                     <a class="dropdown-item"
                                                         href="<?php echo e(route('admin.blogs.edit', $blog->id)); ?>">
-                                                        <i class="ti ti-pencil me-2"></i> Edit
+                                                        <i class="ti ti-pencil me-2"></i> <?php echo e(__('admin.blogs.edit')); ?>
+
                                                     </a>
                                                     <div class="dropdown-divider"></div>
                                                     <form action="<?php echo e(route('admin.blogs.destroy', $blog->id)); ?>"
@@ -140,8 +145,9 @@
                                                         <?php echo method_field('DELETE'); ?>
                                                     </form>
                                                     <a class="dropdown-item text-danger" href="javascript:void(0);"
-                                                        onclick="if(confirm('Are you sure you want to permanently delete this archived blog?')) document.getElementById('delete-blog-<?php echo e($blog->id); ?>').submit();">
-                                                        <i class="ti ti-trash me-2"></i> Delete
+                                                        onclick="if(confirm('<?php echo e(__('admin.blogs.delete_archived_confirm')); ?>')) document.getElementById('delete-blog-<?php echo e($blog->id); ?>').submit();">
+                                                        <i class="ti ti-trash me-2"></i> <?php echo e(__('admin.blogs.delete')); ?>
+
                                                     </a>
                                                 </div>
                                             </div>
@@ -159,9 +165,10 @@
                 <?php else: ?>
                     <div class="text-center py-5">
                         <i class="bx bx-archive display-1 text-muted"></i>
-                        <p class="mt-3 text-muted">No archived blogs found.</p>
+                        <p class="mt-3 text-muted"><?php echo e(__('admin.blogs.no_archived')); ?></p>
                         <a href="<?php echo e(route('admin.blogs.index')); ?>" class="btn btn-outline-secondary">
-                            <i class="bx bx-arrow-back me-1"></i> Back to All Blogs
+                            <i class="bx bx-arrow-back me-1"></i> <?php echo e(__('admin.blogs.back_to_all')); ?>
+
                         </a>
                     </div>
                 <?php endif; ?>

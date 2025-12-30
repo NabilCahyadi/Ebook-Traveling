@@ -68,7 +68,7 @@
                         <thead>
                             <tr>
                                 <th>{{ __('admin.blog_categories.name') }}</th>
-                                <th>{{ __('admin.blog_categories.slug') }}</th>
+                                <!-- <th>{{ __('admin.blog_categories.slug') }}</th> -->
                                 <th>{{ __('admin.blog_categories.description') }}</th>
                                 <th>{{ __('admin.blog_categories.status') }}</th>
                                 <th>{{ __('admin.blog_categories.blogs') }}</th>
@@ -81,17 +81,12 @@
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <div class="avatar avatar-sm me-2 bg-label-primary">
-                                                <span class="avatar-initial rounded-circle">
-                                                    <i class="ti ti-folder"></i>
-                                                </span>
-                                            </div>
                                             <strong>{{ $category->name }}</strong>
                                         </div>
                                     </td>
-                                    <td>
+                                    <!-- <td>
                                         <code>{{ $category->slug }}</code>
-                                    </td>
+                                    </td> -->
                                     <td>
                                         <small class="text-muted">{{ Str::limit($category->description ?? '-', 50) }}</small>
                                     </td>

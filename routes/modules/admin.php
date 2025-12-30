@@ -123,6 +123,7 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     Route::get('blogs/trashed', [\App\Http\Controllers\Admin\BlogController::class, 'trashed'])->name('blogs.trashed');
     Route::patch('blogs/{blog}/restore', [\App\Http\Controllers\Admin\BlogController::class, 'restore'])->name('blogs.restore');
     Route::delete('blogs/{blog}/force-delete', [\App\Http\Controllers\Admin\BlogController::class, 'forceDelete'])->name('blogs.force-delete');
+    Route::get('blogs/search-authors', [\App\Http\Controllers\Admin\BlogController::class, 'searchAuthors'])->name('blogs.search-authors');
     Route::resource('blogs', \App\Http\Controllers\Admin\BlogController::class);
 
     // Blog Category Management
@@ -188,4 +189,14 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     Route::post('pricing-benefits/{id}/toggle-status', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'toggleStatus'])->name('pricing-benefits.toggle-status');
     Route::post('pricing-benefits/update-order', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'updateOrder'])->name('pricing-benefits.update-order');
     Route::resource('pricing-benefits', \App\Http\Controllers\Admin\PricingBenefitController::class);
+
+    // Contact Info Management
+    Route::post('contact-info/{id}/toggle-active', [\App\Http\Controllers\Admin\ContactInfoController::class, 'toggleActive'])->name('contact-info.toggle-active');
+    Route::resource('contact-info', \App\Http\Controllers\Admin\ContactInfoController::class);
+
+    // Site Settings Management
+    Route::post('site-settings/store', [\App\Http\Controllers\Admin\SiteSettingController::class, 'store'])->name('site-settings.store');
+    Route::delete('site-settings/{id}', [\App\Http\Controllers\Admin\SiteSettingController::class, 'destroy'])->name('site-settings.destroy');
+    Route::get('site-settings', [\App\Http\Controllers\Admin\SiteSettingController::class, 'index'])->name('site-settings.index');
+    Route::put('site-settings', [\App\Http\Controllers\Admin\SiteSettingController::class, 'update'])->name('site-settings.update');
 });

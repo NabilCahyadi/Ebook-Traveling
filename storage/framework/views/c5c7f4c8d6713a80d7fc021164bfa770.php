@@ -1,8 +1,6 @@
-@extends('layouts.admin')
+<?php $__env->startSection('title', __('admin.blogs.create')); ?>
 
-@section('title', __('admin.blogs.create'))
-
-@push('styles')
+<?php $__env->startPush('styles'); ?>
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.css" />
     <style>
         .ck-editor__editable {
@@ -39,62 +37,107 @@
             cursor: default;
         }
     </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="fw-bold py-3 mb-0">
-                <span class="text-muted fw-light">Admin / Blogs /</span> {{ __('admin.blogs.create_new') }}
+                <span class="text-muted fw-light">Admin / Blogs /</span> <?php echo e(__('admin.blogs.create_new')); ?>
+
             </h4>
-            <a href="{{ route('admin.blogs.index') }}" class="btn btn-secondary">
-                <i class="bx bx-arrow-back me-1"></i> {{ __('admin.blogs.back') }}
+            <a href="<?php echo e(route('admin.blogs.index')); ?>" class="btn btn-secondary">
+                <i class="bx bx-arrow-back me-1"></i> <?php echo e(__('admin.blogs.back')); ?>
+
             </a>
         </div>
 
-        @if (session('error'))
+        <?php if(session('error')): ?>
             <div class="alert alert-danger alert-dismissible" role="alert">
-                {{ session('error') }}
+                <?php echo e(session('error')); ?>
+
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-        @endif
+        <?php endif; ?>
 
-        <form id="blogForm" action="{{ route('admin.blogs.store') }}" method="POST" enctype="multipart/form-data">
-            @csrf
+        <form id="blogForm" action="<?php echo e(route('admin.blogs.store')); ?>" method="POST" enctype="multipart/form-data">
+            <?php echo csrf_field(); ?>
 
             <div class="row">
                 <div class="col-lg-8">
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h5 class="mb-0">{{ __('admin.blogs.blog_content') }}</h5>
+                            <h5 class="mb-0"><?php echo e(__('admin.blogs.blog_content')); ?></h5>
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label class="form-label" for="title">{{ __('admin.blogs.blog_title') }} <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('title') is-invalid @enderror"
-                                    id="title" name="title" value="{{ old('title') }}" placeholder="{{ __('admin.blogs.enter_title') }}"
+                                <label class="form-label" for="title"><?php echo e(__('admin.blogs.blog_title')); ?> <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control <?php $__errorArgs = ['title'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                                    id="title" name="title" value="<?php echo e(old('title')); ?>" placeholder="<?php echo e(__('admin.blogs.enter_title')); ?>"
                                     required>
-                                @error('title')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['title'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label" for="content">{{ __('admin.blogs.content') }} <span class="text-danger">*</span></label>
-                                <textarea class="form-control @error('content') is-invalid @enderror" id="content" name="content" rows="20">{{ old('content') }}</textarea>
-                                @error('content')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <label class="form-label" for="content"><?php echo e(__('admin.blogs.content')); ?> <span class="text-danger">*</span></label>
+                                <textarea class="form-control <?php $__errorArgs = ['content'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="content" name="content" rows="20"><?php echo e(old('content')); ?></textarea>
+                                <?php $__errorArgs = ['content'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label" for="excerpt">{{ __('admin.blogs.excerpt') }}</label>
-                                <textarea class="form-control @error('excerpt') is-invalid @enderror" id="excerpt" name="excerpt" rows="3"
-                                    placeholder="{{ __('admin.blogs.excerpt_placeholder') }}">{{ old('excerpt') }}</textarea>
-                                @error('excerpt')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                                <div class="form-text">{{ __('admin.blogs.excerpt_help') }}</div>
+                                <label class="form-label" for="excerpt"><?php echo e(__('admin.blogs.excerpt')); ?></label>
+                                <textarea class="form-control <?php $__errorArgs = ['excerpt'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="excerpt" name="excerpt" rows="3"
+                                    placeholder="<?php echo e(__('admin.blogs.excerpt_placeholder')); ?>"><?php echo e(old('excerpt')); ?></textarea>
+                                <?php $__errorArgs = ['excerpt'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                <div class="form-text"><?php echo e(__('admin.blogs.excerpt_help')); ?></div>
                             </div>
                         </div>
                     </div>
@@ -103,17 +146,24 @@
                 <div class="col-lg-4">
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h5 class="mb-0">{{ __('admin.blogs.publish') }}</h5>
+                            <h5 class="mb-0"><?php echo e(__('admin.blogs.publish')); ?></h5>
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label class="form-label" for="author_search">{{ __('admin.blogs.author') }} <span class="text-danger">*</span></label>
+                                <label class="form-label" for="author_search"><?php echo e(__('admin.blogs.author')); ?> <span class="text-danger">*</span></label>
                                 <input type="text" 
-                                    class="form-control @error('author_id') is-invalid @enderror" 
+                                    class="form-control <?php $__errorArgs = ['author_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                     id="author_search" 
                                     placeholder="Type to search author..."
                                     autocomplete="off">
-                                <input type="hidden" name="author_id" id="author_id" value="{{ old('author_id') }}">
+                                <input type="hidden" name="author_id" id="author_id" value="<?php echo e(old('author_id')); ?>">
                                 
                                 <!-- Autocomplete dropdown -->
                                 <div id="author_suggestions" class="list-group position-absolute w-100" style="z-index: 1000; display: none; max-height: 250px; overflow-y: auto;"></div>
@@ -121,37 +171,62 @@
                                 <!-- Selected author display -->
                                 <div id="selected_author" class="mt-2"></div>
                                 
-                                @error('author_id')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['author_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback d-block"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 <div class="form-text">Select the blog author</div>
                             </div>
                             
                             <div class="mb-3">
-                                <label class="form-label" for="status">{{ __('admin.blogs.status') }} <span class="text-danger">*</span></label>
-                                <select class="form-select @error('status') is-invalid @enderror" id="status"
+                                <label class="form-label" for="status"><?php echo e(__('admin.blogs.status')); ?> <span class="text-danger">*</span></label>
+                                <select class="form-select <?php $__errorArgs = ['status'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="status"
                                     name="status" required>
-                                    <option value="draft" {{ old('status', 'draft') == 'draft' ? 'selected' : '' }}>{{ __('admin.blogs.draft') }}
+                                    <option value="draft" <?php echo e(old('status', 'draft') == 'draft' ? 'selected' : ''); ?>><?php echo e(__('admin.blogs.draft')); ?>
+
                                     </option>
-                                    <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>
-                                        {{ __('admin.blogs.published') }}</option>
-                                    <option value="unpublished" {{ old('status') == 'unpublished' ? 'selected' : '' }}>
-                                        {{ __('admin.blogs.unpublished') }}</option>
-                                    <option value="archived" {{ old('status') == 'archived' ? 'selected' : '' }}>{{ __('admin.blogs.archived') }}
+                                    <option value="published" <?php echo e(old('status') == 'published' ? 'selected' : ''); ?>>
+                                        <?php echo e(__('admin.blogs.published')); ?></option>
+                                    <option value="unpublished" <?php echo e(old('status') == 'unpublished' ? 'selected' : ''); ?>>
+                                        <?php echo e(__('admin.blogs.unpublished')); ?></option>
+                                    <option value="archived" <?php echo e(old('status') == 'archived' ? 'selected' : ''); ?>><?php echo e(__('admin.blogs.archived')); ?>
+
                                     </option>
                                 </select>
-                                @error('status')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                                <div class="form-text">{{ __('admin.blogs.set_blog_status') }}</div>
+                                <?php $__errorArgs = ['status'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                <div class="form-text"><?php echo e(__('admin.blogs.set_blog_status')); ?></div>
                             </div>
 
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bx bx-save me-1"></i> {{ __('admin.blogs.create_blog') }}
+                                    <i class="bx bx-save me-1"></i> <?php echo e(__('admin.blogs.create_blog')); ?>
+
                                 </button>
-                                <a href="{{ route('admin.blogs.index') }}" class="btn btn-secondary">
-                                    {{ __('admin.blogs.cancel') }}
+                                <a href="<?php echo e(route('admin.blogs.index')); ?>" class="btn btn-secondary">
+                                    <?php echo e(__('admin.blogs.cancel')); ?>
+
                                 </a>
                             </div>
                         </div>
@@ -159,15 +234,29 @@
 
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h5 class="mb-0">{{ __('admin.blogs.featured_image') }}</h5>
+                            <h5 class="mb-0"><?php echo e(__('admin.blogs.featured_image')); ?></h5>
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <input type="file" class="form-control @error('featured_image') is-invalid @enderror"
+                                <input type="file" class="form-control <?php $__errorArgs = ['featured_image'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                                     id="featured_image" name="featured_image" accept="image/*">
-                                @error('featured_image')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['featured_image'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </div>
                             <div id="imagePreview" class="mt-2" style="display: none;">
                                 <img src="" alt="Preview" class="img-fluid rounded">
@@ -177,27 +266,43 @@
 
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h5 class="mb-0">{{ __('admin.blogs.category') }}</h5>
+                            <h5 class="mb-0"><?php echo e(__('admin.blogs.category')); ?></h5>
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label class="form-label" for="category">{{ __('admin.blogs.blog_category') }}</label>
-                                <select class="form-select @error('category') is-invalid @enderror" 
+                                <label class="form-label" for="category"><?php echo e(__('admin.blogs.blog_category')); ?></label>
+                                <select class="form-select <?php $__errorArgs = ['category'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                     id="category" 
                                     name="category">
-                                    <option value="">{{ __('admin.blogs.select_category') }}</option>
-                                    @foreach($categories as $category)
-                                        <option value="{{ $category->name }}" {{ old('category') == $category->name ? 'selected' : '' }}>
-                                            {{ $category->name }}
+                                    <option value=""><?php echo e(__('admin.blogs.select_category')); ?></option>
+                                    <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($category->name); ?>" <?php echo e(old('category') == $category->name ? 'selected' : ''); ?>>
+                                            <?php echo e($category->name); ?>
+
                                         </option>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
-                                @error('category')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['category'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 <div class="form-text">
-                                    {{ __('admin.blogs.select_category_text') }}
-                                    <a href="{{ route('admin.blog-categories.create') }}" target="_blank">{{ __('admin.blogs.add_new_category') }}</a>
+                                    <?php echo e(__('admin.blogs.select_category_text')); ?>
+
+                                    <a href="<?php echo e(route('admin.blog-categories.create')); ?>" target="_blank"><?php echo e(__('admin.blogs.add_new_category')); ?></a>
                                 </div>
                             </div>
                         </div>
@@ -207,7 +312,7 @@
         </form>
     </div>
 
-    @push('scripts')
+    <?php $__env->startPush('scripts'); ?>
         <script type="importmap">
             {
                 "imports": {
@@ -374,9 +479,9 @@
             let allAuthors = [];
 
             // Load selected author if edit mode
-            @if(old('author_id'))
-                loadSelectedAuthor('{{ old('author_id') }}');
-            @endif
+            <?php if(old('author_id')): ?>
+                loadSelectedAuthor('<?php echo e(old('author_id')); ?>');
+            <?php endif; ?>
 
             // Load all authors on focus
             authorSearch.on('focus', function() {
@@ -410,7 +515,7 @@
                 authorSuggestions.html('<div class="list-group-item text-muted"><i class="bx bx-loader-alt bx-spin me-1"></i> Searching...</div>').show();
                 
                 $.ajax({
-                    url: '{{ route('admin.blogs.search-authors') }}',
+                    url: '<?php echo e(route('admin.blogs.search-authors')); ?>',
                     method: 'GET',
                     data: { q: query },
                     success: function(data) {
@@ -428,7 +533,7 @@
                 authorSuggestions.html('<div class="list-group-item text-muted"><i class="bx bx-loader-alt bx-spin me-1"></i> Loading authors...</div>').show();
                 
                 $.ajax({
-                    url: '{{ route('admin.blogs.search-authors') }}',
+                    url: '<?php echo e(route('admin.blogs.search-authors')); ?>',
                     method: 'GET',
                     data: { q: '' },
                     success: function(data) {
@@ -492,7 +597,7 @@
 
             function loadSelectedAuthor(authorId) {
                 $.ajax({
-                    url: '{{ route('admin.blogs.search-authors') }}',
+                    url: '<?php echo e(route('admin.blogs.search-authors')); ?>',
                     method: 'GET',
                     data: { q: '' },
                     success: function(data) {
@@ -517,5 +622,7 @@
                 }
             });
         </script>
-    @endpush
-@endsection
+    <?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\ebook_traveling\resources\views/admin/blogs/create.blade.php ENDPATH**/ ?>
