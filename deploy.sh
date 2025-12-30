@@ -24,6 +24,7 @@ $PHP_BIN artisan route:clear
 
 # Jalankan migrate:fresh dengan semua seeder
 $PHP_BIN artisan migrate --force
+$PHP_BIN artisan db:seed --class=UpdateBlogCategoriesSeeder --force
 
 # Create storage symlink (PENTING untuk akses file dari public)
 $PHP_BIN artisan storage:link
