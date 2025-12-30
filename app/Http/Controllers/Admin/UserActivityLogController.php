@@ -59,7 +59,7 @@ class UserActivityLogController extends Controller
             });
         }
 
-        $logs = $query->latest()->paginate(20);
+        $logs = $query->latest()->paginate(10);
 
         // Get all users for filter
         $users = User::with('roles')->orderBy('name')->get();
