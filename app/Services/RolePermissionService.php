@@ -31,21 +31,36 @@ class RolePermissionService
 
     public function getPermissionModules()
     {
-        // Get permissions from database, grouped by 'group' column
-        $permissions = \App\Models\Permission::orderBy('group')->orderBy('display_name')->get();
+        // Get only panel permissions (for /panel dynamic access)
+        // Group by 'group' (module name) and sub-group by 'module' (page name)
+        $permissions = \App\Models\Permission::where('name', 'like', 'panel.%')
+            ->orderBy('group')
+            ->orderBy('module')
+            ->orderBy('display_name')
+            ->get();
         
         $modules = [];
         
+        // Group permissions by module (group column)
         foreach ($permissions->groupBy('group') as $groupName => $groupPermissions) {
+            // Sub-group by page (module column) within each module
+            $pages = [];
+            foreach ($groupPermissions->groupBy('module') as $moduleName => $modulePermissions) {
+                $pages[] = [
+                    'name' => ucfirst(str_replace('_', ' ', $moduleName)),
+                    'permissions' => $modulePermissions->map(function($permission) {
+                        return [
+                            'name' => $permission->name,
+                            'label' => $permission->display_name,
+                            'description' => $permission->description,
+                        ];
+                    })->toArray()
+                ];
+            }
+            
             $modules[] = [
                 'name' => $groupName,
-                'permissions' => $groupPermissions->map(function($permission) {
-                    return [
-                        'name' => $permission->name,
-                        'label' => $permission->display_name,
-                        'description' => $permission->description,
-                    ];
-                })->toArray()
+                'pages' => $pages
             ];
         }
         

@@ -16,32 +16,31 @@ class CheckPermission
      */
     public function handle(Request $request, Closure $next, string $permission): Response
     {
+        // Check admin guard first (for admin panel routes)
+        if (auth('admin')->check()) {
+            $admin = auth('admin')->user();
+            
+            // Check if admin has permission
+            if (!$admin->hasPermission($permission)) {
+                abort(403, 'You do not have permission to access this page.');
+            }
+            
+            return $next($request);
+        }
+        
+        // Check regular user guard (for front-end routes)
         $user = $request->user();
 
-        // For guest users, check Guest role permissions
+        // For guest users (not logged in)
         if (!$user) {
-            $guestRole = \App\Models\Role::where('slug', 'guest')->first();
-            
-            if (!$guestRole) {
-                return $next($request); // Fallback: allow if Guest role not configured
-            }
-
-            // Load permissions
-            if (!$guestRole->relationLoaded('permissions')) {
-                $guestRole->load('permissions');
-            }
-
-            if (!$guestRole->hasPermission($permission)) {
-                abort(403, 'Guests do not have permission to access this page. Please login.');
-            }
-
-            return $next($request);
+            // Guest doesn't have role in database, deny access to protected routes
+            abort(403, 'Please login to access this page.');
         }
 
         // For logged in users, check permission based on user_type
         $userType = $user->user_type ?? 'member';
 
-        // Admin always has access
+        // Admin user type always has access (if they login via user guard)
         if ($userType === 'admin') {
             return $next($request);
         }

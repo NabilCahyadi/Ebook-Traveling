@@ -1,18 +1,18 @@
 <!doctype html>
 <html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed layout-compact" dir="ltr"
-    data-theme="theme-default" data-assets-path="<?php echo e(url('assets/admin/')); ?>/" data-template="vertical-menu-template"
+    data-theme="theme-default" data-assets-path="{{ url('assets/admin/') }}/" data-template="vertical-menu-template"
     data-style="light">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <title><?php echo $__env->yieldContent('title', 'Dashboard'); ?> - <?php echo e(config('app.name')); ?></title>
-    <meta name="description" content="<?php echo $__env->yieldContent('meta_description', ''); ?>" />
-    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+    <title>@yield('title', 'Dashboard') - {{ config('app.name') }}</title>
+    <meta name="description" content="@yield('meta_description', '')" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="<?php echo e(url('assets/admin/img/favicon/favicon.ico')); ?>" />
+    <link rel="icon" type="image/x-icon" href="{{ url('assets/admin/img/favicon/favicon.ico') }}" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -22,29 +22,29 @@
         rel="stylesheet" />
 
     <!-- Icons -->
-    <link rel="stylesheet" href="<?php echo e(url('assets/admin/vendor/fonts/fontawesome.css')); ?>" />
-    <link rel="stylesheet" href="<?php echo e(url('assets/admin/vendor/fonts/tabler-icons.css')); ?>" />
-    <link rel="stylesheet" href="<?php echo e(url('assets/admin/vendor/fonts/flag-icons.css')); ?>" />
+    <link rel="stylesheet" href="{{ url('assets/admin/vendor/fonts/fontawesome.css') }}" />
+    <link rel="stylesheet" href="{{ url('assets/admin/vendor/fonts/tabler-icons.css') }}" />
+    <link rel="stylesheet" href="{{ url('assets/admin/vendor/fonts/flag-icons.css') }}" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 
     <!-- Core CSS -->
-    <link rel="stylesheet" href="<?php echo e(url('assets/admin/vendor/css/core.css')); ?>" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="<?php echo e(url('assets/admin/vendor/css/theme-default.css')); ?>"
+    <link rel="stylesheet" href="{{ url('assets/admin/vendor/css/core.css') }}" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{{ url('assets/admin/vendor/css/theme-default.css') }}"
         class="template-customizer-theme-css" />
-    <link rel="stylesheet" href="<?php echo e(url('assets/admin/css/demo.css')); ?>" />
+    <link rel="stylesheet" href="{{ url('assets/admin/css/demo.css') }}" />
 
     <!-- Vendors CSS -->
-    <link rel="stylesheet" href="<?php echo e(url('assets/admin/vendor/libs/node-waves/node-waves.css')); ?>" />
-    <link rel="stylesheet" href="<?php echo e(url('assets/admin/vendor/libs/perfect-scrollbar/perfect-scrollbar.css')); ?>" />
-    <link rel="stylesheet" href="<?php echo e(url('assets/admin/vendor/libs/typeahead-js/typeahead.css')); ?>" />
-    <link rel="stylesheet" href="<?php echo e(url('assets/admin/vendor/libs/apex-charts/apex-charts.css')); ?>" />
-    <link rel="stylesheet" href="<?php echo e(url('assets/admin/vendor/libs/swiper/swiper.css')); ?>" />
-    <link rel="stylesheet" href="<?php echo e(url('assets/admin/vendor/libs/datatables-bs5/datatables.bootstrap5.css')); ?>" />
+    <link rel="stylesheet" href="{{ url('assets/admin/vendor/libs/node-waves/node-waves.css') }}" />
+    <link rel="stylesheet" href="{{ url('assets/admin/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
+    <link rel="stylesheet" href="{{ url('assets/admin/vendor/libs/typeahead-js/typeahead.css') }}" />
+    <link rel="stylesheet" href="{{ url('assets/admin/vendor/libs/apex-charts/apex-charts.css') }}" />
+    <link rel="stylesheet" href="{{ url('assets/admin/vendor/libs/swiper/swiper.css') }}" />
+    <link rel="stylesheet" href="{{ url('assets/admin/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}" />
     <link rel="stylesheet"
-        href="<?php echo e(url('assets/admin/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css')); ?>" />
+        href="{{ url('assets/admin/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}" />
 
     <!-- Page CSS -->
-    <link rel="stylesheet" href="<?php echo e(url('assets/admin/vendor/css/pages/cards-advance.css')); ?>" />
+    <link rel="stylesheet" href="{{ url('assets/admin/vendor/css/pages/cards-advance.css') }}" />
 
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
@@ -82,10 +82,10 @@
     </style>
 
     <!-- Helpers -->
-    <script src="<?php echo e(url('assets/admin/vendor/js/helpers.js')); ?>"></script>
-    <script src="<?php echo e(url('assets/admin/vendor/js/template-customizer.js')); ?>"></script>
-    <script src="<?php echo e(url('assets/admin/js/config.js')); ?>"></script>
-       <?php echo $__env->yieldPushContent('styles'); ?>
+    <script src="{{ url('assets/admin/vendor/js/helpers.js') }}"></script>
+    <script src="{{ url('assets/admin/vendor/js/template-customizer.js') }}"></script>
+    <script src="{{ url('assets/admin/js/config.js') }}"></script>
+       @stack('styles')
 </head>
 
 <body>
@@ -93,23 +93,23 @@
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             <!-- Menu -->
-            <?php echo $__env->make('layouts.partials.admin.sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+            @include('layouts.partials.panel.sidebar')
 
             <!-- Layout container -->
             <div class="layout-page">
                 <!-- Navbar -->
-                <?php echo $__env->make('layouts.partials.admin.navbar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                @include('layouts.partials.admin.navbar')
 
                 <!-- Content wrapper -->
                 <div class="content-wrapper">
                     <!-- Content -->
                     <div class="container-xxl flex-grow-1 container-p-y">
-                        <?php echo $__env->yieldContent('content'); ?>
+                        @yield('content')
                     </div>
                     <!-- / Content -->
 
                     <!-- Footer -->
-                    <?php echo $__env->make('layouts.partials.admin.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                    @include('layouts.partials.admin.footer')
 
                     <div class="content-backdrop fade"></div>
                 </div>
@@ -127,17 +127,17 @@
     <!-- / Layout wrapper -->
 
     <!-- Core JS -->
-    <script src="<?php echo e(url('assets/admin/vendor/libs/jquery/jquery.js')); ?>"></script>
-    <script src="<?php echo e(url('assets/admin/vendor/libs/popper/popper.js')); ?>"></script>
-    <script src="<?php echo e(url('assets/admin/vendor/js/bootstrap.js')); ?>"></script>
-    <script src="<?php echo e(url('assets/admin/vendor/libs/node-waves/node-waves.js')); ?>"></script>
-    <script src="<?php echo e(url('assets/admin/vendor/libs/perfect-scrollbar/perfect-scrollbar.js')); ?>"></script>
-    <script src="<?php echo e(url('assets/admin/vendor/libs/hammer/hammer.js')); ?>"></script>
-    <script src="<?php echo e(url('assets/admin/vendor/libs/typeahead-js/typeahead.js')); ?>"></script>
-    <script src="<?php echo e(url('assets/admin/vendor/js/menu.js')); ?>"></script>
+    <script src="{{ url('assets/admin/vendor/libs/jquery/jquery.js') }}"></script>
+    <script src="{{ url('assets/admin/vendor/libs/popper/popper.js') }}"></script>
+    <script src="{{ url('assets/admin/vendor/js/bootstrap.js') }}"></script>
+    <script src="{{ url('assets/admin/vendor/libs/node-waves/node-waves.js') }}"></script>
+    <script src="{{ url('assets/admin/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
+    <script src="{{ url('assets/admin/vendor/libs/hammer/hammer.js') }}"></script>
+    <script src="{{ url('assets/admin/vendor/libs/typeahead-js/typeahead.js') }}"></script>
+    <script src="{{ url('assets/admin/vendor/js/menu.js') }}"></script>
 
     <!-- Main JS -->
-    <script src="<?php echo e(url('assets/admin/js/main.js')); ?>"></script>
+    <script src="{{ url('assets/admin/js/main.js') }}"></script>
 
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -184,25 +184,25 @@
         console.log('Toastr options:', toastr.options);
 
         // Tampilkan notifikasi dari session
-        <?php if(session('success')): ?>
-            console.log('Session success:', "<?php echo addslashes(session('success')); ?>");
-            toastr.success("<?php echo addslashes(session('success')); ?>", "Success");
-        <?php endif; ?>
+        @if(session('success'))
+            console.log('Session success:', "{!! addslashes(session('success')) !!}");
+            toastr.success("{!! addslashes(session('success')) !!}", "Success");
+        @endif
 
-        <?php if(session('error')): ?>
-            console.log('Session error:', "<?php echo addslashes(session('error')); ?>");
-            toastr.error("<?php echo addslashes(session('error')); ?>", "Error");
-        <?php endif; ?>
+        @if(session('error'))
+            console.log('Session error:', "{!! addslashes(session('error')) !!}");
+            toastr.error("{!! addslashes(session('error')) !!}", "Error");
+        @endif
 
-        <?php if(session('warning')): ?>
-            console.log('Session warning:', "<?php echo addslashes(session('warning')); ?>");
-            toastr.warning("<?php echo addslashes(session('warning')); ?>", "Warning");
-        <?php endif; ?>
+        @if(session('warning'))
+            console.log('Session warning:', "{!! addslashes(session('warning')) !!}");
+            toastr.warning("{!! addslashes(session('warning')) !!}", "Warning");
+        @endif
 
-        <?php if(session('info')): ?>
-            console.log('Session info:', "<?php echo addslashes(session('info')); ?>");
-            toastr.info("<?php echo addslashes(session('info')); ?>", "Info");
-        <?php endif; ?>
+        @if(session('info'))
+            console.log('Session info:', "{!! addslashes(session('info')) !!}");
+            toastr.info("{!! addslashes(session('info')) !!}", "Info");
+        @endif
     </script>
 
     <!-- CSRF Token Setup for AJAX -->
@@ -225,7 +225,7 @@
         // Notification Center
         function loadNotifications() {
             $.ajax({
-                url: '<?php echo e(route('admin.notifications.recent')); ?>',
+                url: '{{ route('panel.notifications.recent') }}',
                 method: 'GET',
                 success: function(response) {
                     const notifications = response.notifications;
@@ -233,7 +233,7 @@
                     
                     // Update unread count
                     if (unreadCount > 0) {
-                        $('#unreadCount').text(unreadCount + ' <?php echo e(__('admin.notifications.new')); ?>');
+                        $('#unreadCount').text(unreadCount + ' new');
                         $('#notificationBadge').removeClass('d-none');
                     } else {
                         $('#unreadCount').text('0');
@@ -245,7 +245,7 @@
                         $('#notificationsList').html(`
                             <li class="list-group-item text-center py-4">
                                 <i class="ti ti-bell-off ti-lg text-muted mb-2 d-block"></i>
-                                <p class="text-muted mb-0"><?php echo e(__('admin.notifications.no_notifications')); ?></p>
+                                <p class="text-muted mb-0">No notifications</p>
                             </li>
                         `);
                     } else {
@@ -326,7 +326,7 @@
         // Mark all as read
         $('#markAllAsRead').click(function() {
             $.ajax({
-                url: '<?php echo e(route('admin.notifications.mark-all-as-read')); ?>',
+                url: '{{ route('panel.notifications.mark-all-as-read') }}',
                 method: 'POST',
                 success: function(response) {
                     toastr.success(response.message);
@@ -349,8 +349,8 @@
         });
     </script>
 
-    <?php echo $__env->yieldPushContent('scripts'); ?>
+    @stack('scripts')
 </body>
 
 </html>
-<?php /**PATH C:\laragon\www\ebook_traveling\resources\views/layouts/admin.blade.php ENDPATH**/ ?>
+

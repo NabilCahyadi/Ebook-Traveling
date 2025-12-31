@@ -26,11 +26,17 @@ require __DIR__ . '/modules/public.php';
 // Load Authentication Routes
 require __DIR__ . '/modules/auth.php';
 
+// Load Panel Authentication Routes
+require __DIR__ . '/modules/panel-auth.php';
+
 // Load User Routes
 require __DIR__ . '/modules/user.php';
 
 // Load Creator Routes
 require __DIR__ . '/modules/creator.php';
+
+// Load Panel Routes (Dynamic User Panel)
+require __DIR__ . '/modules/panel.php';
 
 // Load Admin Routes
 require __DIR__ . '/modules/admin.php';

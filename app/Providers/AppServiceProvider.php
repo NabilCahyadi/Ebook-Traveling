@@ -120,6 +120,9 @@ class AppServiceProvider extends ServiceProvider
 
         Paginator::useBootstrapFive();
 
+        // Register custom Blade directives for permissions
+        $this->registerPermissionDirectives();
+
         // Register View Composer for sidebar
         View::composer('layouts.partials.admin.sidebar', SidebarComposer::class);
 
@@ -136,6 +139,48 @@ class AppServiceProvider extends ServiceProvider
 
             // Bagikan variabel ke view
             $view->with('ctaBackground', $ctaBackground);
+        });
+    }
+
+    /**
+     * Register custom Blade directives for permission checks.
+     */
+    protected function registerPermissionDirectives(): void
+    {
+        // @hasPermission('permission.name') - Check for both guards
+        \Illuminate\Support\Facades\Blade::directive('hasPermission', function ($permission) {
+            return "<?php if((auth()->check() && auth()->user()->hasPermission({$permission})) || (auth('admin')->check() && auth('admin')->user()->hasPermission({$permission}))): ?>";
+        });
+
+        \Illuminate\Support\Facades\Blade::directive('endHasPermission', function () {
+            return "<?php endif; ?>";
+        });
+
+        // @canPermission('permission.name') - Alias for hasPermission
+        \Illuminate\Support\Facades\Blade::directive('canPermission', function ($permission) {
+            return "<?php if((auth()->check() && auth()->user()->hasPermission({$permission})) || (auth('admin')->check() && auth('admin')->user()->hasPermission({$permission}))): ?>";
+        });
+
+        \Illuminate\Support\Facades\Blade::directive('endCanPermission', function () {
+            return "<?php endif; ?>";
+        });
+
+        // @adminCan('permission.name') - Check admin guard only
+        \Illuminate\Support\Facades\Blade::directive('adminCan', function ($permission) {
+            return "<?php if(auth('admin')->check() && auth('admin')->user()->hasPermission({$permission})): ?>";
+        });
+
+        \Illuminate\Support\Facades\Blade::directive('endAdminCan', function () {
+            return "<?php endif; ?>";
+        });
+
+        // @userCan('permission.name') - Check user guard only
+        \Illuminate\Support\Facades\Blade::directive('userCan', function ($permission) {
+            return "<?php if(auth()->check() && auth()->user()->hasPermission({$permission})): ?>";
+        });
+
+        \Illuminate\Support\Facades\Blade::directive('endUserCan', function () {
+            return "<?php endif; ?>";
         });
     }
 }

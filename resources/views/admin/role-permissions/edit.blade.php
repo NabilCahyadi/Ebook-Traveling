@@ -43,7 +43,7 @@
                 <h5 class="mb-0">
                     <i class="ti ti-lock-access me-2"></i>{{ __('admin.role_permissions.permission_modules') }}
                 </h5>
-                <span class="badge bg-primary" id="selectedCount">0 {{ __('admin.role_permissions.permissions_selected') }}</span>
+                <span class="badge bg-primary" id="selectedCount">0 permissions selected</span>
             </div>
             <div class="card-body">
                 <div class="row g-4">
@@ -60,19 +60,29 @@
                             </div>
                             <div class="card-body pt-3" style="max-height: 400px; overflow-y: auto;">
                                 <div class="permission-group" data-group="{{ Str::slug($module['name']) }}">
-                                    @foreach($module['permissions'] as $permission)
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input permission-checkbox" 
-                                               type="checkbox" 
-                                               name="permissions[]" 
-                                               value="{{ $permission['name'] }}"
-                                               id="perm_{{ $permission['name'] }}"
-                                               data-group="{{ Str::slug($module['name']) }}"
-                                               {{ in_array($permission['name'], $rolePermissions) ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="perm_{{ $permission['name'] }}">
-                                            {{ $permission['label'] }}
-                                        </label>
-                                    </div>
+                                    @foreach($module['pages'] as $page)
+                                        <div class="mb-3">
+                                            <h6 class="text-primary mb-2">
+                                                <i class="ti ti-file-text me-1"></i>{{ $page['name'] }}
+                                            </h6>
+                                            <div class="ms-3">
+                                                @foreach($page['permissions'] as $permission)
+                                                <div class="form-check mb-2">
+                                                    <input class="form-check-input permission-checkbox" 
+                                                           type="checkbox" 
+                                                           name="permissions[]" 
+                                                           value="{{ $permission['name'] }}"
+                                                           id="perm_{{ $permission['name'] }}"
+                                                           data-group="{{ Str::slug($module['name']) }}"
+                                                           {{ in_array($permission['name'], $rolePermissions) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="perm_{{ $permission['name'] }}">
+                                                        {{ $permission['label'] }}
+                                                        <small class="text-muted d-block">{{ $permission['description'] }}</small>
+                                                    </label>
+                                                </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
                                     @endforeach
                                 </div>
                             </div>

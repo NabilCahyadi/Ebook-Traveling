@@ -52,6 +52,8 @@ class User extends Authenticatable
         'email',
         'password',
         'phone',
+        'date_of_birth',
+        'gender',
         'user_type',
         'avatar',
         'status',
@@ -147,6 +149,17 @@ class User extends Authenticatable
 
         // Otherwise query
         return $this->roles()->first();
+    }
+
+    /**
+     * Get the role for this user based on user_type.
+     * 
+     * @return \App\Models\Role|null
+     */
+    public function getUserRole()
+    {
+        $roleSlug = $this->user_type ?? 'guest';
+        return \App\Models\Role::where('slug', $roleSlug)->first();
     }
 
     /**
@@ -374,14 +387,16 @@ class User extends Authenticatable
             return true;
         }
 
-        // Check through all user roles
-        foreach ($this->roles as $role) {
-            if ($role->hasPermission($permissionName)) {
-                return true;
-            }
+        // Get role based on user_type
+        $role = \App\Models\Role::where('slug', $this->user_type ?? 'member')
+            ->with('permissions')
+            ->first();
+
+        if (!$role) {
+            return false;
         }
 
-        return false;
+        return $role->hasPermission($permissionName);
     }
 
     /**

@@ -33,6 +33,7 @@ class Admin extends Authenticatable
      */
     const TYPE_ADMIN = 'admin';
     const TYPE_SUPERADMIN = 'superadmin';
+    const TYPE_CREATOR = 'creator';
 
     /**
      * The attributes that should be hidden for serialization.
@@ -125,5 +126,48 @@ class Admin extends Authenticatable
     public function guardName(): string
     {
         return 'admin';
+    }
+
+    /**
+     * Check if admin has a specific permission.
+     * Admins are mapped to roles via the 'type' field (admin, superadmin).
+     * 
+     * @param string $permissionName
+     * @return bool
+     */
+    public function hasPermission(string $permissionName): bool
+    {
+        // Superadmin has all permissions (bypass)
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+
+        // Map admin type to role slug
+        // Both 'admin' and 'superadmin' type map to 'admin' role
+        $roleSlug = 'admin'; // All admins use 'admin' role for permissions
+        
+        // Get role and check permission
+        $role = \App\Models\Role::where('slug', $roleSlug)
+            ->with('permissions')
+            ->first();
+
+        if (!$role) {
+            // Fallback: if no role found, deny access
+            \Log::warning("Admin role not found in database for permission check: {$permissionName}");
+            return false;
+        }
+
+        return $role->hasPermission($permissionName);
+    }
+
+    /**
+     * Get the role for this admin.
+     * 
+     * @return \App\Models\Role|null
+     */
+    public function getRole()
+    {
+        // All admins (both admin and superadmin type) use 'admin' role
+        return \App\Models\Role::where('slug', 'admin')->first();
     }
 }

@@ -12,7 +12,9 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 
 Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin', 'admin'])->group(function () {
     // Dashboard
-    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])
+        ->middleware('permission:admin.dashboard.view')
+        ->name('dashboard');
     
     // Language Switcher
     Route::post('/language/{locale}', [\App\Http\Controllers\Admin\LanguageController::class, 'switch'])->name('language.switch');
@@ -31,61 +33,90 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     Route::put('/profile/password', [\App\Http\Controllers\Admin\ProfileController::class, 'updatePassword'])->name('profile.password.update');
 
     // Admin Management
-    Route::resource('admins', \App\Http\Controllers\Admin\AdminController::class);
+    Route::resource('admins', \App\Http\Controllers\Admin\AdminController::class)
+        ->middleware('permission:admin.users.view');
     
     // Admin Activity Logs
-    Route::get('admin-activity-logs', [\App\Http\Controllers\Admin\AdminActivityLogController::class, 'index'])->name('admin-activity-logs.index');
-    Route::get('admin-activity-logs/export', [\App\Http\Controllers\Admin\AdminActivityLogController::class, 'export'])->name('admin-activity-logs.export');
-    Route::delete('admin-activity-logs/cleanup', [\App\Http\Controllers\Admin\AdminActivityLogController::class, 'cleanup'])->name('admin-activity-logs.cleanup');
-    Route::get('admin-activity-logs/{id}', [\App\Http\Controllers\Admin\AdminActivityLogController::class, 'show'])->name('admin-activity-logs.show');
+    Route::get('admin-activity-logs', [\App\Http\Controllers\Admin\AdminActivityLogController::class, 'index'])
+        ->middleware('permission:admin.activity_logs.view')
+        ->name('admin-activity-logs.index');
+    Route::get('admin-activity-logs/export', [\App\Http\Controllers\Admin\AdminActivityLogController::class, 'export'])
+        ->middleware('permission:admin.activity_logs.view')
+        ->name('admin-activity-logs.export');
+    Route::delete('admin-activity-logs/cleanup', [\App\Http\Controllers\Admin\AdminActivityLogController::class, 'cleanup'])
+        ->middleware('permission:admin.activity_logs.view')
+        ->name('admin-activity-logs.cleanup');
+    Route::get('admin-activity-logs/{id}', [\App\Http\Controllers\Admin\AdminActivityLogController::class, 'show'])
+        ->middleware('permission:admin.activity_logs.view')
+        ->name('admin-activity-logs.show');
 
     // User Management (All users: admin, creator, customer)
-    Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
-    Route::get('users-trashed', [\App\Http\Controllers\Admin\UserController::class, 'trashed'])->name('users.trashed');
-    Route::patch('users/{id}/restore', [\App\Http\Controllers\Admin\UserController::class, 'restore'])->name('users.restore');
-    Route::delete('users/{id}/force-delete', [\App\Http\Controllers\Admin\UserController::class, 'forceDelete'])->name('users.force-delete');
-    Route::patch('users/{id}/verify-email', [\App\Http\Controllers\Admin\UserController::class, 'verifyEmail'])->name('users.verify-email');
-    Route::patch('users/{id}/unverify-email', [\App\Http\Controllers\Admin\UserController::class, 'unverifyEmail'])->name('users.unverify-email');
+    Route::middleware('permission:admin.users.view')->group(function () {
+        Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+        Route::get('users-trashed', [\App\Http\Controllers\Admin\UserController::class, 'trashed'])->name('users.trashed');
+        Route::patch('users/{id}/restore', [\App\Http\Controllers\Admin\UserController::class, 'restore'])->name('users.restore');
+        Route::delete('users/{id}/force-delete', [\App\Http\Controllers\Admin\UserController::class, 'forceDelete'])->name('users.force-delete');
+        Route::patch('users/{id}/verify-email', [\App\Http\Controllers\Admin\UserController::class, 'verifyEmail'])->name('users.verify-email');
+        Route::patch('users/{id}/unverify-email', [\App\Http\Controllers\Admin\UserController::class, 'unverifyEmail'])->name('users.unverify-email');
+    });
 
     // User Activity Logs (non-admin users only)
-    Route::get('user-activity-logs', [\App\Http\Controllers\Admin\UserActivityLogController::class, 'index'])->name('user-activity-logs.index');
-    Route::get('user-activity-logs/export', [\App\Http\Controllers\Admin\UserActivityLogController::class, 'export'])->name('user-activity-logs.export');
-    Route::get('user-activity-logs/{id}', [\App\Http\Controllers\Admin\UserActivityLogController::class, 'show'])->name('user-activity-logs.show');
+    Route::get('user-activity-logs', [\App\Http\Controllers\Admin\UserActivityLogController::class, 'index'])
+        ->middleware('permission:admin.activity_logs.view')
+        ->name('user-activity-logs.index');
+    Route::get('user-activity-logs/export', [\App\Http\Controllers\Admin\UserActivityLogController::class, 'export'])
+        ->middleware('permission:admin.activity_logs.view')
+        ->name('user-activity-logs.export');
+    Route::get('user-activity-logs/{id}', [\App\Http\Controllers\Admin\UserActivityLogController::class, 'show'])
+        ->middleware('permission:admin.activity_logs.view')
+        ->name('user-activity-logs.show');
 
     // Role Management
-    Route::resource('roles', \App\Http\Controllers\Admin\RoleController::class);
-    Route::get('roles-trashed', [\App\Http\Controllers\Admin\RoleController::class, 'trashed'])->name('roles.trashed');
-    Route::patch('roles/{id}/restore', [\App\Http\Controllers\Admin\RoleController::class, 'restore'])->name('roles.restore');
-    Route::delete('roles/{id}/force-delete', [\App\Http\Controllers\Admin\RoleController::class, 'forceDelete'])->name('roles.force-delete');
+    Route::middleware('permission:admin.roles.view')->group(function () {
+        Route::resource('roles', \App\Http\Controllers\Admin\RoleController::class);
+        Route::get('roles-trashed', [\App\Http\Controllers\Admin\RoleController::class, 'trashed'])->name('roles.trashed');
+        Route::patch('roles/{id}/restore', [\App\Http\Controllers\Admin\RoleController::class, 'restore'])->name('roles.restore');
+        Route::delete('roles/{id}/force-delete', [\App\Http\Controllers\Admin\RoleController::class, 'forceDelete'])->name('roles.force-delete');
+    });
 
     // Permission Management (OLD SYSTEM - DISABLED TO PREVENT CONFLICTS)
     // Route::resource('permissions', \App\Http\Controllers\Admin\PermissionController::class);
 
     // Role Permission Management (NEW SYSTEM - ACTIVE)
-    Route::get('role-permissions', [\App\Http\Controllers\Admin\RolePermissionController::class, 'index'])->name('role-permissions.index');
-    Route::get('role-permissions/{role}/edit', [\App\Http\Controllers\Admin\RolePermissionController::class, 'edit'])->name('role-permissions.edit');
-    Route::put('role-permissions/{role}', [\App\Http\Controllers\Admin\RolePermissionController::class, 'update'])->name('role-permissions.update');
+    Route::middleware('permission:admin.permissions.view')->group(function () {
+        Route::get('role-permissions', [\App\Http\Controllers\Admin\RolePermissionController::class, 'index'])->name('role-permissions.index');
+        Route::get('role-permissions/{role}/edit', [\App\Http\Controllers\Admin\RolePermissionController::class, 'edit'])->name('role-permissions.edit');
+        Route::put('role-permissions/{role}', [\App\Http\Controllers\Admin\RolePermissionController::class, 'update'])->name('role-permissions.update');
+    });
 
     // Ebook Management (All ebooks in system)
-    Route::get('ebooks/search-creators', [\App\Http\Controllers\Admin\EbookController::class, 'searchCreators'])->name('ebooks.search-creators');
-    Route::get('ebooks/pending-approval', [\App\Http\Controllers\Admin\EbookController::class, 'pendingApproval'])->name('ebooks.pending-approval');
-    Route::get('ebooks/trashed', [\App\Http\Controllers\Admin\EbookController::class, 'trashed'])->name('ebooks.trashed');
-    Route::patch('ebooks/{ebook}/restore', [\App\Http\Controllers\Admin\EbookController::class, 'restore'])->name('ebooks.restore');
-    Route::delete('ebooks/{ebook}/force-delete', [\App\Http\Controllers\Admin\EbookController::class, 'forceDelete'])->name('ebooks.force-delete');
-    Route::post('ebooks/{id}/approve', [\App\Http\Controllers\Admin\EbookController::class, 'approve'])->name('ebooks.approve');
-    Route::post('ebooks/{id}/reject', [\App\Http\Controllers\Admin\EbookController::class, 'reject'])->name('ebooks.reject');
-    Route::post('ebooks/toggle-download', [\App\Http\Controllers\Admin\EbookController::class, 'toggleDownload'])->name('ebooks.toggle-download');
-    Route::post('ebooks/toggle-download', [\App\Http\Controllers\Admin\EbookController::class, 'toggleDownload'])->name('ebooks.toggle-download');
-    Route::resource('ebooks', \App\Http\Controllers\Admin\EbookController::class);
+    Route::middleware('permission:admin.ebooks.view')->group(function () {
+        Route::get('ebooks/search-creators', [\App\Http\Controllers\Admin\EbookController::class, 'searchCreators'])->name('ebooks.search-creators');
+        Route::get('ebooks/pending-approval', [\App\Http\Controllers\Admin\EbookController::class, 'pendingApproval'])->name('ebooks.pending-approval');
+        Route::get('ebooks/trashed', [\App\Http\Controllers\Admin\EbookController::class, 'trashed'])->name('ebooks.trashed');
+        Route::patch('ebooks/{ebook}/restore', [\App\Http\Controllers\Admin\EbookController::class, 'restore'])->name('ebooks.restore');
+        Route::delete('ebooks/{ebook}/force-delete', [\App\Http\Controllers\Admin\EbookController::class, 'forceDelete'])->name('ebooks.force-delete');
+        Route::post('ebooks/{id}/approve', [\App\Http\Controllers\Admin\EbookController::class, 'approve'])
+            ->middleware('permission:admin.ebooks.approve')
+            ->name('ebooks.approve');
+        Route::post('ebooks/{id}/reject', [\App\Http\Controllers\Admin\EbookController::class, 'reject'])
+            ->middleware('permission:admin.ebooks.approve')
+            ->name('ebooks.reject');
+        Route::post('ebooks/toggle-download', [\App\Http\Controllers\Admin\EbookController::class, 'toggleDownload'])->name('ebooks.toggle-download');
+        Route::resource('ebooks', \App\Http\Controllers\Admin\EbookController::class);
+    });
 
     // Category Management
-    Route::get('categories/trashed', [\App\Http\Controllers\Admin\CategoryController::class, 'trashed'])->name('categories.trashed');
-    Route::patch('categories/{category}/restore', [\App\Http\Controllers\Admin\CategoryController::class, 'restore'])->name('categories.restore');
-    Route::delete('categories/{category}/force-delete', [\App\Http\Controllers\Admin\CategoryController::class, 'forceDelete'])->name('categories.force-delete');
-    Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
+    Route::middleware('permission:admin.categories.view')->group(function () {
+        Route::get('categories/trashed', [\App\Http\Controllers\Admin\CategoryController::class, 'trashed'])->name('categories.trashed');
+        Route::patch('categories/{category}/restore', [\App\Http\Controllers\Admin\CategoryController::class, 'restore'])->name('categories.restore');
+        Route::delete('categories/{category}/force-delete', [\App\Http\Controllers\Admin\CategoryController::class, 'forceDelete'])->name('categories.force-delete');
+        Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
+    });
 
     // City/Location Management
-    Route::resource('cities', \App\Http\Controllers\Admin\CityController::class);
+    Route::resource('cities', \App\Http\Controllers\Admin\CityController::class)
+        ->middleware('permission:admin.cities.view');
 
     // Subscription Plan Management
     Route::get('subscription-plans/trashed', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'trashed'])->name('subscription-plans.trashed');
@@ -119,18 +150,22 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     Route::get('subscription-history-export', [\App\Http\Controllers\Admin\SubscriptionHistoryController::class, 'export'])->name('subscription-history.export');
 
     // Blog Management
-    Route::get('blogs/archived', [\App\Http\Controllers\Admin\BlogController::class, 'archived'])->name('blogs.archived');
-    Route::get('blogs/trashed', [\App\Http\Controllers\Admin\BlogController::class, 'trashed'])->name('blogs.trashed');
-    Route::patch('blogs/{blog}/restore', [\App\Http\Controllers\Admin\BlogController::class, 'restore'])->name('blogs.restore');
-    Route::delete('blogs/{blog}/force-delete', [\App\Http\Controllers\Admin\BlogController::class, 'forceDelete'])->name('blogs.force-delete');
-    Route::get('blogs/search-authors', [\App\Http\Controllers\Admin\BlogController::class, 'searchAuthors'])->name('blogs.search-authors');
-    Route::resource('blogs', \App\Http\Controllers\Admin\BlogController::class);
+    Route::middleware('permission:admin.blogs.view')->group(function () {
+        Route::get('blogs/archived', [\App\Http\Controllers\Admin\BlogController::class, 'archived'])->name('blogs.archived');
+        Route::get('blogs/trashed', [\App\Http\Controllers\Admin\BlogController::class, 'trashed'])->name('blogs.trashed');
+        Route::patch('blogs/{blog}/restore', [\App\Http\Controllers\Admin\BlogController::class, 'restore'])->name('blogs.restore');
+        Route::delete('blogs/{blog}/force-delete', [\App\Http\Controllers\Admin\BlogController::class, 'forceDelete'])->name('blogs.force-delete');
+        Route::get('blogs/search-authors', [\App\Http\Controllers\Admin\BlogController::class, 'searchAuthors'])->name('blogs.search-authors');
+        Route::resource('blogs', \App\Http\Controllers\Admin\BlogController::class);
+    });
 
     // Blog Category Management
-    Route::get('blog-categories/trashed', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'trashed'])->name('blog-categories.trashed');
-    Route::patch('blog-categories/{id}/restore', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'restore'])->name('blog-categories.restore');
-    Route::delete('blog-categories/{id}/force-delete', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'forceDelete'])->name('blog-categories.force-delete');
-    Route::resource('blog-categories', \App\Http\Controllers\Admin\BlogCategoryController::class);
+    Route::middleware('permission:admin.blogs.view')->group(function () {
+        Route::get('blog-categories/trashed', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'trashed'])->name('blog-categories.trashed');
+        Route::patch('blog-categories/{id}/restore', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'restore'])->name('blog-categories.restore');
+        Route::delete('blog-categories/{id}/force-delete', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'forceDelete'])->name('blog-categories.force-delete');
+        Route::resource('blog-categories', \App\Http\Controllers\Admin\BlogCategoryController::class);
+    });
 
     // System Settings
     // Route::get('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings');
@@ -195,8 +230,10 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     Route::resource('contact-info', \App\Http\Controllers\Admin\ContactInfoController::class);
 
     // Site Settings Management
-    Route::post('site-settings/store', [\App\Http\Controllers\Admin\SiteSettingController::class, 'store'])->name('site-settings.store');
-    Route::delete('site-settings/{id}', [\App\Http\Controllers\Admin\SiteSettingController::class, 'destroy'])->name('site-settings.destroy');
-    Route::get('site-settings', [\App\Http\Controllers\Admin\SiteSettingController::class, 'index'])->name('site-settings.index');
-    Route::put('site-settings', [\App\Http\Controllers\Admin\SiteSettingController::class, 'update'])->name('site-settings.update');
+    Route::middleware('permission:admin.settings.view')->group(function () {
+        Route::post('site-settings/store', [\App\Http\Controllers\Admin\SiteSettingController::class, 'store'])->name('site-settings.store');
+        Route::delete('site-settings/{id}', [\App\Http\Controllers\Admin\SiteSettingController::class, 'destroy'])->name('site-settings.destroy');
+        Route::get('site-settings', [\App\Http\Controllers\Admin\SiteSettingController::class, 'index'])->name('site-settings.index');
+        Route::put('site-settings', [\App\Http\Controllers\Admin\SiteSettingController::class, 'update'])->name('site-settings.update');
+    });
 });
