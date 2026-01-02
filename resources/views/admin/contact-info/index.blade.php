@@ -95,12 +95,14 @@
                         @endif
 
                         @if($contact->link)
-                            <p class="text-muted mb-3">
-                                <strong>Link:</strong> 
-                                <a href="{{ $contact->link }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 200px;">
+                            <div class="mb-3">
+                                <p class="text-muted mb-1">
+                                    <strong>Link:</strong>
+                                </p>
+                                <a href="{{ $contact->link }}" target="_blank" class="text-primary text-truncate d-block" style="max-width: 100%;">
                                     {{ $contact->link }}
                                 </a>
-                            </p>
+                            </div>
                         @endif
 
                         <div class="d-flex action-buttons justify-content-between">

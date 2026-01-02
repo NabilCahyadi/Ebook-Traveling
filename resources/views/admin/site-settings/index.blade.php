@@ -29,9 +29,9 @@
             </h4>
             <p class="mb-0">Kelola pengaturan website secara global</p>
         </div>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSettingModal">
+        {{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSettingModal">
             <i class="ti ti-plus me-1"></i> Add New Setting
-        </button>
+        </button> --}}
     </div>
 
     <!-- Success/Error Messages -->
@@ -84,7 +84,8 @@
                                     <h5 class="mb-1">{{ ucwords(str_replace('_', ' ', $setting->key)) }}</h5>
                                     <span class="badge bg-label-primary">{{ ucfirst($setting->type) }}</span>
                                 </div>
-                                <form action="{{ route('admin.site-settings.destroy', $setting->id) }}" 
+                                {{-- Delete button disabled --}}
+                                {{-- <form action="{{ route('admin.site-settings.destroy', $setting->id) }}" 
                                       method="POST" 
                                       class="d-inline delete-form"
                                       onsubmit="return confirm('Yakin ingin menghapus setting ini?');">
@@ -93,7 +94,7 @@
                                     <button type="submit" class="btn btn-sm btn-label-danger" title="Delete">
                                         <i class="ti ti-trash"></i>
                                     </button>
-                                </form>
+                                </form> --}}
                             </div>
 
                             <input type="hidden" name="settings[{{ $loop->index }}][key]" value="{{ $setting->key }}">
@@ -147,8 +148,8 @@
         @endif
     </form>
 
-    <!-- Add Setting Modal -->
-    <div class="modal fade" id="addSettingModal" tabindex="-1" aria-labelledby="addSettingModalLabel" aria-hidden="true">
+    {{-- Add Setting Modal - Disabled --}}
+    {{-- <div class="modal fade" id="addSettingModal" tabindex="-1" aria-labelledby="addSettingModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -197,7 +198,7 @@
                 </form>
             </div>
         </div>
-    </div>
+    </div> --}}
 @endsection
 
 @push('scripts')
