@@ -61,47 +61,55 @@ class SiteSettingController extends Controller
 
     /**
      * Create a new setting.
+     * DISABLED - Site settings can only be edited, not added
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'key' => 'required|string|max:100|unique:site_settings,key',
-            'value' => 'nullable|string',
-            'type' => 'required|string|in:text,email,phone,textarea',
-        ], [
-            'key.required' => 'Key setting wajib diisi.',
-            'key.unique' => 'Key setting sudah ada.',
-            'key.max' => 'Key setting maksimal 100 karakter.',
-            'type.required' => 'Tipe setting wajib diisi.',
-            'type.in' => 'Tipe setting tidak valid.',
-        ]);
+        return redirect()->route('admin.site-settings.index')
+            ->with('error', 'Fitur tambah setting tidak diizinkan. Anda hanya dapat mengedit setting yang sudah ada.');
+        
+        // $validated = $request->validate([
+        //     'key' => 'required|string|max:100|unique:site_settings,key',
+        //     'value' => 'nullable|string',
+        //     'type' => 'required|string|in:text,email,phone,textarea',
+        // ], [
+        //     'key.required' => 'Key setting wajib diisi.',
+        //     'key.unique' => 'Key setting sudah ada.',
+        //     'key.max' => 'Key setting maksimal 100 karakter.',
+        //     'type.required' => 'Tipe setting wajib diisi.',
+        //     'type.in' => 'Tipe setting tidak valid.',
+        // ]);
 
-        try {
-            SiteSetting::create($validated);
+        // try {
+        //     SiteSetting::create($validated);
 
-            return redirect()->route('admin.site-settings.index')
-                ->with('success', 'Setting baru berhasil ditambahkan.');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Gagal menambahkan setting: ' . $e->getMessage());
-        }
+        //     return redirect()->route('admin.site-settings.index')
+        //         ->with('success', 'Setting baru berhasil ditambahkan.');
+        // } catch (\Exception $e) {
+        //     return redirect()->back()
+        //         ->withInput()
+        //         ->with('error', 'Gagal menambahkan setting: ' . $e->getMessage());
+        // }
     }
 
     /**
      * Delete a setting.
+     * DISABLED - Site settings can only be edited, not deleted
      */
     public function destroy($id)
     {
-        try {
-            $setting = SiteSetting::findOrFail($id);
-            $setting->delete();
+        return redirect()->route('admin.site-settings.index')
+            ->with('error', 'Fitur hapus setting tidak diizinkan. Anda hanya dapat mengedit setting yang sudah ada.');
+        
+        // try {
+        //     $setting = SiteSetting::findOrFail($id);
+        //     $setting->delete();
 
-            return redirect()->route('admin.site-settings.index')
-                ->with('success', 'Setting berhasil dihapus.');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Gagal menghapus setting: ' . $e->getMessage());
-        }
+        //     return redirect()->route('admin.site-settings.index')
+        //         ->with('success', 'Setting berhasil dihapus.');
+        // } catch (\Exception $e) {
+        //     return redirect()->back()
+        //         ->with('error', 'Gagal menghapus setting: ' . $e->getMessage());
+        // }
     }
 }

@@ -195,8 +195,8 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     Route::resource('contact-info', \App\Http\Controllers\Admin\ContactInfoController::class);
 
     // Site Settings Management
-    Route::post('site-settings/store', [\App\Http\Controllers\Admin\SiteSettingController::class, 'store'])->name('site-settings.store');
-    Route::delete('site-settings/{id}', [\App\Http\Controllers\Admin\SiteSettingController::class, 'destroy'])->name('site-settings.destroy');
+    // Route::post('site-settings/store', [\App\Http\Controllers\Admin\SiteSettingController::class, 'store'])->name('site-settings.store'); // Disabled
+    // Route::delete('site-settings/{id}', [\App\Http\Controllers\Admin\SiteSettingController::class, 'destroy'])->name('site-settings.destroy'); // Disabled
     Route::get('site-settings', [\App\Http\Controllers\Admin\SiteSettingController::class, 'index'])->name('site-settings.index');
     Route::put('site-settings', [\App\Http\Controllers\Admin\SiteSettingController::class, 'update'])->name('site-settings.update');
 });
