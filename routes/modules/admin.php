@@ -185,10 +185,10 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
         Route::put('/latest-blogs', [\App\Http\Controllers\Admin\LandingPageContentController::class, 'updateLatestBlogs'])->name('latest-blogs.update');
     });
 
-    // Pricing Benefits Management
-    Route::post('pricing-benefits/{id}/toggle-status', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'toggleStatus'])->name('pricing-benefits.toggle-status');
-    Route::post('pricing-benefits/update-order', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'updateOrder'])->name('pricing-benefits.update-order');
-    Route::resource('pricing-benefits', \App\Http\Controllers\Admin\PricingBenefitController::class);
+    // About Us Management
+    Route::post('about-us/{id}/toggle-status', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'toggleStatus'])->name('about-us.toggle-status');
+    Route::post('about-us/update-order', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'updateOrder'])->name('about-us.update-order');
+    Route::resource('about-us', \App\Http\Controllers\Admin\PricingBenefitController::class);
 
     // Contact Info Management
     Route::post('contact-info/{id}/toggle-active', [\App\Http\Controllers\Admin\ContactInfoController::class, 'toggleActive'])->name('contact-info.toggle-active');

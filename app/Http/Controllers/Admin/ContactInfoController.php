@@ -19,45 +19,22 @@ class ContactInfoController extends Controller
 
     /**
      * Show the form for creating a new resource.
+     * DISABLED: Contact info cannot be created, only edited
      */
     public function create()
     {
-        return view('admin.contact-info.create');
+        return redirect()->route('admin.contact-info.index')
+            ->with('error', 'Pembuatan contact info baru tidak diizinkan. Silakan edit data yang sudah ada.');
     }
 
     /**
      * Store a newly created resource in storage.
+     * DISABLED: Contact info cannot be created, only edited
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'contact_type' => 'required|string|max:50',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'link' => 'nullable|string|max:500',
-            'icon_class' => 'nullable|string|max:100',
-        ], [
-            'contact_type.required' => 'Tipe kontak wajib diisi.',
-            'contact_type.max' => 'Tipe kontak maksimal 50 karakter.',
-            'title.required' => 'Judul wajib diisi.',
-            'title.max' => 'Judul maksimal 255 karakter.',
-            'link.max' => 'Link maksimal 500 karakter.',
-            'icon_class.max' => 'Icon class maksimal 100 karakter.',
-        ]);
-
-        try {
-            $validated['is_active'] = $request->has('is_active');
-            $validated['show_in_contact_page'] = $request->has('show_in_contact_page');
-
-            ContactInfo::create($validated);
-
-            return redirect()->route('admin.contact-info.index')
-                ->with('success', 'Contact info berhasil ditambahkan.');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Gagal menambahkan contact info: ' . $e->getMessage());
-        }
+        return redirect()->route('admin.contact-info.index')
+            ->with('error', 'Pembuatan contact info baru tidak diizinkan. Silakan edit data yang sudah ada.');
     }
 
     /**
@@ -113,18 +90,12 @@ class ContactInfoController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     * DISABLED: Contact info cannot be deleted, only edited
      */
     public function destroy(ContactInfo $contactInfo)
     {
-        try {
-            $contactInfo->delete();
-
-            return redirect()->route('admin.contact-info.index')
-                ->with('success', 'Contact info berhasil dihapus.');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Gagal menghapus contact info: ' . $e->getMessage());
-        }
+        return redirect()->route('admin.contact-info.index')
+            ->with('error', 'Penghapusan contact info tidak diizinkan. Silakan nonaktifkan jika tidak ingin ditampilkan.');
     }
 
     /**

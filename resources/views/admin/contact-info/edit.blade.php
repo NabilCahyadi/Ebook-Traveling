@@ -8,13 +8,13 @@
         <div>
             <h4 class="fw-bold mb-1">
                 <span class="text-muted fw-light">
-                    <a href="{{ route('admin.contact-info.index') }}" class="text-muted">Website Management / Contact Info</a> /
-                </span> Edit
+                    <a href="{{ route('admin.contact-info.index') }}" class="text-muted">{{ __('admin.menu.website_setting') }} / {{ __('admin.contact_info.title') }}</a> /
+                </span> {{ __('admin.actions.edit') }}
             </h4>
-            <p class="mb-0">Edit informasi kontak</p>
+            <p class="mb-0">{{ __('admin.contact_info.edit_subtitle') }}</p>
         </div>
         <a href="{{ route('admin.contact-info.index') }}" class="btn btn-label-secondary">
-            <i class="ti ti-arrow-left me-1"></i> Back to List
+            <i class="ti ti-arrow-left me-1"></i> {{ __('admin.actions.back_to_list') }}
         </a>
     </div>
 
@@ -41,7 +41,7 @@
     <!-- Form Card -->
     <div class="card">
         <div class="card-header">
-            <h5 class="mb-0">Contact Information</h5>
+            <h5 class="mb-0">{{ __('admin.contact_info.form_title') }}</h5>
         </div>
         <div class="card-body">
             <form action="{{ route('admin.contact-info.update', $contactInfo->id) }}" method="POST">
@@ -49,39 +49,31 @@
                 @method('PUT')
 
                 <div class="row">
-                    <!-- Contact Type -->
+                    <!-- Contact Type (Read Only) -->
                     <div class="col-md-6 mb-3">
-                        <label for="contact_type" class="form-label">Contact Type <span class="text-danger">*</span></label>
-                        <select class="form-select @error('contact_type') is-invalid @enderror" 
-                                id="contact_type" 
-                                name="contact_type" 
-                                required>
-                            <option value="">-- Select Type --</option>
-                            <option value="whatsapp" {{ old('contact_type', $contactInfo->contact_type) == 'whatsapp' ? 'selected' : '' }}>WhatsApp</option>
-                            <option value="email" {{ old('contact_type', $contactInfo->contact_type) == 'email' ? 'selected' : '' }}>Email</option>
-                            <option value="phone" {{ old('contact_type', $contactInfo->contact_type) == 'phone' ? 'selected' : '' }}>Phone</option>
-                            <option value="instagram" {{ old('contact_type', $contactInfo->contact_type) == 'instagram' ? 'selected' : '' }}>Instagram</option>
-                            <option value="facebook" {{ old('contact_type', $contactInfo->contact_type) == 'facebook' ? 'selected' : '' }}>Facebook</option>
-                            <option value="twitter" {{ old('contact_type', $contactInfo->contact_type) == 'twitter' ? 'selected' : '' }}>Twitter/X</option>
-                            <option value="address" {{ old('contact_type', $contactInfo->contact_type) == 'address' ? 'selected' : '' }}>Address</option>
-                            <option value="linkedin" {{ old('contact_type', $contactInfo->contact_type) == 'linkedin' ? 'selected' : '' }}>LinkedIn</option>
-                            <option value="youtube" {{ old('contact_type', $contactInfo->contact_type) == 'youtube' ? 'selected' : '' }}>YouTube</option>
-                            <option value="other" {{ old('contact_type', $contactInfo->contact_type) == 'other' ? 'selected' : '' }}>Other</option>
-                        </select>
+                        <label for="contact_type" class="form-label">{{ __('admin.contact_info.contact_type') }} <span class="text-danger">*</span></label>
+                        <input type="text" 
+                               class="form-control" 
+                               value="{{ ucfirst($contactInfo->contact_type) }}" 
+                               readonly 
+                               style="background-color: #f5f5f5; cursor: not-allowed;">
+                        <!-- Hidden field to maintain contact_type value on submit -->
+                        <input type="hidden" name="contact_type" value="{{ $contactInfo->contact_type }}">
+                        <!-- <small class="text-muted">Contact type tidak dapat diubah</small> -->
                         @error('contact_type')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <!-- Title -->
                     <div class="col-md-6 mb-3">
-                        <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+                        <label for="title" class="form-label">{{ __('admin.contact_info.title_label') }} <span class="text-danger">*</span></label>
                         <input type="text" 
                                class="form-control @error('title') is-invalid @enderror" 
                                id="title"
                                name="title" 
                                value="{{ old('title', $contactInfo->title) }}" 
-                               placeholder="e.g., WhatsApp Support" 
+                               placeholder="{{ __('admin.contact_info.title_placeholder') }}" 
                                required>
                         @error('title')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -90,12 +82,12 @@
 
                     <!-- Description -->
                     <div class="col-md-12 mb-3">
-                        <label for="description" class="form-label">Description</label>
+                        <label for="description" class="form-label">{{ __('admin.contact_info.description') }}</label>
                         <textarea class="form-control @error('description') is-invalid @enderror" 
                                   id="description" 
                                   name="description"
                                   rows="3" 
-                                  placeholder="Enter description (optional)">{{ old('description', $contactInfo->description) }}</textarea>
+                                  placeholder="{{ __('admin.contact_info.description_placeholder') }}">{{ old('description', $contactInfo->description) }}</textarea>
                         @error('description')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -103,15 +95,15 @@
 
                     <!-- Link -->
                     <div class="col-md-12 mb-3">
-                        <label for="link" class="form-label">Link</label>
+                        <label for="link" class="form-label">{{ __('admin.contact_info.link') }}</label>
                         <input type="text" 
                                class="form-control @error('link') is-invalid @enderror" 
                                id="link"
                                name="link" 
                                value="{{ old('link', $contactInfo->link) }}" 
-                               placeholder="e.g., https://wa.me/628123456789 or mailto:support@example.com">
+                               placeholder="{{ __('admin.contact_info.link_placeholder') }}">
                         <small class="form-text text-muted">
-                            Examples: https://wa.me/628xxx, mailto:email@example.com, tel:+6281xxx
+                            {{ __('admin.contact_info.link_examples') }}
                         </small>
                         @error('link')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -120,7 +112,7 @@
 
                     <!-- Icon Class -->
                     <div class="col-md-12 mb-3">
-                        <label for="icon_class" class="form-label">Icon Class</label>
+                        <label for="icon_class" class="form-label">{{ __('admin.contact_info.icon_class') }}</label>
                         <div class="input-group">
                             <span class="input-group-text" id="selectedIconPreview">
                                 @if($contactInfo->icon_class)
@@ -134,14 +126,14 @@
                                    id="icon_class"
                                    name="icon_class" 
                                    value="{{ old('icon_class', $contactInfo->icon_class) }}" 
-                                   placeholder="e.g., bi bi-whatsapp or ti ti-brand-whatsapp"
+                                   placeholder="{{ __('admin.contact_info.icon_placeholder') }}"
                                    readonly>
                             <button class="btn btn-outline-primary" type="button" id="iconPreviewBtn">
-                                <i class="ti ti-search"></i> Browse Icons
+                                <i class="ti ti-search"></i> {{ __('admin.contact_info.browse_icons') }}
                             </button>
                         </div>
                         <small class="form-text text-muted">
-                            Click "Browse Icons" to select from available icons
+                            {{ __('admin.contact_info.icon_help') }}
                         </small>
                         @error('icon_class')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -157,10 +149,10 @@
                                    name="is_active"
                                    {{ old('is_active', $contactInfo->is_active) ? 'checked' : '' }}>
                             <label class="form-check-label" for="is_active">
-                                Is Active
+                                {{ __('admin.contact_info.is_active') }}
                             </label>
                         </div>
-                        <small class="form-text text-muted">Tampilkan contact info ini</small>
+                        <small class="form-text text-muted">{{ __('admin.contact_info.is_active_help') }}</small>
                     </div>
 
                     <div class="col-md-6 mb-3">
@@ -171,19 +163,19 @@
                                    name="show_in_contact_page"
                                    {{ old('show_in_contact_page', $contactInfo->show_in_contact_page) ? 'checked' : '' }}>
                             <label class="form-check-label" for="show_in_contact_page">
-                                Show in Contact Page
+                                {{ __('admin.contact_info.show_in_contact_page') }}
                             </label>
                         </div>
-                        <small class="form-text text-muted">Tampilkan di halaman Contact Us</small>
+                        <small class="form-text text-muted">{{ __('admin.contact_info.show_in_contact_page_help') }}</small>
                     </div>
                 </div>
 
                 <div class="mt-4">
                     <button type="submit" class="btn btn-primary me-2">
-                        <i class="ti ti-check me-1"></i> Update
+                        <i class="ti ti-check me-1"></i> {{ __('admin.actions.update') }}
                     </button>
                     <a href="{{ route('admin.contact-info.index') }}" class="btn btn-label-secondary">
-                        Cancel
+                        {{ __('admin.actions.cancel') }}
                     </a>
                 </div>
             </form>

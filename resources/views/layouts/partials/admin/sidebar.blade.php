@@ -105,12 +105,12 @@
                 </li>
 
                 <!-- Role Permissions -->
-                <li class="menu-item {{ Request::is('admin/role-permissions*') ? 'active' : '' }}">
+                <!-- <li class="menu-item {{ Request::is('admin/role-permissions*') ? 'active' : '' }}">
                     <a href="{{ route('admin.role-permissions.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-lock-access"></i>
                         <div data-i18n="Role Permissions">{{ __('admin.menu.role_permissions') }}</div>
                     </a>
-                </li>
+                </li> -->
 
                 <!-- User Activity Logs -->
                 <li class="menu-item {{ Request::is('admin/user-activity-logs*') ? 'active' : '' }}">
@@ -256,7 +256,7 @@
 
         <!-- Website Management -->
         <li
-            class="menu-item {{ Request::is('admin/collection-order*') || Request::is('admin/banners*') || Request::is('admin/collections*') || Request::is('admin/landing-page-content*') || Request::is('admin/pricing-benefits*') || Request::is('admin/contact-info*') || Request::is('admin/site-settings*') ? 'active open' : '' }}">
+            class="menu-item {{ Request::is('admin/collection-order*') || Request::is('admin/banners*') || Request::is('admin/collections*') || Request::is('admin/landing-page-content*') || Request::is('admin/about-us*') || Request::is('admin/contact-info*') || Request::is('admin/site-settings*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-settings"></i>
                 <div data-i18n="Website Management">{{ __('admin.menu.website_setting') }}</div>
@@ -269,11 +269,11 @@
                         <div data-i18n="Landing Page Content">{{ __('admin.menu.landing_page_content') }}</div>
                     </a>
                 </li>
-                <!-- Pricing Benefits -->
-                <li class="menu-item {{ Request::is('admin/pricing-benefits*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.pricing-benefits.index') }}" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-gift"></i>
-                        <div data-i18n="Pricing Benefits">{{ __('admin.menu.pricing_benefits') }}</div>
+                <!-- About Us -->
+                <li class="menu-item {{ Request::is('admin/about-us*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.about-us.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-info-circle"></i>
+                        <div data-i18n="About Us">About Us</div>
                     </a>
                 </li>
                 <!-- Hero Banners -->

@@ -8,7 +8,7 @@
         <div class="mb-4">
             <h4 class="fw-bold py-3 mb-2">
                 <span class="text-muted fw-light">
-                    <a href="{{ route('admin.pricing-benefits.index') }}" class="text-muted">Website Management / Pricing Benefits</a> /
+                    <a href="{{ route('admin.about-us.index') }}" class="text-muted">Website Management / About Us</a> /
                 </span>
                 Edit
             </h4>
@@ -22,7 +22,7 @@
                         <h5 class="mb-0">Form Edit Benefit</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('admin.pricing-benefits.update', $benefit->id) }}" method="POST">
+                        <form action="{{ route('admin.about-us.update', $benefit->id) }}" method="POST">
                             @csrf
                             @method('PUT')
 
@@ -122,7 +122,7 @@
 
                             <!-- Form Actions -->
                             <div class="d-flex justify-content-between">
-                                <a href="{{ route('admin.pricing-benefits.index') }}" class="btn btn-label-secondary">
+                                <a href="{{ route('admin.about-us.index') }}" class="btn btn-label-secondary">
                                     <i class="ti ti-arrow-left me-1"></i> Kembali
                                 </a>
                                 <button type="submit" class="btn btn-primary">
@@ -140,7 +140,7 @@
                             <i class="ti ti-alert-triangle me-2"></i> Danger Zone
                         </h5>
                         <p class="text-muted mb-3">Hapus benefit ini secara permanen. Aksi ini tidak dapat dibatalkan!</p>
-                        <form action="{{ route('admin.pricing-benefits.destroy', $benefit->id) }}" 
+                        <form action="{{ route('admin.about-us.destroy', $benefit->id) }}" 
                               method="POST" 
                               id="deleteForm">
                             @csrf

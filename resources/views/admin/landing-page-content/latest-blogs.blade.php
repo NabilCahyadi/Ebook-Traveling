@@ -79,25 +79,32 @@
                             <div id="selected-blogs" class="sortable-list">
                                 @forelse($selectedBlogs as $index => $blog)
                                     <div class="sortable-item" data-id="{{ $blog->id }}">
-                                        <div class="d-flex align-items-start justify-content-between p-3 mb-2 border rounded">
-                                            <div class="d-flex align-items-start flex-grow-1">
-                                                <i class="ti ti-grip-vertical text-muted me-3 mt-2" style="cursor: grab;"></i>
-                                                <img src="@if($blog->featured_image && filter_var($blog->featured_image, FILTER_VALIDATE_URL)){{ $blog->featured_image }}@elseif($blog->featured_image){{ asset('storage/' . $blog->featured_image) }}@else{{ asset('images/blog-placeholder.webp') }}@endif" 
-                                                     alt="{{ $blog->title }}" 
-                                                     class="rounded me-3" 
-                                                     style="width: 80px; height: 60px; object-fit: cover;">
-                                                <div class="flex-grow-1">
-                                                    <strong>{{ Str::limit($blog->title, 60) }}</strong>
-                                                    <br>
-                                                    <small class="text-muted">
-                                                        <i class="ti ti-calendar-event me-1"></i>
-                                                        {{ $blog->published_at->format('d M Y') }}
-                                                    </small>
-                                                    <br>
-                                                    <span class="badge bg-label-primary mt-1">{{ $blog->category }}</span>
-                                                </div>
+                                        <div class="d-flex align-items-center p-3 mb-2 border rounded" style="gap: 12px;">
+                                            <!-- Drag Handle - Tengah Kiri -->
+                                            <div class="d-flex align-items-center" style="cursor: grab;">
+                                                <i class="ti ti-grip-vertical text-muted" style="font-size: 1.5rem;"></i>
                                             </div>
-                                            <button type="button" class="btn btn-sm btn-icon btn-danger remove-blog" data-id="{{ $blog->id }}">
+                                            
+                                            <!-- Blog Image - Tengah -->
+                                            <img src="@if($blog->featured_image && filter_var($blog->featured_image, FILTER_VALIDATE_URL)){{ $blog->featured_image }}@elseif($blog->featured_image){{ asset('storage/' . $blog->featured_image) }}@else{{ asset('images/blog-placeholder.webp') }}@endif" 
+                                                 alt="{{ $blog->title }}" 
+                                                 class="rounded" 
+                                                 style="width: 80px; height: 80px; object-fit: cover; flex-shrink: 0;">
+                                            
+                                            <!-- Blog Info - Tengah -->
+                                            <div class="flex-grow-1">
+                                                <strong>{{ Str::limit($blog->title, 60) }}</strong>
+                                                <br>
+                                                <small class="text-muted">
+                                                    <i class="ti ti-calendar-event me-1"></i>
+                                                    {{ $blog->published_at->format('d M Y') }}
+                                                </small>
+                                                <br>
+                                                <span class="badge bg-label-primary mt-1">{{ $blog->category }}</span>
+                                            </div>
+                                            
+                                            <!-- Remove Button - Tengah Kanan -->
+                                            <button type="button" class="btn btn-sm btn-icon btn-danger remove-blog" data-id="{{ $blog->id }}" style="flex-shrink: 0;">
                                                 <i class="ti ti-x"></i>
                                             </button>
                                         </div>
@@ -139,19 +146,27 @@
                                     <div class="available-blog-item border rounded p-2 mb-2" 
                                          data-id="{{ $blog->id }}"
                                          data-title="{{ strtolower($blog->title) }}"
-                                         style="cursor: pointer; {{ $selectedBlogs->contains('id', $blog->id) ? 'display: none;' : '' }}">
-                                        <div class="d-flex align-items-start">
+                                         style="cursor: pointer; transition: all 0.2s ease; {{ $selectedBlogs->contains('id', $blog->id) ? 'display: none;' : '' }}">
+                                        <div class="d-flex align-items-center" style="gap: 10px;">
+                                            <!-- Blog Image - Tengah Kiri -->
                                             <img src="@if($blog->featured_image && filter_var($blog->featured_image, FILTER_VALIDATE_URL)){{ $blog->featured_image }}@elseif($blog->featured_image){{ asset('storage/' . $blog->featured_image) }}@else{{ asset('images/blog-placeholder.webp') }}@endif" 
                                                  alt="{{ $blog->title }}" 
-                                                 class="rounded me-2" 
-                                                 style="width: 60px; height: 45px; object-fit: cover;">
+                                                 class="rounded" 
+                                                 style="width: 60px; height: 60px; object-fit: cover; flex-shrink: 0;">
+                                            
+                                            <!-- Blog Info - Tengah -->
                                             <div class="flex-grow-1">
                                                 <div><strong>{{ Str::limit($blog->title, 50) }}</strong></div>
-                                                <small class="text-muted">{{ $blog->published_at->format('d M Y') }}</small>
+                                                <small class="text-muted">
+                                                    <i class="ti ti-calendar-event me-1"></i>
+                                                    {{ $blog->published_at->format('d M Y') }}
+                                                </small>
                                                 <br>
-                                                <span class="badge bg-label-primary" style="font-size: 0.7rem;">{{ $blog->category }}</span>
+                                                <span class="badge bg-label-primary mt-1" style="font-size: 0.7rem;">{{ $blog->category }}</span>
                                             </div>
-                                            <i class="ti ti-plus text-danger mt-2"></i>
+                                            
+                                            <!-- Add Icon - Tengah Kanan -->
+                                            <i class="ti ti-plus text-danger" style="font-size: 1.5rem; flex-shrink: 0;"></i>
                                         </div>
                                     </div>
                                 @empty
@@ -169,7 +184,7 @@
             <!-- Action Buttons -->
             <div class="card">
                 <div class="card-body">
-                    <button type="submit" class="btn btn-danger me-2">
+                    <button type="submit" class="btn btn-primary me-2">
                         <i class="ti ti-device-floppy me-1"></i> Simpan Perubahan
                     </button>
                     <a href="{{ route('admin.landing-page-content.index') }}" class="btn btn-label-secondary">

@@ -30,16 +30,11 @@
 
 @section('content')
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h4 class="fw-bold mb-1">
-                <span class="text-muted fw-light">Website Management /</span> Contact Info
-            </h4>
-            <p class="mb-0">Kelola informasi kontak dan media sosial</p>
-        </div>
-        <a href="{{ route('admin.contact-info.create') }}" class="btn btn-primary">
-            <i class="ti ti-plus me-1"></i> Add Contact Info
-        </a>
+    <div class="mb-4">
+        <h4 class="fw-bold mb-1">
+            <span class="text-muted fw-light">Website Management /</span> Contact Info
+        </h4>
+        <p class="mb-0">Kelola informasi kontak dan media sosial</p>
     </div>
 
     <!-- Success/Error Messages -->
@@ -86,9 +81,9 @@
                             </div>
                         </div>
 
-                        <p class="text-muted mb-2">
+                        <!-- <p class="text-muted mb-2">
                             <strong>Type:</strong> {{ ucfirst($contact->contact_type) }}
-                        </p>
+                        </p> -->
 
                         @if($contact->description)
                             <p class="text-muted mb-2">{{ Str::limit($contact->description, 80) }}</p>
@@ -105,30 +100,19 @@
                             </div>
                         @endif
 
-                        <div class="d-flex action-buttons justify-content-between">
-                            <div>
-                                <a href="{{ route('admin.contact-info.edit', $contact->id) }}" 
-                                   class="btn btn-sm btn-label-primary" title="Edit">
-                                    <i class="ti ti-pencil"></i> Edit
-                                </a>
-                                <button type="button" 
-                                        class="btn btn-sm btn-label-{{ $contact->is_active ? 'warning' : 'success' }} toggle-active" 
-                                        data-id="{{ $contact->id }}"
-                                        data-status="{{ $contact->is_active }}"
-                                        title="Toggle Status">
-                                    <i class="ti ti-toggle-{{ $contact->is_active ? 'right' : 'left' }}"></i>
-                                    {{ $contact->is_active ? 'Disable' : 'Enable' }}
-                                </button>
-                            </div>
-                            <form action="{{ route('admin.contact-info.destroy', $contact->id) }}" 
-                                  method="POST" 
-                                  class="d-inline delete-form">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-label-danger" title="Delete">
-                                    <i class="ti ti-trash"></i>
-                                </button>
-                            </form>
+                        <div class="d-flex action-buttons gap-2">
+                            <a href="{{ route('admin.contact-info.edit', $contact->id) }}" 
+                               class="btn btn-sm btn-label-primary" title="Edit">
+                                <i class="ti ti-pencil"></i> Edit
+                            </a>
+                            <button type="button" 
+                                    class="btn btn-sm btn-label-{{ $contact->is_active ? 'warning' : 'success' }} toggle-active" 
+                                    data-id="{{ $contact->id }}"
+                                    data-status="{{ $contact->is_active }}"
+                                    title="Toggle Status">
+                                <i class="ti ti-toggle-{{ $contact->is_active ? 'right' : 'left' }}"></i>
+                                {{ $contact->is_active ? 'Disable' : 'Enable' }}
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -174,16 +158,6 @@
                         console.error('Error:', error);
                         alert('Terjadi kesalahan saat mengubah status');
                     });
-                }
-            });
-        });
-
-        // Delete Confirmation
-        document.querySelectorAll('.delete-form').forEach(form => {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                if (confirm('Apakah Anda yakin ingin menghapus contact info ini?')) {
-                    this.submit();
                 }
             });
         });

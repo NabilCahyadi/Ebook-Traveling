@@ -591,6 +591,8 @@ return [
         'import' => 'Import',
         'refresh' => 'Refresh',
         'back' => 'Back',
+        'back_to_list' => 'Back to List',
+        'update' => 'Update',
         'submit' => 'Submit',
         'close' => 'Close',
         'confirm' => 'Confirm',
@@ -780,4 +782,27 @@ return [
         'edit_blog' => 'Edit Blog',
         'view_blogs' => 'View Blogs',
     ],
-];
+
+    // Contact Info
+    'contact_info' => [
+        'title' => 'Contact Info',
+        'subtitle' => 'Manage contact information and social media',
+        'edit_subtitle' => 'Edit contact information',
+        'form_title' => 'Contact Information',
+        'contact_type' => 'Contact Type',
+        'title_label' => 'Title',
+        'title_placeholder' => 'e.g., WhatsApp Support',
+        'description' => 'Description',
+        'description_placeholder' => 'Enter description (optional)',
+        'link' => 'Link',
+        'link_placeholder' => 'e.g., https://wa.me/628123456789 or mailto:support@example.com',
+        'link_examples' => 'Examples: https://wa.me/628xxx, mailto:email@example.com, tel:+6281xxx',
+        'icon_class' => 'Icon Class',
+        'icon_placeholder' => 'e.g., bi bi-whatsapp or ti ti-brand-whatsapp',
+        'browse_icons' => 'Browse Icons',
+        'icon_help' => 'Click "Browse Icons" to select from available icons',
+        'is_active' => 'Is Active',
+        'is_active_help' => 'Display this contact info',
+        'show_in_contact_page' => 'Show in Contact Page',
+        'show_in_contact_page_help' => 'Display on Contact Us page',
+    ],];
