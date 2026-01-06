@@ -144,7 +144,8 @@ class LoginController extends Controller
      */
     public function redirectToGoogle()
     {
-        $callbackUrl = request()->getSchemeAndHttpHost() . '/login/google/callback';
+        // Force callback URL ke https://dev-new.mappy.id/
+        $callbackUrl = 'https://dev-new.mappy.id/login/google/callback';
         
         return Socialite::driver('google')
             ->redirectUrl($callbackUrl)

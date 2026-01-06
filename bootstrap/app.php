@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'premium' => \App\Http\Middleware\IsPremiumUser::class,
             'record.view' => \App\Http\Middleware\RecordView::class,
             'permission' => \App\Http\Middleware\CheckPermission::class,
+            'admin.permission' => \App\Http\Middleware\CheckAdminPermission::class,
             'admin.session' => \App\Http\Middleware\StartAdminSession::class,
             'user.session' => \App\Http\Middleware\StartUserSession::class,
         ]);

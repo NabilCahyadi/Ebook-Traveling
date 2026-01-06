@@ -32,6 +32,8 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
 
     // Admin Management
     Route::resource('admins', \App\Http\Controllers\Admin\AdminController::class);
+    Route::get('admins/{id}/permissions', [\App\Http\Controllers\Admin\AdminPermissionController::class, 'edit'])->name('admins.permissions.edit');
+    Route::put('admins/{id}/permissions', [\App\Http\Controllers\Admin\AdminPermissionController::class, 'update'])->name('admins.permissions.update');
     
     // Admin Activity Logs
     Route::get('admin-activity-logs', [\App\Http\Controllers\Admin\AdminActivityLogController::class, 'index'])->name('admin-activity-logs.index');
@@ -40,12 +42,29 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     Route::get('admin-activity-logs/{id}', [\App\Http\Controllers\Admin\AdminActivityLogController::class, 'show'])->name('admin-activity-logs.show');
 
     // User Management (All users: admin, creator, customer)
-    Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
-    Route::get('users-trashed', [\App\Http\Controllers\Admin\UserController::class, 'trashed'])->name('users.trashed');
-    Route::patch('users/{id}/restore', [\App\Http\Controllers\Admin\UserController::class, 'restore'])->name('users.restore');
-    Route::delete('users/{id}/force-delete', [\App\Http\Controllers\Admin\UserController::class, 'forceDelete'])->name('users.force-delete');
-    Route::patch('users/{id}/verify-email', [\App\Http\Controllers\Admin\UserController::class, 'verifyEmail'])->name('users.verify-email');
-    Route::patch('users/{id}/unverify-email', [\App\Http\Controllers\Admin\UserController::class, 'unverifyEmail'])->name('users.unverify-email');
+    Route::middleware(['admin.permission:users.view'])->group(function () {
+        Route::get('users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('users.index');
+        Route::get('users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'show'])->name('users.show');
+        Route::get('users-trashed', [\App\Http\Controllers\Admin\UserController::class, 'trashed'])->name('users.trashed');
+    });
+    
+    Route::middleware(['admin.permission:users.create'])->group(function () {
+        Route::get('users/create', [\App\Http\Controllers\Admin\UserController::class, 'create'])->name('users.create');
+        Route::post('users', [\App\Http\Controllers\Admin\UserController::class, 'store'])->name('users.store');
+    });
+    
+    Route::middleware(['admin.permission:users.edit'])->group(function () {
+        Route::get('users/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('users.edit');
+        Route::put('users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update');
+        Route::patch('users/{id}/restore', [\App\Http\Controllers\Admin\UserController::class, 'restore'])->name('users.restore');
+        Route::patch('users/{id}/verify-email', [\App\Http\Controllers\Admin\UserController::class, 'verifyEmail'])->name('users.verify-email');
+        Route::patch('users/{id}/unverify-email', [\App\Http\Controllers\Admin\UserController::class, 'unverifyEmail'])->name('users.unverify-email');
+    });
+    
+    Route::middleware(['admin.permission:users.delete'])->group(function () {
+        Route::delete('users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
+        Route::delete('users/{id}/force-delete', [\App\Http\Controllers\Admin\UserController::class, 'forceDelete'])->name('users.force-delete');
+    });
 
     // User Activity Logs (non-admin users only)
     Route::get('user-activity-logs', [\App\Http\Controllers\Admin\UserActivityLogController::class, 'index'])->name('user-activity-logs.index');
@@ -53,10 +72,27 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     Route::get('user-activity-logs/{id}', [\App\Http\Controllers\Admin\UserActivityLogController::class, 'show'])->name('user-activity-logs.show');
 
     // Role Management
-    Route::resource('roles', \App\Http\Controllers\Admin\RoleController::class);
-    Route::get('roles-trashed', [\App\Http\Controllers\Admin\RoleController::class, 'trashed'])->name('roles.trashed');
-    Route::patch('roles/{id}/restore', [\App\Http\Controllers\Admin\RoleController::class, 'restore'])->name('roles.restore');
-    Route::delete('roles/{id}/force-delete', [\App\Http\Controllers\Admin\RoleController::class, 'forceDelete'])->name('roles.force-delete');
+    Route::middleware(['admin.permission:roles.view'])->group(function () {
+        Route::get('roles', [\App\Http\Controllers\Admin\RoleController::class, 'index'])->name('roles.index');
+        Route::get('roles/{role}', [\App\Http\Controllers\Admin\RoleController::class, 'show'])->name('roles.show');
+        Route::get('roles-trashed', [\App\Http\Controllers\Admin\RoleController::class, 'trashed'])->name('roles.trashed');
+    });
+    
+    Route::middleware(['admin.permission:roles.create'])->group(function () {
+        Route::get('roles/create', [\App\Http\Controllers\Admin\RoleController::class, 'create'])->name('roles.create');
+        Route::post('roles', [\App\Http\Controllers\Admin\RoleController::class, 'store'])->name('roles.store');
+    });
+    
+    Route::middleware(['admin.permission:roles.edit'])->group(function () {
+        Route::get('roles/{role}/edit', [\App\Http\Controllers\Admin\RoleController::class, 'edit'])->name('roles.edit');
+        Route::put('roles/{role}', [\App\Http\Controllers\Admin\RoleController::class, 'update'])->name('roles.update');
+        Route::patch('roles/{id}/restore', [\App\Http\Controllers\Admin\RoleController::class, 'restore'])->name('roles.restore');
+    });
+    
+    Route::middleware(['admin.permission:roles.delete'])->group(function () {
+        Route::delete('roles/{role}', [\App\Http\Controllers\Admin\RoleController::class, 'destroy'])->name('roles.destroy');
+        Route::delete('roles/{id}/force-delete', [\App\Http\Controllers\Admin\RoleController::class, 'forceDelete'])->name('roles.force-delete');
+    });
 
     // Permission Management (OLD SYSTEM - DISABLED TO PREVENT CONFLICTS)
     // Route::resource('permissions', \App\Http\Controllers\Admin\PermissionController::class);
@@ -67,70 +103,205 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     Route::put('role-permissions/{role}', [\App\Http\Controllers\Admin\RolePermissionController::class, 'update'])->name('role-permissions.update');
 
     // Ebook Management (All ebooks in system)
-    Route::get('ebooks/search-creators', [\App\Http\Controllers\Admin\EbookController::class, 'searchCreators'])->name('ebooks.search-creators');
-    Route::get('ebooks/pending-approval', [\App\Http\Controllers\Admin\EbookController::class, 'pendingApproval'])->name('ebooks.pending-approval');
-    Route::get('ebooks/trashed', [\App\Http\Controllers\Admin\EbookController::class, 'trashed'])->name('ebooks.trashed');
-    Route::patch('ebooks/{ebook}/restore', [\App\Http\Controllers\Admin\EbookController::class, 'restore'])->name('ebooks.restore');
-    Route::delete('ebooks/{ebook}/force-delete', [\App\Http\Controllers\Admin\EbookController::class, 'forceDelete'])->name('ebooks.force-delete');
-    Route::post('ebooks/{id}/approve', [\App\Http\Controllers\Admin\EbookController::class, 'approve'])->name('ebooks.approve');
-    Route::post('ebooks/{id}/reject', [\App\Http\Controllers\Admin\EbookController::class, 'reject'])->name('ebooks.reject');
-    Route::post('ebooks/toggle-download', [\App\Http\Controllers\Admin\EbookController::class, 'toggleDownload'])->name('ebooks.toggle-download');
-    Route::post('ebooks/toggle-download', [\App\Http\Controllers\Admin\EbookController::class, 'toggleDownload'])->name('ebooks.toggle-download');
-    Route::resource('ebooks', \App\Http\Controllers\Admin\EbookController::class);
+    // Note: Route create HARUS sebelum route {ebook} untuk menghindari conflict
+    Route::middleware(['admin.permission:ebooks.create'])->group(function () {
+        Route::get('ebooks/create', [\App\Http\Controllers\Admin\EbookController::class, 'create'])->name('ebooks.create');
+        Route::post('ebooks', [\App\Http\Controllers\Admin\EbookController::class, 'store'])->name('ebooks.store');
+        Route::get('ebooks/search-creators', [\App\Http\Controllers\Admin\EbookController::class, 'searchCreators'])->name('ebooks.search-creators');
+    });
+    
+    Route::middleware(['admin.permission:ebooks.view'])->group(function () {
+        Route::get('ebooks', [\App\Http\Controllers\Admin\EbookController::class, 'index'])->name('ebooks.index');
+        Route::get('ebooks/pending-approval', [\App\Http\Controllers\Admin\EbookController::class, 'pendingApproval'])->name('ebooks.pending-approval');
+        Route::get('ebooks/trashed', [\App\Http\Controllers\Admin\EbookController::class, 'trashed'])->name('ebooks.trashed');
+        Route::get('ebooks/{ebook}', [\App\Http\Controllers\Admin\EbookController::class, 'show'])->name('ebooks.show');
+    });
+    
+    Route::middleware(['admin.permission:ebooks.edit'])->group(function () {
+        Route::get('ebooks/{ebook}/edit', [\App\Http\Controllers\Admin\EbookController::class, 'edit'])->name('ebooks.edit');
+        Route::put('ebooks/{ebook}', [\App\Http\Controllers\Admin\EbookController::class, 'update'])->name('ebooks.update');
+        Route::patch('ebooks/{ebook}/restore', [\App\Http\Controllers\Admin\EbookController::class, 'restore'])->name('ebooks.restore');
+        Route::post('ebooks/toggle-download', [\App\Http\Controllers\Admin\EbookController::class, 'toggleDownload'])->name('ebooks.toggle-download');
+    });
+    
+    Route::middleware(['admin.permission:ebooks.delete'])->group(function () {
+        Route::delete('ebooks/{ebook}', [\App\Http\Controllers\Admin\EbookController::class, 'destroy'])->name('ebooks.destroy');
+        Route::delete('ebooks/{ebook}/force-delete', [\App\Http\Controllers\Admin\EbookController::class, 'forceDelete'])->name('ebooks.force-delete');
+    });
+    
+    Route::middleware(['admin.permission:ebooks.approve'])->group(function () {
+        Route::post('ebooks/{id}/approve', [\App\Http\Controllers\Admin\EbookController::class, 'approve'])->name('ebooks.approve');
+        Route::post('ebooks/{id}/reject', [\App\Http\Controllers\Admin\EbookController::class, 'reject'])->name('ebooks.reject');
+    });
 
     // Category Management
-    Route::get('categories/trashed', [\App\Http\Controllers\Admin\CategoryController::class, 'trashed'])->name('categories.trashed');
-    Route::patch('categories/{category}/restore', [\App\Http\Controllers\Admin\CategoryController::class, 'restore'])->name('categories.restore');
-    Route::delete('categories/{category}/force-delete', [\App\Http\Controllers\Admin\CategoryController::class, 'forceDelete'])->name('categories.force-delete');
-    Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
+    Route::middleware(['admin.permission:categories.view'])->group(function () {
+        Route::get('categories', [\App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('categories.index');
+        Route::get('categories/trashed', [\App\Http\Controllers\Admin\CategoryController::class, 'trashed'])->name('categories.trashed');
+        Route::get('categories/{category}', [\App\Http\Controllers\Admin\CategoryController::class, 'show'])->name('categories.show');
+    });
+    
+    Route::middleware(['admin.permission:categories.create'])->group(function () {
+        Route::get('categories/create', [\App\Http\Controllers\Admin\CategoryController::class, 'create'])->name('categories.create');
+        Route::post('categories', [\App\Http\Controllers\Admin\CategoryController::class, 'store'])->name('categories.store');
+    });
+    
+    Route::middleware(['admin.permission:categories.edit'])->group(function () {
+        Route::get('categories/{category}/edit', [\App\Http\Controllers\Admin\CategoryController::class, 'edit'])->name('categories.edit');
+        Route::put('categories/{category}', [\App\Http\Controllers\Admin\CategoryController::class, 'update'])->name('categories.update');
+        Route::patch('categories/{category}/restore', [\App\Http\Controllers\Admin\CategoryController::class, 'restore'])->name('categories.restore');
+    });
+    
+    Route::middleware(['admin.permission:categories.delete'])->group(function () {
+        Route::delete('categories/{category}', [\App\Http\Controllers\Admin\CategoryController::class, 'destroy'])->name('categories.destroy');
+        Route::delete('categories/{category}/force-delete', [\App\Http\Controllers\Admin\CategoryController::class, 'forceDelete'])->name('categories.force-delete');
+    });
 
     // City/Location Management
-    Route::resource('cities', \App\Http\Controllers\Admin\CityController::class);
+    Route::middleware(['admin.permission:cities.view'])->group(function () {
+        Route::get('cities', [\App\Http\Controllers\Admin\CityController::class, 'index'])->name('cities.index');
+        Route::get('cities/{city}', [\App\Http\Controllers\Admin\CityController::class, 'show'])->name('cities.show');
+    });
+    
+    Route::middleware(['admin.permission:cities.create'])->group(function () {
+        Route::get('cities/create', [\App\Http\Controllers\Admin\CityController::class, 'create'])->name('cities.create');
+        Route::post('cities', [\App\Http\Controllers\Admin\CityController::class, 'store'])->name('cities.store');
+    });
+    
+    Route::middleware(['admin.permission:cities.edit'])->group(function () {
+        Route::get('cities/{city}/edit', [\App\Http\Controllers\Admin\CityController::class, 'edit'])->name('cities.edit');
+        Route::put('cities/{city}', [\App\Http\Controllers\Admin\CityController::class, 'update'])->name('cities.update');
+    });
+    
+    Route::middleware(['admin.permission:cities.delete'])->group(function () {
+        Route::delete('cities/{city}', [\App\Http\Controllers\Admin\CityController::class, 'destroy'])->name('cities.destroy');
+    });
 
     // Subscription Plan Management
-    Route::get('subscription-plans/trashed', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'trashed'])->name('subscription-plans.trashed');
-    Route::patch('subscription-plans/{subscription_plan}/restore', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'restore'])->name('subscription-plans.restore');
-    Route::delete('subscription-plans/{subscription_plan}/force-delete', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'forceDelete'])->name('subscription-plans.force-delete');
-    Route::resource('subscription-plans', \App\Http\Controllers\Admin\SubscriptionPlanController::class);
+    Route::middleware(['admin.permission:subscription-plans.view'])->group(function () {
+        Route::get('subscription-plans', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'index'])->name('subscription-plans.index');
+        Route::get('subscription-plans/trashed', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'trashed'])->name('subscription-plans.trashed');
+        Route::get('subscription-plans/{subscription_plan}', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'show'])->name('subscription-plans.show');
+    });
+    
+    Route::middleware(['admin.permission:subscription-plans.create'])->group(function () {
+        Route::get('subscription-plans/create', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'create'])->name('subscription-plans.create');
+        Route::post('subscription-plans', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'store'])->name('subscription-plans.store');
+    });
+    
+    Route::middleware(['admin.permission:subscription-plans.edit'])->group(function () {
+        Route::get('subscription-plans/{subscription_plan}/edit', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'edit'])->name('subscription-plans.edit');
+        Route::put('subscription-plans/{subscription_plan}', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'update'])->name('subscription-plans.update');
+        Route::patch('subscription-plans/{subscription_plan}/restore', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'restore'])->name('subscription-plans.restore');
+    });
+    
+    Route::middleware(['admin.permission:subscription-plans.delete'])->group(function () {
+        Route::delete('subscription-plans/{subscription_plan}', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'destroy'])->name('subscription-plans.destroy');
+        Route::delete('subscription-plans/{subscription_plan}/force-delete', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'forceDelete'])->name('subscription-plans.force-delete');
+    });
 
     // Order Management
-    Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class)->only(['index', 'show']);
-    Route::post('orders/{id}/update-status', [\App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('orders.update-status');
+    Route::middleware(['admin.permission:orders.view'])->group(function () {
+        Route::get('orders', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('orders.index');
+        Route::get('orders/{order}', [\App\Http\Controllers\Admin\OrderController::class, 'show'])->name('orders.show');
+    });
+    
+    Route::middleware(['admin.permission:orders.manage'])->group(function () {
+        Route::post('orders/{id}/update-status', [\App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('orders.update-status');
+    });
 
     // Subscription Management
-    Route::resource('subscriptions', \App\Http\Controllers\Admin\SubscriptionController::class)->only(['index', 'show']);
+    Route::middleware(['admin.permission:subscriptions.view'])->group(function () {
+        Route::get('subscriptions', [\App\Http\Controllers\Admin\SubscriptionController::class, 'index'])->name('subscriptions.index');
+        Route::get('subscriptions/{subscription}', [\App\Http\Controllers\Admin\SubscriptionController::class, 'show'])->name('subscriptions.show');
+    });
 
     // Manual Subscription Management
-    // AJAX endpoints - HARUS DI ATAS resource route
-    Route::get('manual-subscriptions/search-users', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'searchUsers'])->name('manual-subscriptions.search-users');
-
-    Route::resource('manual-subscriptions', \App\Http\Controllers\Admin\ManualSubscriptionController::class);
-    Route::get('manual-subscriptions/{id}/extend', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'extend'])->name('manual-subscriptions.extend');
-    Route::post('manual-subscriptions/{id}/extend', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'processExtend'])->name('manual-subscriptions.process-extend');
-    Route::post('manual-subscriptions/{id}/cancel', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'cancel'])->name('manual-subscriptions.cancel');
+    Route::middleware(['admin.permission:subscriptions.view'])->group(function () {
+        Route::get('manual-subscriptions', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'index'])->name('manual-subscriptions.index');
+        Route::get('manual-subscriptions/{manual_subscription}', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'show'])->name('manual-subscriptions.show');
+    });
+    
+    Route::middleware(['admin.permission:subscriptions.create'])->group(function () {
+        // AJAX endpoints
+        Route::get('manual-subscriptions/search-users', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'searchUsers'])->name('manual-subscriptions.search-users');
+        
+        Route::get('manual-subscriptions/create', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'create'])->name('manual-subscriptions.create');
+        Route::post('manual-subscriptions', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'store'])->name('manual-subscriptions.store');
+    });
+    
+    Route::middleware(['admin.permission:subscriptions.edit'])->group(function () {
+        Route::get('manual-subscriptions/{id}/edit', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'edit'])->name('manual-subscriptions.edit');
+        Route::put('manual-subscriptions/{id}', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'update'])->name('manual-subscriptions.update');
+        Route::get('manual-subscriptions/{id}/extend', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'extend'])->name('manual-subscriptions.extend');
+        Route::post('manual-subscriptions/{id}/extend', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'processExtend'])->name('manual-subscriptions.process-extend');
+    });
+    
+    Route::middleware(['admin.permission:subscriptions.delete'])->group(function () {
+        Route::delete('manual-subscriptions/{id}', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'destroy'])->name('manual-subscriptions.destroy');
+        Route::post('manual-subscriptions/{id}/cancel', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'cancel'])->name('manual-subscriptions.cancel');
+    });
 
     // Active Subscribers
-    Route::get('active-subscribers', [\App\Http\Controllers\Admin\SubscriberController::class, 'index'])->name('active-subscribers.index');
+    Route::middleware(['admin.permission:subscriptions.view'])->group(function () {
+        Route::get('active-subscribers', [\App\Http\Controllers\Admin\SubscriberController::class, 'index'])->name('active-subscribers.index');
+    });
 
     // Subscription History
-    Route::get('subscription-history', [\App\Http\Controllers\Admin\SubscriptionHistoryController::class, 'index'])->name('subscription-history.index');
-    Route::get('subscription-history/{id}', [\App\Http\Controllers\Admin\SubscriptionHistoryController::class, 'show'])->name('subscription-history.show');
-    Route::get('subscription-history/{id}/print', [\App\Http\Controllers\Admin\SubscriptionHistoryController::class, 'print'])->name('subscription-history.print');
-    Route::get('subscription-history-export', [\App\Http\Controllers\Admin\SubscriptionHistoryController::class, 'export'])->name('subscription-history.export');
+    Route::middleware(['admin.permission:subscriptions.view'])->group(function () {
+        Route::get('subscription-history', [\App\Http\Controllers\Admin\SubscriptionHistoryController::class, 'index'])->name('subscription-history.index');
+        Route::get('subscription-history/{id}', [\App\Http\Controllers\Admin\SubscriptionHistoryController::class, 'show'])->name('subscription-history.show');
+        Route::get('subscription-history/{id}/print', [\App\Http\Controllers\Admin\SubscriptionHistoryController::class, 'print'])->name('subscription-history.print');
+        Route::get('subscription-history-export', [\App\Http\Controllers\Admin\SubscriptionHistoryController::class, 'export'])->name('subscription-history.export');
+    });
 
     // Blog Management
-    Route::get('blogs/archived', [\App\Http\Controllers\Admin\BlogController::class, 'archived'])->name('blogs.archived');
-    Route::get('blogs/trashed', [\App\Http\Controllers\Admin\BlogController::class, 'trashed'])->name('blogs.trashed');
-    Route::patch('blogs/{blog}/restore', [\App\Http\Controllers\Admin\BlogController::class, 'restore'])->name('blogs.restore');
-    Route::delete('blogs/{blog}/force-delete', [\App\Http\Controllers\Admin\BlogController::class, 'forceDelete'])->name('blogs.force-delete');
-    Route::get('blogs/search-authors', [\App\Http\Controllers\Admin\BlogController::class, 'searchAuthors'])->name('blogs.search-authors');
-    Route::resource('blogs', \App\Http\Controllers\Admin\BlogController::class);
+    Route::middleware(['admin.permission:blogs.view'])->group(function () {
+        Route::get('blogs', [\App\Http\Controllers\Admin\BlogController::class, 'index'])->name('blogs.index');
+        Route::get('blogs/archived', [\App\Http\Controllers\Admin\BlogController::class, 'archived'])->name('blogs.archived');
+        Route::get('blogs/trashed', [\App\Http\Controllers\Admin\BlogController::class, 'trashed'])->name('blogs.trashed');
+        Route::get('blogs/{blog}', [\App\Http\Controllers\Admin\BlogController::class, 'show'])->name('blogs.show');
+    });
+    
+    Route::middleware(['admin.permission:blogs.create'])->group(function () {
+        Route::get('blogs/create', [\App\Http\Controllers\Admin\BlogController::class, 'create'])->name('blogs.create');
+        Route::post('blogs', [\App\Http\Controllers\Admin\BlogController::class, 'store'])->name('blogs.store');
+        Route::get('blogs/search-authors', [\App\Http\Controllers\Admin\BlogController::class, 'searchAuthors'])->name('blogs.search-authors');
+    });
+    
+    Route::middleware(['admin.permission:blogs.edit'])->group(function () {
+        Route::get('blogs/{blog}/edit', [\App\Http\Controllers\Admin\BlogController::class, 'edit'])->name('blogs.edit');
+        Route::put('blogs/{blog}', [\App\Http\Controllers\Admin\BlogController::class, 'update'])->name('blogs.update');
+        Route::patch('blogs/{blog}/restore', [\App\Http\Controllers\Admin\BlogController::class, 'restore'])->name('blogs.restore');
+    });
+    
+    Route::middleware(['admin.permission:blogs.delete'])->group(function () {
+        Route::delete('blogs/{blog}', [\App\Http\Controllers\Admin\BlogController::class, 'destroy'])->name('blogs.destroy');
+        Route::delete('blogs/{blog}/force-delete', [\App\Http\Controllers\Admin\BlogController::class, 'forceDelete'])->name('blogs.force-delete');
+    });
 
     // Blog Category Management
-    Route::get('blog-categories/trashed', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'trashed'])->name('blog-categories.trashed');
-    Route::patch('blog-categories/{id}/restore', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'restore'])->name('blog-categories.restore');
-    Route::delete('blog-categories/{id}/force-delete', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'forceDelete'])->name('blog-categories.force-delete');
-    Route::resource('blog-categories', \App\Http\Controllers\Admin\BlogCategoryController::class);
+    Route::middleware(['admin.permission:blog-categories.view'])->group(function () {
+        Route::get('blog-categories', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'index'])->name('blog-categories.index');
+        Route::get('blog-categories/{blog_category}', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'show'])->name('blog-categories.show');
+        Route::get('blog-categories/trashed', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'trashed'])->name('blog-categories.trashed');
+    });
+    
+    Route::middleware(['admin.permission:blog-categories.create'])->group(function () {
+        Route::get('blog-categories/create', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'create'])->name('blog-categories.create');
+        Route::post('blog-categories', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'store'])->name('blog-categories.store');
+    });
+    
+    Route::middleware(['admin.permission:blog-categories.edit'])->group(function () {
+        Route::get('blog-categories/{blog_category}/edit', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'edit'])->name('blog-categories.edit');
+        Route::put('blog-categories/{blog_category}', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'update'])->name('blog-categories.update');
+        Route::patch('blog-categories/{id}/restore', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'restore'])->name('blog-categories.restore');
+    });
+    
+    Route::middleware(['admin.permission:blog-categories.delete'])->group(function () {
+        Route::delete('blog-categories/{blog_category}', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'destroy'])->name('blog-categories.destroy');
+        Route::delete('blog-categories/{id}/force-delete', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'forceDelete'])->name('blog-categories.force-delete');
+    });
 
     // System Settings
     // Route::get('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings');
@@ -142,30 +313,80 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     // Route::get('/reports/users', [\App\Http\Controllers\Admin\ReportController::class, 'users'])->name('reports.users');
 
     // Banner Management
-    Route::post('banners/check-order', [\App\Http\Controllers\Admin\BannerController::class, 'checkOrder'])->name('banners.check-order');
-    Route::post('banners/{id}/toggle-active', [\App\Http\Controllers\Admin\BannerController::class, 'toggleActive'])->name('banners.toggle-active');
-    Route::post('banners/update-order', [\App\Http\Controllers\Admin\BannerController::class, 'updateOrder'])->name('banners.update-order');
-    Route::resource('banners', \App\Http\Controllers\Admin\BannerController::class);
+    // Hero Banners
+    Route::middleware(['admin.permission:website.banners.view'])->group(function () {
+        Route::get('banners', [\App\Http\Controllers\Admin\BannerController::class, 'index'])->name('banners.index');
+        Route::get('banners/{banner}', [\App\Http\Controllers\Admin\BannerController::class, 'show'])->name('banners.show');
+    });
+    
+    Route::middleware(['admin.permission:website.banners.create'])->group(function () {
+        Route::get('banners/create', [\App\Http\Controllers\Admin\BannerController::class, 'create'])->name('banners.create');
+        Route::post('banners', [\App\Http\Controllers\Admin\BannerController::class, 'store'])->name('banners.store');
+    });
+    
+    Route::middleware(['admin.permission:website.banners.edit'])->group(function () {
+        Route::post('banners/check-order', [\App\Http\Controllers\Admin\BannerController::class, 'checkOrder'])->name('banners.check-order');
+        Route::post('banners/{id}/toggle-active', [\App\Http\Controllers\Admin\BannerController::class, 'toggleActive'])->name('banners.toggle-active');
+        Route::post('banners/update-order', [\App\Http\Controllers\Admin\BannerController::class, 'updateOrder'])->name('banners.update-order');
+        Route::get('banners/{banner}/edit', [\App\Http\Controllers\Admin\BannerController::class, 'edit'])->name('banners.edit');
+        Route::put('banners/{banner}', [\App\Http\Controllers\Admin\BannerController::class, 'update'])->name('banners.update');
+    });
+    
+    Route::middleware(['admin.permission:website.banners.delete'])->group(function () {
+        Route::delete('banners/{banner}', [\App\Http\Controllers\Admin\BannerController::class, 'destroy'])->name('banners.destroy');
+    });
 
     // Promo Management (Subscription Promos)
-    Route::resource('promos', \App\Http\Controllers\Admin\PromoController::class);
-    Route::post('promos/{id}/toggle-active', [\App\Http\Controllers\Admin\PromoController::class, 'toggleActive'])->name('promos.toggle-active');
+    Route::middleware(['admin.permission:promos.view'])->group(function () {
+        Route::get('promos', [\App\Http\Controllers\Admin\PromoController::class, 'index'])->name('promos.index');
+        Route::get('promos/{promo}', [\App\Http\Controllers\Admin\PromoController::class, 'show'])->name('promos.show');
+    });
+    
+    Route::middleware(['admin.permission:promos.create'])->group(function () {
+        Route::get('promos/create', [\App\Http\Controllers\Admin\PromoController::class, 'create'])->name('promos.create');
+        Route::post('promos', [\App\Http\Controllers\Admin\PromoController::class, 'store'])->name('promos.store');
+    });
+    
+    Route::middleware(['admin.permission:promos.edit'])->group(function () {
+        Route::get('promos/{promo}/edit', [\App\Http\Controllers\Admin\PromoController::class, 'edit'])->name('promos.edit');
+        Route::put('promos/{promo}', [\App\Http\Controllers\Admin\PromoController::class, 'update'])->name('promos.update');
+        Route::post('promos/{id}/toggle-active', [\App\Http\Controllers\Admin\PromoController::class, 'toggleActive'])->name('promos.toggle-active');
+    });
+    
+    Route::middleware(['admin.permission:promos.delete'])->group(function () {
+        Route::delete('promos/{promo}', [\App\Http\Controllers\Admin\PromoController::class, 'destroy'])->name('promos.destroy');
+    });
 
     // Website Management - Collection CRUD
-    Route::get('ebooks-for-selection', [\App\Http\Controllers\Admin\CollectionController::class, 'getEbooksForSelection'])->name('ebooks-for-selection');
-    Route::get('collections/check-order', [\App\Http\Controllers\Admin\CollectionController::class, 'checkOrderAvailability'])->name('collections.check-order');
-    Route::post('collections/update-order', [\App\Http\Controllers\Admin\CollectionController::class, 'updateCollectionsOrder'])->name('collections.update-order');
-    Route::get('collections/{id}/manage-ebooks', [\App\Http\Controllers\Admin\CollectionController::class, 'manageEbooks'])->name('collections.manage-ebooks');
-    Route::get('collections/get-available-ebooks', [\App\Http\Controllers\Admin\CollectionController::class, 'getAvailableEbooks'])->name('collections.get-available-ebooks');
-    Route::post('collections/{id}/add-ebooks', [\App\Http\Controllers\Admin\CollectionController::class, 'addEbooks'])->name('collections.add-ebooks');
-    Route::delete('collections/{collectionId}/remove-ebook/{ebookId}', [\App\Http\Controllers\Admin\CollectionController::class, 'removeEbook'])->name('collections.remove-ebook');
-    Route::post('collections/{id}/update-ebook-order', [\App\Http\Controllers\Admin\CollectionController::class, 'updateEbookOrder'])->name('collections.update-ebook-order');
-    Route::resource('collections', \App\Http\Controllers\Admin\CollectionController::class);
-
-    // Website Management - Collection Order (Legacy - consider migrating to collections.manage-ebooks)
-    Route::get('collection-order', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'collectionOrder'])->name('collection-order');
-    Route::post('collection-order/update', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'updateCollectionOrder'])->name('collection-order.update');
-    Route::post('collection/{id}/toggle-visibility', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'toggleCollectionVisibility'])->name('collection.toggle-visibility');
+    Route::middleware(['admin.permission:website.collections.view'])->group(function () {
+        Route::get('collections', [\App\Http\Controllers\Admin\CollectionController::class, 'index'])->name('collections.index');
+        Route::get('collections/{collection}', [\App\Http\Controllers\Admin\CollectionController::class, 'show'])->name('collections.show');
+        Route::get('collection-order', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'collectionOrder'])->name('collection-order');
+    });
+    
+    Route::middleware(['admin.permission:website.collections.create'])->group(function () {
+        Route::get('collections/create', [\App\Http\Controllers\Admin\CollectionController::class, 'create'])->name('collections.create');
+        Route::post('collections', [\App\Http\Controllers\Admin\CollectionController::class, 'store'])->name('collections.store');
+    });
+    
+    Route::middleware(['admin.permission:website.collections.edit'])->group(function () {
+        Route::get('ebooks-for-selection', [\App\Http\Controllers\Admin\CollectionController::class, 'getEbooksForSelection'])->name('ebooks-for-selection');
+        Route::get('collections/check-order', [\App\Http\Controllers\Admin\CollectionController::class, 'checkOrderAvailability'])->name('collections.check-order');
+        Route::post('collections/update-order', [\App\Http\Controllers\Admin\CollectionController::class, 'updateCollectionsOrder'])->name('collections.update-order');
+        Route::get('collections/{id}/manage-ebooks', [\App\Http\Controllers\Admin\CollectionController::class, 'manageEbooks'])->name('collections.manage-ebooks');
+        Route::get('collections/get-available-ebooks', [\App\Http\Controllers\Admin\CollectionController::class, 'getAvailableEbooks'])->name('collections.get-available-ebooks');
+        Route::post('collections/{id}/add-ebooks', [\App\Http\Controllers\Admin\CollectionController::class, 'addEbooks'])->name('collections.add-ebooks');
+        Route::delete('collections/{collectionId}/remove-ebook/{ebookId}', [\App\Http\Controllers\Admin\CollectionController::class, 'removeEbook'])->name('collections.remove-ebook');
+        Route::post('collections/{id}/update-ebook-order', [\App\Http\Controllers\Admin\CollectionController::class, 'updateEbookOrder'])->name('collections.update-ebook-order');
+        Route::get('collections/{collection}/edit', [\App\Http\Controllers\Admin\CollectionController::class, 'edit'])->name('collections.edit');
+        Route::put('collections/{collection}', [\App\Http\Controllers\Admin\CollectionController::class, 'update'])->name('collections.update');
+        Route::post('collection-order/update', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'updateCollectionOrder'])->name('collection-order.update');
+        Route::post('collection/{id}/toggle-visibility', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'toggleCollectionVisibility'])->name('collection.toggle-visibility');
+    });
+    
+    Route::middleware(['admin.permission:website.collections.delete'])->group(function () {
+        Route::delete('collections/{collection}', [\App\Http\Controllers\Admin\CollectionController::class, 'destroy'])->name('collections.destroy');
+    });
 
     // FAQ Management
     // Route::resource('faqs', \App\Http\Controllers\Admin\FaqController::class);
@@ -177,26 +398,64 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     // Route::resource('email-templates', \App\Http\Controllers\Admin\EmailTemplateController::class);
 
     // Landing Page Content Curation
-    Route::prefix('landing-page-content')->name('landing-page-content.')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Admin\LandingPageContentController::class, 'index'])->name('index');
-        Route::get('/top-cities', [\App\Http\Controllers\Admin\LandingPageContentController::class, 'editTopCities'])->name('top-cities');
-        Route::put('/top-cities', [\App\Http\Controllers\Admin\LandingPageContentController::class, 'updateTopCities'])->name('top-cities.update');
-        Route::get('/latest-blogs', [\App\Http\Controllers\Admin\LandingPageContentController::class, 'editLatestBlogs'])->name('latest-blogs');
-        Route::put('/latest-blogs', [\App\Http\Controllers\Admin\LandingPageContentController::class, 'updateLatestBlogs'])->name('latest-blogs.update');
+    Route::middleware(['admin.permission:website.landing-page'])->group(function () {
+        Route::prefix('landing-page-content')->name('landing-page-content.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\LandingPageContentController::class, 'index'])->name('index');
+            Route::get('/top-cities', [\App\Http\Controllers\Admin\LandingPageContentController::class, 'editTopCities'])->name('top-cities');
+            Route::put('/top-cities', [\App\Http\Controllers\Admin\LandingPageContentController::class, 'updateTopCities'])->name('top-cities.update');
+            Route::get('/latest-blogs', [\App\Http\Controllers\Admin\LandingPageContentController::class, 'editLatestBlogs'])->name('latest-blogs');
+            Route::put('/latest-blogs', [\App\Http\Controllers\Admin\LandingPageContentController::class, 'updateLatestBlogs'])->name('latest-blogs.update');
+        });
     });
 
     // About Us Management
-    Route::post('about-us/{id}/toggle-status', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'toggleStatus'])->name('about-us.toggle-status');
-    Route::post('about-us/update-order', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'updateOrder'])->name('about-us.update-order');
-    Route::resource('about-us', \App\Http\Controllers\Admin\PricingBenefitController::class);
+    Route::middleware(['admin.permission:website.about-us.view'])->group(function () {
+        Route::get('about-us', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'index'])->name('about-us.index');
+        Route::get('about-us/{about_us}', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'show'])->name('about-us.show');
+    });
+    
+    Route::middleware(['admin.permission:website.about-us.create'])->group(function () {
+        Route::get('about-us/create', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'create'])->name('about-us.create');
+        Route::post('about-us', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'store'])->name('about-us.store');
+    });
+    
+    Route::middleware(['admin.permission:website.about-us.edit'])->group(function () {
+        Route::post('about-us/{id}/toggle-status', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'toggleStatus'])->name('about-us.toggle-status');
+        Route::post('about-us/update-order', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'updateOrder'])->name('about-us.update-order');
+        Route::get('about-us/{about_us}/edit', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'edit'])->name('about-us.edit');
+        Route::put('about-us/{about_us}', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'update'])->name('about-us.update');
+    });
+    
+    Route::middleware(['admin.permission:website.about-us.delete'])->group(function () {
+        Route::delete('about-us/{about_us}', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'destroy'])->name('about-us.destroy');
+    });
 
     // Contact Info Management
-    Route::post('contact-info/{id}/toggle-active', [\App\Http\Controllers\Admin\ContactInfoController::class, 'toggleActive'])->name('contact-info.toggle-active');
-    Route::resource('contact-info', \App\Http\Controllers\Admin\ContactInfoController::class);
+    Route::middleware(['admin.permission:website.contact-info.view'])->group(function () {
+        Route::get('contact-info', [\App\Http\Controllers\Admin\ContactInfoController::class, 'index'])->name('contact-info.index');
+        Route::get('contact-info/{contact_info}', [\App\Http\Controllers\Admin\ContactInfoController::class, 'show'])->name('contact-info.show');
+    });
+    
+    Route::middleware(['admin.permission:website.contact-info.create'])->group(function () {
+        Route::get('contact-info/create', [\App\Http\Controllers\Admin\ContactInfoController::class, 'create'])->name('contact-info.create');
+        Route::post('contact-info', [\App\Http\Controllers\Admin\ContactInfoController::class, 'store'])->name('contact-info.store');
+    });
+    
+    Route::middleware(['admin.permission:website.contact-info.edit'])->group(function () {
+        Route::post('contact-info/{id}/toggle-active', [\App\Http\Controllers\Admin\ContactInfoController::class, 'toggleActive'])->name('contact-info.toggle-active');
+        Route::get('contact-info/{contact_info}/edit', [\App\Http\Controllers\Admin\ContactInfoController::class, 'edit'])->name('contact-info.edit');
+        Route::put('contact-info/{contact_info}', [\App\Http\Controllers\Admin\ContactInfoController::class, 'update'])->name('contact-info.update');
+    });
+    
+    Route::middleware(['admin.permission:website.contact-info.delete'])->group(function () {
+        Route::delete('contact-info/{contact_info}', [\App\Http\Controllers\Admin\ContactInfoController::class, 'destroy'])->name('contact-info.destroy');
+    });
 
     // Site Settings Management
-    // Route::post('site-settings/store', [\App\Http\Controllers\Admin\SiteSettingController::class, 'store'])->name('site-settings.store'); // Disabled
-    // Route::delete('site-settings/{id}', [\App\Http\Controllers\Admin\SiteSettingController::class, 'destroy'])->name('site-settings.destroy'); // Disabled
-    Route::get('site-settings', [\App\Http\Controllers\Admin\SiteSettingController::class, 'index'])->name('site-settings.index');
-    Route::put('site-settings', [\App\Http\Controllers\Admin\SiteSettingController::class, 'update'])->name('site-settings.update');
+    Route::middleware(['admin.permission:website.site-settings'])->group(function () {
+        // Route::post('site-settings/store', [\App\Http\Controllers\Admin\SiteSettingController::class, 'store'])->name('site-settings.store'); // Disabled
+        // Route::delete('site-settings/{id}', [\App\Http\Controllers\Admin\SiteSettingController::class, 'destroy'])->name('site-settings.destroy'); // Disabled
+        Route::get('site-settings', [\App\Http\Controllers\Admin\SiteSettingController::class, 'index'])->name('site-settings.index');
+        Route::put('site-settings', [\App\Http\Controllers\Admin\SiteSettingController::class, 'update'])->name('site-settings.update');
+    });
 });

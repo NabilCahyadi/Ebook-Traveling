@@ -126,8 +126,14 @@
             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                 <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
-                        <img src="{{ Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : asset('assets/admin/img/avatars/default.jpeg') }}"
-                            alt class="rounded-circle" />
+                        @if(Auth::user()->avatar)
+                            <img src="{{ asset('storage/' . Auth::user()->avatar) }}"
+                                alt="{{ Auth::user()->name }}" class="rounded-circle" />
+                        @else
+                            <span class="avatar-initial rounded-circle bg-label-primary">
+                                {{ getInitials(Auth::user()->name) }}
+                            </span>
+                        @endif
                     </div>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
@@ -136,8 +142,14 @@
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0 me-2">
                                     <div class="avatar avatar-online">
-                                        <img src="{{ Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : asset('assets/admin/img/avatars/default.jpeg') }}"
-                                            alt class="rounded-circle" />
+                                        @if(Auth::user()->avatar)
+                                            <img src="{{ asset('storage/' . Auth::user()->avatar) }}"
+                                                alt="{{ Auth::user()->name }}" class="rounded-circle" />
+                                        @else
+                                            <span class="avatar-initial rounded-circle bg-label-primary">
+                                                {{ getInitials(Auth::user()->name) }}
+                                            </span>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">

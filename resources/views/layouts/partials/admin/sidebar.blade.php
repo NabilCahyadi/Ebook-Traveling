@@ -61,6 +61,7 @@
         </li>
         @endif
         <!-- Users Management -->
+        @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['users.view', 'users.create', 'users.edit', 'users.delete', 'roles.view', 'roles.create', 'roles.edit', 'roles.delete']))
         <li
             class="menu-item open {{ Request::is('admin/users*') || Request::is('admin/roles*') || Request::is('admin/role-permissions*') ? 'active' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -69,6 +70,7 @@
             </a>
             <ul class="menu-sub">
                 <!-- Users -->
+                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission('users.view'))
                 <li class="menu-item {{ Request::is('admin/users*') ? 'active open' : '' }}">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
                         <i class="menu-icon tf-icons ti ti-user"></i>
@@ -95,14 +97,17 @@
                         @endif
                     </ul>
                 </li>
+                @endif
 
                 <!-- Roles -->
+                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['roles.view', 'roles.create', 'roles.edit', 'roles.delete']))
                 <li class="menu-item {{ Request::is('admin/roles*') ? 'active' : '' }}">
                     <a href="{{ route('admin.roles.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-shield"></i>
                         <div data-i18n="Roles">{{ __('admin.menu.roles') }}</div>
                     </a>
                 </li>
+                @endif
 
                 <!-- Role Permissions -->
                 <!-- <li class="menu-item {{ Request::is('admin/role-permissions*') ? 'active' : '' }}">
@@ -113,15 +118,19 @@
                 </li> -->
 
                 <!-- User Activity Logs -->
+                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission('users.view'))
                 <li class="menu-item {{ Request::is('admin/user-activity-logs*') ? 'active' : '' }}">
                     <a href="{{ route('admin.user-activity-logs.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-activity"></i>
                         <div data-i18n="Activity Logs">{{ __('admin.menu.activity_logs') }}</div>
                     </a>
                 </li>
+                @endif
             </ul>
         </li>
+        @endif
         <!-- Ebooks Management -->
+        @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['ebooks.view', 'ebooks.create', 'ebooks.edit', 'ebooks.delete', 'ebooks.approve', 'categories.view', 'categories.create', 'categories.edit', 'categories.delete', 'cities.view', 'cities.create', 'cities.edit', 'cities.delete']))
         <li
             class="menu-item open {{ Request::is('admin/ebooks*') || Request::is('admin/categories*') || Request::is('admin/cities*') ? 'active' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -130,6 +139,7 @@
             </a>
             <ul class="menu-sub">
                 <!-- Ebooks -->
+                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission('ebooks.view'))
                 <li class="menu-item {{ Request::is('admin/ebooks*') ? 'active open' : '' }}">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
                         <i class="menu-icon tf-icons ti ti-book"></i>
@@ -162,48 +172,61 @@
                         </li> -->
                     </ul>
                 </li>
+                @endif
 
                 <!-- Categories -->
+                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['categories.view', 'categories.create', 'categories.edit', 'categories.delete']))
                 <li class="menu-item {{ Request::is('admin/categories*') ? 'active' : '' }}">
                     <a href="{{ route('admin.categories.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-tags"></i>
                         <div data-i18n="Categories">{{ __('admin.menu.categories') }}</div>
                     </a>
                 </li>
+                @endif
 
                 <!-- Cities -->
+                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['cities.view', 'cities.create', 'cities.edit', 'cities.delete']))
                 <li class="menu-item {{ Request::is('admin/cities*') ? 'active' : '' }}">
                     <a href="{{ route('admin.cities.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-map-pin"></i>
                         <div data-i18n="Cities">{{ __('admin.menu.cities') }}</div>
                     </a>
                 </li>
+                @endif
             </ul>
         </li>
+        @endif
 
         <!-- Blog Management -->
+        @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['blogs.view', 'blogs.create', 'blogs.edit', 'blogs.delete', 'blog-categories.view', 'blog-categories.create', 'blog-categories.edit', 'blog-categories.delete']))
         <li class="menu-item {{ Request::is('admin/blogs*') || Request::is('admin/blog-categories*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-news"></i>
                 <div data-i18n="Blog Management">{{ __('admin.menu.blog_management') }}</div>
             </a>
             <ul class="menu-sub">
+                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission('blogs.view'))
                 <li class="menu-item {{ Request::is('admin/blogs*') && !Request::is('admin/blog-categories*') ? 'active' : '' }}">
                     <a href="{{ route('admin.blogs.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-article"></i>
                         <div data-i18n="Blogs">{{ __('admin.menu.blogs') }}</div>
                     </a>
                 </li>
+                @endif
 
+                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['blog-categories.view', 'blog-categories.create', 'blog-categories.edit', 'blog-categories.delete']))
                 <li class="menu-item {{ Request::is('admin/blog-categories*') ? 'active' : '' }}">
                     <a href="{{ route('admin.blog-categories.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-category"></i>
                         <div data-i18n="Blog Categories">{{ __('admin.menu.blog_categories') }}</div>
                     </a>
                 </li>
+                @endif
             </ul>
         </li>
+        @endif
         <!-- Subscription Management -->
+        @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['subscription-plans.view', 'subscription-plans.create', 'subscription-plans.edit', 'subscription-plans.delete', 'subscriptions.view', 'subscriptions.create', 'subscriptions.edit', 'subscriptions.delete', 'promos.view', 'promos.create', 'promos.edit', 'promos.delete']))
         <li
             class="menu-item open {{ Request::is('admin/subscription-plans*') || Request::is('admin/manual-subscriptions*') || Request::is('admin/active-subscribers*') || Request::is('admin/subscription-history*') || Request::is('admin/promos*') ? 'active' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -212,49 +235,61 @@
             </a>
             <ul class="menu-sub">
                 <!-- Subscription Plans -->
+                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['subscription-plans.view', 'subscription-plans.create', 'subscription-plans.edit', 'subscription-plans.delete']))
                 <li class="menu-item {{ Request::is('admin/subscription-plans*') ? 'active' : '' }}">
                     <a href="{{ route('admin.subscription-plans.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-package"></i>
                         <div data-i18n="Subscription Plans">{{ __('admin.menu.subscription_plans') }}</div>
                     </a>
                 </li>
+                @endif
 
                 <!-- Manual Subscriptions -->
+                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission('subscriptions.view'))
                 <li class="menu-item {{ Request::is('admin/manual-subscriptions*') ? 'active' : '' }}">
                     <a href="{{ route('admin.manual-subscriptions.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-edit"></i>
                         <div data-i18n="Manual Subscriptions">{{ __('admin.menu.manual_subscriptions') }}</div>
                     </a>
                 </li>
+                @endif
 
                 <!-- Active Subscribers -->
+                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission('subscriptions.view'))
                 <li class="menu-item {{ Request::is('admin/active-subscribers*') ? 'active' : '' }}">
                     <a href="{{ route('admin.active-subscribers.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-users-group"></i>
                         <div data-i18n="Active Subscribers">{{ __('admin.menu.active_subscribers') }}</div>
                     </a>
                 </li>
+                @endif
 
                 <!-- Payment History -->
+                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission('subscriptions.view'))
                 <li class="menu-item {{ Request::is('admin/subscription-history*') ? 'active' : '' }}">
                     <a href="{{ route('admin.subscription-history.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-receipt"></i>
                         <div data-i18n="Payment History">{{ __('admin.menu.subscription_history') }}</div>
                     </a>
                 </li>
+                @endif
 
                 <!-- Promos -->
+                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['promos.view', 'promos.create', 'promos.edit', 'promos.delete']))
                 <li class="menu-item {{ Request::is('admin/promos*') ? 'active' : '' }}">
                     <a href="{{ route('admin.promos.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-ticket"></i>
                         <div data-i18n="Promos">{{ __('admin.menu.promos_discounts') }}</div>
                     </a>
                 </li>
+                @endif
             </ul>
         </li>
+        @endif
 
 
         <!-- Website Management -->
+        @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.landing-page', 'website.about-us.view', 'website.about-us.create', 'website.about-us.edit', 'website.about-us.delete', 'website.banners.view', 'website.banners.create', 'website.banners.edit', 'website.banners.delete', 'website.collections.view', 'website.collections.create', 'website.collections.edit', 'website.collections.delete', 'website.contact-info.view', 'website.contact-info.create', 'website.contact-info.edit', 'website.contact-info.delete', 'website.site-settings']))
         <li
             class="menu-item {{ Request::is('admin/collection-order*') || Request::is('admin/banners*') || Request::is('admin/collections*') || Request::is('admin/landing-page-content*') || Request::is('admin/about-us*') || Request::is('admin/contact-info*') || Request::is('admin/site-settings*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -263,48 +298,61 @@
             </a>
             <ul class="menu-sub">
                 <!-- Landing Page Content -->
+                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission('website.landing-page'))
                 <li class="menu-item {{ Request::is('admin/landing-page-content*') ? 'active' : '' }}">
                     <a href="{{ route('admin.landing-page-content.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-layout"></i>
                         <div data-i18n="Landing Page Content">{{ __('admin.menu.landing_page_content') }}</div>
                     </a>
                 </li>
+                @endif
                 <!-- About Us -->
+                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.about-us.view', 'website.about-us.create', 'website.about-us.edit', 'website.about-us.delete']))
                 <li class="menu-item {{ Request::is('admin/about-us*') ? 'active' : '' }}">
                     <a href="{{ route('admin.about-us.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-info-circle"></i>
-                        <div data-i18n="About Us">About Us</div>
+                        <div data-i18n="About Us">{{ __('admin.menu.about_us') }}</div>
                     </a>
                 </li>
+                @endif
                 <!-- Hero Banners -->
+                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.banners.view', 'website.banners.create', 'website.banners.edit', 'website.banners.delete']))
                 <li class="menu-item {{ Request::is('admin/banners*') ? 'active' : '' }}">
                     <a href="{{ route('admin.banners.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-photo"></i>
                         <div data-i18n="Hero Banners">{{ __('admin.menu.hero_banners') }}</div>
                     </a>
                 </li>
+                @endif
                 <!-- Collection Ebook -->
+                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.collections.view', 'website.collections.create', 'website.collections.edit', 'website.collections.delete']))
                 <li class="menu-item {{ Request::is('admin/collections*') ? 'active' : '' }}">
                     <a href="{{ route('admin.collections.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-folders"></i>
                         <div data-i18n="Collection Ebook">{{ __('admin.menu.collection_ebook') }}</div>
                     </a>
                 </li>
+                @endif
                 <!-- Contact Info -->
+                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.contact-info.view', 'website.contact-info.create', 'website.contact-info.edit', 'website.contact-info.delete']))
                 <li class="menu-item {{ Request::is('admin/contact-info*') ? 'active' : '' }}">
                     <a href="{{ route('admin.contact-info.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-address-book"></i>
-                        <div data-i18n="Contact Info">Contact Info</div>
+                        <div data-i18n="Contact Info">{{ __('admin.menu.contact_info') }}</div>
                     </a>
                 </li>
+                @endif
                 <!-- Site Settings -->
+                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission('website.site-settings'))
                 <li class="menu-item {{ Request::is('admin/site-settings*') ? 'active' : '' }}">
                     <a href="{{ route('admin.site-settings.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-adjustments"></i>
-                        <div data-i18n="Site Settings">Site Settings</div>
+                        <div data-i18n="Site Settings">{{ __('admin.menu.site_settings') }}</div>
                     </a>
                 </li>
+                @endif
             </ul>
         </li>
+        @endif
     </ul>
 </aside>

@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title', 'Site Settings'); ?>
 
 <?php $__env->startPush('styles'); ?>
@@ -29,9 +27,7 @@
             </h4>
             <p class="mb-0">Kelola pengaturan website secara global</p>
         </div>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSettingModal">
-            <i class="ti ti-plus me-1"></i> Add New Setting
-        </button>
+        
     </div>
 
     <!-- Success/Error Messages -->
@@ -86,16 +82,8 @@
                                     <h5 class="mb-1"><?php echo e(ucwords(str_replace('_', ' ', $setting->key))); ?></h5>
                                     <span class="badge bg-label-primary"><?php echo e(ucfirst($setting->type)); ?></span>
                                 </div>
-                                <form action="<?php echo e(route('admin.site-settings.destroy', $setting->id)); ?>" 
-                                      method="POST" 
-                                      class="d-inline delete-form"
-                                      onsubmit="return confirm('Yakin ingin menghapus setting ini?');">
-                                    <?php echo csrf_field(); ?>
-                                    <?php echo method_field('DELETE'); ?>
-                                    <button type="submit" class="btn btn-sm btn-label-danger" title="Delete">
-                                        <i class="ti ti-trash"></i>
-                                    </button>
-                                </form>
+                                
+                                
                             </div>
 
                             <input type="hidden" name="settings[<?php echo e($loop->index); ?>][key]" value="<?php echo e($setting->key); ?>">
@@ -149,57 +137,8 @@
         <?php endif; ?>
     </form>
 
-    <!-- Add Setting Modal -->
-    <div class="modal fade" id="addSettingModal" tabindex="-1" aria-labelledby="addSettingModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addSettingModalLabel">Add New Setting</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="<?php echo e(route('admin.site-settings.store')); ?>" method="POST">
-                    <?php echo csrf_field(); ?>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="new_key" class="form-label">Key <span class="text-danger">*</span></label>
-                            <input type="text" 
-                                   class="form-control" 
-                                   id="new_key" 
-                                   name="key" 
-                                   required
-                                   placeholder="e.g., company_name, footer_text">
-                            <small class="form-text text-muted">Gunakan lowercase dan underscore. Contoh: company_name</small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="new_value" class="form-label">Value</label>
-                            <textarea class="form-control" 
-                                      id="new_value" 
-                                      name="value" 
-                                      rows="3"
-                                      placeholder="Enter initial value"></textarea>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="new_type" class="form-label">Type <span class="text-danger">*</span></label>
-                            <select class="form-select" id="new_type" name="type" required>
-                                <option value="text">Text</option>
-                                <option value="email">Email</option>
-                                <option value="phone">Phone</option>
-                                <option value="textarea">Textarea</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="ti ti-check me-1"></i> Add Setting
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    
+    
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startPush('scripts'); ?>

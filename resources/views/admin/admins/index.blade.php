@@ -150,6 +150,11 @@
                                                 <a class="dropdown-item" href="{{ route('admin.admins.edit', $admin->id) }}">
                                                     <i class="ti ti-edit me-2"></i> Edit
                                                 </a>
+                                                @if ($admin->type !== 'superadmin')
+                                                    <a class="dropdown-item" href="{{ route('admin.admins.permissions.edit', $admin->id) }}">
+                                                        <i class="ti ti-shield-lock me-2"></i> Kelola Permission
+                                                    </a>
+                                                @endif
                                                 @if (auth('admin')->id() !== $admin->id)
                                                     <div class="dropdown-divider"></div>
                                                     <form action="{{ route('admin.admins.destroy', $admin->id) }}" method="POST"

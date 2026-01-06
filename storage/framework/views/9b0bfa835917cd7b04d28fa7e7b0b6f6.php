@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title', 'Contact Info Management'); ?>
 
 <?php $__env->startPush('styles'); ?>
@@ -30,16 +28,11 @@
 
 <?php $__env->startSection('content'); ?>
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h4 class="fw-bold mb-1">
-                <span class="text-muted fw-light">Website Management /</span> Contact Info
-            </h4>
-            <p class="mb-0">Kelola informasi kontak dan media sosial</p>
-        </div>
-        <a href="<?php echo e(route('admin.contact-info.create')); ?>" class="btn btn-primary">
-            <i class="ti ti-plus me-1"></i> Add Contact Info
-        </a>
+    <div class="mb-4">
+        <h4 class="fw-bold mb-1">
+            <span class="text-muted fw-light">Website Management /</span> Contact Info
+        </h4>
+        <p class="mb-0">Kelola informasi kontak dan media sosial</p>
     </div>
 
     <!-- Success/Error Messages -->
@@ -89,50 +82,41 @@
                             </div>
                         </div>
 
-                        <p class="text-muted mb-2">
+                        <!-- <p class="text-muted mb-2">
                             <strong>Type:</strong> <?php echo e(ucfirst($contact->contact_type)); ?>
 
-                        </p>
+                        </p> -->
 
                         <?php if($contact->description): ?>
                             <p class="text-muted mb-2"><?php echo e(Str::limit($contact->description, 80)); ?></p>
                         <?php endif; ?>
 
                         <?php if($contact->link): ?>
-                            <p class="text-muted mb-3">
-                                <strong>Link:</strong> 
-                                <a href="<?php echo e($contact->link); ?>" target="_blank" class="text-truncate d-inline-block" style="max-width: 200px;">
+                            <div class="mb-3">
+                                <p class="text-muted mb-1">
+                                    <strong>Link:</strong>
+                                </p>
+                                <a href="<?php echo e($contact->link); ?>" target="_blank" class="text-primary text-truncate d-block" style="max-width: 100%;">
                                     <?php echo e($contact->link); ?>
 
                                 </a>
-                            </p>
+                            </div>
                         <?php endif; ?>
 
-                        <div class="d-flex action-buttons justify-content-between">
-                            <div>
-                                <a href="<?php echo e(route('admin.contact-info.edit', $contact->id)); ?>" 
-                                   class="btn btn-sm btn-label-primary" title="Edit">
-                                    <i class="ti ti-pencil"></i> Edit
-                                </a>
-                                <button type="button" 
-                                        class="btn btn-sm btn-label-<?php echo e($contact->is_active ? 'warning' : 'success'); ?> toggle-active" 
-                                        data-id="<?php echo e($contact->id); ?>"
-                                        data-status="<?php echo e($contact->is_active); ?>"
-                                        title="Toggle Status">
-                                    <i class="ti ti-toggle-<?php echo e($contact->is_active ? 'right' : 'left'); ?>"></i>
-                                    <?php echo e($contact->is_active ? 'Disable' : 'Enable'); ?>
+                        <div class="d-flex action-buttons gap-2">
+                            <a href="<?php echo e(route('admin.contact-info.edit', $contact->id)); ?>" 
+                               class="btn btn-sm btn-label-primary" title="Edit">
+                                <i class="ti ti-pencil"></i> Edit
+                            </a>
+                            <button type="button" 
+                                    class="btn btn-sm btn-label-<?php echo e($contact->is_active ? 'warning' : 'success'); ?> toggle-active" 
+                                    data-id="<?php echo e($contact->id); ?>"
+                                    data-status="<?php echo e($contact->is_active); ?>"
+                                    title="Toggle Status">
+                                <i class="ti ti-toggle-<?php echo e($contact->is_active ? 'right' : 'left'); ?>"></i>
+                                <?php echo e($contact->is_active ? 'Disable' : 'Enable'); ?>
 
-                                </button>
-                            </div>
-                            <form action="<?php echo e(route('admin.contact-info.destroy', $contact->id)); ?>" 
-                                  method="POST" 
-                                  class="d-inline delete-form">
-                                <?php echo csrf_field(); ?>
-                                <?php echo method_field('DELETE'); ?>
-                                <button type="submit" class="btn btn-sm btn-label-danger" title="Delete">
-                                    <i class="ti ti-trash"></i>
-                                </button>
-                            </form>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -178,16 +162,6 @@
                         console.error('Error:', error);
                         alert('Terjadi kesalahan saat mengubah status');
                     });
-                }
-            });
-        });
-
-        // Delete Confirmation
-        document.querySelectorAll('.delete-form').forEach(form => {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                if (confirm('Apakah Anda yakin ingin menghapus contact info ini?')) {
-                    this.submit();
                 }
             });
         });

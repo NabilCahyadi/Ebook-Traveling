@@ -16,52 +16,56 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-
+            // ================================================
             // 1. DATA DASAR (Tidak ada ketergantungan)
-            // Seeder ini harus dijalankan pertama karena data lain akan membutuhkannya.
-            RoleSeeder::class,           // Membuat role (admin, creator, member)
-            CategorySeeder::class,       // Membuat kategori (kuliner, wisata-alam, dll)
-            CitySeeder::class,           // Membuat kota (surabaya, jakarta, dll)
-            CollectionSeeder::class,     // Membuat koleksi (best-seller, featured, dll)
-            SubscriptionPlanSeeder::class, // Membuat paket berlangganan (basic, premium)
-            SubscriptionPromoSeeder::class,
-            // 2. PERMISSIONS & SYSTEM SETTINGS
-            PermissionSeeder::class,     // Membuat permissions untuk role-based access
-            AdminPermissionSeeder::class, // Membuat permissions untuk admin panel
-            SystemSettingSeeder::class,  // Membuat system settings
-            PanelAccessPermissionSeeder::class, // Panel access permissions
+            // ================================================
+            RoleSeeder::class,                  // Membuat role (admin, creator, member)
+            CategorySeeder::class,              // Membuat kategori (kuliner, wisata-alam, dll)
+            CitySeeder::class,                  // Membuat kota (surabaya, jakarta, dll)
+            CollectionSeeder::class,            // Membuat koleksi (best-seller, featured, dll)
+            SubscriptionPlanSeeder::class,      // Membuat paket berlangganan (basic, premium)
+            SubscriptionPromoSeeder::class,     // Membuat promo subscription
             
-            // 2. DATA PENGGUNA (Bergantung pada RoleSeeder)
-            // Membuat pengguna setelah role tersedia.
-            CreatorSeeder::class,
-            UserSeeder::class,           // Membuat user (creator, member)
-            DefaultAdminSeeder::class,          // Membuat user admin khusus
+            // ================================================
+            // 2. PERMISSIONS & SYSTEM SETTINGS
+            // ================================================
+            PermissionSeeder::class,            // Membuat permissions untuk role-based access (users)
+            PanelAccessPermissionSeeder::class, // Panel access permissions untuk creators & admins
+            AdminPermissionsSeeder::class,      // Membuat permissions untuk admin panel (new system)
+            SystemSettingSeeder::class,         // Membuat system settings
+            
+            // ================================================
+            // 3. DATA PENGGUNA (Bergantung pada RoleSeeder)
+            // ================================================
+            CreatorSeeder::class,               // Membuat creator users
+            UserSeeder::class,                  // Membuat user (creator, member)
+            DefaultAdminSeeder::class,          // Membuat user admin khusus (superadmin)
 
+            // ================================================
             // 4. DATA KONTEN UTAMA (Bergantung pada data dasar & pengguna)
-            // Membuat konten setelah kategori, kota, dan creator tersedia.
-            EbookSeeder::class,         // Membuat data ebook (BUTUH: Category, City, User)
-            BlogSeeder::class,           // Membuat data blog (BUTUH: Category, User)
+            // ================================================
+            EbookSeeder::class,                 // Membuat data ebook (BUTUH: Category, City, User)
+            BlogSeeder::class,                  // Membuat data blog (BUTUH: Category, User)
 
+            // ================================================
             // 5. TABEL HUBUNGAN / PIVOT (Bergantung pada data konten)
-            // Menghubungkan konten setelah konten itu sendiri dibuat.
-            EbookCategorySeeder::class, // Menghubungkan ebook ke kategori (BUTUH: Ebook, Category)
-            CollectionEbookSeeder::class, // Menghubungkan ebook ke koleksi (BUTUH: Ebook, Collection)
+            // ================================================
+            EbookCategorySeeder::class,         // Menghubungkan ebook ke kategori (BUTUH: Ebook, Category)
+            CollectionEbookSeeder::class,       // Menghubungkan ebook ke koleksi (BUTUH: Ebook, Collection)
+            SubscriptionSeeder::class,          // Menghubungkan user ke paket berlangganan (BUTUH: User, Plan)
+            PremiumUserSeeder::class,           // Membuat user premium (BUTUH: User, Subscription)
 
-            // 6. LANDING PAGE & UI
-            LandingPageSectionsSeeder::class, // Membuat landing page sections
-
-            // 7. DATA TAMBAHAN & LAINNYA
-            // Seeder yang tidak terlalu kritis atau bergantung pada data sebelumnya.
-            BannerSeeder::class,         // Membuat banner di homepage
-            SubscriptionSeeder::class,   // Menghubungkan user ke paket berlangganan (BUTUH: User, Plan)
-            PremiumUserSeeder::class,   // Membuat user premium (BUTUH: User, Subscription)
-
-            PricingBannerSeeder::class,
-            PricingBenefitSeeder::class,
-            FaqSeeder::class,
-            AboutUsSectionsSeeder::class,
-            ContactInfoSeeder::class,
-            SiteSettingsSeeder::class,
+            // ================================================
+            // 6. WEBSITE CONTENT & UI
+            // ================================================
+            LandingPageSectionsSeeder::class,   // Membuat landing page sections
+            BannerSeeder::class,                // Membuat banner di homepage
+            PricingBannerSeeder::class,         // Membuat pricing banners
+            PricingBenefitSeeder::class,        // Membuat pricing benefits (about us)
+            AboutUsSectionsSeeder::class,       // Membuat about us sections
+            ContactInfoSeeder::class,           // Membuat contact info
+            FaqSeeder::class,                   // Membuat FAQ
+            SiteSettingsSeeder::class,          // Membuat site settings (logo, etc)
         ]);
     }
 }
