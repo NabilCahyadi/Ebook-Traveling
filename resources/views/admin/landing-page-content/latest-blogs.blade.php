@@ -44,13 +44,13 @@
                                     <i class="ti ti-list-check me-2"></i>
                                     Blog Terpilih (<span id="selected-count">{{ $selectedBlogs->count() }}</span>)
                                 </h5>
-                                <div class="form-check form-switch">
+                                <!-- <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" id="is_visible" name="is_visible" 
                                            value="1" {{ old('is_visible', $section->is_visible) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="is_visible">
                                         Tampilkan di Landing Page
                                     </label>
-                                </div>
+                                </div> -->
                             </div>
                             <div class="mb-0">
                                 <label for="display_count" class="form-label">Jumlah Blog yang Ditampilkan</label>
