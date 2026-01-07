@@ -307,18 +307,7 @@
                     @yield('content')
                     <!-- / Content -->
 
-                    <!-- Footer -->
-                    <footer class="content-footer footer bg-footer-theme">
-                        <div class="container-xxl">
-                            <div
-                                class="footer-container d-flex align-items-center justify-content-between py-2 flex-md-row flex-column">
-                                <div>
-                                    © {{ date('Y') }}, made with ❤️ by <strong>Ebook Traveling</strong>
-                                </div>
-                            </div>
-                        </div>
-                    </footer>
-                    <!-- / Footer -->
+                    {{-- Footer removed --}}
 
                     <div class="content-backdrop fade"></div>
                 </div>
