@@ -10,6 +10,8 @@ class OrderItem extends Model
 {
     use HasFactory, HasUuids;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'order_id',
         'ebook_id',

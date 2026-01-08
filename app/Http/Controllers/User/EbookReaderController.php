@@ -31,11 +31,14 @@ class EbookReaderController extends Controller
         // Check if user has access (you can add subscription check here)
         // Example: if (!Auth::user()->hasAccessToEbook($ebook)) { abort(403); }
 
+        // Increment read_count (real tracking)
+        $ebook->increment('read_count');
+
         // Log ebook view/read activity
         if (Auth::check()) {
             ActionLog::create([
                 'user_id' => Auth::id(),
-                'action_type' => 'view',
+                'action_type' => 'read',
                 'table_name' => 'ebooks',
                 'record_id' => $ebook->id,
                 'ip_address' => request()->ip(),

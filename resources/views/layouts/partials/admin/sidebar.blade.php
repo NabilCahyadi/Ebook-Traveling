@@ -34,7 +34,10 @@
                 <div data-i18n="Dashboard">{{ __('admin.menu.dashboard') }}</div>
             </a>
         </li>
-                <!-- Admin Management (Only for Superadmin) -->
+
+
+
+        <!-- Admin Management (Only for Superadmin) -->
         @if(auth('admin')->check() && auth('admin')->user()->type === 'superadmin')
         <li class="menu-item {{ Request::is('admin/admins*') || Request::is('admin/admin-activity-logs*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -287,6 +290,40 @@
         </li>
         @endif
 
+                <!-- Reports -->
+        <li class="menu-item {{ Request::is('admin/reports*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-report-analytics"></i>
+                <div data-i18n="Reports">{{ __('admin.menu.reports') }}</div>
+            </a>
+            <ul class="menu-sub">
+                <!-- <li class="menu-item {{ Request::is('admin/reports') && !Request::is('admin/reports/*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.reports.index') }}" class="menu-link">
+                        <div data-i18n="Overview">{{ __('admin.menu.reports_overview') }}</div>
+                    </a>
+                </li> -->
+                <li class="menu-item {{ Request::is('admin/reports/revenue') ? 'active' : '' }}">
+                    <a href="{{ route('admin.reports.revenue') }}" class="menu-link">
+                        <div data-i18n="Revenue Report">{{ __('admin.menu.revenue_report') }}</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('admin/reports/ebook-performance') ? 'active' : '' }}">
+                    <a href="{{ route('admin.reports.ebook-performance') }}" class="menu-link">
+                        <div data-i18n="Ebook Performance">{{ __('admin.menu.ebook_performance') }}</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('admin/reports/user-analytics') ? 'active' : '' }}">
+                    <a href="{{ route('admin.reports.user-analytics') }}" class="menu-link">
+                        <div data-i18n="User Analytics">{{ __('admin.menu.user_analytics') }}</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('admin/reports/subscription-analytics') ? 'active' : '' }}">
+                    <a href="{{ route('admin.reports.subscription-analytics') }}" class="menu-link">
+                        <div data-i18n="Subscription Analytics">{{ __('admin.menu.subscription_analytics') }}</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
 
         <!-- Website Management -->
         @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.landing-page', 'website.about-us.view', 'website.about-us.create', 'website.about-us.edit', 'website.about-us.delete', 'website.banners.view', 'website.banners.create', 'website.banners.edit', 'website.banners.delete', 'website.collections.view', 'website.collections.create', 'website.collections.edit', 'website.collections.delete', 'website.contact-info.view', 'website.contact-info.create', 'website.contact-info.edit', 'website.contact-info.delete', 'website.site-settings']))
