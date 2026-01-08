@@ -150,6 +150,19 @@
                     </div>
 
                     <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label" for="mayar_payment_link">Mayar Payment Link</label>
+                        <div class="col-sm-10">
+                            <input type="url" class="form-control @error('mayar_payment_link') is-invalid @enderror" 
+                                id="mayar_payment_link" name="mayar_payment_link" value="{{ old('mayar_payment_link') }}" 
+                                placeholder="https://meat-map.myr.id/pl/...">
+                            @error('mayar_payment_link')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <div class="form-text">{{ __('admin.subscription_plans.mayar_payment_link_help') }}</div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
                         <label class="col-sm-2 col-form-label">{{ __('admin.ebooks.status') }}</label>
                         <div class="col-sm-10">
                             <div class="form-check form-switch mt-2">

@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Create Collection')
+@section('title', __('admin.collections.create_new'))
 
 @push('styles')
 <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
@@ -15,17 +15,17 @@
         <div class="mb-4">
             <h4 class="fw-bold py-3 mb-2">
                 <span class="text-muted fw-light">
-                    <a href="{{ route('admin.collections.index') }}" class="text-muted">Website Management</a> / 
-                    <a href="{{ route('admin.collections.index') }}" class="text-muted">Collections</a> /
+                    <a href="{{ route('admin.collections.index') }}" class="text-muted">{{ __('admin.website_settings') }}</a> / 
+                    <a href="{{ route('admin.collections.index') }}" class="text-muted">{{ __('admin.collections.title') }}</a> /
                 </span> 
-                Create New Collection
+                {{ __('admin.collections.create_new') }}
             </h4>
         </div>
 
         <!-- Error Messages -->
         @if ($errors->any())
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Validation Error!</strong>
+                <strong>{{ __('admin.collections.validation_error') }}</strong>
                 <ul class="mb-0 mt-2">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -38,7 +38,7 @@
         <!-- Create Form -->
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Collection Information</h5>
+                <h5 class="mb-0">{{ __('admin.collections.collection_information') }}</h5>
             </div>
             <div class="card-body">
                 <form id="collection-form" action="{{ url('/admin/collections') }}" method="POST" data-route="{{ route('admin.collections.store') }}" onsubmit="console.log('Form onsubmit triggered');">
@@ -48,7 +48,7 @@
                         <div class="col-md-6">
                             <!-- Name -->
                             <div class="mb-3">
-                                <label class="form-label" for="name">Collection Name <span class="text-danger">*</span></label>
+                                <label class="form-label" for="name">{{ __('admin.collections.collection_name') }} <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control @error('name') is-invalid @enderror" 
                                        id="name" name="name" value="{{ old('name') }}" 
                                        placeholder="e.g., Trending This Week" required>
@@ -59,11 +59,11 @@
 
                             <!-- Slug -->
                             <div class="mb-3">
-                                <label class="form-label" for="slug">Slug</label>
+                                <label class="form-label" for="slug">{{ __('admin.collections.slug') }}</label>
                                 <input type="text" class="form-control @error('slug') is-invalid @enderror" 
                                        id="slug" name="slug" value="{{ old('slug') }}" 
                                        placeholder="e.g., trending-this-week">
-                                <small class="form-text text-muted">Versi nama yang ramah URL. Kosongkan untuk dibuat secara otomatis.</small>
+                                <small class="form-text text-muted">{{ __('admin.collections.slug_hint') }}</small>
                                 @error('slug')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -71,10 +71,10 @@
 
                             <!-- Order -->
                             <div class="mb-3">
-                                <label class="form-label" for="order">Display Order</label>
+                                <label class="form-label" for="order">{{ __('admin.collections.display_order') }}</label>
                                 <input type="number" class="form-control @error('order') is-invalid @enderror" 
                                        id="order" name="order" value="{{ old('order', 0) }}" min="0">
-                                <small class="form-text text-muted">Angka lebih kecil muncul lebih dulu</small>
+                                <small class="form-text text-muted">{{ __('admin.collections.order_hint') }}</small>
                                 @error('order')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -84,10 +84,10 @@
                         <div class="col-md-6">
                             <!-- Description -->
                             <div class="mb-3">
-                                <label class="form-label" for="description">Description</label>
+                                <label class="form-label" for="description">{{ __('admin.collections.description') }}</label>
                                 <textarea class="form-control @error('description') is-invalid @enderror" 
                                           id="description" name="description" rows="4" 
-                                          placeholder="Deskripsi singkat dari koleksi ini....">{{ old('description') }}</textarea>
+                                          placeholder="{{ __('admin.collections.description_placeholder') }}">{{ old('description') }}</textarea>
                                 @error('description')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -95,14 +95,14 @@
 
                             <!-- Status Checkboxes -->
                             <div class="mb-3">
-                                <label class="form-label d-block">Visibility Settings</label>
+                                <label class="form-label d-block">{{ __('admin.collections.visibility_settings') }}</label>
                                 
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" id="is_active" 
                                            name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="is_active">
-                                        Active
-                                        <small class="text-muted d-block">Collection is active and visible</small>
+                                        {{ __('admin.collections.active') }}
+                                        <small class="text-muted d-block">{{ __('admin.collections.active_hint') }}</small>
                                     </label>
                                 </div>
                             </div>
@@ -115,10 +115,10 @@
                     <!-- Action Buttons -->
                     <div class="d-flex justify-content-between">
                         <a href="{{ route('admin.collections.index') }}" class="btn btn-label-secondary">
-                            <i class="ti ti-arrow-left me-1"></i> Cancel
+                            <i class="ti ti-arrow-left me-1"></i> {{ __('admin.collections.cancel') }}
                         </a>
                         <button type="button" class="btn btn-primary" id="btn-submit">
-                            <i class="ti ti-device-floppy me-1"></i> Create Collection
+                            <i class="ti ti-device-floppy me-1"></i> {{ __('admin.collections.create_collection') }}
                         </button>
                     </div>
                 </form>
@@ -131,41 +131,41 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">
-                            <i class="ti ti-books me-2"></i>Select Ebooks for Collection
+                            <i class="ti ti-books me-2"></i>{{ __('admin.collections.select_ebooks') }}
                         </h5>
-                        <span class="badge bg-label-primary" id="selected-count-badge">0 selected</span>
+                        <span class="badge bg-label-primary" id="selected-count-badge">{{ __('admin.collections.selected_count', ['count' => 0]) }}</span>
                     </div>
                     <div class="card-body">
                         <!-- Filters -->
                         <div class="row mb-3">
                             <div class="col-md-3">
-                                <label class="form-label">Search</label>
-                                <input type="text" id="filter-search" class="form-control" placeholder="Search by title...">
+                                <label class="form-label">{{ __('admin.collections.search') }}</label>
+                                <input type="text" id="filter-search" class="form-control" placeholder="{{ __('admin.collections.search_placeholder') }}">
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label">Category</label>
+                                <label class="form-label">{{ __('admin.collections.category') }}</label>
                                 <select id="filter-category" class="form-select">
-                                    <option value="">All Categories</option>
+                                    <option value="">{{ __('admin.collections.all_categories') }}</option>
                                     @foreach(\App\Models\Category::all() as $category)
                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label">Sort By</label>
+                                <label class="form-label">{{ __('admin.collections.sort_by') }}</label>
                                 <select id="filter-sort" class="form-select">
-                                    <option value="created_at_desc">Newest First</option>
-                                    <option value="created_at_asc">Oldest First</option>
-                                    <option value="view_count_desc">Most Viewed</option>
-                                    <option value="view_count_asc">Least Viewed</option>
-                                    <option value="title_asc">Title (A-Z)</option>
-                                    <option value="title_desc">Title (Z-A)</option>
+                                    <option value="created_at_desc">{{ __('admin.collections.newest_first') }}</option>
+                                    <option value="created_at_asc">{{ __('admin.collections.oldest_first') }}</option>
+                                    <option value="view_count_desc">{{ __('admin.collections.most_viewed') }}</option>
+                                    <option value="view_count_asc">{{ __('admin.collections.least_viewed') }}</option>
+                                    <option value="title_asc">{{ __('admin.collections.title_asc') }}</option>
+                                    <option value="title_desc">{{ __('admin.collections.title_desc') }}</option>
                                 </select>
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">&nbsp;</label>
                                 <div class="text-muted small">
-                                    Click on rows or use checkboxes to select ebooks
+                                    {{ __('admin.collections.select_hint') }}
                                 </div>
                             </div>
                         </div>
@@ -549,7 +549,9 @@
     }
 
     function updateSelectedCount() {
-        document.getElementById('selected-count-badge').textContent = `${selectedEbooks.size} selected`;
+        const count = selectedEbooks.size;
+        const text = '{{ __("admin.collections.selected_count", ["count" => "COUNT_PLACEHOLDER"]) }}'.replace('COUNT_PLACEHOLDER', count);
+        document.getElementById('selected-count-badge').textContent = text;
     }
 
     function formatNumber(num) {

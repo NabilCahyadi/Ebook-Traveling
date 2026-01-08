@@ -13,6 +13,17 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin', 'admin'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/revenue-data', [AdminDashboardController::class, 'getRevenueData'])->name('dashboard.revenue-data');
+    
+    // Reports
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\ReportController::class, 'index'])->name('index');
+        Route::get('/revenue', [\App\Http\Controllers\Admin\ReportController::class, 'revenue'])->name('revenue');
+        Route::get('/ebook-performance', [\App\Http\Controllers\Admin\ReportController::class, 'ebookPerformance'])->name('ebook-performance');
+        Route::get('/user-analytics', [\App\Http\Controllers\Admin\ReportController::class, 'userAnalytics'])->name('user-analytics');
+        Route::get('/user-analytics-data', [\App\Http\Controllers\Admin\ReportController::class, 'getUserAnalyticsData'])->name('user-analytics-data');
+        Route::get('/subscription-analytics', [\App\Http\Controllers\Admin\ReportController::class, 'salesAnalytics'])->name('subscription-analytics');
+    });
     
     // Language Switcher
     Route::post('/language/{locale}', [\App\Http\Controllers\Admin\LanguageController::class, 'switch'])->name('language.switch');
@@ -181,7 +192,6 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     Route::middleware(['admin.permission:subscription-plans.view'])->group(function () {
         Route::get('subscription-plans', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'index'])->name('subscription-plans.index');
         Route::get('subscription-plans/trashed', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'trashed'])->name('subscription-plans.trashed');
-        Route::get('subscription-plans/{subscription_plan}', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'show'])->name('subscription-plans.show');
     });
     
     Route::middleware(['admin.permission:subscription-plans.create'])->group(function () {
@@ -193,6 +203,10 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
         Route::get('subscription-plans/{subscription_plan}/edit', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'edit'])->name('subscription-plans.edit');
         Route::put('subscription-plans/{subscription_plan}', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'update'])->name('subscription-plans.update');
         Route::patch('subscription-plans/{subscription_plan}/restore', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'restore'])->name('subscription-plans.restore');
+    });
+    
+    Route::middleware(['admin.permission:subscription-plans.view'])->group(function () {
+        Route::get('subscription-plans/{subscription_plan}', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'show'])->name('subscription-plans.show');
     });
     
     Route::middleware(['admin.permission:subscription-plans.delete'])->group(function () {
@@ -219,15 +233,18 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     // Manual Subscription Management
     Route::middleware(['admin.permission:subscriptions.view'])->group(function () {
         Route::get('manual-subscriptions', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'index'])->name('manual-subscriptions.index');
-        Route::get('manual-subscriptions/{manual_subscription}', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'show'])->name('manual-subscriptions.show');
     });
     
     Route::middleware(['admin.permission:subscriptions.create'])->group(function () {
-        // AJAX endpoints
+        // AJAX endpoints - harus di atas {manual_subscription} route
         Route::get('manual-subscriptions/search-users', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'searchUsers'])->name('manual-subscriptions.search-users');
-        
         Route::get('manual-subscriptions/create', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'create'])->name('manual-subscriptions.create');
         Route::post('manual-subscriptions', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'store'])->name('manual-subscriptions.store');
+    });
+    
+    Route::middleware(['admin.permission:subscriptions.view'])->group(function () {
+        // Specific routes harus di bawah /create
+        Route::get('manual-subscriptions/{manual_subscription}', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'show'])->name('manual-subscriptions.show');
     });
     
     Route::middleware(['admin.permission:subscriptions.edit'])->group(function () {
@@ -339,7 +356,6 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     // Promo Management (Subscription Promos)
     Route::middleware(['admin.permission:promos.view'])->group(function () {
         Route::get('promos', [\App\Http\Controllers\Admin\PromoController::class, 'index'])->name('promos.index');
-        Route::get('promos/{promo}', [\App\Http\Controllers\Admin\PromoController::class, 'show'])->name('promos.show');
     });
     
     Route::middleware(['admin.permission:promos.create'])->group(function () {
@@ -360,7 +376,6 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     // Website Management - Collection CRUD
     Route::middleware(['admin.permission:website.collections.view'])->group(function () {
         Route::get('collections', [\App\Http\Controllers\Admin\CollectionController::class, 'index'])->name('collections.index');
-        Route::get('collections/{collection}', [\App\Http\Controllers\Admin\CollectionController::class, 'show'])->name('collections.show');
         Route::get('collection-order', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'collectionOrder'])->name('collection-order');
     });
     
@@ -373,8 +388,8 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
         Route::get('ebooks-for-selection', [\App\Http\Controllers\Admin\CollectionController::class, 'getEbooksForSelection'])->name('ebooks-for-selection');
         Route::get('collections/check-order', [\App\Http\Controllers\Admin\CollectionController::class, 'checkOrderAvailability'])->name('collections.check-order');
         Route::post('collections/update-order', [\App\Http\Controllers\Admin\CollectionController::class, 'updateCollectionsOrder'])->name('collections.update-order');
-        Route::get('collections/{id}/manage-ebooks', [\App\Http\Controllers\Admin\CollectionController::class, 'manageEbooks'])->name('collections.manage-ebooks');
         Route::get('collections/get-available-ebooks', [\App\Http\Controllers\Admin\CollectionController::class, 'getAvailableEbooks'])->name('collections.get-available-ebooks');
+        Route::get('collections/{id}/manage-ebooks', [\App\Http\Controllers\Admin\CollectionController::class, 'manageEbooks'])->name('collections.manage-ebooks');
         Route::post('collections/{id}/add-ebooks', [\App\Http\Controllers\Admin\CollectionController::class, 'addEbooks'])->name('collections.add-ebooks');
         Route::delete('collections/{collectionId}/remove-ebook/{ebookId}', [\App\Http\Controllers\Admin\CollectionController::class, 'removeEbook'])->name('collections.remove-ebook');
         Route::post('collections/{id}/update-ebook-order', [\App\Http\Controllers\Admin\CollectionController::class, 'updateEbookOrder'])->name('collections.update-ebook-order');
@@ -382,6 +397,10 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
         Route::put('collections/{collection}', [\App\Http\Controllers\Admin\CollectionController::class, 'update'])->name('collections.update');
         Route::post('collection-order/update', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'updateCollectionOrder'])->name('collection-order.update');
         Route::post('collection/{id}/toggle-visibility', [\App\Http\Controllers\Admin\WebsiteManagementController::class, 'toggleCollectionVisibility'])->name('collection.toggle-visibility');
+    });
+    
+    Route::middleware(['admin.permission:website.collections.view'])->group(function () {
+        Route::get('collections/{collection}', [\App\Http\Controllers\Admin\CollectionController::class, 'show'])->name('collections.show');
     });
     
     Route::middleware(['admin.permission:website.collections.delete'])->group(function () {

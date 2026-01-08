@@ -363,37 +363,33 @@
                 <div class="card mb-4">
                     <div class="card-header">
                         <h5 class="mb-0">
-                            <i class="ti ti-help"></i> Help & Tips
+                            <i class="ti ti-help"></i> {{ __('admin.promos.help_tips') }}
                         </h5>
                     </div>
                     <div class="card-body">
-                        <h6 class="font-weight-bold">Tipe Diskon:</h6>
+                        <h6 class="font-weight-bold">{{ __('admin.promos.help_discount_types') }}:</h6>
                         <ul class="small">
-                            <li><strong>Persentase:</strong> Mengurangi harga berdasarkan % (contoh: diskon 50%)</li>
-                            <li><strong>Nominal Tetap:</strong> Mengurangi harga dengan nominal tetap (contoh: potongan Rp 50.000)</li>
-                            <li><strong>Uji Coba Gratis:</strong> Jumlah hari gratis berlangganan</li>
+                            <li><strong>{{ __('admin.promos.help_percentage') }}:</strong> {{ __('admin.promos.help_percentage_desc') }}</li>
+                            <li><strong>{{ __('admin.promos.help_fixed_amount') }}:</strong> {{ __('admin.promos.help_fixed_amount_desc') }}</li>
+                            <li><strong>{{ __('admin.promos.help_free_trial') }}:</strong> {{ __('admin.promos.help_free_trial_desc') }}</li>
                         </ul>
 
-                        <h6 class="font-weight-bold mt-3">Tipe Kondisi:</h6>
+                        <h6 class="font-weight-bold mt-3">{{ __('admin.promos.help_condition_types') }}:</h6>
                         <ul class="small">
-                            <li><strong>Pengguna Baru:</strong> User yang terdaftar dalam X hari (contoh: 7 untuk 7 hari)</li>
-                            <li><strong>Langganan Pertama:</strong> Hanya untuk langganan pertama user (tidak perlu nilai)</li>
-                            <li><strong>Tipe Langganan:</strong> Paket langganan tertentu (contoh: "Premium,Pro")</li>
-                            <li><strong>Harga Minimum:</strong> Pesanan harus memenuhi minimal harga (contoh: "99000")</li>
+                            <li><strong>{{ __('admin.promos.help_new_user') }}:</strong> {{ __('admin.promos.help_new_user_desc') }}</li>
+                            <li><strong>{{ __('admin.promos.help_first_subscription') }}:</strong> {{ __('admin.promos.help_first_subscription_desc') }}</li>
+                            <li><strong>{{ __('admin.promos.help_subscription_type') }}:</strong> {{ __('admin.promos.help_subscription_type_desc') }}</li>
+                            <li><strong>{{ __('admin.promos.help_min_price') }}:</strong> {{ __('admin.promos.help_min_price_desc') }}</li>
                         </ul>
 
-                        <h6 class="font-weight-bold mt-3">Contoh:</h6>
+                        <h6 class="font-weight-bold mt-3">{{ __('admin.promos.help_examples') }}:</h6>
                         <div class="alert alert-info small">
-                            <strong>Diskon Selamat Datang:</strong><br>
-                            - Kode: WELCOME50<br>
-                            - Tipe: Persentase (50%)<br>
-                            - Kondisi: Pengguna Baru + Langganan Pertama
+                            <strong>{{ __('admin.promos.help_example1_title') }}:</strong><br>
+                            {{ __('admin.promos.help_example1_desc') }}
                         </div>
                         <div class="alert alert-success small">
-                            <strong>Promo Hari Raya:</strong><br>
-                            - Kode: HARIRAYA70<br>
-                            - Tipe: Persentase (70%)<br>
-                            - Kondisi: Harga Min Rp 99.000
+                            <strong>{{ __('admin.promos.help_example2_title') }}:</strong><br>
+                            {{ __('admin.promos.help_example2_desc') }}
                         </div>
                     </div>
                 </div>

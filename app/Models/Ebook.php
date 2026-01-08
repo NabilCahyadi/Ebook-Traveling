@@ -15,6 +15,7 @@ use App\Models\City;
 use App\Models\EbookSection;
 use App\Models\Rating;
 use App\Models\Collection;
+use App\Models\OrderItem;
 
 class Ebook extends Model
 {
@@ -215,5 +216,13 @@ class Ebook extends Model
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'ebook_categories');
+    }
+
+    /**
+     * Get the order items for the ebook.
+     */
+    public function orderItems(): HasMany
+    {
+        return $this->hasMany(OrderItem::class, 'ebook_id');
     }
 }
