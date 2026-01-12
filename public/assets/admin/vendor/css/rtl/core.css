@@ -22,7 +22,7 @@
   --bs-gray-dark: rgba(47, 43, 61, 0.8);
   --bs-gray-25: rgba(47, 43, 61, 0.015);
   --bs-gray-50: rgba(47, 43, 61, 0.06);
-  --bs-primary: #f74b81;
+  --bs-primary: #FF4C61;
   --bs-secondary: #808390;
   --bs-success: #28c76f;
   --bs-info: #00bad1;
@@ -31,7 +31,7 @@
   --bs-light: #dfdfe3;
   --bs-dark: #4b4b4b;
   --bs-gray: rgba(47, 43, 61, 0.5);
-  --bs-primary-rgb: 115, 103, 240;
+  --bs-primary-rgb: 255, 76, 97;
   --bs-secondary-rgb: 128, 131, 144;
   --bs-success-rgb: 40, 199, 111;
   --bs-info-rgb: 0, 186, 209;
@@ -40,7 +40,7 @@
   --bs-light-rgb: 223, 223, 227;
   --bs-dark-rgb: 75, 75, 75;
   --bs-gray-rgb: 47, 43, 61;
-  --bs-primary-text-emphasis: #2e2960;
+  --bs-primary-text-emphasis: #661e27;
   --bs-secondary-text-emphasis: #33343a;
   --bs-success-text-emphasis: #10502c;
   --bs-info-text-emphasis: #004a54;
@@ -48,7 +48,7 @@
   --bs-danger-text-emphasis: #661e20;
   --bs-light-text-emphasis: rgba(47, 43, 61, 0.7);
   --bs-dark-text-emphasis: rgba(47, 43, 61, 0.7);
-  --bs-primary-bg-subtle: #e3e1fc;
+  --bs-primary-bg-subtle: #ffe6ea;
   --bs-secondary-bg-subtle: #e6e6e9;
   --bs-success-bg-subtle: #d4f4e2;
   --bs-info-bg-subtle: #ccf1f6;
@@ -56,7 +56,7 @@
   --bs-danger-bg-subtle: #ffdbdc;
   --bs-light-bg-subtle: rgba(245, 244, 245, 0.55);
   --bs-dark-bg-subtle: rgba(47, 43, 61, 0.4);
-  --bs-primary-border-subtle: #c7c2f9;
+  --bs-primary-border-subtle: #ffccd5;
   --bs-secondary-border-subtle: #cccdd3;
   --bs-success-border-subtle: #a9e9c5;
   --bs-info-border-subtle: #99e3ed;
