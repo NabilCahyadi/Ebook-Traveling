@@ -150,16 +150,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the primary role based on user_type.
-     * For use in permission checks.
-     */
-    public function primaryRole()
-    {
-        $userType = $this->user_type ?? 'member';
-        return Role::where('slug', $userType)->first();
-    }
-
-    /**
      * Check if user has a specific role.
      */
     public function hasRole(string $roleName): bool
@@ -274,41 +264,64 @@ class User extends Authenticatable
     }
 
     /**
-     * Scope a query to only include customers.
+     * Scope a query to only include free users.
      */
-    public function scopeCustomers($query)
+    public function scopeFreeUsers($query)
     {
-        return $query->where('user_type', 'customer');
+        return $query->where('user_type', 'free_user');
     }
 
     /**
-     * Scope a query to only include creators.
+     * Scope a query to only include members (paid subscription).
+     */
+    public function scopeMembers($query)
+    {
+        return $query->where('user_type', 'member');
+    }
+
+    /**
+     * Scope a query to only include creators (based on role).
      */
     public function scopeCreators($query)
     {
-        return $query->where('user_type', 'creator');
+        return $query->whereHas('roles', function($q) {
+            $q->where('name', 'Creator')->orWhere('slug', 'creator');
+        });
     }
 
     /**
-     * Scope a query to only include admins.
+     * Scope a query to only include admins (based on role).
      */
     public function scopeAdmins($query)
     {
-        return $query->whereIn('user_type', ['admin', 'superadmin']);
+        return $query->whereHas('roles', function($q) {
+            $q->whereIn('slug', ['admin', 'superadmin'])
+              ->orWhereIn('name', ['Admin', 'Super Admin']);
+        });
     }
 
     // ==================== METHODS ====================
 
     /**
-     * Check if user is admin.
+     * Check if user has admin role.
+     * Note: This checks user roles, not user_type.
+     * user_type only indicates subscription status (free_user/member).
      */
     public function isAdmin()
     {
-        return in_array($this->user_type, ['admin', 'superadmin']);
+        return $this->hasRole('Admin') || $this->hasRole('admin');
     }
 
     /**
-     * Check if user is member.
+     * Check if user has super admin role.
+     */
+    public function isSuperAdmin()
+    {
+        return $this->hasRole('Super Admin') || $this->hasRole('superadmin');
+    }
+
+    /**
+     * Check if user is member (has paid subscription).
      */
     public function isMember()
     {
@@ -316,11 +329,19 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if user is creator.
+     * Check if user is free user.
+     */
+    public function isFreeUser()
+    {
+        return $this->user_type === 'free_user';
+    }
+
+    /**
+     * Check if user is creator (has creator role).
      */
     public function isCreator()
     {
-        return $this->user_type === 'creator';
+        return $this->hasRole('Creator') || $this->hasRole('creator');
     }
 
     /**
@@ -369,8 +390,8 @@ class User extends Authenticatable
      */
     public function hasPermission(string $permissionName): bool
     {
-        // Admin always has all permissions
-        if ($this->user_type === 'admin') {
+        // Super Admin always has all permissions
+        if ($this->isSuperAdmin()) {
             return true;
         }
 
@@ -389,8 +410,8 @@ class User extends Authenticatable
      */
     public function hasAnyPermission(array $permissions): bool
     {
-        // Admin always has all permissions
-        if ($this->user_type === 'admin') {
+        // Super Admin always has all permissions
+        if ($this->isSuperAdmin()) {
             return true;
         }
 
@@ -408,8 +429,8 @@ class User extends Authenticatable
      */
     public function hasAllPermissions(array $permissions): bool
     {
-        // Admin always has all permissions
-        if ($this->user_type === 'admin') {
+        // Super Admin always has all permissions
+        if ($this->isSuperAdmin()) {
             return true;
         }
 
@@ -427,8 +448,8 @@ class User extends Authenticatable
      */
     public function canAccessPanel(): bool
     {
-        // Admin always can access
-        if ($this->user_type === 'admin') {
+        // Admin/Super Admin always can access
+        if ($this->isAdmin() || $this->isSuperAdmin()) {
             return true;
         }
 
