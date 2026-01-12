@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 
 /*
@@ -17,6 +18,15 @@ Route::middleware(['user.session', 'guest:web'])->group(function () {
     // Login Routes
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login'])->name('login.post');
+
+    // Forgot Password Routes
+    Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotForm'])->name('password.request');
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendCode'])->name('password.send-code');
+    Route::get('/verify-code', [ForgotPasswordController::class, 'showVerifyForm'])->name('password.verify-code');
+    Route::post('/verify-code', [ForgotPasswordController::class, 'verifyCode'])->name('password.verify');
+    Route::post('/resend-code', [ForgotPasswordController::class, 'resendCode'])->name('password.resend-code');
+    Route::get('/reset-password', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/reset-password', [ForgotPasswordController::class, 'reset'])->name('password.update');
 
     // Register Routes
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');

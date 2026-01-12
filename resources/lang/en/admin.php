@@ -822,6 +822,7 @@ return [
         'updated_at' => 'Updated at',
         'created_by' => 'Created by',
         'updated_by' => 'Updated by',
+        'total' => 'Total',
     ],
 
     // Form Labels

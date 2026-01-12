@@ -205,3 +205,4 @@ $(function () {
     $('.dataTables_paginate').addClass('me-n1');
   }, 300);
 });
+

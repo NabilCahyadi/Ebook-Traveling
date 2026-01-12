@@ -33,3 +33,4 @@ if (typeof TemplateCustomizer !== 'undefined') {
     controls: ['rtl', 'style']
   });
 }
+

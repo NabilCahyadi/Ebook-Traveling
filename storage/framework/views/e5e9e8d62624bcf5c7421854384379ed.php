@@ -12,7 +12,7 @@
     <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="<?php echo e(url('assets/admin/img/favicon/favicon.ico')); ?>" />
+    <link rel="icon" type="image/x-icon" href="<?php echo e(url('images/only-logoo.png')); ?>" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -107,9 +107,6 @@
                         <?php echo $__env->yieldContent('content'); ?>
                     </div>
                     <!-- / Content -->
-
-                    <!-- Footer -->
-                    <?php echo $__env->make('layouts.partials.admin.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
                     <div class="content-backdrop fade"></div>
                 </div>

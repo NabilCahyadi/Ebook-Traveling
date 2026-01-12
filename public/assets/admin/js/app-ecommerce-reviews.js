@@ -727,3 +727,4 @@ $(function () {
     $('.dataTables_length').addClass('ms-n2 me-2 me-sm-0 mb-0 mb-sm-6');
   }, 300);
 });
+

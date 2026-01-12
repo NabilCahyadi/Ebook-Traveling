@@ -1227,7 +1227,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>
-            <form method="POST" action="{{ route('password.update') }}">
+            <form method="POST" action="{{ route('account.password.update') }}">
                 @csrf
                 @method('PUT')
                 <div class="modal-body p-4">

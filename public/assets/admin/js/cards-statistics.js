@@ -1583,3 +1583,4 @@
     generatedLeadsChart.render();
   }
 })();
+

@@ -903,3 +903,4 @@ html:not([dir=rtl]) .noUi-horizontal .noUi-handle {
 .dark-style .noUi-gray.noUi-target:not([disabled]) .noUi-handle:active, .dark-style .noUi-gray.noUi-target:not([disabled]) .noUi-handle:focus {
   box-shadow: 0 0 0 13px rgba(225, 222, 245, 0.16);
 }
+
