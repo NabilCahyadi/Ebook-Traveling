@@ -179,4 +179,22 @@ class Admin extends Authenticatable
     {
         return 'admin';
     }
+
+    /**
+     * Get user notifications (pivot table with notification).
+     */
+    public function userNotifications()
+    {
+        return $this->hasMany(\App\Models\UserNotification::class, 'user_id');
+    }
+
+    /**
+     * Get notifications through pivot table.
+     */
+    public function notifications()
+    {
+        return $this->belongsToMany(\App\Models\Notification::class, 'user_notifications', 'user_id', 'notification_id')
+            ->withPivot('is_read', 'read_at')
+            ->withTimestamps();
+    }
 }

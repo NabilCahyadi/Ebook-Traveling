@@ -133,3 +133,4 @@
   //hide mapbox controls
   document.querySelector('.mapboxgl-control-container').classList.add('d-none');
 })();
+

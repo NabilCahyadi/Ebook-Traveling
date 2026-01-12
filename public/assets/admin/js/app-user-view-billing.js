@@ -55,3 +55,4 @@
     addressSubTitle.innerHTML = 'Edit your current address';
   };
 })();
+

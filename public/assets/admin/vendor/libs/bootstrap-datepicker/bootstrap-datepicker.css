@@ -349,3 +349,4 @@ html:not([dir=rtl]) .datepicker table tr td.range-end:not(.range-start) {
 .dark-style .datepicker table tr td span.old, .dark-style .datepicker table tr td span.new {
   color: #76778e;
 }
+

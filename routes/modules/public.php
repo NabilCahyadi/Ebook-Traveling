@@ -70,7 +70,7 @@ Route::middleware(['user.session'])->group(function () {
         Route::get('/page-account', [AccountController::class, 'index'])->name('page-account');
         Route::put('/profile/update', [AccountController::class, 'updateProfile'])->name('profile.update');
         Route::post('/account/update-avatar', [AccountController::class, 'updateAvatar'])->name('account.update.avatar');
-        Route::put('/password/update', [AccountController::class, 'updatePassword'])->name('password.update');
+        Route::put('/password/update', [AccountController::class, 'updatePassword'])->name('account.password.update');
     });
 
     // Route::put('/password/update', [AccountController::class, 'updatePassword'])->name('password.update')->middleware('auth');
