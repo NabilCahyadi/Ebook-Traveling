@@ -24,6 +24,10 @@
         flex-direction: column;
         /* Susun anak-anaknya secara vertikal */
     }
+
+    .ebook-title-link:hover {
+        color: #FF416C !important;
+    }
 </style>
 <main class="main">
     <div class="page-header breadcrumb-wrap">
@@ -129,7 +133,7 @@
                                         </div>
                                         <div class="content pt-10">
                                             {{-- PERBAIKAN: Buat link ke halaman detail e-book --}}
-                                            <h6><a href="{{ route('ebooks.show', $ebook->slug) }}">{{ $ebook->title }}</a></h6>
+                                            <h6><a href="{{ route('ebooks.show', $ebook->slug) }}" class="ebook-title-link">{{ $ebook->title }}</a></h6>
                                             <div class="product-detail-rating">
                                                 <div class="product-rate-cover text-end">
                                                     <div class="product-rate-cover">

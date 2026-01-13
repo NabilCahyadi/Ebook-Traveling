@@ -56,15 +56,15 @@ class EbookRepository implements EbookRepositoryInterface
         return Ebook::with(['category', 'city', 'creator'])->find($id);
     }
 
-    /**
-     * Find ebook by slug.
-     */
-    public function findBySlug(string $slug): ?Ebook
-    {
-        return Ebook::with(['category', 'city', 'sections'])
-            ->where('slug', $slug)
-            ->first();
-    }
+        /**
+         * Find ebook by slug.
+         */
+        public function findBySlug(string $slug): ?Ebook
+        {
+            return Ebook::with(['category', 'city', 'creator'])
+                ->where('slug', $slug)
+                ->first();
+        }
 
     /**
      * Create a new ebook.

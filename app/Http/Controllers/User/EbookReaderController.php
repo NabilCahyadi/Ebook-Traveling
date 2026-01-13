@@ -28,47 +28,13 @@ class EbookReaderController extends Controller
             abort(404, 'Ebook not found');
         }
 
-        // Check if user has access (you can add subscription check here)
-        // Example: if (!Auth::user()->hasAccessToEbook($ebook)) { abort(403); }
-
-        // Log ebook view/read activity
-        if (Auth::check()) {
-            ActionLog::create([
-                'user_id' => Auth::id(),
-                'action_type' => 'view',
-                'table_name' => 'ebooks',
-                'record_id' => $ebook->id,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'url' => request()->fullUrl(),
-                'method' => request()->method(),
-                'new_values' => json_encode([
-                    'ebook_title' => $ebook->title,
-                    'ebook_slug' => $ebook->slug,
-                    'content_type' => !empty($ebook->pdf_file) ? 'pdf' : 'text'
-                ])
-            ]);
+        // ✅ Periksa apakah ada PDF file
+        if (!empty($ebook->pdf_file)) {
+            return view('user.ebook-pdf-reader', compact('ebook')); // ✅ Tampilin PDF
         }
 
-        // Determine content type (PDF or Text)
-        $hasPdf = !empty($ebook->pdf_file);
-        $viewName = $hasPdf ? 'user.ebook-pdf-reader' : 'user.ebook-reader';
-
-        $response = response()->view($viewName, compact('ebook'));
-        
-        // Add security headers to prevent caching and framing
-        return $response->withHeaders([
-            'X-Frame-Options' => 'DENY',
-            'X-Content-Type-Options' => 'nosniff',
-            'X-XSS-Protection' => '1; mode=block',
-            'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
-            'Pragma' => 'no-cache',
-            'Expires' => '0',
-            'Content-Security-Policy' => "frame-ancestors 'none'; default-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com;",
-        ]);
+        return view('user.ebook-reader', compact('ebook')); // ✅ Teks fallback
     }
-
-
 
     /**
      * Get ebook content via AJAX (for secure content delivery)
@@ -149,6 +115,32 @@ class EbookReaderController extends Controller
         ]);
 
         session(['pdf_token_' . $validated['ebook_id'] => $validated['token']]);
+
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Update reading progress (last_page & progress_percentage)
+     */
+    public function updateProgress(Request $request)
+    {
+        $validated = $request->validate([
+            'ebook_id' => 'required|uuid',
+            'current_page' => 'required|integer|min:1',
+        ]);
+
+        $ebook = $this->ebookService->getEbookById($validated['ebook_id']);
+        $totalPages = $ebook->total_pages ?? 100;
+        $progress = min(100.00, ($validated['current_page'] / $totalPages) * 100);
+
+        \App\Models\UserReading::updateOrCreate(
+            ['user_id' => auth()->id(), 'ebook_id' => $validated['ebook_id']],
+            [
+                'last_page' => $validated['current_page'],
+                'progress_percentage' => $progress,
+                'last_read_at' => now(),
+            ]
+        );
 
         return response()->json(['success' => true]);
     }

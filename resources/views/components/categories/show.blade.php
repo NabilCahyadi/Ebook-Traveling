@@ -269,7 +269,7 @@
 
                                                 {{-- LOGIKA TOMBOL AKSI --}}
                                                 @if(auth()->check() && auth()->user()->hasActiveSubscription())
-                                                <a href="/reader/{{ $ebook->slug }}" class="action-btn btn-read-now">
+                                                <a href="{{ route('user.ebook.read', $ebook->slug) }}" class="action-btn btn-read-now">
                                                     <i class="fi-rs-book-open"></i>
                                                     <span>Read Now</span>
                                                 </a>

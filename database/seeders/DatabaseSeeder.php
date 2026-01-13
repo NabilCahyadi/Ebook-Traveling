@@ -62,6 +62,8 @@ class DatabaseSeeder extends Seeder
             AboutUsSectionsSeeder::class,
             ContactInfoSeeder::class,
             SiteSettingsSeeder::class,
+            FaqPageSeeder::class,
+            PolicyPageSeeder::class,
         ]);
     }
 }

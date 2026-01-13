@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Ebook;
 use App\Models\Rating;
 use App\Models\EbookRating;
+use App\Models\City;
 
 class EbookController extends Controller
 {
@@ -61,6 +62,48 @@ class EbookController extends Controller
                 ->exists();
         }
 
-        return view('ebooks-detail', compact('ebook', 'ratings', 'ratingDistribution', 'hasReviewed'));
+        $isSaved = false; // Saya ganti nama variabel menjadi $isSaved agar lebih deskriptif
+        if (auth()->check()) {
+            // Gunakan relasi yang sudah didefinisikan
+            $isSaved = auth()->user()->savedBooks()->where('ebook_id', $ebook->id)->exists();
+        }
+
+        $citiesHeader = City::where('is_active', true)
+            ->orderBy('order_index')
+            ->orderBy('name')
+            ->get();
+
+        return view('ebooks-detail', compact('ebook', 'ratings', 'ratingDistribution', 'hasReviewed', 'isSaved', 'citiesHeader'));
+    }
+
+    public function toggleSaved(Request $request, string $id)
+    {
+        if (!auth()->check()) {
+            return response()->json(['message' => 'Unauthorized.'], 401);
+        }
+
+        $user = auth()->user();
+        $ebook = Ebook::findOrFail($id); // ✅ Langsung pakai UUID
+
+        // ✅ Cek dengan relasi langsung (lebih efisien)
+        $isSaved = $user->savedBooks()->where('ebook_id', $id)->exists();
+
+        if ($isSaved) {
+            // Hapus dari daftar
+            $user->savedBooks()->detach($id);
+            $message = 'Ebook removed from your list.';
+            $newStatus = false;
+        } else {
+            // Tambahkan ke daftar
+            $user->savedBooks()->attach($id);
+            $message = 'Ebook saved to your list.';
+            $newStatus = true;
+        }
+
+        return response()->json([
+            'message' => $message,
+            'is_saved' => $newStatus,
+            'ebook_id' => $id // ✅ Untuk debug
+        ]);
     }
 }

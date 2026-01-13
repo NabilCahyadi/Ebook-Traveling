@@ -383,7 +383,7 @@
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
-        text-transform: uppercase;
+        /* text-transform: uppercase; */
         letter-spacing: 1px;
         text-decoration: none;
         /* Hapus underline untuk link */
@@ -405,6 +405,7 @@
     .pricing-button--primary:hover {
         background-color: var(--primary-color-dark);
         transform: translateY(-3px);
+        color: #fff;
     }
 
     .pricing-button--secondary {
@@ -417,6 +418,36 @@
         background-color: var(--secondary-color);
         color: #fff;
         transform: translateY(-3px);
+    }
+
+    .custom-button {
+        padding: 10px 10px;
+        border: none;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        letter-spacing: 1px;
+        text-decoration: none;
+        text-align: center;
+        display: inline-block;
+    }
+
+    .custom-button--primary {
+        background-color: #FF4C61;
+        color: #fff;
+    }
+
+    .pricing-card--featured .custom-button--primary {
+        background-color: var(--primary-color);
+        box-shadow: 0 5px 15px rgba(255, 76, 97, 0.3);
+    }
+
+    .custom-button--primary:hover {
+        background-color: #FF416C;
+        transform: translateY(-3px);
+        color: #fff;
     }
 </style>
 <div class="container">
@@ -491,38 +522,246 @@
                             <p class="card-title"><?php echo e($plan->name); ?></p>
                             <h2>Rp <?php echo e(number_format($plan->price, 0, ',', '.')); ?></h2>
                             <p class="card-price-description"><?php echo e($plan->price_description); ?></p>
-                            <p class="desc-plan"><?php echo e($plan->description); ?></p>
+                            <p class="desc-plan"><?php echo e(Str::limit($plan->description, 75)); ?></p>
+
                             <div class="pricing-button-container">
-                                <!-- Tombol untuk Mayar.id -->
-                                <button class="pricing-button pricing-button--primary" onclick="subscribeWithMayar('<?php echo e($plan->id); ?>', this)">
+                                <?php if($user): ?>
+                                <?php
+                                // ✅ AMAN: semua dicek bertahap
+                                $currentSub = $user->currentSubscription ?? null;
+                                $isActive = $currentSub !== null;
+                                $isCurrentPlan = $isActive && $currentSub->subscription_plan_id === $plan->id;
+                                $currentPlan = $user->currentPlan ?? null;
+                                ?>
+
+                                <?php if($isActive): ?>
+                                <?php if($isCurrentPlan): ?>
+                                <!-- 🟢 RENEW -->
+                                <!-- <button type="button" class="pricing-button pricing-button--primary w-100"
+                                    data-bs-toggle="modal" data-bs-target="#renewModal-<?php echo e($plan->id); ?>">
+                                    Renew Subscription
+                                </button> -->
+                                <a href="<?php echo e(route('simulate.renew', $plan->slug)); ?>"
+                                    class="pricing-button pricing-button--primary w-100 text-white">
+                                    <i class="fi-rs-sparkles me-1"></i> Simulate Renewal
+                                </a>
+                                <?php elseif($currentPlan && $plan->price > $currentPlan->price): ?>
+                                <!-- 🔼 UPGRADE -->
+                                <!-- <button type="button" class="pricing-button pricing-button--primary w-100"
+                                    data-bs-toggle="modal" data-bs-target="#upgradeModal-<?php echo e($plan->id); ?>">
+                                    Upgrade Subscription
+                                </button> -->
+                                <?php if(app()->environment('local')): ?>
+                                <button type="button"
+                                    class="pricing-button pricing-button--primary w-100"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#upgradeModal-<?php echo e($plan->id); ?>">
+                                    Upgrade Subscription
+                                </button>
+                                <?php endif; ?>
+                                <?php else: ?>
+                                <!-- 🟡 SUDAH LEBIH MAHAL -->
+                                <span class="text-muted small d-block text-center py-2">Already covered</span>
+                                <?php endif; ?>
+                                <?php else: ?>
+                                <!-- 🔵 LANGGANAN BARU -->
+                                <?php if(app()->environment('local')): ?>
+                                <a href="<?php echo e(route('simulate.pay', $plan->slug)); ?>"
+                                    class="pricing-button pricing-button--primary w-100 text-white">
+                                    <i class="fi-rs-sparkles me-1"></i> Subscribe (Simulation)
+                                </a>
+                                <?php else: ?>
+                                <button class="pricing-button pricing-button--primary w-100"
+                                    onclick="subscribeWithMayar('<?php echo e($plan->id); ?>', this)">
                                     <?php echo e($plan->button_text ?? 'Subscribe Now'); ?>
 
                                 </button>
+                                <?php endif; ?>
+                                <?php endif; ?>
 
-                                <!-- Tombol untuk WhatsApp -->
-                                
+                                <!-- 📞 WhatsApp (hanya untuk user login) -->
                                 <?php
-                                $settingService = app('settings');
-                                $waNumber = $settingService->get('whatsapp_number', '6289657571177');
-
-                                $selectedPlan = request('plan')
-                                ? ucwords(str_replace('-', ' ', request('plan')))
-                                : 'Pilih Paket';
+                                $waNumber = trim(app('settings')->get('whatsapp_number', '6289657571177'));
+                                $waText = urlencode("Halo Admin, saya ingin berlangganan.\n\nNama\t: " . $user->name . "\nEmail\t: " . $user->email . "\nPaket\t: " . $plan->name . "\nHarga\t: Rp " . number_format($plan->price, 0, ',', '.') . "\n\nMohon bantuannya. Terima kasih!");
                                 ?>
-
-                                <?php if($user): ?>
-                                <a href="https://wa.me/<?php echo e($waNumber); ?>?text=<?php echo e(urlencode("Halo Admin, saya ingin berlangganan.\n\nNama\t: " . $user->name . "\nEmail\t: " . $user->email . "\nPaket\t: " . $plan->name . "\nPembayaran\t: _Silakan saya sebutkan metode pembayaran_\n\nMohon bantuannya. Terima kasih!")); ?>"
+                                <a href="https://wa.me/<?php echo e($waNumber); ?>?text=<?php echo e($waText); ?>"
                                     class="btn bg-success text-white rounded-pill py-3 w-100 mb-2"
                                     target="_blank">
-                                    <i class="bi bi-whatsapp"></i> Call Us via WhatsApp
+                                    <i class="bi bi-whatsapp"></i> Call Us - WhatsApp
                                 </a>
+
                                 <?php else: ?>
-                                <a href="<?php echo e(route('login')); ?>" class="btn bg-success text-white rounded-pill py-3 w-100 mb-2">
-                                    <i class="bi bi-box-arrow-in-right"></i> Login to Call Us
+                                <!-- ❌ BELUM LOGIN -->
+                                <a href="<?php echo e(route('login')); ?>" class="pricing-button pricing-button--primary w-100 text-white">
+                                    Login to Subscribe
                                 </a>
                                 <?php endif; ?>
                             </div>
                         </div>
+
+                        
+                        <?php if($user): ?>
+                        
+                        <?php if($user->currentSubscription && $user->currentSubscription->subscription_plan_id === $plan->id): ?>
+                        <div class="modal fade" id="renewModal-<?php echo e($plan->id); ?>" tabindex="-1" data-bs-focus="false">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content border-0 shadow-lg">
+                                    <div class="modal-header bg-gradient-success text-white p-4">
+                                        <div>
+                                            <h5 class="modal-title fw-bold">
+                                                <i class="fi-rs-refresh me-2"></i> Renew <?php echo e($plan->name); ?>
+
+                                            </h5>
+                                            <small class="opacity-75">+<?php echo e($plan->duration_days); ?> days access</small>
+                                        </div>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body p-4">
+                                        <div class="alert alert-light border-0 bg-light-subtle mb-4">
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-success bg-opacity-10 p-2 rounded">
+                                                    <i class="fi-rs-calendar-check text-success fs-4"></i>
+                                                </div>
+                                                <div class="ms-3">
+                                                    <div class="fw-bold">Current Expiry</div>
+                                                    <div><?php echo e($user->currentSubscription->end_date->format('d M Y')); ?></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between align-items-center bg-white p-3 rounded border">
+                                            <div>
+                                                <div class="text-muted small">NEW EXPIRY</div>
+                                                <div class="fw-bold">
+                                                    <?php echo e($user->currentSubscription->end_date->addDays($plan->duration_days)->format('d M Y')); ?>
+
+                                                </div>
+                                            </div>
+                                            <div class="text-end">
+                                                <div class="text-success fw-bold">+<?php echo e($plan->duration_days); ?> days</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mt-4 text-center">
+                                            <div class="display-6 fw-bold text-success">
+                                                Rp <?php echo e(number_format($plan->price, 0, ',', '.')); ?>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer bg-light p-3">
+                                        <?php if(app()->environment('local')): ?>
+                                        <a href="<?php echo e(route('simulate.pay', $plan->slug)); ?>"
+                                            class="pricing-button pricing-button--primary w-100 text-white">
+                                            <i class="fi-rs-sparkles me-1"></i> Simulate Renewal
+                                        </a>
+                                        <?php else: ?>
+                                        <form action="<?php echo e(route('api.subscription.create')); ?>" method="POST" class="w-100">
+                                            <?php echo csrf_field(); ?>
+                                            <input type="hidden" name="plan_id" value="<?php echo e($plan->id); ?>">
+                                            <button type="submit" class="pricing-button pricing-button--primary w-100 text-white">
+                                                <i class="fi-rs-clock-six me-1"></i> Renew Now
+                                            </button>
+                                        </form>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+
+                        
+                        <?php if($user->currentPlan && $plan->price > $user->currentPlan->price): ?>
+                        <div class="modal fade" id="upgradeModal-<?php echo e($plan->id); ?>" tabindex="-1" data-bs-focus="false">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content border-0 shadow-sm" style="border-radius: 1rem;">
+                                    <!-- Header -->
+                                    <div class="modal-header border-0 pb-0">
+                                        <div class="flex-grow-1 mt-4">
+                                            <h4 class="modal-title fw-bold mb-1">Upgrade to <?php echo e($plan->name); ?></h4>
+                                            <p class="mb-0">Get more access with enhanced features</p>
+                                        </div>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+
+                                    <!-- Body -->
+                                    <div class="modal-body px-4 pt-3 pb-4">
+                                        <!-- Plan Comparison -->
+                                        <div class="d-flex align-items-center justify-content-between mb-4 p-3 bg-light rounded-3">
+                                            <div class="text-center flex-grow-1">
+                                                <div class="text-muted small fw-medium mb-1">CURRENT PLAN</div>
+                                                <h6 class="mb-1 fw-semibold"><?php echo e($user->currentPlan->name); ?></h6>
+                                                <div class="text-dark fw-bold">
+                                                    Rp <?php echo e(number_format($user->currentPlan->price, 0, ',', '.')); ?>
+
+                                                </div>
+                                            </div>
+                                            <div class="px-3 text-muted">
+                                                <i class="fi-rs-arrow-right"></i>
+                                            </div>
+                                            <div class="text-center flex-grow-1">
+                                                <div class="text-primary small fw-medium mb-1">NEW PLAN</div>
+                                                <h6 class="mb-1 fw-semibold text-primary"><?php echo e($plan->name); ?></h6>
+                                                <div class="text-primary fw-bold">
+                                                    Rp <?php echo e(number_format($plan->price, 0, ',', '.')); ?>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Features -->
+                                        <?php if($plan->features && count($plan->features) > 0): ?>
+                                        <div class="mb-4">
+                                            <h6 class="fw-bold mb-3 d-flex align-items-center">
+                                                You'll get :
+                                            </h6>
+                                            <ul class="list-unstyled mb-0">
+                                                <?php $__currentLoopData = $plan->features; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $feature): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <li class="mb-2 d-flex align-items-center">
+                                                    <i class="fi-rs-check-circle text-success me-2 fs-6"></i>
+                                                    <span><?php echo e($feature); ?></span>
+                                                </li>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            </ul>
+                                        </div>
+                                        <?php endif; ?>
+
+                                        <!-- Price Difference -->
+                                        <?php
+                                        $diff = $plan->price - $user->currentPlan->price;
+                                        ?>
+                                        <div class="bg-light rounded-3 p-3">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="fw-medium">Additional payment :</span>
+                                                <span class="fw-bold text-success fs-5">+Rp <?php echo e(number_format($diff, 0, ',', '.')); ?></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Footer -->
+                                    <div class="modal-footer border-0 pt-0 px-4 pb-4">
+                                        <div class="d-grid gap-2 w-100">
+                                            <?php if(app()->environment('local')): ?>
+                                            <a href="<?php echo e(route('simulate.upgrade', $plan->slug)); ?>"
+                                                class="custom-button custom-button--primary px-4">
+                                                Simulate Upgrade
+                                            </a>
+                                            <?php else: ?>
+                                            <form action="<?php echo e(route('api.subscription.create')); ?>" method="POST" class="w-100">
+                                                <?php echo csrf_field(); ?>
+                                                <input type="hidden" name="plan_id" value="<?php echo e($plan->id); ?>">
+                                                <button type="submit" class="custom-button custom-button--primary px-4">
+                                                    <i class="fi-rs-arrow-up me-2"></i> Upgrade Now
+                                                </button>
+                                            </form>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                        <?php endif; ?>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
                 </div>

@@ -214,7 +214,7 @@
     <div class="header-top header-top-ptb-1 d-none d-lg-block">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-xl-3 col-lg-4">
+                <div class="col-xl-5 col-lg-6">
                     <div class="header-info">
                         <ul>
 
@@ -224,19 +224,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="col-xl-6 col-lg-4">
-                    <div class="text-center">
-                        <div id="news-flash" class="d-inline-block">
-                            <ul>
-                                <!-- max 55 char -->
-                                <li>Instant Access : Travel E-books World-wide</li>
-                                <li>Flash Sale : Get 30% Off Destination Guides</li>
-                                <li>Top Guides : Don't Miss Secret Travel Maps</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-lg-4">
+                <div class="col-xl-7 col-lg-6">
                     <div class="header-info header-info-right">
                         <ul>
                             <li>Need help ? Visit<strong>‎ <a href="<?php echo e(route('help-center')); ?>" class="text-brand">Help Center</a></strong></li>
@@ -287,15 +275,9 @@
                                 <form action="#">
                                     <select class="select-active">
                                         <option>Your Location</option>
-                                        <option>Bandung</option>
-                                        <option>Jakarta</option>
-                                        <option>Bogor</option>
-                                        <option>Depok</option>
-                                        <option>Tanggerang</option>
-                                        <option>Bekasi</option>
-                                        <option>Hawaii</option>
-                                        <option>Cianjur</option>
-                                        <option>Surabaya</option>
+                                        <?php $__currentLoopData = $citiesHeader; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $city): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($city->slug); ?>"><?php echo e($city->name); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
                                 </form>
                             </div>
@@ -381,47 +363,32 @@
                                             <a href="<?php echo e(route('page-account')); ?>?tab=account-detail"><i class="fi fi-rs-user mr-10"></i>Account</a>
                                         </li>
                                         <li>
-                                            <a href="<?php echo e(route('page-account')); ?>?tab=wishlist"><i class="fi fi-rs-label mr-10"></i>Wishlist</a>
+                                            <a href="<?php echo e(route('page-account')); ?>?tab=wishlist"><i class="fi fi-rs-heart mr-10"></i>Wishlist</a>
                                         </li>
+                                        
+                                        <?php if(auth()->check() && auth()->user()->hasActiveSubscription()): ?>
                                         <li>
-                                            <a href="<?php echo e(route('page-account')); ?>?tab=creator"><i class="fi-rs-edit mr-10"></i>Creator</a>
+                                            <a href="<?php echo e(route('page-account')); ?>?tab=library">
+                                                <i class="fi fi-rs-book mr-10"></i>Reading Area
+                                            </a>
                                         </li>
+                                        <?php endif; ?>
+                                        <!-- <li>
+                                            <a href="<?php echo e(route('page-account')); ?>?tab=creator"><i class="fi-rs-edit mr-10"></i>Creator</a>
+                                        </li> -->
                                         <li>
                                             
                                             <form method="POST" action="<?php echo e(route('user.logout')); ?>" id="logout-form" style="display: none;">
                                                 <?php echo csrf_field(); ?>
                                             </form>
-                                            <a href="#" onclick="event.preventDefault(); handleLogout();">
-                                                <i class="fi fi-rs-sign-out mr-10"></i>Sign out
+                                            <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                                <i class="fi fi-rs-sign-out mr-10"></i>
+                                                Sign out
                                             </a>
-                                            <script>
-                                                function handleLogout() {
-                                                    // Try to submit logout form
-                                                    const form = document.getElementById('logout-form');
-                                                    const formData = new FormData(form);
-
-                                                    fetch(form.action, {
-                                                            method: 'POST',
-                                                            body: formData,
-                                                            headers: {
-                                                                'X-Requested-With': 'XMLHttpRequest'
-                                                            }
-                                                        })
-                                                        .then(response => {
-                                                            if (response.ok || response.status === 419) {
-                                                                // Success or CSRF expired, redirect to login
-                                                                window.location.href = '/login';
-                                                            } else {
-                                                                throw new Error('Logout failed');
-                                                            }
-                                                        })
-                                                        .catch(error => {
-                                                            // If anything fails, just redirect to login
-                                                            console.log('Logout error, redirecting to login', error);
-                                                            window.location.href = '/login';
-                                                        });
-                                                }
-                                            </script>
+                                            <!-- Pastikan form logout ada di halaman ini -->
+                                            <form id="logout-form" action="<?php echo e(route('user.logout')); ?>" method="POST" class="d-none">
+                                                <?php echo csrf_field(); ?>
+                                            </form>
                                         </li>
                                     </ul>
                                 </div>
@@ -512,9 +479,9 @@
                                     <a href="<?php echo e(route('pricing')); ?>">Pricing</a>
                                 </li>
 
-                                <li class="<?php echo e(request()->routeIs('promo') ? 'active' : ''); ?>">
+                                <!-- <li class="<?php echo e(request()->routeIs('promo') ? 'active' : ''); ?>">
                                     <a href="<?php echo e(route('promo')); ?>">Promo</a>
-                                </li>
+                                </li> -->
                             </ul>
                         </nav>
                     </div>
@@ -797,4 +764,32 @@
             }, 100); // Tunggu 100ms setelah scroll berhenti
         }, false);
     });
+</script>
+<script>
+    function handleLogout() {
+        // Try to submit logout form
+        const form = document.getElementById('logout-form');
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (response.ok || response.status === 419) {
+                    // Success or CSRF expired, redirect to login
+                    window.location.href = '/login';
+                } else {
+                    throw new Error('Logout failed');
+                }
+            })
+            .catch(error => {
+                // If anything fails, just redirect to login
+                console.log('Logout error, redirecting to login', error);
+                window.location.href = '/login';
+            });
+    }
 </script><?php /**PATH D:\PROJEK PROJEK\Ebook-Traveling\resources\views/layouts_lp/components/header.blade.php ENDPATH**/ ?>

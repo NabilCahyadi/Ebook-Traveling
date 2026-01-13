@@ -1,8 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\ReaderController;
+use App\Http\Controllers\User\EbookReaderController;
+use App\Http\Controllers\AccountController;
 
-/*
+/* berada di routes/modules/user.php
 |--------------------------------------------------------------------------
 | User Routes (Customer/Pelanggan)
 |--------------------------------------------------------------------------
@@ -10,37 +14,32 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('user')->name('user.')->middleware('auth')->group(function () {
-
-
     // Ebook Reader Routes
-    Route::get('/read/{slug}', [\App\Http\Controllers\User\EbookReaderController::class, 'read'])->name('ebook.read');
-
+    Route::get('/reader/{slug}', [ReaderController::class, 'show'])->name('ebook.read');
+    Route::post('/reader/update-progress', [ReaderController::class, 'updateProgress'])->name('reader.updateProgress');
     // Ebook Content API
     Route::post('/api/set-reader-token', function (\Illuminate\Http\Request $request) {
         session(['reader_token_' . $request->ebook_id => $request->token]);
         return response()->json(['success' => true]);
     });
 
-    Route::get('/api/ebook/{id}/content', [\App\Http\Controllers\User\EbookReaderController::class, 'getContent'])->name('ebook.content');
+    Route::get('/api/ebook/{id}/content', [EbookReaderController::class, 'getContent'])->name('ebook.content');
 
     // PDF Routes
-    Route::post('/api/set-pdf-token', [\App\Http\Controllers\User\EbookReaderController::class, 'setPdfToken']);
-    Route::get('/api/ebook/{id}/pdf', [\App\Http\Controllers\User\EbookReaderController::class, 'servePdf'])->name('ebook.pdf');
+    Route::post('/api/set-pdf-token', [EbookReaderController::class, 'setPdfToken']);
+    Route::get('/api/ebook/{id}/pdf', [EbookReaderController::class, 'servePdf'])->name('ebook.pdf');
 
-    // User Profile & Settings
-    // Route::get('/profile', [\App\Http\Controllers\User\ProfileController::class, 'index'])->name('profile');
-    // Route::put('/profile', [\App\Http\Controllers\User\ProfileController::class, 'update'])->name('profile.update');
+    // Perpanjang langganan (untuk paket aktif)
+    Route::get('/subscription/extend/{planSlug}', [SubscriptionController::class, 'extend'])
+        ->name('subscription.extend');
 
-    // User Library (Ebooks yang sudah dibeli)
-    // Route::get('/library', [\App\Http\Controllers\User\LibraryController::class, 'index'])->name('library');
+    // Upgrade/ganti paket (untuk paket lain)
+    Route::get('/subscription/upgrade/{planSlug}', [SubscriptionController::class, 'upgrade'])
+        ->name('subscription.upgrade');
+    Route::post('/api/ebook/{id}/progress', [EbookReaderController::class, 'updateProgress'])
+        ->name('ebook.progress');
 
-    // User Subscriptions
-    // Route::get('/subscriptions', [\App\Http\Controllers\User\SubscriptionController::class, 'index'])->name('subscriptions');
-
-    // User Wishlist/Saved Books
-    // Route::get('/wishlist', [\App\Http\Controllers\User\WishlistController::class, 'index'])->name('wishlist');
-
-    // User Orders & Payments
-    // Route::get('/orders', [\App\Http\Controllers\User\OrderController::class, 'index'])->name('orders');
-    // Route::get('/orders/{id}', [\App\Http\Controllers\User\OrderController::class, 'show'])->name('orders.show');
+    Route::put('/account/reviews/{rating}', [AccountController::class, 'updateReview'])
+        ->name('account.reviews.update')
+        ->middleware('auth');
 });

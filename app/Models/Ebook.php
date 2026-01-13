@@ -146,14 +146,6 @@ class Ebook extends Model
     }
 
     /**
-     * Get the sections for the ebook.
-     */
-    public function sections(): HasMany
-    {
-        return $this->hasMany(EbookSection::class, 'ebook_id');
-    }
-
-    /**
      * Get the ratings for the ebook.
      */
     public function ratings(): HasMany
@@ -190,5 +182,15 @@ class Ebook extends Model
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'ebook_categories');
+    }
+
+    public function readings()
+    {
+        return $this->hasMany(UserReading::class, 'ebook_id');
+    }
+
+    public function savedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'user_saved_books', 'ebook_id', 'user_id');
     }
 }

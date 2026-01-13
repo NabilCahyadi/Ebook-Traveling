@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\BlogService;
-// use App\Models\Blog;
+use App\Models\City;
 
 class BlogController extends Controller
 {
@@ -23,8 +23,11 @@ class BlogController extends Controller
         $blogs = $this->blogService->getPublishedBlogs(10);
         $allTags = $this->blogService->getAllPublishedTags();
         // $popularTags = $this->blogService->getPopularTags(10);
-
-        return view('blogs', compact('blogs', 'allTags'));
+        $citiesHeader = City::where('is_active', true)
+            ->orderBy('order_index')
+            ->orderBy('name')
+            ->get();
+        return view('blogs', compact('blogs', 'allTags', 'citiesHeader'));
     }
 
     /**
@@ -47,6 +50,6 @@ class BlogController extends Controller
         $allTags = $this->blogService->getAllPublishedTags();
         $popularTags = $this->blogService->getPopularTags(10);
 
-        return view('blogs-index', compact('blogs', 'tag', 'allTags','popularTags'));
+        return view('blogs-index', compact('blogs', 'tag', 'allTags', 'popularTags'));
     }
 }

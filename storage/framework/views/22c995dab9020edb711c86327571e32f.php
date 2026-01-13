@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $__env->yieldContent('title', 'MeatMap'); ?></title>
     <link rel="icon" type="image/png" href="<?php echo e(asset('images/only-logoo.png')); ?>">

@@ -128,66 +128,6 @@
         }
     }
 </style>
-<style>
-    /* FAQ accordion styles (minimal & elegant) */
-    .faqs-section .accordion-item {
-        background: #fff;
-        border: 1px solid #e6e9ee;
-        border-radius: 10px;
-        margin-bottom: 1rem;
-        transition: all 0.3s ease;
-    }
-
-    .faqs-section .accordion-item:hover {
-        border-color: #FF4C61;
-    }
-
-    .faqs-section .accordion-header {
-        padding: 1.25rem 1.5rem;
-        cursor: pointer;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .faqs-section .accordion-header h4 {
-        font-size: 1rem;
-        margin: 0;
-        font-weight: 600;
-        color: #111827;
-        flex: 1;
-    }
-
-    .faqs-section .accordion-header i {
-        color: #FF4C61;
-        transition: transform 0.3s ease;
-        font-size: 0.9rem;
-    }
-
-    .faqs-section .accordion-item.active .accordion-header i {
-        transform: rotate(45deg);
-    }
-
-    .faqs-section .accordion-content {
-        padding: 0 1.5rem;
-        color: #6b7280;
-        line-height: 1.6;
-        max-height: 0;
-        overflow: hidden;
-        transition: all 0.3s ease;
-    }
-
-    .faqs-section .accordion-item.active .accordion-content {
-        max-height: 500px;
-        padding-bottom: 1.5rem;
-    }
-
-    @media (min-width: 768px) {
-        .faqs-section .accordion-header h4 {
-            font-size: 1.05rem;
-        }
-    }
-</style>
 <div class="policy-container">
     <div class="container">
         <div class="row justify-content-center">
@@ -198,116 +138,35 @@
                         Payment Policy
                     </h1>
                     <div class="last-updated">
-                        Last updated: November 25, 2025
+                        Last updated : November 25, 2025
                     </div>
 
                     <p class="paragraph">
                         This Payment Policy outlines the payment methods, verification processes, and terms related to financial transactions on the MeatMap platform. We are committed to providing a secure and reliable payment system.
                     </p>
 
-                    <!-- SECTION 1: PAYMENT METHODS -->
-                    <h2 class="section-title">
-                        1. Payment Methods
-                    </h2>
+                    <!-- KONTEN DINAMIS (sama seperti help-center) -->
+                    <?php $__currentLoopData = $sections; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sectionTitle => $items): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <h2 class="section-title"><?php echo e($sectionTitle); ?></h2>
 
-                    <h3 class="subsection-title">
-                        1.1. Accepted Methods
-                    </h3>
-                    <p class="paragraph">
-                        MeatMap accepts various payment methods for transaction convenience:
-                    </p>
+                    <?php $__currentLoopData = $items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php if($item->subsection_title): ?>
+                    <h3 class="subsection-title"><?php echo e($item->subsection_title); ?></h3>
+                    <?php endif; ?>
 
-                    <div class="payment-methods">
-                        <div class="payment-method">
-                            <h4>Bank Transfer</h4>
-                            <p>BCA, BNI, Mandiri, BRI</p>
-                        </div>
-                        <div class="payment-method">
-                            <h4>E-Wallet</h4>
-                            <p>Gopay, OVO, Dana, LinkAja</p>
-                        </div>
-                        <div class="payment-method">
-                            <h4>Credit Card</h4>
-                            <p>Visa, Mastercard, JCB</p>
-                        </div>
-                        <div class="payment-method">
-                            <h4>QRIS</h4>
-                            <p>QR Code Payment</p>
-                        </div>
-                    </div>
-
-                    <!-- SECTION 2: PAYMENT PROCESS -->
-                    <h2 class="section-title">
-                        2. Payment Process
-                    </h2>
-
-                    <h3 class="subsection-title">
-                        2.1. Payment Verification
-                    </h3>
-                    <p class="paragraph">
-                        Payment verification process:
-                    </p>
+                    <?php if(str_contains($item->content, "\n")): ?>
                     <ul class="policy-list">
-                        <li><strong>Instant:</strong> For e-wallets and credit cards (1-2 minutes)</li>
-                        <li><strong>10-15 minutes:</strong> For virtual account bank transfers</li>
-                        <li><strong>1-3 hours:</strong> For manual transfers</li>
+                        <?php $__currentLoopData = explode("\n", trim($item->content)); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $line): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php if(trim($line)): ?>
+                        <li><?php echo preg_replace('/^([^:]*):\s*/', '<strong>$1:</strong> ', e($line)); ?></li>
+                        <?php endif; ?>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </ul>
-
-                    <h3 class="subsection-title">
-                        2.2. Payment Deadline
-                    </h3>
-                    <p class="paragraph">
-                        Every transaction has a payment deadline:
-                    </p>
-                    <ul class="policy-list">
-                        <li>Virtual Account: 24 hours</li>
-                        <li>E-wallet: 1 hour</li>
-                        <li>QRIS: 30 minutes</li>
-                    </ul>
-
-                    <!-- SECTION 3: PAYMENT SECURITY -->
-                    <h2 class="section-title">
-                        3. Payment Security
-                    </h2>
-                    <p class="paragraph">
-                        We use the best security systems to protect your transactions:
-                    </p>
-                    <ul class="policy-list">
-                        <li>256-bit SSL Encryption</li>
-                        <li>PCI DSS compliant</li>
-                        <li>Two-factor authentication</li>
-                        <li>24/7 transaction monitoring</li>
-                    </ul>
-
-                    <!-- SECTION 4: PAYMENT ISSUES AND SOLUTIONS -->
-                    <h2 class="section-title">
-                        4. Payment Issues and Solutions
-                    </h2>
-
-                    <h3 class="subsection-title">
-                        4.1. Failed Payment
-                    </h3>
-                    <p class="paragraph">
-                        If a payment fails, possible causes include:
-                    </p>
-                    <ul class="policy-list">
-                        <li>Insufficient balance</li>
-                        <li>Transaction limit exceeded</li>
-                        <li>Network or system issue</li>
-                        <li>Credit card rejected</li>
-                    </ul>
-
-                    <h3 class="subsection-title">
-                        4.2. Double Charge
-                    </h3>
-                    <p class="paragraph">
-                        If a double charge occurs:
-                    </p>
-                    <ul class="policy-list">
-                        <li>Contact customer service immediately</li>
-                        <li>Include proof of transaction</li>
-                        <li>Refund process 3-7 business days</li>
-                    </ul>
+                    <?php else: ?>
+                    <p class="paragraph"><?php echo e($item->content); ?></p>
+                    <?php endif; ?>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                     <div class="contact-footer">
                         <p>For payment assistance, please contact our support team at payment@meatmap.co</p>
@@ -315,79 +174,6 @@
                     </div>
                 </div>
             </div>
-            <!-- Frequently Asked Questions - minimal, elegant, readable -->
-            <section class="faqs-section py-5">
-                <div class="container">
-                    <h3 class="text-center mb-3" style="font-size: 1.75rem; font-weight: 700; color: #FF4C61;">Pertanyaan yang Sering Diajukan</h3>
-                    <p class="text-center text-muted mb-4" style="max-width:54rem;margin:0 auto; line-height: 1.6;">
-                        Pertanyaan umum tentang berlangganan, pembayaran, dan mengakses panduan Anda. Jika membutuhkan bantuan lebih lanjut, hubungi tim support kami.
-                    </p>
-
-                    <div class="accordion" role="tablist" aria-label="FAQ MeatMap" style="max-width:900px;margin:0 auto;">
-
-                        <div class="accordion-item">
-                            <div class="accordion-header">
-                                <h4>Apa yang termasuk dalam langganan MeatMap?</h4>
-                                <i class="fas fa-plus" aria-hidden="true"></i>
-                            </div>
-                            <div class="accordion-content">
-                                <p class="mb-0">Langganan Anda memberikan akses tak terbatas ke seluruh library panduan kuliner kami, termasuk versi yang dapat diunduh untuk offline, pembaruan konten reguler, dan prioritas support untuk rekomendasi personal.</p>
-                            </div>
-                        </div>
-
-                        <div class="accordion-item">
-                            <div class="accordion-header">
-                                <h4>Bisakah saya membatalkan kapan saja dan mendapatkan refund?</h4>
-                                <i class="fas fa-plus" aria-hidden="true"></i>
-                            </div>
-                            <div class="accordion-content">
-                                <p class="mb-0">Anda dapat membatalkan langganan kapan saja. Kelayakan refund tergantung pada paket dan siklus penagihan Anda — silakan tinjau kebijakan pengembalian dana kami atau hubungi support untuk bantuan terkait penagihan.</p>
-                            </div>
-                        </div>
-
-                        <div class="accordion-item">
-                            <div class="accordion-header">
-                                <h4>Apakah panduan bisa digunakan offline setelah diunduh?</h4>
-                                <i class="fas fa-plus" aria-hidden="true"></i>
-                            </div>
-                            <div class="accordion-content">
-                                <p class="mb-0">Ya — panduan yang sudah diunduh tersedia offline di perangkat Anda. Pastikan untuk mengunduhnya saat terhubung internet. Konten offline akan diperbarui saat Anda terhubung kembali.</p>
-                            </div>
-                        </div>
-
-                        <div class="accordion-item">
-                            <div class="accordion-header">
-                                <h4>Bisakah satu langganan digunakan di banyak perangkat?</h4>
-                                <i class="fas fa-plus" aria-hidden="true"></i>
-                            </div>
-                            <div class="accordion-content">
-                                <p class="mb-0">Ya, Anda bisa login di beberapa perangkat dengan akun yang sama. Beberapa batasan mungkin berlaku tergantung penggunaan bersamaan; hubungi support jika membutuhkan akses tim atau enterprise.</p>
-                            </div>
-                        </div>
-
-                        <div class="accordion-item">
-                            <div class="accordion-header">
-                                <h4>Bagaimana cara memperbarui metode pembayaran?</h4>
-                                <i class="fas fa-plus" aria-hidden="true"></i>
-                            </div>
-                            <div class="accordion-content">
-                                <p class="mb-0">Pergi ke pengaturan akun → Tagihan untuk memperbarui detail pembayaran. Jika mengalami masalah memperbarui kartu, hubungi tim billing kami dan kami akan membantu Anda memperbaruinya dengan aman.</p>
-                            </div>
-                        </div>
-
-                        <div class="accordion-item">
-                            <div class="accordion-header">
-                                <h4>Bagaimana jika lupa password akun?</h4>
-                                <i class="fas fa-plus" aria-hidden="true"></i>
-                            </div>
-                            <div class="accordion-content">
-                                <p class="mb-0">Gunakan fitur "Lupa Password" di halaman login. Kami akan mengirim link reset password ke email Anda. Link berlaku selama 1 jam untuk keamanan.</p>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </section>
         </div>
     </div>
 </div>
