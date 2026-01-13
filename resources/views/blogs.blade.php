@@ -227,7 +227,15 @@
                                 <div class="post-thumb">
                                     <div class="image-frame">
                                         <a href="{{ route('blogs.show', $blog->slug) }}">
-                                            <img class="border-radius-15" src="{{ $blog->featured_image ?: asset('images/blog-placeholder.webp') }}" alt="{{ $blog->title }}" />
+                                            @php
+                                                // Check if image is external URL or local storage
+                                                $imageUrl = $blog->featured_image 
+                                                    ? (filter_var($blog->featured_image, FILTER_VALIDATE_URL) 
+                                                        ? $blog->featured_image 
+                                                        : asset('storage/' . $blog->featured_image))
+                                                    : asset('images/blog-placeholder.webp');
+                                            @endphp
+                                            <img class="border-radius-15" src="{{ $imageUrl }}" alt="{{ $blog->title }}" />
                                         </a>
                                     </div>
                                 </div>

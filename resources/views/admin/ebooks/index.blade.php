@@ -51,29 +51,40 @@
                         <h5 class="mb-0">{{ __('admin.ebooks.all_ebooks') }}</h5>
                     </div>
                     <div class="col-md-9">
-                        <div class="d-flex gap-2 justify-content-end flex-wrap">
-                            <!-- Search -->
-                            <div class="input-group" style="width: 250px;">
-                                <span class="input-group-text"><i class="ti ti-search"></i></span>
-                                <input type="text" class="form-control" placeholder="{{ __('admin.ebooks.search_placeholder') }}" id="searchEbook" 
-                                    value="{{ request('search') }}">
-                            </div>
+                        <div class="d-flex gap-2 justify-content-end align-items-center flex-wrap">
+                            <!-- Filters Group -->
+                            <div class="d-flex gap-2 flex-wrap">
+                                <!-- Filter Category -->
+                                <select class="form-select form-select-sm" id="filterCategory" onchange="applyFilters()" style="width: 150px;">
+                                    <option value="">All Categories</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
 
-                            <!-- Filter Status -->
-                            <div class="input-group" style="width: 180px;">
-                                <span class="input-group-text"><i class="ti ti-filter"></i></span>
-                                <select class="form-select" id="filterStatus" onchange="applyFilters()">
+                                <!-- Filter City -->
+                                <select class="form-select form-select-sm" id="filterCity" onchange="applyFilters()" style="width: 140px;">
+                                    <option value="">All Cities</option>
+                                    <option value="null" {{ request('city_id') == 'null' ? 'selected' : '' }}>No City</option>
+                                    @foreach($cities as $city)
+                                        <option value="{{ $city->id }}" {{ request('city_id') == $city->id ? 'selected' : '' }}>
+                                            {{ $city->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+
+                                <!-- Filter Status -->
+                                <select class="form-select form-select-sm" id="filterStatus" onchange="applyFilters()" style="width: 130px;">
                                     <option value="">{{ __('admin.ebooks.all_status') }}</option>
                                     <option value="published" {{ request('status') == 'published' ? 'selected' : '' }}>{{ __('admin.ebooks.published') }}</option>
                                     <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>{{ __('admin.ebooks.draft') }}</option>
                                     <option value="archived" {{ request('status') == 'archived' ? 'selected' : '' }}>Archived</option>
                                 </select>
-                            </div>
 
-                            <!-- Sort By -->
-                            <div class="input-group" style="width: 200px;">
-                                <span class="input-group-text"><i class="ti ti-sort-ascending"></i></span>
-                                <select class="form-select" id="sortBy" onchange="applySorting()">
+                                <!-- Sort By -->
+                                <select class="form-select form-select-sm" id="sortBy" onchange="applySorting()" style="width: 160px;">
                                     <option value="created_at_desc"
                                         {{ request('sort_by') == 'created_at' && request('sort_order') == 'desc' ? 'selected' : '' }}>
                                         Terbaru</option>
@@ -93,7 +104,7 @@
                             </div>
 
                             <!-- View Toggle -->
-                            <div class="btn-group" role="group">
+                            <div class="btn-group btn-group-sm" role="group">
                                 <button type="button" class="btn btn-outline-primary active" id="viewTable"
                                     onclick="toggleView('table')">
                                     <i class="ti ti-table"></i>
@@ -103,6 +114,17 @@
                                     <i class="ti ti-layout-grid"></i>
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Search Row -->
+                <div class="row align-items-center mt-3">
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="ti ti-search"></i></span>
+                            <input type="text" class="form-control" placeholder="{{ __('admin.ebooks.search_placeholder') }}" id="searchEbook" 
+                                value="{{ request('search') }}">
                         </div>
                     </div>
                 </div>
@@ -117,7 +139,7 @@
                             <th style="width: 35%;">{{ __('admin.ebooks.title') }}</th>
                             <th style="width: 20%;">{{ __('admin.ebooks.creator') }}</th>
                             <th style="width: 12%;">{{ __('admin.ebooks.status') }}</th>
-                            <th style="width: 12%;">{{ __('admin.ebooks.views') }}</th>
+                            <th style="width: 12%; display: none;">{{ __('admin.ebooks.views') }}</th>
                             <th style="width: 100px;">{{ __('admin.ebooks.actions') }}</th>
                         </tr>
                     </thead>
@@ -163,7 +185,7 @@
                                         <span class="badge bg-secondary" style="font-size: 0.8125rem;">Archived</span>
                                     @endif
                                 </td>
-                                <td>
+                                <td style="display: none;">
                                     <span class="text-muted d-flex align-items-center" style="font-size: 0.875rem;">
                                         <i class="ti ti-eye me-1"></i> {{ number_format($ebook->view_count ?? 0) }}
                                     </span>
@@ -198,7 +220,7 @@
                             </tr>
                         @empty
                             <tr id="noDataRow">
-                                <td colspan="6" class="text-center py-5">
+                                <td colspan="5" class="text-center py-5">
                                     <i class="ti ti-book" style="font-size: 48px; color: #ddd;"></i>
                                     <p class="mt-2 text-muted">{{ __('admin.ebooks.no_data') }}</p>
                                     <a href="{{ route('admin.ebooks.create') }}" class="btn btn-sm btn-primary">{{ __('admin.ebooks.add_new') }}</a>
@@ -396,6 +418,8 @@
             window.applyFilters = function() {
                 const searchTerm = document.getElementById('searchEbook').value;
                 const statusFilter = document.getElementById('filterStatus').value;
+                const categoryFilter = document.getElementById('filterCategory').value;
+                const cityFilter = document.getElementById('filterCity').value;
                 
                 const currentUrl = new URL(window.location.href);
                 
@@ -411,6 +435,20 @@
                     currentUrl.searchParams.set('status', statusFilter);
                 } else {
                     currentUrl.searchParams.delete('status');
+                }
+                
+                // Set or remove category parameter
+                if (categoryFilter) {
+                    currentUrl.searchParams.set('category_id', categoryFilter);
+                } else {
+                    currentUrl.searchParams.delete('category_id');
+                }
+                
+                // Set or remove city parameter
+                if (cityFilter) {
+                    currentUrl.searchParams.set('city_id', cityFilter);
+                } else {
+                    currentUrl.searchParams.delete('city_id');
                 }
                 
                 // Reset ke page 1 saat filter berubah

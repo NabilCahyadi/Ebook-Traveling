@@ -15,7 +15,66 @@
     </div>
 
     <div class="row">
-        <div class="col-md-8">
+        <!-- Profile Card -->
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <div class="mb-3">
+                        @if ($admin->avatar)
+                            <img src="{{ Storage::url($admin->avatar) }}" alt="{{ $admin->name }}"
+                                class="rounded-circle" style="width: 120px; height: 120px; object-fit: cover;">
+                        @else
+                            <div style="width: 120px; height: 120px; margin: 0 auto; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <span style="font-size: 2.5rem; font-weight: 600; color: white;">
+                                    {{ getInitials($admin->name) }}
+                                </span>
+                            </div>
+                        @endif
+                    </div>
+                    <h5 class="mb-2">{{ $admin->name }}</h5>
+                    <p class="text-muted mb-3">{{ $admin->email }}</p>
+                    @if ($admin->type === 'superadmin')
+                        <span class="badge bg-label-danger">
+                            <i class="ti ti-crown me-1"></i> Super Admin
+                        </span>
+                    @else
+                        <span class="badge bg-label-primary">
+                            <i class="ti ti-user me-1"></i> Admin
+                        </span>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Statistik Card -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h6 class="mb-4">
+                        <i class="ti ti-info-circle me-2"></i> Statistik
+                    </h6>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Status Akun:</span>
+                        @if ($admin->status === 'active')
+                            <span class="badge bg-success">Aktif</span>
+                        @else
+                            <span class="badge bg-secondary">Tidak Aktif</span>
+                        @endif
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Tipe:</span>
+                        <strong>{{ $admin->type === 'superadmin' ? 'Super Admin' : 'Admin' }}</strong>
+                    </div>
+                    @if($admin->last_login_at)
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted">Aktivitas Terakhir:</span>
+                        <small class="text-end">{{ $admin->last_login_at->diffForHumans() }}</small>
+                    </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- Information Card -->
+        <div class="col-md-8 mb-4">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Informasi Admin</h5>
@@ -26,98 +85,72 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <strong>Nama Lengkap</strong>
-                        </div>
-                        <div class="col-md-8">
-                            {{ $admin->name }}
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <strong>Email</strong>
-                        </div>
-                        <div class="col-md-8">
-                            {{ $admin->email }}
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <strong>Nomor Telepon</strong>
-                        </div>
-                        <div class="col-md-8">
-                            {{ $admin->phone ?? '-' }}
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <strong>Tipe Admin</strong>
-                        </div>
-                        <div class="col-md-8">
-                            @if ($admin->type === 'superadmin')
-                                <span class="badge bg-label-danger">
-                                    <i class="ti ti-crown me-1"></i> Super Admin
-                                </span>
-                            @else
-                                <span class="badge bg-label-primary">
-                                    <i class="ti ti-user me-1"></i> Admin
-                                </span>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <strong>Status</strong>
-                        </div>
-                        <div class="col-md-8">
-                            @if ($admin->status === 'active')
-                                <span class="badge bg-label-success">Aktif</span>
-                            @else
-                                <span class="badge bg-label-secondary">Tidak Aktif</span>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <strong>Tanggal Dibuat</strong>
-                        </div>
-                        <div class="col-md-8">
-                            {{ $admin->created_at->format('d F Y, H:i') }}
-                            <br>
-                            <small class="text-muted">({{ $admin->created_at->diffForHumans() }})</small>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <strong>Terakhir Diperbarui</strong>
-                        </div>
-                        <div class="col-md-8">
-                            {{ $admin->updated_at->format('d F Y, H:i') }}
-                            <br>
-                            <small class="text-muted">({{ $admin->updated_at->diffForHumans() }})</small>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <strong>Login Terakhir</strong>
-                        </div>
-                        <div class="col-md-8">
-                            @if ($admin->last_login_at)
-                                {{ $admin->last_login_at->format('d F Y, H:i') }}
-                                <br>
-                                <small class="text-muted">({{ $admin->last_login_at->diffForHumans() }})</small>
-                            @else
-                                <span class="text-muted">Belum pernah login</span>
-                            @endif
-                        </div>
+                    <div class="table-responsive">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td class="text-muted" style="width: 200px;">Nama Lengkap</td>
+                                    <td class="fw-medium">{{ $admin->name }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Email</td>
+                                    <td class="fw-medium">{{ $admin->email }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Nomor Telepon</td>
+                                    <td class="fw-medium">{{ $admin->phone ?? '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Tipe Admin</td>
+                                    <td>
+                                        @if ($admin->type === 'superadmin')
+                                            <span class="badge bg-label-danger">
+                                                <i class="ti ti-crown me-1"></i> Super Admin
+                                            </span>
+                                        @else
+                                            <span class="badge bg-label-primary">
+                                                <i class="ti ti-user me-1"></i> Admin
+                                            </span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Status</td>
+                                    <td>
+                                        @if ($admin->status === 'active')
+                                            <span class="badge bg-label-success">Aktif</span>
+                                        @else
+                                            <span class="badge bg-label-secondary">Tidak Aktif</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Tanggal Dibuat</td>
+                                    <td>
+                                        {{ $admin->created_at->format('d F Y, H:i') }}
+                                        <small class="text-muted d-block">({{ $admin->created_at->diffForHumans() }})</small>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Terakhir Diperbarui</td>
+                                    <td>
+                                        {{ $admin->updated_at->format('d F Y, H:i') }}
+                                        <small class="text-muted d-block">({{ $admin->updated_at->diffForHumans() }})</small>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Login Terakhir</td>
+                                    <td>
+                                        @if ($admin->last_login_at)
+                                            {{ $admin->last_login_at->format('d F Y, H:i') }}
+                                            <small class="text-muted d-block">({{ $admin->last_login_at->diffForHumans() }})</small>
+                                        @else
+                                            <span class="text-muted">Belum pernah login</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 <div class="card-footer">
@@ -136,60 +169,6 @@
                             </form>
                         @endif
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body text-center">
-                    @if ($admin->avatar)
-                        <img src="{{ Storage::url($admin->avatar) }}" alt="{{ $admin->name }}"
-                            class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                    @else
-                        <div class="avatar avatar-xl mb-3" style="margin: 0 auto;">
-                            <span class="avatar-initial rounded-circle bg-label-primary" style="font-size: 3rem; width: 150px; height: 150px; display: flex; align-items: center; justify-content: center;">
-                                {{ strtoupper(substr($admin->name, 0, 2)) }}
-                            </span>
-                        </div>
-                    @endif
-                    <h5>{{ $admin->name }}</h5>
-                    <p class="text-muted">{{ $admin->email }}</p>
-                    @if ($admin->type === 'superadmin')
-                        <span class="badge bg-label-danger">
-                            <i class="ti ti-crown me-1"></i> Super Admin
-                        </span>
-                    @else
-                        <span class="badge bg-label-primary">
-                            <i class="ti ti-user me-1"></i> Admin
-                        </span>
-                    @endif
-                </div>
-            </div>
-
-            <div class="card mt-3">
-                <div class="card-body">
-                    <h6 class="mb-3">
-                        <i class="ti ti-info-circle me-2"></i> Statistik
-                    </h6>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Status Akun:</span>
-                        @if ($admin->status === 'active')
-                            <span class="badge bg-success">Aktif</span>
-                        @else
-                            <span class="badge bg-secondary">Tidak Aktif</span>
-                        @endif
-                    </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Tipe:</span>
-                        <strong>{{ $admin->type === 'superadmin' ? 'Super Admin' : 'Admin' }}</strong>
-                    </div>
-                    @if($admin->last_login_at)
-                    <div class="d-flex justify-content-between">
-                        <span>Aktivitas Terakhir:</span>
-                        <small class="text-muted">{{ $admin->last_login_at->diffForHumans() }}</small>
-                    </div>
-                    @endif
                 </div>
             </div>
         </div>

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\BlogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\BlogCategory;
+use App\Models\Category;
 
 class BlogController extends Controller
 {
@@ -26,12 +26,13 @@ class BlogController extends Controller
         $category = $request->get('category');
         $search = $request->get('search');
 
+        // Always exclude archived blogs from main listing
         $blogs = $this->blogService->getFilteredBlogs([
             'status' => $status,
             'category' => $category,
             'search' => $search,
-            'exclude_archived' => true,
-        ], 15);
+            'exclude_archived' => true, // This ensures archived blogs never appear here
+        ], 10);
 
         $categories = $this->blogService->getAllCategories();
 
@@ -55,7 +56,12 @@ class BlogController extends Controller
      */
     public function create()
     {
-        $categories = BlogCategory::active()->orderBy('name')->get();
+        // Get blog categories from database
+        $categories = Category::where('type', 'blog')
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get();
+            
         return view('admin.blogs.create', compact('categories'));
     }
 
@@ -69,7 +75,8 @@ class BlogController extends Controller
             'content' => 'required|string',
             'excerpt' => 'nullable|string',
             'featured_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
-            'blog_category_id' => 'nullable|exists:blog_categories,id',
+            'category' => 'nullable|string|max:100',
+            'author_id' => 'required|exists:users,id',
             'status' => 'required|in:draft,published,unpublished,archived',
         ], [
             'title.required' => 'Judul blog wajib diisi.',
@@ -78,12 +85,12 @@ class BlogController extends Controller
             'featured_image.image' => 'File harus berupa gambar.',
             'featured_image.mimes' => 'Format gambar harus JPEG, JPG, PNG, atau WebP.',
             'featured_image.max' => 'Ukuran gambar maksimal 2MB.',
-            'blog_category_id.exists' => 'Kategori blog yang dipilih tidak valid.',
+            'category.max' => 'Kategori maksimal 100 karakter.',
+            'author_id.required' => 'Author (Creator) wajib dipilih.',
+            'author_id.exists' => 'Author (Creator) yang dipilih tidak valid.',
             'status.required' => 'Status publikasi wajib dipilih.',
             'status.in' => 'Status publikasi tidak valid.',
         ]);
-
-        $validated['author_id'] = Auth::id();
 
         // Set published_at if status is published
         if ($validated['status'] === 'published' && !isset($validated['published_at'])) {
@@ -116,7 +123,13 @@ class BlogController extends Controller
     public function edit(string $id)
     {
         $blog = $this->blogService->getBlogById($id);
-        $categories = BlogCategory::active()->orderBy('name')->get();
+        
+        // Get blog categories from database
+        $categories = Category::where('type', 'blog')
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get();
+            
         return view('admin.blogs.edit', compact('blog', 'categories'));
     }
 
@@ -130,7 +143,7 @@ class BlogController extends Controller
             'content' => 'required|string',
             'excerpt' => 'nullable|string',
             'featured_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
-            'blog_category_id' => 'nullable|exists:blog_categories,id',
+            'category' => 'nullable|string|max:100',
             'status' => 'required|in:draft,published,unpublished,archived',
             'remove_image' => 'boolean',
         ], [
@@ -140,6 +153,7 @@ class BlogController extends Controller
             'featured_image.image' => 'File harus berupa gambar.',
             'featured_image.mimes' => 'Format gambar harus JPEG, JPG, PNG, atau WebP.',
             'featured_image.max' => 'Ukuran gambar maksimal 2MB.',
+            'category.max' => 'Kategori maksimal 100 karakter.',
             'blog_category_id.exists' => 'Kategori blog yang dipilih tidak valid.',
             'status.required' => 'Status publikasi wajib dipilih.',
             'status.in' => 'Status publikasi tidak valid.',
@@ -221,5 +235,25 @@ class BlogController extends Controller
             return redirect()->back()
                 ->with('error', 'Failed to permanently delete blog: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Search authors for autocomplete
+     */
+    public function searchAuthors(Request $request)
+    {
+        $query = $request->get('q', '');
+        
+        $authors = \App\Models\User::where('user_type', 'creator')
+            ->when($query, function ($q) use ($query) {
+                $q->where('name', 'LIKE', "%{$query}%")
+                  ->orWhere('email', 'LIKE', "%{$query}%");
+            })
+            ->select('id', 'name', 'email')
+            ->orderBy('name')
+            ->limit(20)
+            ->get();
+        
+        return response()->json($authors);
     }
 }

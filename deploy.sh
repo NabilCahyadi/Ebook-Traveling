@@ -4,7 +4,7 @@
 PROJECT_PATH="/home/u778058510/domains/mappy.id/ebook_traveling_core"
 
 # Path ke PHP (ubah jika hosting berbeda)
-PHP_BIN="/usr/bin/php" 
+PHP_BIN="/usr/bin/php"
 
 # Masuk ke folder project
 cd $PROJECT_PATH
@@ -15,6 +15,7 @@ echo "🚀 Starting deployment process..."
 echo "📥 Pulling latest changes from repository..."
 /usr/bin/git fetch --all    
 /usr/bin/git reset --hard origin/main
+/usr/bin/git pull origin main
 
 # Install/Update dependencies
 echo "📦 Installing Composer dependencies..."
@@ -27,11 +28,15 @@ $PHP_BIN artisan cache:clear
 $PHP_BIN artisan view:clear
 $PHP_BIN artisan route:clear
 
-# Jalankan migrate:fresh dengan semua seeder
-echo "🗄️  Running fresh migrations with seeders..."
+# Jalankan migration (tanpa fresh untuk preserve data)
+echo "🗄️  Running migrations..."
 $PHP_BIN artisan migrate --force
 
-
+# Run seeders untuk update data yang diperlukan (tanpa hapus data existing)
+echo "🌱 Running necessary seeders..."
+# $PHP_BIN artisan db:seed --class=AdminPermissionsSeeder --force
+# $PHP_BIN artisan db:seed --class=RoleSeeder --force
+# $PHP_BIN artisan db:seed --class=PermissionSeeder --force
 
 # Create storage symlink (PENTING untuk akses file dari public)
 echo "🔗 Creating storage symbolic link..."
@@ -48,4 +53,8 @@ $PHP_BIN artisan config:cache
 $PHP_BIN artisan route:cache
 $PHP_BIN artisan view:cache
 
-echo "✅ Deployment completed successfully!"
+# Force browser cache refresh by updating file timestamps
+echo "🔄 Updating static file timestamps..."
+touch public/assets/admin/vendor/css/rtl/theme-default.css
+touch public/assets/admin/vendor/css/theme-default.css
+

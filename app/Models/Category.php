@@ -83,4 +83,30 @@ class Category extends Model
             ->withPivot('created_at')
             ->withTimestamps(false);
     }
+
+    /**
+     * Get blogs for this category (for blog type categories only).
+     * Since Blog model uses 'category' as a string field (not foreign key),
+     * we match by category name.
+     */
+    public function blogs()
+    {
+        return $this->hasMany(Blog::class, 'category', 'name');
+    }
+
+    /**
+     * Scope query to only include active categories.
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    /**
+     * Scope query to filter by type.
+     */
+    public function scopeOfType($query, $type)
+    {
+        return $query->where('type', $type);
+    }
 }

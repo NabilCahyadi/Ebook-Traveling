@@ -69,7 +69,8 @@ class AuthController extends Controller
      */
     public function redirectToGoogle()
     {
-        $callbackUrl = request()->getSchemeAndHttpHost() . '/admin/login/google/callback';
+        // Force callback URL ke https://dev-new.mappy.id/
+        $callbackUrl = 'https://dev-new.mappy.id/admin/login/google/callback';
         
         return \Laravel\Socialite\Facades\Socialite::driver('google')
             ->redirectUrl($callbackUrl)

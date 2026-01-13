@@ -1,12 +1,42 @@
 @extends('layouts.admin')
 
-@section('title', 'Create Blog')
+@section('title', __('admin.blogs.create'))
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.css" />
     <style>
         .ck-editor__editable {
             min-height: 500px;
+        }
+        
+        /* Author Autocomplete Suggestions */
+        #author_suggestions {
+            background-color: #fff;
+            border: 1px solid #d9dee3;
+            border-radius: 0.375rem;
+            box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+            margin-top: 0.25rem;
+        }
+
+        #author_suggestions .list-group-item {
+            background-color: #fff;
+            border: none;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            padding: 0.75rem 1rem;
+        }
+
+        #author_suggestions .list-group-item:last-child {
+            border-bottom: none;
+        }
+
+        #author_suggestions .list-group-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        #author_suggestions .list-group-item.text-muted,
+        #author_suggestions .list-group-item.text-danger {
+            cursor: default;
         }
     </style>
 @endpush
@@ -15,10 +45,10 @@
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="fw-bold py-3 mb-0">
-                <span class="text-muted fw-light">Admin / Blogs /</span> Create New
+                <span class="text-muted fw-light">Admin / Blogs /</span> {{ __('admin.blogs.create_new') }}
             </h4>
             <a href="{{ route('admin.blogs.index') }}" class="btn btn-secondary">
-                <i class="bx bx-arrow-back me-1"></i> Back
+                <i class="bx bx-arrow-back me-1"></i> {{ __('admin.blogs.back') }}
             </a>
         </div>
 
@@ -36,13 +66,13 @@
                 <div class="col-lg-8">
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h5 class="mb-0">Blog Content</h5>
+                            <h5 class="mb-0">{{ __('admin.blogs.blog_content') }}</h5>
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label class="form-label" for="title">Title <span class="text-danger">*</span></label>
+                                <label class="form-label" for="title">{{ __('admin.blogs.blog_title') }} <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control @error('title') is-invalid @enderror"
-                                    id="title" name="title" value="{{ old('title') }}" placeholder="Enter blog title"
+                                    id="title" name="title" value="{{ old('title') }}" placeholder="{{ __('admin.blogs.enter_title') }}"
                                     required>
                                 @error('title')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -50,7 +80,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label" for="content">Content <span class="text-danger">*</span></label>
+                                <label class="form-label" for="content">{{ __('admin.blogs.content') }} <span class="text-danger">*</span></label>
                                 <textarea class="form-control @error('content') is-invalid @enderror" id="content" name="content" rows="20">{{ old('content') }}</textarea>
                                 @error('content')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -58,13 +88,13 @@
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label" for="excerpt">Excerpt</label>
+                                <label class="form-label" for="excerpt">{{ __('admin.blogs.excerpt') }}</label>
                                 <textarea class="form-control @error('excerpt') is-invalid @enderror" id="excerpt" name="excerpt" rows="3"
-                                    placeholder="Short description (auto-generated if left empty)">{{ old('excerpt') }}</textarea>
+                                    placeholder="{{ __('admin.blogs.excerpt_placeholder') }}">{{ old('excerpt') }}</textarea>
                                 @error('excerpt')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                <div class="form-text">Brief summary of the blog post</div>
+                                <div class="form-text">{{ __('admin.blogs.excerpt_help') }}</div>
                             </div>
                         </div>
                     </div>
@@ -73,34 +103,55 @@
                 <div class="col-lg-4">
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h5 class="mb-0">Publish</h5>
+                            <h5 class="mb-0">{{ __('admin.blogs.publish') }}</h5>
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label class="form-label" for="status">Status <span class="text-danger">*</span></label>
+                                <label class="form-label" for="author_search">{{ __('admin.blogs.author') }} <span class="text-danger">*</span></label>
+                                <input type="text" 
+                                    class="form-control @error('author_id') is-invalid @enderror" 
+                                    id="author_search" 
+                                    placeholder="Type to search author..."
+                                    autocomplete="off">
+                                <input type="hidden" name="author_id" id="author_id" value="{{ old('author_id') }}">
+                                
+                                <!-- Autocomplete dropdown -->
+                                <div id="author_suggestions" class="list-group position-absolute w-100" style="z-index: 1000; display: none; max-height: 250px; overflow-y: auto;"></div>
+                                
+                                <!-- Selected author display -->
+                                <div id="selected_author" class="mt-2"></div>
+                                
+                                @error('author_id')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                                <div class="form-text">Select the blog author</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label" for="status">{{ __('admin.blogs.status') }} <span class="text-danger">*</span></label>
                                 <select class="form-select @error('status') is-invalid @enderror" id="status"
                                     name="status" required>
-                                    <option value="draft" {{ old('status', 'draft') == 'draft' ? 'selected' : '' }}>Draft
+                                    <option value="draft" {{ old('status', 'draft') == 'draft' ? 'selected' : '' }}>{{ __('admin.blogs.draft') }}
                                     </option>
                                     <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>
-                                        Published</option>
+                                        {{ __('admin.blogs.published') }}</option>
                                     <option value="unpublished" {{ old('status') == 'unpublished' ? 'selected' : '' }}>
-                                        Unpublished</option>
-                                    <option value="archived" {{ old('status') == 'archived' ? 'selected' : '' }}>Archived
+                                        {{ __('admin.blogs.unpublished') }}</option>
+                                    <option value="archived" {{ old('status') == 'archived' ? 'selected' : '' }}>{{ __('admin.blogs.archived') }}
                                     </option>
                                 </select>
                                 @error('status')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                <div class="form-text">Set blog post status</div>
+                                <div class="form-text">{{ __('admin.blogs.set_blog_status') }}</div>
                             </div>
 
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bx bx-save me-1"></i> Create Blog
+                                    <i class="bx bx-save me-1"></i> {{ __('admin.blogs.create_blog') }}
                                 </button>
                                 <a href="{{ route('admin.blogs.index') }}" class="btn btn-secondary">
-                                    Cancel
+                                    {{ __('admin.blogs.cancel') }}
                                 </a>
                             </div>
                         </div>
@@ -108,7 +159,7 @@
 
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h5 class="mb-0">Featured Image</h5>
+                            <h5 class="mb-0">{{ __('admin.blogs.featured_image') }}</h5>
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
@@ -126,26 +177,27 @@
 
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h5 class="mb-0">Category</h5>
+                            <h5 class="mb-0">{{ __('admin.blogs.category') }}</h5>
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label class="form-label" for="blog_category_id">Blog Category</label>
-                                <select class="form-select @error('blog_category_id') is-invalid @enderror"
-                                    id="blog_category_id" name="blog_category_id">
-                                    <option value="">Select a category</option>
+                                <label class="form-label" for="category">{{ __('admin.blogs.blog_category') }}</label>
+                                <select class="form-select @error('category') is-invalid @enderror" 
+                                    id="category" 
+                                    name="category">
+                                    <option value="">{{ __('admin.blogs.select_category') }}</option>
                                     @foreach($categories as $category)
-                                        <option value="{{ $category->id }}" {{ old('blog_category_id') == $category->id ? 'selected' : '' }}>
+                                        <option value="{{ $category->name }}" {{ old('category') == $category->name ? 'selected' : '' }}>
                                             {{ $category->name }}
                                         </option>
                                     @endforeach
                                 </select>
-                                @error('blog_category_id')
+                                @error('category')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                                 <div class="form-text">
-                                    Select a category for this blog post. 
-                                    <a href="{{ route('admin.blog-categories.create') }}" target="_blank">Add new category</a>
+                                    {{ __('admin.blogs.select_category_text') }}
+                                    <a href="{{ route('admin.blog-categories.create') }}" target="_blank">{{ __('admin.blogs.add_new_category') }}</a>
                                 </div>
                             </div>
                         </div>
@@ -310,6 +362,158 @@
                         preview.style.display = 'block';
                     }
                     reader.readAsDataURL(file);
+                }
+            });
+
+            // Author Autocomplete
+            const authorSearch = $('#author_search');
+            const authorId = $('#author_id');
+            const authorSuggestions = $('#author_suggestions');
+            const selectedAuthorDiv = $('#selected_author');
+            let searchTimeout;
+            let allAuthors = [];
+
+            // Load selected author if edit mode
+            @if(old('author_id'))
+                loadSelectedAuthor('{{ old('author_id') }}');
+            @endif
+
+            // Load all authors on focus
+            authorSearch.on('focus', function() {
+                if (authorId.val()) {
+                    return;
+                }
+                
+                if (allAuthors.length > 0) {
+                    displayAuthors(allAuthors);
+                } else {
+                    loadAllAuthors();
+                }
+            });
+
+            // Search on input
+            authorSearch.on('input', function() {
+                const query = $(this).val().trim();
+                
+                clearTimeout(searchTimeout);
+                
+                if (query.length === 0) {
+                    loadAllAuthors();
+                } else {
+                    searchTimeout = setTimeout(() => {
+                        searchAuthorsFromServer(query);
+                    }, 300);
+                }
+            });
+            
+            function searchAuthorsFromServer(query) {
+                authorSuggestions.html('<div class="list-group-item text-muted"><i class="bx bx-loader-alt bx-spin me-1"></i> Searching...</div>').show();
+                
+                $.ajax({
+                    url: '{{ route('admin.blogs.search-authors') }}',
+                    method: 'GET',
+                    data: { q: query },
+                    success: function(data) {
+                        displayAuthors(data);
+                    },
+                    error: function() {
+                        authorSuggestions.html(
+                            '<div class="list-group-item text-danger">Error searching authors</div>'
+                        ).show();
+                    }
+                });
+            }
+
+            function loadAllAuthors() {
+                authorSuggestions.html('<div class="list-group-item text-muted"><i class="bx bx-loader-alt bx-spin me-1"></i> Loading authors...</div>').show();
+                
+                $.ajax({
+                    url: '{{ route('admin.blogs.search-authors') }}',
+                    method: 'GET',
+                    data: { q: '' },
+                    success: function(data) {
+                        allAuthors = data;
+                        displayAuthors(data);
+                    },
+                    error: function() {
+                        authorSuggestions.html(
+                            '<div class="list-group-item text-danger">Error loading authors</div>'
+                        ).show();
+                    }
+                });
+            }
+
+            function displayAuthors(authors) {
+                authorSuggestions.empty();
+                
+                if (authors.length === 0) {
+                    authorSuggestions.append(
+                        '<div class="list-group-item text-muted">No authors found</div>'
+                    );
+                } else {
+                    authors.forEach(author => {
+                        const item = $('<a href="javascript:void(0)" class="list-group-item list-group-item-action"></a>');
+                        item.html(`
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>${author.name}</strong>
+                                    <br><small class="text-muted">${author.email}</small>
+                                </div>
+                            </div>
+                        `);
+                        item.on('click', function() {
+                            selectAuthor(author);
+                        });
+                        authorSuggestions.append(item);
+                    });
+                }
+                
+                authorSuggestions.show();
+            }
+
+            function selectAuthor(author) {
+                authorId.val(author.id);
+                authorSearch.val('');
+                authorSuggestions.hide().empty();
+                
+                selectedAuthorDiv.html(`
+                    <div class="alert alert-info d-flex justify-content-between align-items-center py-2 mb-0">
+                        <div>
+                            <i class="bx bx-user me-1"></i>
+                            <strong>${author.name}</strong>
+                            <br><small>${author.email}</small>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="clearAuthor()">
+                            <i class="bx bx-x"></i>
+                        </button>
+                    </div>
+                `);
+            }
+
+            function loadSelectedAuthor(authorId) {
+                $.ajax({
+                    url: '{{ route('admin.blogs.search-authors') }}',
+                    method: 'GET',
+                    data: { q: '' },
+                    success: function(data) {
+                        const author = data.find(c => c.id == authorId);
+                        if (author) {
+                            selectAuthor(author);
+                        }
+                    }
+                });
+            }
+
+            window.clearAuthor = function() {
+                authorId.val('');
+                authorSearch.val('');
+                selectedAuthorDiv.empty();
+            };
+
+            // Hide suggestions when clicking outside
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('#author_search, #author_suggestions').length) {
+                    authorSuggestions.hide();
                 }
             });
         </script>

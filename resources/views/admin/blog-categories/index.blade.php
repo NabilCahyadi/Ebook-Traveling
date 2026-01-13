@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Blog Category Management')
+@section('title', __('admin.blog_categories.blog_categories'))
 
 @section('content')
 
@@ -23,15 +23,15 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h4 class="fw-bold py-3 mb-2">
-                <span class="text-muted fw-light">Admin / Content Management /</span> Blog Categories
+                <span class="text-muted fw-light">Admin / Content Management /</span> {{ __('admin.blog_categories.blog_categories') }}
             </h4>
         </div>
         <div>
             <a href="{{ route('admin.blog-categories.trashed') }}" class="btn btn-outline-danger me-2">
-                <i class="ti ti-trash me-1"></i> View Trashed
+                <i class="ti ti-trash me-1"></i> {{ __('admin.blog_categories.view_trashed') }}
             </a>
             <a href="{{ route('admin.blog-categories.create') }}" class="btn btn-primary">
-                <i class="ti ti-plus me-1"></i> Add New Category
+                <i class="ti ti-plus me-1"></i> {{ __('admin.blog_categories.add_new_category') }}
             </a>
         </div>
     </div>
@@ -42,12 +42,12 @@
             <form method="GET" action="{{ route('admin.blog-categories.index') }}">
                 <div class="row">
                     <div class="col-md-10">
-                        <input type="text" name="search" class="form-control" placeholder="Search categories..."
+                        <input type="text" name="search" class="form-control" placeholder="{{ __('admin.blog_categories.search_placeholder') }}"
                             value="{{ $search ?? '' }}">
                     </div>
                     <div class="col-md-2">
                         <button type="submit" class="btn btn-primary w-100">
-                            <i class="ti ti-search me-1"></i> Search
+                            <i class="ti ti-search me-1"></i> {{ __('admin.blog_categories.search') }}
                         </button>
                     </div>
                 </div>
@@ -58,8 +58,8 @@
     <!-- Categories Table -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Blog Categories</h5>
-            <div class="text-muted">Total: {{ $categories->total() }} categories</div>
+            <h5 class="mb-0">{{ __('admin.blog_categories.blog_categories') }}</h5>
+            <div class="text-muted">{{ __('admin.blog_categories.total') }}: {{ $categories->total() }} {{ __('admin.blog_categories.categories') }}</div>
         </div>
         <div class="card-body">
             @if ($categories->count() > 0)
@@ -67,13 +67,13 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Slug</th>
-                                <th>Description</th>
-                                <th>Status</th>
-                                <th>Blogs</th>
-                                <th>Created</th>
-                                <th>Actions</th>
+                                <th>{{ __('admin.blog_categories.name') }}</th>
+                                <!-- <th>{{ __('admin.blog_categories.slug') }}</th> -->
+                                <th>{{ __('admin.blog_categories.description') }}</th>
+                                <th>{{ __('admin.blog_categories.status') }}</th>
+                                <th>{{ __('admin.blog_categories.blogs') }}</th>
+                                <th>{{ __('admin.blog_categories.created') }}</th>
+                                <th>{{ __('admin.blog_categories.actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -81,25 +81,20 @@
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <div class="avatar avatar-sm me-2 bg-label-primary">
-                                                <span class="avatar-initial rounded-circle">
-                                                    <i class="ti ti-folder"></i>
-                                                </span>
-                                            </div>
                                             <strong>{{ $category->name }}</strong>
                                         </div>
                                     </td>
-                                    <td>
+                                    <!-- <td>
                                         <code>{{ $category->slug }}</code>
-                                    </td>
+                                    </td> -->
                                     <td>
                                         <small class="text-muted">{{ Str::limit($category->description ?? '-', 50) }}</small>
                                     </td>
                                     <td>
                                         @if ($category->is_active)
-                                            <span class="badge bg-success">Active</span>
+                                            <span class="badge bg-success">{{ __('admin.blog_categories.active') }}</span>
                                         @else
-                                            <span class="badge bg-secondary">Inactive</span>
+                                            <span class="badge bg-secondary">{{ __('admin.blog_categories.inactive') }}</span>
                                         @endif
                                     </td>
                                     <td>
@@ -116,18 +111,18 @@
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-end">
                                                 <a href="{{ route('admin.blog-categories.edit', $category->id) }}" class="dropdown-item">
-                                                    <i class="ti ti-edit me-1"></i> Edit
+                                                    <i class="ti ti-edit me-1"></i> {{ __('admin.blog_categories.edit') }}
                                                 </a>
                                                 <a href="{{ route('admin.blog-categories.show', $category->id) }}" class="dropdown-item">
-                                                    <i class="ti ti-eye me-1"></i> View Details
+                                                    <i class="ti ti-eye me-1"></i> {{ __('admin.blog_categories.view_details') }}
                                                 </a>
                                                 <div class="dropdown-divider"></div>
                                                 <form action="{{ route('admin.blog-categories.destroy', $category->id) }}" method="POST"
-                                                    onsubmit="return confirm('Are you sure you want to move this category to trash?');">
+                                                    onsubmit="return confirm('{{ __('admin.blog_categories.delete_confirm') }}');">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="dropdown-item text-danger">
-                                                        <i class="ti ti-trash me-1"></i> Move to Trash
+                                                        <i class="ti ti-trash me-1"></i> {{ __('admin.blog_categories.move_to_trash') }}
                                                     </button>
                                                 </form>
                                             </div>
@@ -146,9 +141,9 @@
             @else
                 <div class="text-center py-5">
                     <i class="ti ti-folder-off" style="font-size: 3rem; opacity: 0.3;"></i>
-                    <p class="text-muted mt-3">No blog categories found.</p>
+                    <p class="text-muted mt-3">{{ __('admin.blog_categories.no_categories_found') }}</p>
                     <a href="{{ route('admin.blog-categories.create') }}" class="btn btn-primary">
-                        <i class="ti ti-plus me-1"></i> Add Your First Category
+                        <i class="ti ti-plus me-1"></i> {{ __('admin.blog_categories.add_first_category') }}
                     </a>
                 </div>
             @endif

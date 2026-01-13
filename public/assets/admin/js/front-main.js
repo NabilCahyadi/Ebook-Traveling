@@ -176,3 +176,4 @@ window.isDarkStyle = window.Helpers.isDarkStyle();
     });
   }
 })();
+

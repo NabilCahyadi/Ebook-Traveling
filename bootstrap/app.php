@@ -17,6 +17,18 @@ return Application::configure(basePath: dirname(__DIR__))
             'premium' => \App\Http\Middleware\IsPremiumUser::class,
             'record.view' => \App\Http\Middleware\RecordView::class,
             'permission' => \App\Http\Middleware\CheckPermission::class,
+            'admin.permission' => \App\Http\Middleware\CheckAdminPermission::class,
+            'admin.session' => \App\Http\Middleware\StartAdminSession::class,
+            'user.session' => \App\Http\Middleware\StartUserSession::class,
+        ]);
+        
+        // Priority middleware - runs before StartSession
+        $middleware->priority([
+            \App\Http\Middleware\StartAdminSession::class,
+            \App\Http\Middleware\StartUserSession::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
         
         // Add SetLocale middleware to web group

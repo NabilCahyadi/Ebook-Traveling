@@ -102,13 +102,7 @@
                                 @foreach ($categories as $category)
                                     <tr>
                                         <td>
-                                            @if($category->image)
-                                                <img src="{{ Storage::url($category->image) }}" alt="{{ $category->name }}" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
-                                            @else
-                                                <div class="bg-label-secondary rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                                    <i class="ti ti-photo ti-lg"></i>
-                                                </div>
-                                            @endif
+                                            <img src="{{ $category->image_url }}" alt="{{ $category->name }}" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
                                         </td>
                                         <td>
                                             <div class="fw-medium">{{ $category->name }}</div>
@@ -128,7 +122,7 @@
                                                 </button>
                                                 <div class="dropdown-menu dropdown-menu-end">
                                                     <a class="dropdown-item" href="javascript:void(0);"
-                                                        onclick="editCategory('{{ $category->id }}', '{{ addslashes($category->name) }}', '{{ $category->image ? Storage::url($category->image) : '' }}')">
+                                                        onclick="editCategory('{{ $category->id }}', '{{ addslashes($category->name) }}', '{{ $category->image_url }}')">
                                                         <i class="ti ti-pencil me-2"></i>
                                                         <span>{{ __('admin.actions.edit') }}</span>
                                                     </a>

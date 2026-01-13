@@ -23,12 +23,12 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h4 class="fw-bold py-3 mb-2">
-                    <span class="text-muted fw-light">Website Management /</span> Pricing Benefits
+                    <span class="text-muted fw-light">Website Management /</span> About Us
                 </h4>
                 <p class="text-muted">Kelola konten "Why Choose Our MeatMap Guides?"</p>
             </div>
             <div>
-                <a href="{{ route('admin.pricing-benefits.create') }}" class="btn btn-primary">
+                <a href="{{ route('admin.about-us.create') }}" class="btn btn-primary">
                     <i class="ti ti-plus me-1"></i> Tambah Benefit Baru
                 </a>
             </div>
@@ -94,7 +94,7 @@
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end">
                                                 <li>
-                                                    <a class="dropdown-item" href="{{ route('admin.pricing-benefits.edit', $benefit->id) }}">
+                                                    <a class="dropdown-item" href="{{ route('admin.about-us.edit', $benefit->id) }}">
                                                         <i class="ti ti-edit me-2"></i> Edit
                                                     </a>
                                                 </li>
@@ -102,7 +102,7 @@
                                                     <hr class="dropdown-divider">
                                                 </li>
                                                 <li>
-                                                    <form action="{{ route('admin.pricing-benefits.destroy', $benefit->id) }}" 
+                                                    <form action="{{ route('admin.about-us.destroy', $benefit->id) }}" 
                                                           method="POST" 
                                                           class="delete-form">
                                                         @csrf
@@ -198,7 +198,7 @@
             });
 
             $.ajax({
-                url: '{{ route("admin.pricing-benefits.update-order") }}',
+                url: '{{ route("admin.about-us.update-order") }}',
                 type: 'POST',
                 data: {
                     _token: '{{ csrf_token() }}',
@@ -231,7 +231,7 @@
             checkbox.prop('disabled', true);
             
             $.ajax({
-                url: `/admin/pricing-benefits/${benefitId}/toggle-status`,
+                url: `/admin/about-us/${benefitId}/toggle-status`,
                 type: 'POST',
                 data: {
                     _token: '{{ csrf_token() }}'

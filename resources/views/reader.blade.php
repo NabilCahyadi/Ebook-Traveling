@@ -315,7 +315,7 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
         // --- Logika PDF Viewer ---
-        const url = "{{ asset($ebook->pdf_file) }}"; // Gunakan asset() untuk file di public/
+        const url = "{{ $ebook->pdf_file_url }}"; // Gunakan accessor untuk handle storage path
         let pdfDoc = null,
             pageNum = 1,
             pageRendering = false,
@@ -520,7 +520,7 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
         // --- Variabel Utama ---
-        const url = "{{ Storage::url($ebook->pdf_file) }}";
+        const url = "{{ $ebook->pdf_file_url }}";
         let pdfDoc = null,
             pageNum = 1,
             pageRendering = false,

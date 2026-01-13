@@ -15,7 +15,9 @@ interface EbookRepositoryInterface
         string $sortBy = 'created_at',
         string $sortOrder = 'desc',
         ?string $search = null,
-        ?string $status = null
+        ?string $status = null,
+        ?string $categoryId = null,
+        ?string $cityId = null
     ): mixed;
 
     /**

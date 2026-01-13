@@ -100,7 +100,13 @@
                         @forelse ($blogs as $blog)
                         <article class="wow fadeIn animated hover-up mb-30">
                             @if($blog->featured_image)
-                            <div class="post-thumb" style="background-image: url({{ asset($blog->featured_image) }})">
+                            @php
+                                // Check if image is external URL or local storage
+                                $imageUrl = filter_var($blog->featured_image, FILTER_VALIDATE_URL) 
+                                    ? $blog->featured_image 
+                                    : asset('storage/' . $blog->featured_image);
+                            @endphp
+                            <div class="post-thumb" style="background-image: url({{ $imageUrl }})">
                                 <!-- <div class="entry-meta">
                                     <a class="entry-meta meta-2" href="{{ route('blogs.show', $blog->slug) }}"><i class="fi-rs-bookmark"></i></a>
                                 </div> -->

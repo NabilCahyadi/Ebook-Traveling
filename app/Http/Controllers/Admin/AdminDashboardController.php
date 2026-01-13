@@ -79,6 +79,12 @@ class AdminDashboardController extends Controller
             ->take(5)
             ->get();
 
+        // Get cities distribution for chart
+        $cityStats = \App\Models\City::withCount('ebooks')
+            ->orderBy('ebooks_count', 'desc')
+            ->take(5)
+            ->get();
+
         // Get recent data
         $recentEbooks = \App\Models\Ebook::with('category', 'city')
             ->latest()
@@ -106,7 +112,71 @@ class AdminDashboardController extends Controller
             'activeSubscribers',
             'monthlyRevenue',
             'categoryStats',
+            'cityStats',
             'recentActivities'
         ));
+    }
+
+    /**
+     * Get revenue data based on filter
+     */
+    public function getRevenueData(Request $request)
+    {
+        $filter = $request->get('filter', 'month'); // day, month, year
+        $count = $request->get('count', 6); // default 6 periods
+        $count = max(1, min(30, $count)); // limit between 1-30
+        $revenueData = [];
+
+        if (!class_exists('\App\Models\Subscription')) {
+            return response()->json(['data' => []]);
+        }
+
+        switch ($filter) {
+            case 'day':
+                // Last X days
+                for ($i = $count - 1; $i >= 0; $i--) {
+                    $date = now()->subDays($i);
+                    $revenue = \App\Models\Subscription::whereIn('status', ['active', 'expired'])
+                        ->whereDate('created_at', $date->toDateString())
+                        ->sum('total_amount');
+                    $revenueData[] = [
+                        'label' => $date->format('d M'),
+                        'revenue' => $revenue
+                    ];
+                }
+                break;
+
+            case 'year':
+                // Last X years
+                for ($i = $count - 1; $i >= 0; $i--) {
+                    $year = now()->subYears($i);
+                    $revenue = \App\Models\Subscription::whereIn('status', ['active', 'expired'])
+                        ->whereYear('created_at', $year->year)
+                        ->sum('total_amount');
+                    $revenueData[] = [
+                        'label' => $year->format('Y'),
+                        'revenue' => $revenue
+                    ];
+                }
+                break;
+
+            case 'month':
+            default:
+                // Last X months
+                for ($i = $count - 1; $i >= 0; $i--) {
+                    $month = now()->subMonths($i);
+                    $revenue = \App\Models\Subscription::whereIn('status', ['active', 'expired'])
+                        ->whereYear('created_at', $month->year)
+                        ->whereMonth('created_at', $month->month)
+                        ->sum('total_amount');
+                    $revenueData[] = [
+                        'label' => $month->format('M Y'),
+                        'revenue' => $revenue
+                    ];
+                }
+                break;
+        }
+
+        return response()->json(['data' => $revenueData]);
     }
 }

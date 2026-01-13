@@ -103,4 +103,31 @@ class HomeController extends Controller
 
         return $defaultImages[$index % count($defaultImages)] ?? 'images/banner-subs-1.webp';
     }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('q');
+        
+        if (empty($query)) {
+            return redirect()->route('home');
+        }
+
+        // Search ebooks by title, description, or creator name - only published ebooks
+        $ebooks = \App\Models\Ebook::where('status', 'published')
+            ->where(function($q) use ($query) {
+                $q->where('title', 'LIKE', "%{$query}%")
+                  ->orWhere('description', 'LIKE', "%{$query}%")
+                  ->orWhereHas('creator', function($creatorQuery) use ($query) {
+                      $creatorQuery->where('name', 'LIKE', "%{$query}%");
+                  });
+            })
+            ->with(['city', 'category', 'creator', 'ratings'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
+
+        return view('search-results', [
+            'ebooks' => $ebooks,
+            'query' => $query
+        ]);
+    }
 }

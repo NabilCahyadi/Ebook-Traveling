@@ -8,3 +8,4 @@ html:not([dir=rtl]) .api-key-actions {
 [dir=rtl] .api-key-actions {
   left: 0.5rem;
 }
+

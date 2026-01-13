@@ -15,10 +15,10 @@
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="fw-bold py-3 mb-0">
-                <span class="text-muted fw-light">Admin / Blogs /</span> Edit
+                <span class="text-muted fw-light">Admin / Blogs /</span> {{ __('admin.blogs.edit') }}
             </h4>
             <a href="{{ route('admin.blogs.index') }}" class="btn btn-secondary">
-                <i class="bx bx-arrow-back me-1"></i> Back
+                <i class="bx bx-arrow-back me-1"></i> {{ __('admin.blogs.back') }}
             </a>
         </div>
 
@@ -37,11 +37,11 @@
                 <div class="col-lg-8">
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h5 class="mb-0">Blog Content</h5>
+                            <h5 class="mb-0">{{ __('admin.blogs.blog_content') }}</h5>
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label class="form-label" for="title">Title <span class="text-danger">*</span></label>
+                                <label class="form-label" for="title">{{ __('admin.blogs.blog_title') }} <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control @error('title') is-invalid @enderror"
                                     id="title" name="title" value="{{ old('title', $blog->title) }}"
                                     placeholder="Enter blog title" required>
@@ -51,7 +51,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label" for="content">Content <span class="text-danger">*</span></label>
+                                <label class="form-label" for="content">{{ __('admin.blogs.content') }} <span class="text-danger">*</span></label>
                                 <textarea class="form-control @error('content') is-invalid @enderror" id="content" name="content" rows="20">{{ old('content', $blog->content) }}</textarea>
                                 @error('content')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -59,7 +59,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label" for="excerpt">Excerpt</label>
+                                <label class="form-label" for="excerpt">{{ __('admin.blogs.excerpt') }}</label>
                                 <textarea class="form-control @error('excerpt') is-invalid @enderror" id="excerpt" name="excerpt" rows="3"
                                     placeholder="Short description">{{ old('excerpt', $blog->excerpt) }}</textarea>
                                 @error('excerpt')
@@ -73,45 +73,45 @@
                 <div class="col-lg-4">
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h5 class="mb-0">Publish</h5>
+                            <h5 class="mb-0">{{ __('admin.blogs.publish') }}</h5>
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label class="form-label" for="status">Status <span class="text-danger">*</span></label>
+                                <label class="form-label" for="status">{{ __('admin.blogs.status') }} <span class="text-danger">*</span></label>
                                 <select class="form-select @error('status') is-invalid @enderror" id="status"
                                     name="status" required>
                                     <option value="draft" {{ old('status', $blog->status) == 'draft' ? 'selected' : '' }}>
-                                        Draft</option>
+                                        {{ __('admin.blogs.draft') }}</option>
                                     <option value="published"
-                                        {{ old('status', $blog->status) == 'published' ? 'selected' : '' }}>Published
+                                        {{ old('status', $blog->status) == 'published' ? 'selected' : '' }}>{{ __('admin.blogs.published') }}
                                     </option>
                                     <option value="unpublished"
-                                        {{ old('status', $blog->status) == 'unpublished' ? 'selected' : '' }}>Unpublished
+                                        {{ old('status', $blog->status) == 'unpublished' ? 'selected' : '' }}>{{ __('admin.blogs.unpublished') }}
                                     </option>
                                     <option value="archived"
-                                        {{ old('status', $blog->status) == 'archived' ? 'selected' : '' }}>Archived
+                                        {{ old('status', $blog->status) == 'archived' ? 'selected' : '' }}>{{ __('admin.blogs.archived') }}
                                     </option>
                                 </select>
                                 @error('status')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                <div class="form-text">Set blog post status</div>
+                                <div class="form-text">{{ __('admin.blogs.set_blog_status') }}</div>
                             </div>
 
                             @if ($blog->published_at)
                                 <div class="mb-3">
                                     <small class="text-muted">
-                                        Published: {{ $blog->published_at->format('d M Y, H:i') }}
+                                        {{ __('admin.blogs.published_at') }}: {{ $blog->published_at->format('d M Y, H:i') }}
                                     </small>
                                 </div>
                             @endif
 
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bx bx-save me-1"></i> Update Blog
+                                    <i class="bx bx-save me-1"></i> {{ __('admin.blogs.update_blog') }}
                                 </button>
                                 <a href="{{ route('admin.blogs.index') }}" class="btn btn-secondary">
-                                    Cancel
+                                    {{ __('admin.blogs.cancel') }}
                                 </a>
                             </div>
                         </div>
@@ -119,18 +119,24 @@
 
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h5 class="mb-0">Featured Image</h5>
+                            <h5 class="mb-0">{{ __('admin.blogs.featured_image') }}</h5>
                         </div>
                         <div class="card-body">
                             @if ($blog->featured_image)
                                 <div class="mb-3">
-                                    <img src="{{ asset('storage/' . $blog->featured_image) }}" alt="{{ $blog->title }}"
+                                    @php
+                                        // Check if image is external URL or local storage
+                                        $imageUrl = filter_var($blog->featured_image, FILTER_VALIDATE_URL) 
+                                            ? $blog->featured_image 
+                                            : asset('storage/' . $blog->featured_image);
+                                    @endphp
+                                    <img src="{{ $imageUrl }}" alt="{{ $blog->title }}"
                                         class="img-fluid rounded">
                                     <div class="form-check mt-2">
                                         <input class="form-check-input" type="checkbox" id="remove_image"
                                             name="remove_image">
                                         <label class="form-check-label" for="remove_image">
-                                            Remove current image
+                                            {{ __('admin.blogs.remove_current_image') }}
                                         </label>
                                     </div>
                                 </div>
@@ -138,7 +144,7 @@
 
                             <div class="mb-3">
                                 <label
-                                    class="form-label">{{ $blog->featured_image ? 'Replace Image' : 'Upload Image' }}</label>
+                                    class="form-label">{{ $blog->featured_image ? __('admin.blogs.replace_image') : __('admin.blogs.upload_image') }}</label>
                                 <input type="file" class="form-control @error('featured_image') is-invalid @enderror"
                                     id="featured_image" name="featured_image" accept="image/*">
                                 @error('featured_image')
@@ -153,27 +159,27 @@
 
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h5 class="mb-0">Category</h5>
+                            <h5 class="mb-0">{{ __('admin.blogs.category') }}</h5>
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label class="form-label" for="blog_category_id">Blog Category</label>
-                                <select class="form-select @error('blog_category_id') is-invalid @enderror"
-                                    id="blog_category_id" name="blog_category_id">
-                                    <option value="">Select a category</option>
+                                <label class="form-label" for="category">{{ __('admin.blogs.blog_category') }}</label>
+                                <select class="form-select @error('category') is-invalid @enderror" 
+                                    id="category" 
+                                    name="category">
+                                    <option value="">{{ __('admin.blogs.select_category') }}</option>
                                     @foreach($categories as $category)
-                                        <option value="{{ $category->id }}" 
-                                            {{ old('blog_category_id', $blog->blog_category_id) == $category->id ? 'selected' : '' }}>
+                                        <option value="{{ $category->name }}" {{ old('category', $blog->category) == $category->name ? 'selected' : '' }}>
                                             {{ $category->name }}
                                         </option>
                                     @endforeach
                                 </select>
-                                @error('blog_category_id')
+                                @error('category')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                                 <div class="form-text">
-                                    Select a category for this blog post. 
-                                    <a href="{{ route('admin.blog-categories.create') }}" target="_blank">Add new category</a>
+                                    {{ __('admin.blogs.select_category_text') }}
+                                    <a href="{{ route('admin.blog-categories.create') }}" target="_blank">{{ __('admin.blogs.add_new_category') }}</a>
                                 </div>
                             </div>
                         </div>
@@ -181,16 +187,16 @@
 
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="mb-0">Statistics</h5>
+                            <h5 class="mb-0">{{ __('admin.blogs.statistics') }}</h5>
                         </div>
                         <div class="card-body">
                             <div class="d-flex align-items-center mb-2">
                                 <i class="bx bx-show me-2"></i>
-                                <span>{{ number_format($blog->view_count) }} views</span>
+                                <span>{{ number_format($blog->view_count) }} {{ __('admin.blogs.views') }}</span>
                             </div>
                             <div class="d-flex align-items-center">
                                 <i class="bx bx-time me-2"></i>
-                                <span>Updated {{ $blog->updated_at->diffForHumans() }}</span>
+                                <span>{{ __('admin.blogs.updated') }} {{ $blog->updated_at->diffForHumans() }}</span>
                             </div>
                         </div>
                     </div>

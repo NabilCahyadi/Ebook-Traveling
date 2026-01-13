@@ -36,6 +36,7 @@ class EbookReaderController extends Controller
         return view('user.ebook-reader', compact('ebook')); // ✅ Teks fallback
     }
 
+
     /**
      * Get ebook content via AJAX (for secure content delivery)
      */

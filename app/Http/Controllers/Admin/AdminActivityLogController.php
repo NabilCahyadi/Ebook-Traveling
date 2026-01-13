@@ -56,7 +56,7 @@ class AdminActivityLogController extends Controller
             });
         }
 
-        $logs = $query->latest()->paginate(20);
+        $logs = $query->latest()->paginate(10);
 
         // Get all admins for filter
         $admins = Admin::orderBy('name')->get();

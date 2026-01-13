@@ -10,3 +10,4 @@
     return new bootstrap.Popover(popoverTriggerEl);
   });
 })();
+

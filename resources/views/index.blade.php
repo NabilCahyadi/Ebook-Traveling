@@ -313,6 +313,15 @@ $collections = collect();
     .product-cart-wrap {
         border: 1px solid rgba(255, 255, 255, 0.05);
         transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .product-content-wrap {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
     }
 
     /* --- Gaya Umum untuk Elemen Kartu --- */
@@ -324,7 +333,8 @@ $collections = collect();
     }
 
     .product-cart-wrap .product-description {
-        min-height: 3.2em;
+        min-height: 2.8em;
+        flex-grow: 1;
     }
 
     .product-author {
@@ -454,6 +464,33 @@ $collections = collect();
         text-overflow: ellipsis;
     }
 
+    /* Fixed ukuran cover ebook agar konsisten */
+    .product-img {
+        position: relative;
+        width: 100%;
+        padding-top: 140%; /* Rasio 5:7 (tinggi 140% dari lebar) untuk cover buku */
+        overflow: hidden;
+        border-radius: 15px;
+        background-color: #f5f5f5;
+    }
+
+    .product-img img.default-img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    /* Make columns flex to support equal height cards */
+    .product-grid-4 > [class*="col-"],
+    .scroll-wrapper > [class*="col-"] {
+        display: flex;
+        flex-direction: column;
+    }
+
     /* Untuk membuat gambar blog post seragam dan rapi */
     .post-thumb {
         position: relative;
@@ -573,7 +610,6 @@ $collections = collect();
         </div>
     </section>
     <!-- top 10 ibu kota di indonesia -->
-    @if(hasPermission('access_destinations'))
     <section class="popular-categories section-padding">
         <div class="container wow animate__animated animate__fadeIn">
             <div class="section-title style-2 flex-container-custom">
@@ -606,7 +642,6 @@ $collections = collect();
             </div>
         </div>
     </section>
-    @endif
     <!-- 3 subscriprion plans -->
     <!-- Subscription Plans -->
     <section class="banners mb-25">
@@ -680,7 +715,12 @@ $collections = collect();
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="/ebooks/{{ $ebook->slug }}">
-                                                <img class="default-img" src="{{ $ebook->cover_image ?: 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg' }}" alt="{{ $ebook->title }}" />
+                                                @php
+                                                    $coverImage = $ebook->external_cover_url 
+                                                        ? $ebook->external_cover_url 
+                                                        : ($ebook->cover_image_url ?? 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg');
+                                                @endphp
+                                                <img class="default-img" src="{{ $coverImage }}" alt="{{ $ebook->title }}" />
                                             </a>
                                         </div>
                                         <div class="product-badges product-badges-position product-badges-mrg">
@@ -736,8 +776,8 @@ $collections = collect();
 
                                         <!-- <p class="product-description">{{ Str::limit($ebook->short_description ?? $ebook->description, 80) }}</p> -->
                                         @php
-                                        // Ambil teks deskripsi
-                                        $descriptionText = $ebook->short_description ?? $ebook->description;
+                                        // Ambil teks deskripsi dan strip HTML tags
+                                        $descriptionText = strip_tags($ebook->short_description ?? $ebook->description);
 
                                         // Cek apakah teks pendek (kira-kira 1 baris). Sesuaikan angka 40 jika perlu.
                                         $isSingleLine = strlen($descriptionText) <= 29;
@@ -779,7 +819,6 @@ $collections = collect();
     @endforeach
     @endif
     <!-- blogs -->
-    @if(hasPermission('access_blog'))
     <section class="section-padding pb-5">
         <div class="container mb-30">
             <div class="section-title style-2 flex-container-custom">
@@ -794,7 +833,7 @@ $collections = collect();
                     <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
                         <div class="post-thumb">
                             <a href="{{ route('blogs.show', $blog->slug) }}">
-                                <img class="border-radius-15" src="{{ $blog->featured_image ?: asset('images/blog-placeholder.webp') }}" alt="{{ $blog->title }}" />
+                                <img class="border-radius-15" src="@if($blog->featured_image && filter_var($blog->featured_image, FILTER_VALIDATE_URL)){{ $blog->featured_image }}@elseif($blog->featured_image){{ asset('storage/' . $blog->featured_image) }}@else{{ asset('images/blog-placeholder.webp') }}@endif" alt="{{ $blog->title }}" />
                             </a>
                         </div>
                         <div class="entry-content-2">
@@ -836,7 +875,6 @@ $collections = collect();
             </div>
         </div>
     </section>
-    @endif
     <script>
         // Scroll functionality
         document.addEventListener('DOMContentLoaded', function() {

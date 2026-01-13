@@ -144,7 +144,14 @@ class LoginController extends Controller
      */
     public function redirectToGoogle()
     {
-        $callbackUrl = request()->getSchemeAndHttpHost() . '/login/google/callback';
+        $callbackUrl = config('app.url') . '/login/google/callback';
+        
+        \Log::info('Google Login Redirect', [
+            'app_url' => config('app.url'),
+            'callback_url' => $callbackUrl,
+            'request_url' => request()->url(),
+            'full_url' => request()->fullUrl()
+        ]);
         
         return Socialite::driver('google')
             ->redirectUrl($callbackUrl)
@@ -174,13 +181,30 @@ class LoginController extends Controller
                     ->with('error', 'Akun Google Anda (' . $googleUser->getEmail() . ') belum terdaftar. Silakan daftar terlebih dahulu menggunakan form di bawah ini.');
             }
         } catch (\Exception $e) {
+            $callbackUrl = config('app.url') . '/login/google/callback';
+            
             Log::error('Google OAuth Error: ' . $e->getMessage(), [
                 'exception' => get_class($e),
                 'file' => $e->getFile(),
-                'line' => $e->getLine()
+                'line' => $e->getLine(),
+                'callback_url_used' => $callbackUrl,
+                'app_url' => config('app.url'),
+                'request_url' => request()->url()
             ]);
+            
+            // User-friendly error messages
+            $errorMessage = 'Maaf, terjadi kesalahan saat login dengan Google.';
+            
+            if (strpos($e->getMessage(), 'redirect_uri_mismatch') !== false) {
+                $errorMessage = 'Konfigurasi Google belum sesuai. URL yang digunakan: ' . $callbackUrl . '. Pastikan URL ini sudah terdaftar di Google Cloud Console, atau coba lagi dalam beberapa menit.';
+            } elseif (strpos($e->getMessage(), 'invalid_client') !== false) {
+                $errorMessage = 'Konfigurasi Google OAuth tidak valid. Silakan hubungi administrator.';
+            } elseif (strpos($e->getMessage(), 'access_denied') !== false) {
+                $errorMessage = 'Anda membatalkan proses login dengan Google.';
+            }
+            
             return redirect()->route('login')
-                ->with('error', 'Google sign-in failed: ' . $e->getMessage());
+                ->with('error', $errorMessage);
         }
     }
 }

@@ -82,7 +82,15 @@
                                 </div>
                                 <figure class="single-thumbnail">
                                     <div class="col-xl-10 col-lg-12 m-auto">
-                                        <img src="{{ $blog->featured_image }}" alt="" />
+                                        @php
+                                            // Check if image is external URL or local storage
+                                            $imageUrl = $blog->featured_image
+                                                ? (filter_var($blog->featured_image, FILTER_VALIDATE_URL) 
+                                                    ? $blog->featured_image 
+                                                    : asset('storage/' . $blog->featured_image))
+                                                : asset('images/blog-placeholder.webp');
+                                        @endphp
+                                        <img src="{{ $imageUrl }}" alt="{{ $blog->title }}" />
                                     </div>
                                 </figure>
                                 <div class="single-content">
@@ -129,7 +137,7 @@
                                     @foreach($blog->ebooks as $ebook)
                                     <div class="single-post clearfix">
                                         <div class="image">
-                                            <img src="{{ asset($ebook->cover_image) }}" alt="{{ $ebook->title }}" />
+                                            <img src="@if($ebook->cover_image && filter_var($ebook->cover_image, FILTER_VALIDATE_URL)){{ $ebook->cover_image }}@elseif($ebook->cover_image){{ asset('storage/' . $ebook->cover_image) }}@else{{ asset('images/ebook-placeholder.webp') }}@endif" alt="{{ $ebook->title }}" />
                                         </div>
                                         <div class="content pt-10">
                                             {{-- PERBAIKAN: Buat link ke halaman detail e-book --}}

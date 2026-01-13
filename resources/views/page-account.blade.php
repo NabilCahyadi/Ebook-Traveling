@@ -189,6 +189,26 @@
         text-transform: uppercase;
     }
 
+    /* Fixed ukuran cover ebook agar konsisten */
+    .product-img {
+        position: relative;
+        width: 100%;
+        padding-top: 140%; /* Rasio 5:7 (tinggi 140% dari lebar) untuk cover buku */
+        overflow: hidden;
+        border-radius: 15px;
+        background-color: #f5f5f5;
+    }
+
+    .product-img img.default-img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
     /* Untuk membatasi judul buku maksimal 2 baris */
     .product-cart-wrap h2 {
         display: -webkit-box;
@@ -1094,8 +1114,13 @@
                                                 <div class="product-img-action-wrap">
                                                     <div class="product-img product-img-zoom">
                                                         <a href="/ebooks/{{ $ebook->slug }}">
+                                                            @php
+                                                                $coverImage = $ebook->external_cover_url 
+                                                                    ? $ebook->external_cover_url 
+                                                                    : ($ebook->cover_image_url ?? 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg');
+                                                            @endphp
                                                             <img class="default-img"
-                                                                src="{{ $ebook->cover_image ?: 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg' }}"
+                                                                src="{{ $coverImage }}"
                                                                 alt="{{ $ebook->title }}" />
                                                         </a>
                                                     </div>
@@ -1143,7 +1168,7 @@
                                                     </div>
 
                                                     @php
-                                                    $descriptionText = $ebook->short_description ?? $ebook->description;
+                                                    $descriptionText = strip_tags($ebook->short_description ?? $ebook->description);
                                                     $isSingleLine = strlen($descriptionText) <= 29;
                                                         @endphp
                                                         <p class="product-description {{ $isSingleLine ? 'single-line' : '' }}">
@@ -1821,7 +1846,7 @@
                                         @foreach($createdEbooks as $ebook)
                                         <div class="col-md-4 mb-4">
                                             <div class="card h-100">
-                                                <img src="{{ $ebook->cover_image ?? '/images/ebook-placeholder.jpg' }}"
+                                                <img src="@if($ebook->cover_image && filter_var($ebook->cover_image, FILTER_VALIDATE_URL)){{ $ebook->cover_image }}@elseif($ebook->cover_image){{ asset('storage/' . $ebook->cover_image) }}@else{{ asset('images/ebook-placeholder.webp') }}@endif"
                                                     class="card-img-top" alt="{{ $ebook->title }}"
                                                     style="height: 200px; object-fit: cover;">
                                                 <div class="card-body">
@@ -1889,7 +1914,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>
-            <form method="POST" action="{{ route('password.update') }}">
+            <form method="POST" action="{{ route('account.password.update') }}">
                 @csrf
                 @method('PUT')
                 <div class="modal-body p-4">

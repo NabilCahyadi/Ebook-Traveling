@@ -23,7 +23,10 @@ class UserActivityLogController extends Controller
             ])->with('warning', 'ActionLog model is not available. Please check your database migrations.');
         }
 
-        $query = ActionLog::with(['user.roles']);
+        // Only show user activities, exclude admin activities
+        $query = ActionLog::with(['user.roles'])
+            ->whereNotNull('user_id')
+            ->whereNull('admin_id'); // Pastikan admin_id null (bukan admin)
 
         // Filter by user
         if ($request->has('user_id') && $request->user_id) {
@@ -56,7 +59,7 @@ class UserActivityLogController extends Controller
             });
         }
 
-        $logs = $query->latest()->paginate(20);
+        $logs = $query->latest()->paginate(10);
 
         // Get all users for filter
         $users = User::with('roles')->orderBy('name')->get();

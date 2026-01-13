@@ -266,7 +266,9 @@
                     <div class="search-style-2">
                         <input
                             type="text"
+                            id="search-input-desktop"
                             placeholder="Search by E-book Title or Author..."
+                            value="{{ request('q') }}"
                             style="height:40px; margin-left:7px; padding:0px 15px; font-size:14px; border-radius: 5px; border: 1px solid #ECECEC;" />
                     </div>
                     <div class="header-action-right ml-20">
@@ -573,8 +575,8 @@
         </div>
         <div class="mobile-header-content-area">
             <div class="mobile-search search-style-3 mobile-header-border">
-                <form action="#">
-                    <input type="text" placeholder="Search by E-book Title or Author..." />
+                <form action="{{ route('search') }}" method="GET" id="mobile-search-form">
+                    <input type="text" name="q" id="search-input-mobile" placeholder="Search by E-book Title or Author..." value="{{ request('q') }}" />
                     <button type="submit"><i class="fi-rs-search"></i></button>
                 </form>
             </div>
@@ -767,6 +769,19 @@
                 closeDropdown();
             }, 100); // Tunggu 100ms setelah scroll berhenti
         }, false);
+
+        // Handle search functionality for desktop
+        const searchInputDesktop = document.getElementById('search-input-desktop');
+        if (searchInputDesktop) {
+            searchInputDesktop.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const query = this.value.trim();
+                    if (query) {
+                        window.location.href = '{{ route("search") }}?q=' + encodeURIComponent(query);
+                    }
+                }
+            });
+        }
     });
 </script>
 <script>

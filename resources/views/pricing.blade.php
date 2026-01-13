@@ -526,7 +526,6 @@
                             <div class="pricing-button-container">
                                 @if($user)
                                 @php
-                                // ✅ AMAN: semua dicek bertahap
                                 $currentSub = $user->currentSubscription ?? null;
                                 $isActive = $currentSub !== null;
                                 $isCurrentPlan = $isActive && $currentSub->subscription_plan_id === $plan->id;
@@ -535,49 +534,30 @@
 
                                 @if($isActive)
                                 @if($isCurrentPlan)
-                                <!-- 🟢 RENEW -->
-                                <!-- <button type="button" class="pricing-button pricing-button--primary w-100"
-                                    data-bs-toggle="modal" data-bs-target="#renewModal-{{ $plan->id }}">
+                                <!-- 🟢 RENEW: Pakai Mayar asli -->
+                                <button class="pricing-button pricing-button--primary w-100"
+                                    onclick="subscribeWithMayar('{{ $plan->id }}', this)">
                                     Renew Subscription
-                                </button> -->
-                                <a href="{{ route('simulate.renew', $plan->slug) }}"
-                                    class="pricing-button pricing-button--primary w-100 text-white">
-                                    <i class="fi-rs-sparkles me-1"></i> Simulate Renewal
-                                </a>
+                                </button>
                                 @elseif($currentPlan && $plan->price > $currentPlan->price)
-                                <!-- 🔼 UPGRADE -->
-                                <!-- <button type="button" class="pricing-button pricing-button--primary w-100"
-                                    data-bs-toggle="modal" data-bs-target="#upgradeModal-{{ $plan->id }}">
-                                    Upgrade Subscription
-                                </button> -->
-                                @if(app()->environment('local'))
-                                <button type="button"
-                                    class="pricing-button pricing-button--primary w-100"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#upgradeModal-{{ $plan->id }}">
+                                <!-- 🔼 UPGRADE: Pakai Mayar asli -->
+                                <button class="pricing-button pricing-button--primary w-100"
+                                    onclick="subscribeWithMayar('{{ $plan->id }}', this)">
                                     Upgrade Subscription
                                 </button>
+                                @else
+                                <!-- 🟡 DOWNGRADE: Tidak diizinkan -->
+                                <span class="text-muted small d-block text-center py-2">Upgrade only</span>
                                 @endif
                                 @else
-                                <!-- 🟡 SUDAH LEBIH MAHAL -->
-                                <span class="text-muted small d-block text-center py-2">Already covered</span>
-                                @endif
-                                @else
-                                <!-- 🔵 LANGGANAN BARU -->
-                                @if(app()->environment('local'))
-                                <a href="{{ route('simulate.pay', $plan->slug) }}"
-                                    class="pricing-button pricing-button--primary w-100 text-white">
-                                    <i class="fi-rs-sparkles me-1"></i> Subscribe (Simulation)
-                                </a>
-                                @else
+                                <!-- 🔵 LANGGANAN BARU: Pakai Mayar asli -->
                                 <button class="pricing-button pricing-button--primary w-100"
                                     onclick="subscribeWithMayar('{{ $plan->id }}', this)">
                                     {{ $plan->button_text ?? 'Subscribe Now' }}
                                 </button>
                                 @endif
-                                @endif
 
-                                <!-- 📞 WhatsApp (hanya untuk user login) -->
+                                <!-- 📞 WhatsApp (versi kamu: dengan data user lengkap) -->
                                 @php
                                 $waNumber = trim(app('settings')->get('whatsapp_number', '6289657571177'));
                                 $waText = urlencode("Halo Admin, saya ingin berlangganan.\n\nNama\t: " . $user->name . "\nEmail\t: " . $user->email . "\nPaket\t: " . $plan->name . "\nHarga\t: Rp " . number_format($plan->price, 0, ',', '.') . "\n\nMohon bantuannya. Terima kasih!");

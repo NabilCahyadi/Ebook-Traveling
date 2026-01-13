@@ -31,9 +31,14 @@ class EbookController extends Controller
         $sortOrder = $request->get('sort_order', 'desc');
         $search = $request->get('search');
         $status = $request->get('status');
+        $categoryId = $request->get('category_id');
+        $cityId = $request->get('city_id');
 
-        $ebooks = $this->ebookService->getAllEbooks($perPage, $sortBy, $sortOrder, $search, $status);
-        return view('admin.ebooks.index', compact('ebooks'));
+        $ebooks = $this->ebookService->getAllEbooks($perPage, $sortBy, $sortOrder, $search, $status, $categoryId, $cityId);
+        $categories = \App\Models\Category::orderBy('name')->get();
+        $cities = \App\Models\City::orderBy('name')->get();
+        
+        return view('admin.ebooks.index', compact('ebooks', 'categories', 'cities'));
     }
 
     /**
@@ -106,6 +111,11 @@ class EbookController extends Controller
                 $validated['cover_image'] = $this->saveBase64Image($request->cover_image_cropped);
                 unset($validated['cover_image_cropped']); // Remove temporary field
             }
+
+            // Handle PDF file upload
+            if ($request->hasFile('pdf_file')) {
+                $validated['pdf_file'] = $this->savePdfFile($request->file('pdf_file'));
+            }
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Ebook Validation Error:', [
                 'errors' => $e->errors(),
@@ -164,47 +174,66 @@ class EbookController extends Controller
                 throw new \Exception('Base64 decode failed');
             }
 
-            // Load image dengan Intervention Image untuk compression
+            // Load image dengan Intervention Image
             $manager = new ImageManager(new Driver());
             $image = $manager->read($imageData);
             
-            // Get original dimensions & calculate size
+            // Get original dimensions
             $originalWidth = $image->width();
             $originalHeight = $image->height();
             
-            // Estimate size from base64 length (rough estimation)
-            $estimatedSize = strlen($imageData);
+            // Calculate original size
+            $originalSize = strlen($imageData);
             
-            // Determine if we need to resize for large images
-            $targetWidth = $originalWidth;
-            if ($estimatedSize > 2 * 1024 * 1024) { // > 2MB
-                // Resize to max width 1200px for better performance
-                if ($originalWidth > 1200) {
-                    $targetWidth = 1200;
-                    $targetHeight = (int) ($originalHeight * ($targetWidth / $originalWidth));
-                    $image->scale(width: $targetWidth, height: $targetHeight);
-                }
+            // ========================================
+            // 📸 STEP 1: RESIZE TO OPTIMAL DIMENSIONS
+            // ========================================
+            // Target width untuk cover ebook (balance antara kualitas & size)
+            $targetWidth = 1200;
+            
+            // Resize hanya jika gambar lebih besar dari target
+            if ($originalWidth > $targetWidth) {
+                $targetHeight = (int) ($originalHeight * ($targetWidth / $originalWidth));
+                $image->scale(width: $targetWidth, height: $targetHeight);
+                
+                Log::info('Image resized', [
+                    'from' => $originalWidth . 'x' . $originalHeight,
+                    'to' => $image->width() . 'x' . $image->height()
+                ]);
             }
             
-            // Determine quality based on estimated size
-            $quality = 85; // Default high quality
+            // ========================================
+            // 🛠️ STEP 2: SMART COMPRESSION
+            // ========================================
+            // Quality setting untuk WebP (70-85 = sweet spot)
+            $quality = 75; // Default: balance perfect antara size & visual quality
             
-            if ($estimatedSize > 5 * 1024 * 1024) {
-                // > 5MB: aggressive compression
+            // Adjust quality based on original size
+            if ($originalSize > 8 * 1024 * 1024) {
+                // > 8MB: Aggressive compression (60-65)
+                $quality = 60;
+            } elseif ($originalSize > 5 * 1024 * 1024) {
+                // 5-8MB: Strong compression (65-70)
                 $quality = 65;
-            } elseif ($estimatedSize > 3 * 1024 * 1024) {
-                // 3-5MB: medium compression
+            } elseif ($originalSize > 3 * 1024 * 1024) {
+                // 3-5MB: Medium compression (70-75)
+                $quality = 70;
+            } elseif ($originalSize > 1 * 1024 * 1024) {
+                // 1-3MB: Light compression (75-80)
                 $quality = 75;
-            } elseif ($estimatedSize > 2 * 1024 * 1024) {
-                // 2-3MB: light compression
+            } else {
+                // < 1MB: Minimal compression (80-85)
                 $quality = 80;
             }
 
-            // Generate unique filename (force WebP for best compression)
+            // Generate unique filename
             $filename = 'ebook_cover_' . time() . '_' . uniqid() . '.webp';
             $path = 'ebook_covers/' . $filename;
 
-            // Encode to WebP with quality setting
+            // ========================================
+            // 🌐 STEP 3: ENCODE TO WEBP & SAVE
+            // ========================================
+            // WebP memberikan compression terbaik dengan visual quality tinggi
             $encodedImage = (string) $image->encode(
                 new \Intervention\Image\Encoders\WebpEncoder(quality: $quality)
             );
@@ -212,19 +241,46 @@ class EbookController extends Controller
             // Save to storage
             Storage::disk('public')->put($path, $encodedImage);
             
-            // Log compression result
+            // Get final file size
             $finalSize = Storage::disk('public')->size($path);
-            Log::info('Cover compressed', [
-                'original_size' => round($estimatedSize / 1024 / 1024, 2) . 'MB',
-                'final_size' => round($finalSize / 1024 / 1024, 2) . 'MB',
+            $compressionRatio = round((1 - ($finalSize / $originalSize)) * 100, 1);
+            
+            // Log compression result
+            Log::info('✅ Cover image optimized', [
+                'original_size' => round($originalSize / 1024, 2) . ' KB',
+                'final_size' => round($finalSize / 1024, 2) . ' KB',
+                'saved' => round(($originalSize - $finalSize) / 1024, 2) . ' KB',
+                'compression_ratio' => $compressionRatio . '%',
                 'quality' => $quality,
                 'dimensions' => $image->width() . 'x' . $image->height(),
+                'format' => 'WebP'
             ]);
 
             return $path;
         }
 
         throw new \Exception('Invalid base64 image format');
+    }
+
+    /**
+     * Save uploaded PDF file to storage
+     */
+    private function savePdfFile($file)
+    {
+        // Generate unique filename
+        $filename = 'ebook_' . time() . '_' . uniqid() . '.pdf';
+        $path = 'pdf/' . $filename;
+
+        // Save to storage/app/public/pdf/
+        $file->storeAs('pdf', $filename, 'public');
+
+        Log::info('PDF uploaded', [
+            'filename' => $filename,
+            'size' => round($file->getSize() / 1024 / 1024, 2) . 'MB',
+            'path' => $path
+        ]);
+
+        return $path;
     }
 
     /**
@@ -290,6 +346,16 @@ class EbookController extends Controller
             if ($request->has('cover_image_cropped') && !empty($request->cover_image_cropped)) {
                 $validated['cover_image'] = $this->saveBase64Image($request->cover_image_cropped);
                 unset($validated['cover_image_cropped']); // Remove temporary field
+            }
+
+            // Handle PDF file upload
+            if ($request->hasFile('pdf_file')) {
+                // Delete old PDF if exists
+                $ebook = $this->ebookService->getEbookById($id);
+                if ($ebook->pdf_file && Storage::disk('public')->exists($ebook->pdf_file)) {
+                    Storage::disk('public')->delete($ebook->pdf_file);
+                }
+                $validated['pdf_file'] = $this->savePdfFile($request->file('pdf_file'));
             }
 
             $this->ebookService->updateEbook($id, $validated);

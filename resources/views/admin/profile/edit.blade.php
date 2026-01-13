@@ -23,8 +23,14 @@
                             @method('PUT')
 
                             <div class="d-flex align-items-start align-items-sm-center gap-4 mb-4">
-                                <img src="{{ $admin->avatar ? asset('storage/' . $admin->avatar) : asset('assets/admin/img/avatars/default.jpeg') }}"
-                                    alt="user-avatar" class="d-block w-px-100 h-px-100 rounded" id="uploadedAvatar" />
+                                @if($admin->avatar)
+                                    <img src="{{ asset('storage/' . $admin->avatar) }}"
+                                        alt="user-avatar" class="d-block w-px-100 h-px-100 rounded" id="uploadedAvatar" />
+                                @else
+                                    <div class="d-block w-px-100 h-px-100 rounded bg-label-primary d-flex align-items-center justify-content-center" id="uploadedAvatar">
+                                        <span style="font-size: 2rem; font-weight: 600;">{{ getInitials($admin->name) }}</span>
+                                    </div>
+                                @endif
                                 <div class="button-wrapper">
                                     <label for="upload" class="btn btn-primary me-2 mb-3" tabindex="0">
                                         <span class="d-none d-sm-block">Upload new photo</span>
@@ -36,7 +42,6 @@
                                         id="resetAvatar">
                                         <i class="ti ti-refresh d-block d-sm-none"></i>
                                         <span class="d-none d-sm-block">Reset</span>
-                                    </button>
                                     </button>
 
                                     <div class="text-muted small">Allowed JPG, GIF or PNG. Max size of 2MB</div>
@@ -66,8 +71,34 @@
                                 </div>
                                 <div class="mb-3 col-md-6">
                                     <label class="form-label" for="phone">Phone Number</label>
-                                    <div class="input-group input-group-merge">
-                                        <span class="input-group-text">ID (+62)</span>
+                                    <div class="input-group">
+                                        <select class="form-select" style="max-width: 140px;" id="countryCode" name="country_code">
+                                            <option value="+62" selected>🇮🇩 +62</option>
+                                            <option value="+1">🇺🇸 +1</option>
+                                            <option value="+44">🇬🇧 +44</option>
+                                            <option value="+61">🇦🇺 +61</option>
+                                            <option value="+81">🇯🇵 +81</option>
+                                            <option value="+82">🇰🇷 +82</option>
+                                            <option value="+86">🇨🇳 +86</option>
+                                            <option value="+65">🇸🇬 +65</option>
+                                            <option value="+60">🇲🇾 +60</option>
+                                            <option value="+66">🇹🇭 +66</option>
+                                            <option value="+63">🇵🇭 +63</option>
+                                            <option value="+84">🇻🇳 +84</option>
+                                            <option value="+91">🇮🇳 +91</option>
+                                            <option value="+971">🇦🇪 +971</option>
+                                            <option value="+966">🇸🇦 +966</option>
+                                            <option value="+49">🇩🇪 +49</option>
+                                            <option value="+33">🇫🇷 +33</option>
+                                            <option value="+39">🇮🇹 +39</option>
+                                            <option value="+34">🇪🇸 +34</option>
+                                            <option value="+7">🇷🇺 +7</option>
+                                            <option value="+55">🇧🇷 +55</option>
+                                            <option value="+52">🇲🇽 +52</option>
+                                            <option value="+27">🇿🇦 +27</option>
+                                            <option value="+234">🇳🇬 +234</option>
+                                            <option value="+20">🇪🇬 +20</option>
+                                        </select>
                                         <input type="text" id="phone" name="phone"
                                             class="form-control @error('phone') is-invalid @enderror"
                                             placeholder="812 3456 7890" value="{{ old('phone', $admin->phone) }}" />
@@ -150,14 +181,24 @@
             const accountFileInput = document.querySelector('.account-file-input');
             const uploadedAvatar = document.getElementById('uploadedAvatar');
             const resetAvatar = document.getElementById('resetAvatar');
-            const originalAvatar = uploadedAvatar.src;
+            const hasAvatar = {{ $admin->avatar ? 'true' : 'false' }};
+            const adminInitials = '{{ getInitials($admin->name) }}';
+            
+            // Store original state
+            const originalContent = uploadedAvatar.outerHTML;
 
             if (accountFileInput) {
                 accountFileInput.onchange = function() {
                     if (this.files && this.files[0]) {
                         const reader = new FileReader();
                         reader.onload = function(e) {
-                            uploadedAvatar.src = e.target.result;
+                            // Replace with img tag
+                            const newImg = document.createElement('img');
+                            newImg.src = e.target.result;
+                            newImg.alt = 'user-avatar';
+                            newImg.className = 'd-block w-px-100 h-px-100 rounded';
+                            newImg.id = 'uploadedAvatar';
+                            uploadedAvatar.replaceWith(newImg);
                         }
                         reader.readAsDataURL(this.files[0]);
                     }
@@ -167,7 +208,11 @@
             // Reset avatar to original
             if (resetAvatar) {
                 resetAvatar.onclick = function() {
-                    uploadedAvatar.src = originalAvatar;
+                    const currentAvatar = document.getElementById('uploadedAvatar');
+                    const parent = currentAvatar.parentNode;
+                    const temp = document.createElement('div');
+                    temp.innerHTML = originalContent;
+                    parent.replaceChild(temp.firstChild, currentAvatar);
                     accountFileInput.value = '';
                 };
             }

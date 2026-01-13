@@ -13,7 +13,7 @@ use App\Http\Controllers\AccountController;
 | Routes untuk pelanggan yang membeli dan membaca ebook
 */
 
-Route::prefix('user')->name('user.')->middleware('auth')->group(function () {
+Route::prefix('user')->name('user.')->middleware(['user.session', 'auth'])->group(function () {
     // Ebook Reader Routes
     Route::get('/reader/{slug}', [ReaderController::class, 'show'])->name('ebook.read');
     Route::post('/reader/update-progress', [ReaderController::class, 'updateProgress'])->name('reader.updateProgress');

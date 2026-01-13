@@ -75,7 +75,7 @@
 
                 <!-- Stats -->
                 <div class="d-flex justify-content-between align-items-center mt-3">
-                    <span class="badge bg-primary">{{ $blogs->total() }} {{ __('admin.common.total') }}</span>
+                    <span class="badge bg-primary">Total: {{ $blogs->total() }} Blog</span>
                     <a href="{{ route('admin.blogs.archived') }}" class="btn btn-sm btn-outline-secondary">
                         <i class="bx bx-archive me-1"></i> {{ __('admin.blogs.view_archived') }}
                     </a>
@@ -89,9 +89,9 @@
                                 <tr>
                                     <th>{{ __('admin.blogs.image') }}</th>
                                     <th>{{ __('admin.blogs.title') }}</th>
-                                    <th>{{ __('admin.blogs.author') }}</th>
+                                    <th>{{ __('admin.blogs.creator') }}</th>
                                     <th>{{ __('admin.blogs.category') }}</th>
-                                    <th>{{ __('admin.blogs.views') }}</th>
+                                    <!-- <th>{{ __('admin.blogs.views') }}</th> -->
                                     <th>{{ __('admin.blogs.status') }}</th>
                                     <th>{{ __('admin.blogs.published') }}</th>
                                     <th>{{ __('admin.actions.actions') }}</th>
@@ -102,7 +102,13 @@
                                     <tr>
                                         <td>
                                             @if ($blog->featured_image)
-                                                <img src="{{ asset('storage/' . $blog->featured_image) }}"
+                                                @php
+                                                    // Check if image is external URL or local storage
+                                                    $imageUrl = filter_var($blog->featured_image, FILTER_VALIDATE_URL) 
+                                                        ? $blog->featured_image 
+                                                        : asset('storage/' . $blog->featured_image);
+                                                @endphp
+                                                <img src="{{ $imageUrl }}"
                                                     alt="{{ $blog->title }}" class="rounded"
                                                     style="width: 60px; height: 60px; object-fit: cover;">
                                             @else
@@ -114,11 +120,11 @@
                                         </td>
                                         <td>
                                             <div>
-                                                <strong>{{ Str::limit($blog->title, 50) }}</strong>
+                                                <strong>{{ Str::limit($blog->title, 30) }}</strong>
                                             </div>
-                                            <small class="text-muted">{{ $blog->slug }}</small>
+                                            <small class="text-muted">{{ Str::limit($blog->slug, 35) }}</small>
                                         </td>
-                                        <td>{{ $blog->author->name ?? 'Unknown' }}</td>
+                                        <td>{{ $blog->author->name ?? __('admin.blogs.unknown') }}</td>
                                         <td>
                                             @if ($blog->category)
                                                 <span class="badge bg-label-info">{{ $blog->category }}</span>
@@ -126,18 +132,20 @@
                                                 <span class="text-muted">-</span>
                                             @endif
                                         </td>
-                                        <td>
+                                        <!-- <td>
                                             <i class="bx bx-show me-1"></i>{{ number_format($blog->view_count) }}
-                                        </td>
+                                        </td> -->
                                         <td>
                                             @if ($blog->status === 'published')
-                                                <span class="badge bg-success">Published</span>
+                                                <span class="badge bg-success">{{ __('admin.blogs.published') }}</span>
                                             @elseif($blog->status === 'draft')
-                                                <span class="badge bg-warning">Draft</span>
+                                                <span class="badge bg-warning">{{ __('admin.blogs.draft') }}</span>
                                             @elseif($blog->status === 'unpublished')
-                                                <span class="badge bg-secondary">Unpublished</span>
+                                                <span class="badge bg-secondary">{{ __('admin.blogs.unpublished') }}</span>
+                                            @elseif($blog->status === 'archived')
+                                                <span class="badge bg-dark">{{ __('admin.blogs.archived') }}</span>
                                             @else
-                                                <span class="badge bg-dark">Archived</span>
+                                                <span class="badge bg-danger">{{ $blog->status ?: __('admin.blogs.unknown') }}</span>
                                             @endif
                                         </td>
                                         <td>
@@ -157,11 +165,11 @@
                                                 <div class="dropdown-menu dropdown-menu-end">
                                                     <a class="dropdown-item"
                                                         href="{{ route('admin.blogs.show', $blog->id) }}">
-                                                        <i class="ti ti-eye me-2"></i> View
+                                                        <i class="ti ti-eye me-2"></i> {{ __('admin.blogs.view') }}
                                                     </a>
                                                     <a class="dropdown-item"
                                                         href="{{ route('admin.blogs.edit', $blog->id) }}">
-                                                        <i class="ti ti-pencil me-2"></i> Edit
+                                                        <i class="ti ti-pencil me-2"></i> {{ __('admin.blogs.edit') }}
                                                     </a>
                                                     <div class="dropdown-divider"></div>
                                                     <form action="{{ route('admin.blogs.destroy', $blog->id) }}"
@@ -171,8 +179,8 @@
                                                         @method('DELETE')
                                                     </form>
                                                     <a class="dropdown-item text-danger" href="javascript:void(0);"
-                                                        onclick="if(confirm('Are you sure you want to delete this blog?')) document.getElementById('delete-blog-{{ $blog->id }}').submit();">
-                                                        <i class="ti ti-trash me-2"></i> Delete
+                                                        onclick="if(confirm('{{ __('admin.blogs.delete_confirm') }}')) document.getElementById('delete-blog-{{ $blog->id }}').submit();">
+                                                        <i class="ti ti-trash me-2"></i> {{ __('admin.blogs.delete') }}
                                                     </a>
                                                     </form>
                                                 </div>
@@ -190,9 +198,9 @@
                 @else
                     <div class="text-center py-5">
                         <i class="bx bx-news display-1 text-muted"></i>
-                        <p class="mt-3 text-muted">No blogs found. Create your first blog!</p>
+                        <p class="mt-3 text-muted">{{ __('admin.blogs.no_blogs_found') }}</p>
                         <a href="{{ route('admin.blogs.create') }}" class="btn btn-primary">
-                            <i class="bx bx-plus me-1"></i> Create New Blog
+                            <i class="bx bx-plus me-1"></i> {{ __('admin.blogs.create_new_blog') }}
                         </a>
                     </div>
                 @endif

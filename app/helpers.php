@@ -90,3 +90,35 @@ if (!function_exists('canAccess')) {
         return hasPermission($permission);
     }
 }
+
+if (!function_exists('getInitials')) {
+    /**
+     * Get initials from name.
+     * Single word: first 2 letters (e.g., "Nabil" -> "NA")
+     * Multiple words: first letter of each word (e.g., "Nabil Cahyadi" -> "NC")
+     *
+     * @param string $name
+     * @return string
+     */
+    function getInitials($name)
+    {
+        if (empty($name)) {
+            return '';
+        }
+
+        $words = explode(' ', trim($name));
+        
+        // If single word, take first 2 letters
+        if (count($words) === 1) {
+            return strtoupper(substr($words[0], 0, 2));
+        }
+        
+        // If multiple words, take first letter of first 2 words
+        $initials = '';
+        for ($i = 0; $i < min(2, count($words)); $i++) {
+            $initials .= strtoupper(substr($words[$i], 0, 1));
+        }
+        
+        return $initials;
+    }
+}

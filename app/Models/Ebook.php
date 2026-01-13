@@ -15,6 +15,7 @@ use App\Models\City;
 use App\Models\EbookSection;
 use App\Models\Rating;
 use App\Models\Collection;
+use App\Models\OrderItem;
 
 class Ebook extends Model
 {
@@ -55,6 +56,7 @@ class Ebook extends Model
      */
     protected $appends = [
         'cover_image_url',
+        'pdf_file_url',
     ];
 
     /**
@@ -130,6 +132,30 @@ class Ebook extends Model
     }
 
     /**
+     * Get the PDF file URL attribute.
+     * Supports both external URLs and local storage paths.
+     */
+    public function getPdfFileUrlAttribute()
+    {
+        if (empty($this->pdf_file)) {
+            return null;
+        }
+
+        // Check if it's an external URL
+        if (filter_var($this->pdf_file, FILTER_VALIDATE_URL)) {
+            return $this->pdf_file;
+        }
+
+        // Check if starts with http:// or https://
+        if (\Illuminate\Support\Str::startsWith($this->pdf_file, ['http://', 'https://'])) {
+            return $this->pdf_file;
+        }
+
+        // Local storage path - gunakan Storage::url() untuk compatibility dengan symlink
+        return Storage::url($this->pdf_file);
+    }
+
+    /**
      * Get the category that owns the ebook.
      */
     public function category(): BelongsTo
@@ -182,6 +208,13 @@ class Ebook extends Model
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'ebook_categories');
+    }
+    /**
+     * Get the order items for the ebook.
+     */
+    public function orderItems(): HasMany
+    {
+        return $this->hasMany(OrderItem::class, 'ebook_id');
     }
 
     public function readings()

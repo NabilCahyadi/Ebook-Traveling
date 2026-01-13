@@ -101,12 +101,9 @@ class CollectionService
         // Di sinilah semua data loading terjadi
         $collection->load(['ebooks' => function ($query) {
             $query->where('status', 'published')
-                ->with('creator.user') // Penting untuk menghindari N+1 problem
+                ->with(['creator', 'ratings']) // Load creator dan ratings
                 ->orderBy('created_at', 'desc');
         }]);
-
-        // TAMBAHKAN BARIS INI UNTUK DEBUG
-        // dd($collection);
 
         return $collection;
     }

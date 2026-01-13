@@ -69,7 +69,14 @@ class RegisterController extends Controller
      */
     public function redirectToGoogleRegister()
     {
-        $callbackUrl = request()->getSchemeAndHttpHost() . '/register/google/callback';
+        $callbackUrl = config('app.url') . '/register/google/callback';
+        
+        \Log::info('Google Register Redirect', [
+            'app_url' => config('app.url'),
+            'callback_url' => $callbackUrl,
+            'request_url' => request()->url(),
+            'full_url' => request()->fullUrl()
+        ]);
         
         return Socialite::driver('google')
             ->redirectUrl($callbackUrl)
@@ -101,14 +108,31 @@ class RegisterController extends Controller
                     ->with('info', 'Silakan lengkapi data Anda untuk menyelesaikan pendaftaran.');
             }
         } catch (\Exception $e) {
+            $callbackUrl = config('app.url') . '/register/google/callback';
+            
             Log::error('Google Registration Error: ' . $e->getMessage(), [
                 'exception' => get_class($e),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
+                'callback_url_used' => $callbackUrl,
+                'app_url' => config('app.url'),
+                'request_url' => request()->url(),
                 'trace' => $e->getTraceAsString()
             ]);
+            
+            // User-friendly error messages
+            $errorMessage = 'Maaf, terjadi kesalahan saat registrasi dengan Google.';
+            
+            if (strpos($e->getMessage(), 'redirect_uri_mismatch') !== false) {
+                $errorMessage = 'Konfigurasi Google belum sesuai. URL yang digunakan: ' . $callbackUrl . '. Pastikan URL ini sudah terdaftar di Google Cloud Console, atau coba lagi dalam beberapa menit.';
+            } elseif (strpos($e->getMessage(), 'invalid_client') !== false) {
+                $errorMessage = 'Konfigurasi Google OAuth tidak valid. Silakan hubungi administrator.';
+            } elseif (strpos($e->getMessage(), 'access_denied') !== false) {
+                $errorMessage = 'Anda membatalkan proses login dengan Google.';
+            }
+            
             return redirect()->route('login', ['form' => 'register'])
-                ->with('error', 'Registrasi dengan Google gagal: ' . $e->getMessage());
+                ->with('error', $errorMessage);
         }
     }
 

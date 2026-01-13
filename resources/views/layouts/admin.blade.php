@@ -12,7 +12,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ url('assets/admin/img/favicon/favicon.ico') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ url('images/only-logoo.png') }}" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -107,9 +107,6 @@
                         @yield('content')
                     </div>
                     <!-- / Content -->
-
-                    <!-- Footer -->
-                    @include('layouts.partials.admin.footer')
 
                     <div class="content-backdrop fade"></div>
                 </div>

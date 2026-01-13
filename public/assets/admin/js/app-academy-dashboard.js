@@ -521,3 +521,4 @@
     $('.dataTables_length .form-select').removeClass('form-select-sm');
   }, 300);
 })();
+

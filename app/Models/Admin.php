@@ -112,6 +112,59 @@ class Admin extends Authenticatable
     }
 
     /**
+     * Get the permissions for the admin.
+     */
+    public function permissions()
+    {
+        return $this->belongsToMany(AdminPermission::class, 'admin_permission', 'admin_id', 'admin_permission_id');
+    }
+
+    /**
+     * Check if admin has a specific permission.
+     */
+    public function hasPermission(string $permissionName): bool
+    {
+        // Superadmin has all permissions
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+
+        return $this->permissions()->where('name', $permissionName)->exists();
+    }
+
+    /**
+     * Check if admin has any of the given permissions.
+     */
+    public function hasAnyPermission(array $permissions): bool
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+
+        return $this->permissions()->whereIn('name', $permissions)->exists();
+    }
+
+    /**
+     * Check if admin has all of the given permissions.
+     */
+    public function hasAllPermissions(array $permissions): bool
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+
+        return $this->permissions()->whereIn('name', $permissions)->count() === count($permissions);
+    }
+
+    /**
+     * Sync permissions for the admin.
+     */
+    public function syncPermissions(array $permissionIds): void
+    {
+        $this->permissions()->sync($permissionIds);
+    }
+
+    /**
      * Update last login timestamp.
      */
     public function updateLastLogin(): void
@@ -125,5 +178,23 @@ class Admin extends Authenticatable
     public function guardName(): string
     {
         return 'admin';
+    }
+
+    /**
+     * Get user notifications (pivot table with notification).
+     */
+    public function userNotifications()
+    {
+        return $this->hasMany(\App\Models\UserNotification::class, 'user_id');
+    }
+
+    /**
+     * Get notifications through pivot table.
+     */
+    public function notifications()
+    {
+        return $this->belongsToMany(\App\Models\Notification::class, 'user_notifications', 'user_id', 'notification_id')
+            ->withPivot('is_read', 'read_at')
+            ->withTimestamps();
     }
 }

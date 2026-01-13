@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Ebook;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 
 class CollectionController extends Controller
