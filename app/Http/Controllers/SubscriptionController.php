@@ -12,7 +12,7 @@ use App\Repositories\Interfaces\SubscriptionProcessInterface;
 use App\Services\MayarService;
 use Carbon\Carbon;
 use App\Models\SubscriptionPlan;
-use Illuminate\Support\Facades\Artisan;
+use App\Models\City;
 
 class SubscriptionController extends Controller
 {
