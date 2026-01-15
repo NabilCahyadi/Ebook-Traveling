@@ -75,7 +75,7 @@ Route::middleware(['user.session'])->group(function () {
     Route::get('/contact', [ContactController::class, 'index'])->name('contact');
     Route::get('/faq', [FaqController::class, 'faqs'])->name('faq');
     Route::get('/search', [HomeController::class, 'search'])->name('search');
-
+    Route::get('/payment/success', [SubscriptionController::class, 'paymentSuccess'])->name('payment.success');
     Route::post('/ebooks/{id}/save', [EbookController::class, 'toggleSaved'])
         ->name('ebooks.save.toggle')
         ->middleware('auth');
