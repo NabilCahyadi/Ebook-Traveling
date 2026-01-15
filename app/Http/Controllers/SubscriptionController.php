@@ -12,6 +12,7 @@ use App\Repositories\Interfaces\SubscriptionProcessInterface;
 use App\Services\MayarService;
 use Carbon\Carbon;
 use App\Models\SubscriptionPlan;
+use Illuminate\Support\Facades\Artisan;
 
 class SubscriptionController extends Controller
 {
@@ -104,8 +105,18 @@ class SubscriptionController extends Controller
         }
 
         try {
-            // ✅ DELEGASI KE SERVICE
+            // ✅ Ambil data payment dari service
             $this->subscriptionProcessRepository->handleMayarCallback($transactionId, $status);
+
+            // ✅ Cari payment untuk log
+            $payment = DB::table('payments')
+                ->where('gateway_transaction_id', $transactionId)
+                ->first();
+
+            if ($payment) {
+                Log::info('Payment processed successfully', ['user_id' => $payment->user_id]);
+            }
+
             return response('OK', 200);
         } catch (\Exception $e) {
             Log::error('Callback processing failed', [
@@ -116,128 +127,14 @@ class SubscriptionController extends Controller
         }
     }
 
-    public function simulateRenewal(Request $request, string $planSlug)
+    public function paymentSuccess()
     {
-        $user = $request->user();
-        $plan = SubscriptionPlan::where('slug', $planSlug)->firstOrFail();
+        $user = auth()->user();
+        $user->load('currentSubscription');
 
-        // ✅ AMAN: Bandingkan di sisi database, hindari timezone conflict
-        $activeSub = DB::table('subscriptions')
-            ->where('user_id', $user->id)
-            ->where('status', 'active')
-            ->whereRaw('end_date >= NOW()')
-            ->where('subscription_plan_id', $plan->id)
-            ->orderBy('end_date', 'desc')
-            ->limit(1)
-            ->first();
-
-        if (!$activeSub) {
-            return redirect()->back()->with('error', 'No active subscription found to renew.');
-        }
-
-        // ✅ AMAN: Parse sebagai UTC dulu, lalu tambah hari
-        $currentEndDate = Carbon::createFromFormat('Y-m-d H:i:s', $activeSub->end_date, 'UTC')
-            ->setTimezone('Asia/Jakarta')
-            ->addDays($plan->duration_days)
-            ->setTimezone('UTC');
-
-        DB::table('subscriptions')
-            ->where('id', $activeSub->id)
-            ->update([
-                'end_date' => $currentEndDate->toDateTimeString(),
-                'total_amount' => DB::raw("`total_amount` + {$plan->price}"),
-                'updated_at' => now(),
-                'notes' => DB::raw("CONCAT(IFNULL(`notes`, ''), '\nSimulated renewal @ " . now()->format('Y-m-d H:i:s') . "')"),
-            ]);
-
-        // Buat payment simulasi
-        $paymentId = (string) Str::uuid();
-        DB::table('payments')->insert([
-            'id' => $paymentId,
-            'user_id' => $user->id,
-            'subscription_plan_id' => $plan->id,
-            'subscription_id' => $activeSub->id,
-            'amount' => $plan->price,
-            'status' => 'success',
-            'paid_at' => now(),
-            'payment_method' => 'simulation',
-            'gateway_transaction_id' => 'SIM-' . strtoupper(Str::random(8)),
-            'invoice_number' => 'INV-SIM-' . strtoupper(Str::random(6)),
-            'payment_code' => 'PAY-' . strtoupper(Str::random(8)),
-            'created_at' => now(),
-            'updated_at' => now(),
+        return view('payment.success', [
+            'isPremium' => $user->hasActiveSubscription()
         ]);
-
-        return redirect()->route('page-account', ['tab' => 'subscription'])
-            ->with('success', 'Subscription successfully renewed (simulated).');
-    }
-
-    // SubscriptionController.php
-    public function simulateUpgrade(Request $request, string $planSlug)
-    {
-        $user = $request->user();
-        $plan = SubscriptionPlan::where('slug', $planSlug)->firstOrFail();
-
-        // ✅ Cari subscription AKTIF saat ini
-        $currentSub = DB::table('subscriptions')
-            ->where('user_id', $user->id)
-            ->where('status', 'active')
-            ->where('end_date', '>=', now())
-            ->first();
-
-        if (!$currentSub) {
-            return redirect()->back()->with('error', 'No active subscription to upgrade.');
-        }
-
-        // ✅ Pastikan upgrade ke paket LEBIH MAHAL
-        $currentPlan = SubscriptionPlan::find($currentSub->subscription_plan_id);
-        if ($currentPlan && $plan->price <= $currentPlan->price) {
-            return redirect()->back()->with('error', 'Cannot downgrade.');
-        }
-
-        // ✅ 1. NONAKTIFKAN subscription lama
-        DB::table('subscriptions')
-            ->where('id', $currentSub->id)
-            ->update(['status' => 'upgraded']);
-
-        // ✅ 2. BUAT subscription BARU (mulai dari sekarang)
-        $newSubId = (string) Str::uuid();
-        $startDate = now();
-        $endDate = $startDate->copy()->addDays($plan->duration_days);
-
-        DB::table('subscriptions')->insert([
-            'id' => $newSubId,
-            'user_id' => $user->id,
-            'subscription_plan_id' => $plan->id,
-            'subscription_code' => 'SUB-' . strtoupper(Str::random(6)) . '-' . $startDate->timestamp,
-            'start_date' => $startDate,
-            'end_date' => $endDate,
-            'status' => 'active',
-            'total_amount' => $plan->price,
-            'created_at' => $startDate,
-            'updated_at' => $startDate,
-        ]);
-
-        // ✅ 3. Buat payment untuk upgrade
-        $paymentId = (string) Str::uuid();
-        DB::table('payments')->insert([
-            'id' => $paymentId,
-            'user_id' => $user->id,
-            'subscription_plan_id' => $plan->id,
-            'subscription_id' => $newSubId,
-            'payment_code' => 'UPG-' . strtoupper(Str::random(8)),
-            'invoice_number' => 'INV-UPG-' . strtoupper(Str::random(6)),
-            'amount' => $plan->price,
-            'status' => 'success',
-            'paid_at' => now(),
-            'payment_method' => 'simulation',
-            'gateway_transaction_id' => 'UPG-' . strtoupper(Str::random(8)),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        return redirect()->route('page-account', ['tab' => 'subscription'])
-            ->with('success', 'Upgraded to ' . $plan->name . '!');
     }
 
     /**
