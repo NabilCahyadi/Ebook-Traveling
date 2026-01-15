@@ -1,8 +1,6 @@
-@extends('layouts.admin')
+<?php $__env->startSection('title', 'Dashboard'); ?>
 
-@section('title', 'Dashboard')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <!-- Welcome Section -->
     <div class="row mb-4">
         <div class="col-12">
@@ -11,12 +9,13 @@
                     <div class="d-flex align-items-center">
                         <div class="avatar avatar-xl me-4">
                             <span class="avatar-initial rounded-circle bg-label-secondary">
-                                {{ substr(auth('admin')->user()->name ?? 'A', 0, 1) }}
+                                <?php echo e(substr(auth('admin')->user()->name ?? 'A', 0, 1)); ?>
+
                             </span>
                         </div>
                         <div>
-                            <h4 class="text-white mb-1">{{ __('admin.dashboard.welcome', ['name' => auth('admin')->user()->name ?? 'Admin']) }}</h4>
-                            <p class="text-white mb-0 opacity-75">{{ __('admin.dashboard.subtitle') }}</p>
+                            <h4 class="text-white mb-1"><?php echo e(__('admin.dashboard.welcome', ['name' => auth('admin')->user()->name ?? 'Admin'])); ?></h4>
+                            <p class="text-white mb-0 opacity-75"><?php echo e(__('admin.dashboard.subtitle')); ?></p>
                         </div>
                     </div>
                 </div>
@@ -42,16 +41,16 @@
                                 <i class="ti ti-dots-vertical ti-md"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
-                                @if (Route::has('admin.orders.index'))
-                                    <a class="dropdown-item" href="{{ route('admin.orders.index') }}">View Orders</a>
-                                @endif
+                                <?php if(Route::has('admin.orders.index')): ?>
+                                    <a class="dropdown-item" href="<?php echo e(route('admin.orders.index')); ?>">View Orders</a>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
                     <div class="card-info mt-4">
-                        <h4 class="mb-1">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</h4>
-                        <p class="mb-0">{{ __('admin.dashboard.total_revenue') }}</p>
-                        <small class="text-success"><i class="ti ti-trending-up"></i> {{ __('admin.dashboard.from_completed_orders') }}</small>
+                        <h4 class="mb-1">Rp <?php echo e(number_format($totalRevenue, 0, ',', '.')); ?></h4>
+                        <p class="mb-0"><?php echo e(__('admin.dashboard.total_revenue')); ?></p>
+                        <small class="text-success"><i class="ti ti-trending-up"></i> <?php echo e(__('admin.dashboard.from_completed_orders')); ?></small>
                     </div>
                 </div>
             </div>
@@ -73,20 +72,20 @@
                                 <i class="ti ti-dots-vertical ti-md"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
-                                @if (Route::has('admin.orders.index'))
-                                    <a class="dropdown-item" href="{{ route('admin.orders.index') }}">View All Orders</a>
-                                @endif
+                                <?php if(Route::has('admin.orders.index')): ?>
+                                    <a class="dropdown-item" href="<?php echo e(route('admin.orders.index')); ?>">View All Orders</a>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
                     <div class="card-info mt-4">
-                        <h4 class="mb-1">{{ number_format($totalOrders) }}</h4>
-                        <p class="mb-0">{{ __('admin.dashboard.total_orders') }}</p>
-                        @if ($pendingOrders > 0)
-                            <small class="text-warning"><i class="ti ti-clock"></i> {{ $pendingOrders }} {{ __('admin.dashboard.pending') }}</small>
-                        @else
-                            <small class="text-muted">{{ __('admin.dashboard.all_orders_processed') }}</small>
-                        @endif
+                        <h4 class="mb-1"><?php echo e(number_format($totalOrders)); ?></h4>
+                        <p class="mb-0"><?php echo e(__('admin.dashboard.total_orders')); ?></p>
+                        <?php if($pendingOrders > 0): ?>
+                            <small class="text-warning"><i class="ti ti-clock"></i> <?php echo e($pendingOrders); ?> <?php echo e(__('admin.dashboard.pending')); ?></small>
+                        <?php else: ?>
+                            <small class="text-muted"><?php echo e(__('admin.dashboard.all_orders_processed')); ?></small>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -108,20 +107,20 @@
                                 <i class="ti ti-dots-vertical ti-md"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
-                                @if (Route::has('admin.subscriptions.index'))
-                                    <a class="dropdown-item" href="{{ route('admin.subscriptions.index') }}">View
+                                <?php if(Route::has('admin.subscriptions.index')): ?>
+                                    <a class="dropdown-item" href="<?php echo e(route('admin.subscriptions.index')); ?>">View
                                         Subscribers</a>
-                                @elseif(Route::has('admin.active-subscribers.index'))
-                                    <a class="dropdown-item" href="{{ route('admin.active-subscribers.index') }}">View
+                                <?php elseif(Route::has('admin.active-subscribers.index')): ?>
+                                    <a class="dropdown-item" href="<?php echo e(route('admin.active-subscribers.index')); ?>">View
                                         Subscribers</a>
-                                @endif
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
                     <div class="card-info mt-4">
-                        <h4 class="mb-1">{{ number_format($activeSubscribers) }}</h4>
-                        <p class="mb-0">{{ __('admin.dashboard.active_subscribers') }}</p>
-                        <small class="text-success"><i class="ti ti-check"></i> {{ __('admin.dashboard.premium_members') }}</small>
+                        <h4 class="mb-1"><?php echo e(number_format($activeSubscribers)); ?></h4>
+                        <p class="mb-0"><?php echo e(__('admin.dashboard.active_subscribers')); ?></p>
+                        <small class="text-success"><i class="ti ti-check"></i> <?php echo e(__('admin.dashboard.premium_members')); ?></small>
                     </div>
                 </div>
             </div>
@@ -144,23 +143,23 @@
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <a class="dropdown-item"
-                                    href="{{ route('admin.orders.index', ['status' => 'pending']) }}">View Pending</a>
+                                    href="<?php echo e(route('admin.orders.index', ['status' => 'pending'])); ?>">View Pending</a>
                             </div>
                         </div>
                     </div>
                     <div class="card-info mt-4">
-                        <h4 class="mb-1">{{ number_format($pendingOrders) }}</h4>
-                        <p class="mb-0">{{ __('admin.dashboard.pending_orders') }}</p>
-                        @if ($pendingOrders > 0)
-                            @if (Route::has('admin.orders.index'))
-                                <a href="{{ route('admin.orders.index', ['status' => 'pending']) }}"
+                        <h4 class="mb-1"><?php echo e(number_format($pendingOrders)); ?></h4>
+                        <p class="mb-0"><?php echo e(__('admin.dashboard.pending_orders')); ?></p>
+                        <?php if($pendingOrders > 0): ?>
+                            <?php if(Route::has('admin.orders.index')): ?>
+                                <a href="<?php echo e(route('admin.orders.index', ['status' => 'pending'])); ?>"
                                     class="text-danger small">Process now →</a>
-                            @else
+                            <?php else: ?>
                                 <small class="text-danger">Needs attention</small>
-                            @endif
-                        @else
-                            <small class="text-muted">{{ __('admin.dashboard.all_caught_up') }}</small>
-                        @endif
+                            <?php endif; ?>
+                        <?php else: ?>
+                            <small class="text-muted"><?php echo e(__('admin.dashboard.all_caught_up')); ?></small>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -185,15 +184,15 @@
                                 <i class="ti ti-dots-vertical ti-md"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
-                                <a class="dropdown-item" href="{{ route('admin.ebooks.index') }}">View All</a>
-                                <a class="dropdown-item" href="{{ route('admin.ebooks.create') }}">Add New</a>
+                                <a class="dropdown-item" href="<?php echo e(route('admin.ebooks.index')); ?>">View All</a>
+                                <a class="dropdown-item" href="<?php echo e(route('admin.ebooks.create')); ?>">Add New</a>
                             </div>
                         </div>
                     </div>
                     <div class="card-info mt-4">
-                        <h4 class="mb-1">{{ number_format($totalEbooks) }}</h4>
-                        <p class="mb-0">{{ __('admin.dashboard.total_ebooks') }}</p>
-                        <a href="{{ route('admin.ebooks.index') }}" class="text-primary small">{{ __('admin.dashboard.view_all_ebooks') }}</a>
+                        <h4 class="mb-1"><?php echo e(number_format($totalEbooks)); ?></h4>
+                        <p class="mb-0"><?php echo e(__('admin.dashboard.total_ebooks')); ?></p>
+                        <a href="<?php echo e(route('admin.ebooks.index')); ?>" class="text-primary small"><?php echo e(__('admin.dashboard.view_all_ebooks')); ?></a>
                     </div>
                 </div>
             </div>
@@ -215,14 +214,14 @@
                                 <i class="ti ti-dots-vertical ti-md"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
-                                <a class="dropdown-item" href="{{ route('admin.users.index') }}">View All</a>
+                                <a class="dropdown-item" href="<?php echo e(route('admin.users.index')); ?>">View All</a>
                             </div>
                         </div>
                     </div>
                     <div class="card-info mt-4">
-                        <h4 class="mb-1">{{ number_format($totalUsers) }}</h4>
-                        <p class="mb-0">{{ __('admin.dashboard.total_users') }}</p>
-                        <a href="{{ route('admin.users.index') }}" class="text-success small">{{ __('admin.dashboard.view_all_users') }}</a>
+                        <h4 class="mb-1"><?php echo e(number_format($totalUsers)); ?></h4>
+                        <p class="mb-0"><?php echo e(__('admin.dashboard.total_users')); ?></p>
+                        <a href="<?php echo e(route('admin.users.index')); ?>" class="text-success small"><?php echo e(__('admin.dashboard.view_all_users')); ?></a>
                     </div>
                 </div>
             </div>
@@ -244,14 +243,14 @@
                                 <i class="ti ti-dots-vertical ti-md"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
-                                <a class="dropdown-item" href="{{ route('admin.categories.index') }}">View All</a>
+                                <a class="dropdown-item" href="<?php echo e(route('admin.categories.index')); ?>">View All</a>
                             </div>
                         </div>
                     </div>
                     <div class="card-info mt-4">
-                        <h4 class="mb-1">{{ number_format($totalCategories) }}</h4>
-                        <p class="mb-0">{{ __('admin.dashboard.total_categories') }}</p>
-                        <a href="{{ route('admin.categories.index') }}" class="text-info small">{{ __('admin.dashboard.manage_categories') }}</a>
+                        <h4 class="mb-1"><?php echo e(number_format($totalCategories)); ?></h4>
+                        <p class="mb-0"><?php echo e(__('admin.dashboard.total_categories')); ?></p>
+                        <a href="<?php echo e(route('admin.categories.index')); ?>" class="text-info small"><?php echo e(__('admin.dashboard.manage_categories')); ?></a>
                     </div>
                 </div>
             </div>
@@ -273,14 +272,14 @@
                                 <i class="ti ti-dots-vertical ti-md"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
-                                <a class="dropdown-item" href="{{ route('admin.cities.index') }}">View All</a>
+                                <a class="dropdown-item" href="<?php echo e(route('admin.cities.index')); ?>">View All</a>
                             </div>
                         </div>
                     </div>
                     <div class="card-info mt-4">
-                        <h4 class="mb-1">{{ number_format($totalCities) }}</h4>
-                        <p class="mb-0">{{ __('admin.dashboard.total_cities') }}</p>
-                        <a href="{{ route('admin.cities.index') }}" class="text-warning small">{{ __('admin.dashboard.manage_cities') }}</a>
+                        <h4 class="mb-1"><?php echo e(number_format($totalCities)); ?></h4>
+                        <p class="mb-0"><?php echo e(__('admin.dashboard.total_cities')); ?></p>
+                        <a href="<?php echo e(route('admin.cities.index')); ?>" class="text-warning small"><?php echo e(__('admin.dashboard.manage_cities')); ?></a>
                     </div>
                 </div>
             </div>
@@ -294,8 +293,8 @@
             <div class="card h-100">
                 <div class="card-header">
                     <div>
-                        <h5 class="card-title mb-1">{{ __('admin.dashboard.ebook_by_category') }}</h5>
-                        <p class="card-subtitle mb-0">{{ __('admin.dashboard.top_categories') }}</p>
+                        <h5 class="card-title mb-1"><?php echo e(__('admin.dashboard.ebook_by_category')); ?></h5>
+                        <p class="card-subtitle mb-0"><?php echo e(__('admin.dashboard.top_categories')); ?></p>
                     </div>
                 </div>
                 <div class="card-body">
@@ -327,7 +326,7 @@
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
                         <div>
-                            <h5 class="card-title mb-0">{{ __('admin.dashboard.revenue_overview') }}</h5>
+                            <h5 class="card-title mb-0"><?php echo e(__('admin.dashboard.revenue_overview')); ?></h5>
                         </div>
                         <div class="d-flex align-items-center gap-2">
                             <input type="number" id="revenuePeriod" class="form-control form-control-sm" style="width: 80px;" value="6" min="1" max="30" placeholder="6">
@@ -356,21 +355,22 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">{{ __('admin.dashboard.recent_activity') }}</h5>
-                    @if (Route::has('admin.action-logs.index'))
-                        <a href="{{ route('admin.action-logs.index') }}" class="btn btn-sm btn-text-primary">
-                            {{ __('admin.dashboard.view_all') }}
+                    <h5 class="mb-0"><?php echo e(__('admin.dashboard.recent_activity')); ?></h5>
+                    <?php if(Route::has('admin.action-logs.index')): ?>
+                        <a href="<?php echo e(route('admin.action-logs.index')); ?>" class="btn btn-sm btn-text-primary">
+                            <?php echo e(__('admin.dashboard.view_all')); ?>
+
                         </a>
-                    @endif
+                    <?php endif; ?>
                 </div>
                 <div class="card-body">
-                    @if ($recentActivities->count() > 0)
+                    <?php if($recentActivities->count() > 0): ?>
                         <div class="timeline">
-                            @foreach ($recentActivities as $activity)
+                            <?php $__currentLoopData = $recentActivities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $activity): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <div class="timeline-item mb-3">
                                     <div class="d-flex align-items-start">
                                         <div class="avatar avatar-sm me-3">
-                                            @php
+                                            <?php
                                                 $actionIcons = [
                                                     'create' => 'ti-plus',
                                                     'update' => 'ti-edit',
@@ -387,35 +387,36 @@
                                                 ];
                                                 $icon = $actionIcons[$activity->action] ?? 'ti-activity';
                                                 $color = $actionColors[$activity->action] ?? 'secondary';
-                                            @endphp
-                                            <span class="avatar-initial rounded-circle bg-label-{{ $color }}">
-                                                <i class="ti {{ $icon }}"></i>
+                                            ?>
+                                            <span class="avatar-initial rounded-circle bg-label-<?php echo e($color); ?>">
+                                                <i class="ti <?php echo e($icon); ?>"></i>
                                             </span>
                                         </div>
                                         <div class="flex-grow-1">
                                             <div class="d-flex justify-content-between align-items-start">
                                                 <div>
-                                                    <h6 class="mb-0">{{ $activity->user->name ?? 'System' }}</h6>
-                                                    <p class="mb-0">{{ $activity->description }}</p>
-                                                    <small class="text-muted">{{ $activity->created_at->locale(app()->getLocale())->diffForHumans() }}</small>
+                                                    <h6 class="mb-0"><?php echo e($activity->user->name ?? 'System'); ?></h6>
+                                                    <p class="mb-0"><?php echo e($activity->description); ?></p>
+                                                    <small class="text-muted"><?php echo e($activity->created_at->locale(app()->getLocale())->diffForHumans()); ?></small>
                                                 </div>
-                                                @if ($activity->model_type && $activity->model_id)
+                                                <?php if($activity->model_type && $activity->model_id): ?>
                                                     <span
-                                                        class="badge bg-label-secondary">{{ class_basename($activity->model_type) }}
-                                                        #{{ $activity->model_id }}</span>
-                                                @endif
+                                                        class="badge bg-label-secondary"><?php echo e(class_basename($activity->model_type)); ?>
+
+                                                        #<?php echo e($activity->model_id); ?></span>
+                                                <?php endif; ?>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
-                    @else
+                    <?php else: ?>
                         <div class="text-center py-4">
                             <i class="ti ti-activity-off ti-lg text-muted mb-2"></i>
-                            <p class="text-muted mb-0">{{ __('admin.dashboard.no_recent_activity') }}</p>
+                            <p class="text-muted mb-0"><?php echo e(__('admin.dashboard.no_recent_activity')); ?></p>
                         </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -426,95 +427,96 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">{{ __('admin.dashboard.recent_ebooks') }}</h5>
-                    <a href="{{ route('admin.ebooks.index') }}" class="btn btn-sm btn-primary">
-                        <i class="ti ti-eye me-1"></i> {{ __('admin.dashboard.view_all') }}
+                    <h5 class="mb-0"><?php echo e(__('admin.dashboard.recent_ebooks')); ?></h5>
+                    <a href="<?php echo e(route('admin.ebooks.index')); ?>" class="btn btn-sm btn-primary">
+                        <i class="ti ti-eye me-1"></i> <?php echo e(__('admin.dashboard.view_all')); ?>
+
                     </a>
                 </div>
                 <div class="card-body">
-                    @if ($recentEbooks->count() > 0)
+                    <?php if($recentEbooks->count() > 0): ?>
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>{{ __('admin.dashboard.cover') }}</th>
-                                        <th>{{ __('admin.dashboard.title') }}</th>
-                                        <th>{{ __('admin.dashboard.category') }}</th>
-                                        <th>{{ __('admin.dashboard.city') }}</th>
-                                        <th>{{ __('admin.dashboard.status') }}</th>
-                                        <th>{{ __('admin.dashboard.created') }}</th>
+                                        <th><?php echo e(__('admin.dashboard.cover')); ?></th>
+                                        <th><?php echo e(__('admin.dashboard.title')); ?></th>
+                                        <th><?php echo e(__('admin.dashboard.category')); ?></th>
+                                        <th><?php echo e(__('admin.dashboard.city')); ?></th>
+                                        <th><?php echo e(__('admin.dashboard.status')); ?></th>
+                                        <th><?php echo e(__('admin.dashboard.created')); ?></th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($recentEbooks as $ebook)
+                                    <?php $__currentLoopData = $recentEbooks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ebook): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <tr>
                                             <td>
-                                                <img src="{{ $ebook->cover_image_url }}"
-                                                    alt="{{ $ebook->title }}" class="rounded"
+                                                <img src="<?php echo e($ebook->cover_image_url); ?>"
+                                                    alt="<?php echo e($ebook->title); ?>" class="rounded"
                                                     style="width: 40px; height: 56px; object-fit: cover;">
                                             </td>
                                             <td>
-                                                <div class="fw-medium">{{ Str::limit($ebook->title, 40) }}</div>
+                                                <div class="fw-medium"><?php echo e(Str::limit($ebook->title, 40)); ?></div>
                                             </td>
                                             <td>
-                                                @if ($ebook->category)
-                                                    <span class="badge bg-label-info">{{ $ebook->category->name }}</span>
-                                                @else
+                                                <?php if($ebook->category): ?>
+                                                    <span class="badge bg-label-info"><?php echo e($ebook->category->name); ?></span>
+                                                <?php else: ?>
                                                     <span class="text-muted">-</span>
-                                                @endif
+                                                <?php endif; ?>
                                             </td>
                                             <td>
-                                                @if ($ebook->city)
-                                                    <span class="badge bg-label-secondary">{{ $ebook->city->name }}</span>
-                                                @else
+                                                <?php if($ebook->city): ?>
+                                                    <span class="badge bg-label-secondary"><?php echo e($ebook->city->name); ?></span>
+                                                <?php else: ?>
                                                     <span class="text-muted">-</span>
-                                                @endif
+                                                <?php endif; ?>
                                             </td>
                                             <td>
-                                                @if ($ebook->is_active)
+                                                <?php if($ebook->is_active): ?>
                                                     <span class="badge bg-label-success">Active</span>
-                                                @else
+                                                <?php else: ?>
                                                     <span class="badge bg-label-danger">Inactive</span>
-                                                @endif
+                                                <?php endif; ?>
                                             </td>
                                             <td>
                                                 <small
-                                                    class="text-muted">{{ $ebook->created_at->locale(app()->getLocale())->diffForHumans() }}</small>
+                                                    class="text-muted"><?php echo e($ebook->created_at->locale(app()->getLocale())->diffForHumans()); ?></small>
                                             </td>
                                             <td>
-                                                <a href="{{ route('admin.ebooks.edit', $ebook->id) }}"
+                                                <a href="<?php echo e(route('admin.ebooks.edit', $ebook->id)); ?>"
                                                     class="btn btn-sm btn-icon btn-text-secondary rounded-pill">
                                                     <i class="ti ti-pencil"></i>
                                                 </a>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </tbody>
                             </table>
                         </div>
-                    @else
+                    <?php else: ?>
                         <div class="text-center py-5">
                             <i class="ti ti-book-off ti-xl text-muted mb-3 d-block" style="font-size: 3rem;"></i>
                             <h6 class="text-muted">No ebooks yet</h6>
                             <p class="text-muted mb-3">Start by creating your first ebook</p>
-                            <a href="{{ route('admin.ebooks.create') }}" class="btn btn-primary">
+                            <a href="<?php echo e(route('admin.ebooks.create')); ?>" class="btn btn-primary">
                                 <i class="ti ti-plus me-1"></i> Add New Ebook
                             </a>
                         </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Get current locale
-            const locale = '{{ app()->getLocale() }}';
+            const locale = '<?php echo e(app()->getLocale()); ?>';
             const isIndonesian = locale === 'id';
             
             // Revenue Chart
@@ -522,7 +524,7 @@
             let revenueChart = null;
             
             if (revenueCtx) {
-                const revenueData = @json($monthlyRevenue);
+                const revenueData = <?php echo json_encode($monthlyRevenue, 15, 512) ?>;
                 
                 // Create initial chart
                 revenueChart = new Chart(revenueCtx, {
@@ -576,7 +578,7 @@
                     const count = periodInput.value || 6;
                     
                     // Fetch new data
-                    fetch(`{{ route('admin.dashboard.revenue-data') }}?filter=${filter}&count=${count}`)
+                    fetch(`<?php echo e(route('admin.dashboard.revenue-data')); ?>?filter=${filter}&count=${count}`)
                         .then(response => response.json())
                         .then(data => {
                             if (data.data && data.data.length > 0) {
@@ -606,7 +608,7 @@
             // Category Chart
             const categoryCtx = document.getElementById('categoryChart');
             if (categoryCtx) {
-                const categoryData = @json($categoryStats);
+                const categoryData = <?php echo json_encode($categoryStats, 15, 512) ?>;
                 console.log('Category Data:', categoryData);
 
                 if (categoryData && categoryData.length > 0) {
@@ -653,7 +655,7 @@
             // City Chart
             const cityCtx = document.getElementById('cityChart');
             if (cityCtx) {
-                const cityData = @json($cityStats);
+                const cityData = <?php echo json_encode($cityStats, 15, 512) ?>;
                 console.log('City Data:', cityData);
 
                 if (cityData && cityData.length > 0) {
@@ -698,4 +700,6 @@
             }
         });
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\ebook_traveling\resources\views/admin/dashboard.blade.php ENDPATH**/ ?>

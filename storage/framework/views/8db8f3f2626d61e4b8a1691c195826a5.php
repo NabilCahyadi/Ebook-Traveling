@@ -1,8 +1,6 @@
-@extends('layouts.admin')
+<?php $__env->startSection('title', 'Edit Profile'); ?>
 
-@section('title', 'Edit Profile')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="row">
             <div class="col-md-12">
@@ -10,27 +8,28 @@
                     <h5 class="card-header">Profile Details</h5>
                     <!-- Account -->
                     <div class="card-body">
-                        @if (session('success'))
+                        <?php if(session('success')): ?>
                             <div class="alert alert-success alert-dismissible" role="alert">
-                                {{ session('success') }}
+                                <?php echo e(session('success')); ?>
+
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
-                        @endif
+                        <?php endif; ?>
 
-                        <form id="formAccountSettings" method="POST" action="{{ route('admin.profile.update') }}"
+                        <form id="formAccountSettings" method="POST" action="<?php echo e(route('admin.profile.update')); ?>"
                             enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
+                            <?php echo csrf_field(); ?>
+                            <?php echo method_field('PUT'); ?>
 
                             <div class="d-flex align-items-start align-items-sm-center gap-4 mb-4">
-                                @if($admin->avatar)
-                                    <img src="{{ asset('storage/' . $admin->avatar) }}"
+                                <?php if($admin->avatar): ?>
+                                    <img src="<?php echo e(asset('storage/' . $admin->avatar)); ?>"
                                         alt="user-avatar" class="d-block w-px-100 h-px-100 rounded-circle" id="uploadedAvatar" />
-                                @else
+                                <?php else: ?>
                                     <div class="d-block w-px-100 h-px-100 rounded-circle bg-label-secondary d-flex align-items-center justify-content-center" id="uploadedAvatar">
-                                        <span style="font-size: 2rem; font-weight: 600;">{{ getInitials($admin->name) }}</span>
+                                        <span style="font-size: 2rem; font-weight: 600;"><?php echo e(getInitials($admin->name)); ?></span>
                                     </div>
-                                @endif
+                                <?php endif; ?>
                                 <div class="button-wrapper">
                                     <label for="upload" class="btn btn-primary me-2 mb-3" tabindex="0">
                                         <span class="d-none d-sm-block">Upload new photo</span>
@@ -45,29 +44,64 @@
                                     </button>
 
                                     <div class="text-muted small">Allowed JPG, GIF or PNG. Max size of 2MB</div>
-                                    @error('avatar')
-                                        <div class="text-danger small">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['avatar'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="text-danger small"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="mb-3 col-md-6">
                                     <label for="name" class="form-label">Name</label>
-                                    <input class="form-control @error('name') is-invalid @enderror" type="text"
-                                        id="name" name="name" value="{{ old('name', $admin->name) }}" autofocus
+                                    <input class="form-control <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" type="text"
+                                        id="name" name="name" value="<?php echo e(old('name', $admin->name)); ?>" autofocus
                                         required />
-                                    @error('name')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                                 <div class="mb-3 col-md-6">
                                     <label for="email" class="form-label">E-mail</label>
-                                    <input class="form-control @error('email') is-invalid @enderror" type="email"
-                                        id="email" name="email" value="{{ old('email', $admin->email) }}" required />
-                                    @error('email')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <input class="form-control <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" type="email"
+                                        id="email" name="email" value="<?php echo e(old('email', $admin->email)); ?>" required />
+                                    <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                                 <div class="mb-3 col-md-6">
                                     <label class="form-label" for="phone">Phone Number</label>
@@ -100,11 +134,25 @@
                                             <option value="+20">🇪🇬 +20</option>
                                         </select>
                                         <input type="text" id="phone" name="phone"
-                                            class="form-control @error('phone') is-invalid @enderror"
-                                            placeholder="812 3456 7890" value="{{ old('phone', $admin->phone) }}" />
-                                        @error('phone')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                            class="form-control <?php $__errorArgs = ['phone'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                                            placeholder="812 3456 7890" value="<?php echo e(old('phone', $admin->phone)); ?>" />
+                                        <?php $__errorArgs = ['phone'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                     </div>
                                 </div>
                             </div>
@@ -122,20 +170,34 @@
                     <h5 class="card-header">Change Password</h5>
                     <div class="card-body">
                         <form id="formChangePassword" method="POST"
-                            action="{{ route('admin.profile.password.update') }}">
-                            @csrf
-                            @method('PUT')
+                            action="<?php echo e(route('admin.profile.password.update')); ?>">
+                            <?php echo csrf_field(); ?>
+                            <?php echo method_field('PUT'); ?>
 
                             <div class="row">
                                 <div class="mb-3 col-md-12 form-password-toggle">
                                     <label class="form-label" for="current_password">Current Password</label>
                                     <div class="input-group input-group-merge">
-                                        <input class="form-control @error('current_password') is-invalid @enderror"
+                                        <input class="form-control <?php $__errorArgs = ['current_password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                                             type="password" id="current_password" name="current_password" required />
                                         <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
-                                        @error('current_password')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                        <?php $__errorArgs = ['current_password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                     </div>
                                 </div>
                             </div>
@@ -143,12 +205,26 @@
                                 <div class="mb-3 col-md-6 form-password-toggle">
                                     <label class="form-label" for="password">New Password</label>
                                     <div class="input-group input-group-merge">
-                                        <input class="form-control @error('password') is-invalid @enderror"
+                                        <input class="form-control <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                                             type="password" id="password" name="password" required />
                                         <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
-                                        @error('password')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                        <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                     </div>
                                     <div class="form-text">Password must be at least 8 characters long.</div>
                                 </div>
@@ -172,17 +248,17 @@
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Preview uploaded image
             const accountFileInput = document.querySelector('.account-file-input');
             const uploadedAvatar = document.getElementById('uploadedAvatar');
             const resetAvatar = document.getElementById('resetAvatar');
-            const hasAvatar = {{ $admin->avatar ? 'true' : 'false' }};
-            const adminInitials = '{{ getInitials($admin->name) }}';
+            const hasAvatar = <?php echo e($admin->avatar ? 'true' : 'false'); ?>;
+            const adminInitials = '<?php echo e(getInitials($admin->name)); ?>';
             
             // Store original state
             const originalContent = uploadedAvatar.outerHTML;
@@ -218,4 +294,6 @@
             }
         });
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\ebook_traveling\resources\views/admin/profile/edit.blade.php ENDPATH**/ ?>
