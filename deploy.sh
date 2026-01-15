@@ -34,9 +34,9 @@ $PHP_BIN artisan migrate --force
 
 # Run seeders untuk update data yang diperlukan (tanpa hapus data existing)
 echo "🌱 Running necessary seeders..."
-# $PHP_BIN artisan db:seed --class=AdminPermissionsSeeder --force
-# $PHP_BIN artisan db:seed --class=RoleSeeder --force
-# $PHP_BIN artisan db:seed --class=PermissionSeeder --force
+$PHP_BIN artisan db:seed --class=FaqSeederClass --force
+$PHP_BIN artisan db:seed --class=PolicyPageSeeder --force
+$PHP_BIN artisan db:seed --class=PaymentSeeder --force
 
 # Create storage symlink (PENTING untuk akses file dari public)
 echo "🔗 Creating storage symbolic link..."
@@ -52,9 +52,4 @@ echo "⚡ Optimizing application..."
 $PHP_BIN artisan config:cache
 $PHP_BIN artisan route:cache
 $PHP_BIN artisan view:cache
-
-# Force browser cache refresh by updating file timestamps
-echo "🔄 Updating static file timestamps..."
-touch public/assets/admin/vendor/css/rtl/theme-default.css
-touch public/assets/admin/vendor/css/theme-default.css
 
