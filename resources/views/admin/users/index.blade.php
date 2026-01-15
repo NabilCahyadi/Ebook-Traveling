@@ -213,7 +213,16 @@
                                     <td>
                                         @if ($user->roles && $user->roles->count() > 0)
                                             @foreach ($user->roles as $role)
-                                                <span class="badge bg-label-primary mb-1">{{ $role->name }}</span>
+                                                @php
+                                                    $badgeColors = [
+                                                        'Creator' => 'bg-label-success',
+                                                        'Reader' => 'bg-label-info',
+                                                        'Admin' => 'bg-label-danger',
+                                                        'Super Admin' => 'bg-label-primary',
+                                                    ];
+                                                    $badgeClass = $badgeColors[$role->name] ?? 'bg-label-warning';
+                                                @endphp
+                                                <span class="badge {{ $badgeClass }} mb-1">{{ $role->name }}</span>
                                             @endforeach
                                         @else
                                             <span class="badge bg-label-secondary">No Role</span>
