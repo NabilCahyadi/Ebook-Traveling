@@ -33,7 +33,7 @@ class MayarService
         $invoiceNumber = $this->generateInvoiceNumber();
         $expiresAt = now()->addHours(24);
 
-        // Simpan record (untuk webhook & audit)
+        // Simpan record
         $paymentLink = PaymentLink::create([
             'invoice_number' => $invoiceNumber,
             'user_id' => $user->id,
@@ -44,20 +44,23 @@ class MayarService
             'notes' => $notes,
         ]);
 
-        // Dapatkan link checkout dari plan (simpan di kolom `mayar_payment_link`)
-        if (!$plan->mayar_payment_link) {
-            throw new \Exception("Mayar payment link belum diatur untuk plan: {$plan->name}");
-        }
-
-        // Bangun URL dengan data user
-        $url = $plan->mayar_payment_link . '?' . http_build_query([
+        // ✅ GUNAKAN REDIRECT LINK + is_test=true (BUKAN API)
+        $params = [
             'name' => $user->name,
             'email' => $user->email,
-            'phone' => $user->phone ?? '',
-            'external_id' => $paymentLink->invoice_number, // dikirim ke webhook
-        ]);
+            'phone' => $user->phone
+                ? preg_replace('/\D/', '', $user->phone)
+                : '628123456789',
+            'external_id' => $invoiceNumber,
+        ];
 
-        // Simpan URL
+        // ✅ AUTO STAGING MODE: tambah is_test=true di local
+        if (app()->environment('local')) {
+            $params['is_test'] = 'true'; // string 'true', bukan boolean
+        }
+
+        // ✅ Bangun URL dengan LINK PEMBAYARAN (bukan API)
+        $url = $plan->mayar_payment_link . '?' . http_build_query($params);
         $paymentLink->update(['payment_url' => $url]);
 
         return $paymentLink->fresh();

@@ -789,12 +789,12 @@ $collections = collect();
 
                                             {{-- LOGIKA HANYA PADA TOMBOL AKSI --}}
                                             @if(auth()->check() && auth()->user()->hasActiveSubscription())
-                                            <a href="/reader/{{ $ebook->slug }}" class="action-btn btn-read-now">
+                                            <a href="{{ route('user.ebook.read', $ebook->slug) }}" class="action-btn btn-read-now">
                                                 <i class="fi-rs-book-open"></i>
                                                 <span>Read Now</span>
                                             </a>
                                             @else
-                                            <a href="/pricing" class="action-btn btn-subscribe-now">
+                                            <a href="/pricing#pricing-plans" class="action-btn btn-subscribe-now">
                                                 <i class="fi-rs-lock"></i>
                                                 <span>Subscribe to Read</span>
                                             </a>

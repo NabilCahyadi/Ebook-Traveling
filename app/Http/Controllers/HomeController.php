@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Banner;
+use App\Models\City;
 use App\Services\BannerService;
 use App\Services\CityService;
 use App\Services\SubscriptionPlanService;
@@ -53,7 +54,7 @@ class HomeController extends Controller
         }
         $SubscriptionPlans = $this->SubscriptionPlanService->getActivePlans()->take(3);
         $groupedSubscriptionPlans = $this->SubscriptionPlanService->getPlansGroupedByCategory();
-        
+
         // Tambahkan image property jika belum ada
         $SubscriptionPlans = $SubscriptionPlans->map(function ($plan, $index) {
             if (!isset($plan->image)) {
@@ -65,6 +66,10 @@ class HomeController extends Controller
         // $collections = $this->collectionService->getHomepageCollections();
         $collectionData = $this->collectionService->getHomepageCollectionsWithSubscriptionStatus();
 
+        $citiesHeader = City::where('is_active', true)
+            ->orderBy('order_index')
+            ->orderBy('name')
+            ->get();
 
         return view('index', [
             'homeSliders' => $homeSliders,
@@ -74,6 +79,7 @@ class HomeController extends Controller
             'isSubscribed' => $collectionData['isSubscribed'],
             'latestBlogs' => $latestBlogs,
             'groupedSubscriptionPlans' => $groupedSubscriptionPlans,
+            'citiesHeader' => $citiesHeader,
         ]);
     }
 

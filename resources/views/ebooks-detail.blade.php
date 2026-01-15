@@ -263,7 +263,8 @@
     .product-img {
         position: relative;
         width: 100%;
-        padding-top: 140%; /* Rasio 5:7 (tinggi 140% dari lebar) untuk cover buku */
+        padding-top: 140%;
+        /* Rasio 5:7 (tinggi 140% dari lebar) untuk cover buku */
         overflow: hidden;
         border-radius: 15px;
         background-color: #f5f5f5;
@@ -292,6 +293,7 @@
         text-decoration: none;
         transition: all 0.3s ease;
         margin-top: 15px;
+        min-width: 140px !important;
     }
 
     .btn-read-now {
@@ -330,6 +332,58 @@
     .review-text-container .read-more-link:hover {
         color: #df1e35ff;
         text-decoration: underline;
+    }
+
+    /* wishlist/favorite */
+    .favorite-btn {
+        width: 45px;
+        height: 45px;
+        padding: 0 !important;
+        margin-top: 15px;
+        border: 1px solid #FF4C61;
+        border-radius: 5px;
+        background-color: #FF4C61;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .favorite-btn i {
+        color: white;
+        font-size: 16px;
+    }
+
+    .favorite-btn.saved {
+        background-color: white;
+    }
+
+    .favorite-btn.saved i {
+        color: #FF4C61;
+    }
+</style>
+<style>
+    /* ✅ Style khusus untuk tombol di modal edit review */
+    .btn-submit-review {
+        padding: 10px 20px !important;
+        border: none !important;
+        border-radius: 50px !important;
+        font-size: 0.9rem !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        letter-spacing: 1px !important;
+        text-decoration: none !important;
+        text-align: center !important;
+        display: inline-block !important;
+        background-color: #FF4C61 !important;
+        color: white !important;
+    }
+
+    .btn-submit-review:hover {
+        background-color: #FF416C !important;
+        transform: translateY(-3px) !important;
     }
 </style>
 
@@ -394,9 +448,9 @@
                                             </span>
                                         </li>
                                         <li>Published : <span class="text-brand">{{ \Carbon\Carbon::parse($ebook->published_at)->format('d M Y') }}</span></li>
-                                        <li>
+                                        <li class="d-flex align-items-center gap-2">
                                             @if(auth()->check() && auth()->user()->hasActiveSubscription())
-                                            <a href="/reader/{{ $ebook->slug }}" class="action-btn btn-read-now">
+                                            <a href="{{ route('user.ebook.read', $ebook->slug) }}" class="action-btn btn-read-now">
                                                 <i class="fi-rs-book-open"></i>
                                                 <span>Read Now</span>
                                             </a>
@@ -405,6 +459,18 @@
                                                 <i class="fi-rs-lock"></i>
                                                 <span>Subscribe to Read</span>
                                             </a>
+                                            @endif
+
+                                            <!-- ✅ ICON ONLY DI SAMPING KANAN -->
+                                            @if(auth()->check())
+                                            <div style="display: flex; align-items: center;">
+                                                <button id="favorite-btn-{{ $ebook->id }}"
+                                                    class="favorite-btn {{ $isSaved ? 'saved' : '' }}"
+                                                    data-ebook-id="{{ $ebook->id }}"
+                                                    title="{{ $isSaved ? 'Remove from saved' : 'Save this book' }}">
+                                                    <i class="bi {{ $isSaved ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+                                                </button>
+                                            </div>
                                             @endif
                                         </li>
                                     </ul>
@@ -544,16 +610,6 @@
                                         <textarea class="form-control w-100" name="review_text" id="comment" cols="30" rows="9" placeholder="Write Comment" required></textarea>
                                     </div>
                                 </div>
-                                <!-- <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <input class="form-control" name="name" id="name" type="text" placeholder="Name" value="{{ auth()->user()->name }}" disabled />
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <input class="form-control" name="email" id="email" type="email" placeholder="Email" value="{{ auth()->user()->email }}" disabled />
-                                    </div>
-                                </div> -->
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label>Rating</label>
@@ -568,7 +624,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <button type="submit" class="button button-contactForm">Submit Review</button>
+                                <button type="submit" class="button button-contactForm btn-submit-review">Submit Review</button>
                             </div>
                         </form>
 
@@ -631,9 +687,9 @@
                                         <div class="product-img product-img-zoom">
                                             <a href="{{ route('ebooks.show', $ebook->slug) }}">
                                                 @php
-                                                    $coverImage = $ebook->external_cover_url 
-                                                        ? $ebook->external_cover_url 
-                                                        : ($ebook->cover_image_url ?? 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg');
+                                                $coverImage = $ebook->external_cover_url
+                                                ? $ebook->external_cover_url
+                                                : ($ebook->cover_image_url ?? 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg');
                                                 @endphp
                                                 <img class="default-img" src="{{ $coverImage }}" alt="{{ $ebook->title }}" />
                                             </a>
@@ -690,7 +746,7 @@
 
                                         {{-- LOGIKA HANYA PADA TOMBOL AKSI --}}
                                         @if(auth()->check() && auth()->user()->hasActiveSubscription())
-                                        <a href="/reader/{{ $ebook->slug }}" class="action-btn btn-read-now">
+                                        <a href="{{ route('user.ebook.read', $ebook->slug) }}" class="action-btn btn-read-now">
                                             <i class="fi-rs-book-open"></i>
                                             <span>Read Now</span>
                                         </a>
@@ -712,8 +768,21 @@
             </div>
         </div>
     </div>
+    <!-- NOTIFIKASI TOAST -->
+    <div id="toast-notification"
+        class="position-fixed bottom-0 end-0 p-3"
+        style="z-index: 9999; display: none;">
+        <div class="toast align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toast-message">
+                    Ebook saved to your list
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
 </main>
-<!-- Tambahkan ini sebelum </body> -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const readMoreLinks = document.querySelectorAll('.read-more-link');
@@ -738,6 +807,110 @@
                     this.textContent = 'more'; // Ubah teks link menjadi "more"
                 }
             });
+        });
+    });
+</script>
+<!-- <script>
+    $(document).ready(function() {
+        $('.btn-favorite').on('click', function(e) {
+            e.preventDefault();
+
+            var $button = $(this);
+            var $icon = $button.find('i');
+            var toggleUrl = $button.data('toggle-url');
+            var isSaved = $button.data('is-saved') === 'true';
+
+            // Optimis: Perbarui UI terlebih dahulu
+            if (isSaved) {
+                $icon.removeClass('bi-heart-fill').addClass('bi-heart');
+                $button.data('is-saved', 'false');
+                $button.attr('title', 'Save this book');
+            } else {
+                $icon.removeClass('bi-heart').addClass('bi-heart-fill');
+                $button.data('is-saved', 'true');
+                $button.attr('title', 'Remove from saved books');
+            }
+
+            // Kirim permintaan ke server
+            $.ajax({
+                url: toggleUrl,
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    // Tampilkan pesan sukses kepada user
+                    alert(response.message);
+                },
+                error: function(xhr) {
+                    console.error('Error:', xhr.responseText);
+                    alert('Gagal memperbarui status. Silakan coba lagi.');
+
+                    // Kembalikan UI ke keadaan semula jika gagal
+                    if (isSaved) {
+                        $icon.removeClass('bi-heart').addClass('bi-heart-fill');
+                        $button.data('is-saved', 'true');
+                    } else {
+                        $icon.removeClass('bi-heart-fill').addClass('bi-heart');
+                        $button.data('is-saved', 'false');
+                    }
+                }
+            });
+        });
+    });
+</script> -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const btn = document.querySelector('.favorite-btn');
+        if (!btn) return;
+
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const ebookId = this.dataset.ebookId;
+            const isCurrentlySaved = this.classList.contains('saved');
+            const url = `/ebooks/${ebookId}/save`;
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            // Optimistic UI update
+            if (isCurrentlySaved) {
+                this.classList.remove('saved');
+                this.querySelector('i').className = 'bi bi-heart';
+                this.title = 'Save this book';
+            } else {
+                this.classList.add('saved');
+                this.querySelector('i').className = 'bi bi-heart-fill';
+                this.title = 'Remove from saved';
+            }
+
+            // Kirim ke server
+            fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': token,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        // Revert jika gagal
+                        this.classList.toggle('saved');
+                        this.querySelector('i').className = isCurrentlySaved ?
+                            'bi bi-heart-fill' :
+                            'bi bi-heart';
+                        alert(data.message || 'Failed to update');
+                    }
+                })
+                .catch(() => {
+                    // Revert jika error
+                    this.classList.toggle('saved');
+                    this.querySelector('i').className = isCurrentlySaved ?
+                        'bi bi-heart-fill' :
+                        'bi bi-heart';
+                    alert('Connection error');
+                });
         });
     });
 </script>

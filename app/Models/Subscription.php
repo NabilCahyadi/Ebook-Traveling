@@ -26,6 +26,8 @@ class Subscription extends Model
         'start_date' => 'datetime',
         'end_date' => 'datetime',
         'auto_renew' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     /**

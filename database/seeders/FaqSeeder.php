@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Faq;
 use Illuminate\Support\Str;
 
+// seeder faqs untuk di pricing page
 class FaqSeeder extends Seeder
 {
     /**

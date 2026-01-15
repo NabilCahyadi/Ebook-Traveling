@@ -66,6 +66,9 @@ class DatabaseSeeder extends Seeder
             ContactInfoSeeder::class,           // Membuat contact info
             FaqSeeder::class,                   // Membuat FAQ
             SiteSettingsSeeder::class,          // Membuat site settings (logo, etc)
+            FaqPageSeeder::class,
+            PolicyPageSeeder::class,
+            PaymentSeeder::class,              // Membuat data pembayaran contoh (BUTUH: User, Subscription)
         ]);
     }
 }

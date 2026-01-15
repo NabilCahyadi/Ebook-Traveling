@@ -99,6 +99,10 @@
         flex-direction: column;
         /* Susun anak-anaknya secara vertikal */
     }
+
+    .ebook-title-link:hover {
+        color: #FF416C !important;
+    }
 </style>
 <main class="main">
     <div class="page-header breadcrumb-wrap">
@@ -196,28 +200,20 @@
                                     <h5 class="section-title style-1 mb-30">Related E-Books</h5>
 
                                     @if($blog->ebooks && $blog->ebooks->isNotEmpty())
-                                        @foreach($blog->ebooks as $ebook)
-                                        <div class="single-post clearfix">
-                                            <div class="image">
-                                                @php
-                                                    $ebookImageUrl = $ebook->cover_image && filter_var($ebook->cover_image, FILTER_VALIDATE_URL) 
-                                                        ? $ebook->cover_image 
-                                                        : ($ebook->cover_image 
-                                                            ? asset('storage/' . $ebook->cover_image) 
-                                                            : asset('images/ebook-placeholder.webp'));
-                                                @endphp
-                                                <img src="{{ $ebookImageUrl }}" alt="{{ $ebook->title }}" />
-                                            </div>
-                                            <div class="content pt-10">
-                                                <h6><a href="{{ route('ebooks.show', $ebook->slug) }}">{{ $ebook->title }}</a></h6>
-                                                <div class="product-detail-rating">
-                                                    <div class="product-rate-cover text-end">
-                                                        <div class="product-rate-cover">
-                                                            <div class="product-rate d-inline-block">
-                                                                <div class="product-rating" style="width: {{ ($ebook->ratings()->avg('rating') / 5) * 100 }}%"></div>
-                                                            </div>
-                                                            <span class="font-small ml-5 text-muted">({{ round($ebook->ratings()->avg('rating'), 2) }})</span>
+                                    @foreach($blog->ebooks as $ebook)
+                                    <div class="single-post clearfix">
+                                        <div class="image">
+                                            <img src="@if($ebook->cover_image && filter_var($ebook->cover_image, FILTER_VALIDATE_URL)){{ $ebook->cover_image }}@elseif($ebook->cover_image){{ asset('storage/' . $ebook->cover_image) }}@else{{ asset('images/ebook-placeholder.webp') }}@endif" alt="{{ $ebook->title }}" />
+                                        </div>
+                                        <div class="content pt-10">
+                                            <h6><a href="{{ route('ebooks.show', $ebook->slug) }}" class="ebook-title-link">{{ $ebook->title }}</a></h6>
+                                            <div class="product-detail-rating">
+                                                <div class="product-rate-cover text-end">
+                                                    <div class="product-rate-cover">
+                                                        <div class="product-rate d-inline-block">
+                                                            <div class="product-rating" style="width: {{ ($ebook->ratings()->avg('rating') / 5) * 100 }}%"></div>
                                                         </div>
+                                                        <span class="font-small ml-5 text-muted">({{ round($ebook->ratings()->avg('rating'), 2) }})</span>
                                                     </div>
                                                 </div>
                                             </div>

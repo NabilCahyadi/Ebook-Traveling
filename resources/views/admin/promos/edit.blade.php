@@ -335,7 +335,7 @@
 
                         <div class="text-muted small">
                             <i class="fas fa-calendar"></i> Created: {{ $promo->created_at->format('M d, Y') }}<br>
-                            <i class="fas fa-clock"></i> Last Updated: {{ $promo->updated_at->diffForHumans() }}
+                            <i class="fas fa-clock"></i> Last Updated : {{ $promo->updated_at->diffForHumans() }}
                         </div>
                     </div>
                 </div>

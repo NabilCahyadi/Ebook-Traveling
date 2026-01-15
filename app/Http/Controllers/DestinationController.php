@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\CategoryService;
 use App\Services\CityService;
+use App\Models\City;
 
 class DestinationController extends Controller
 {
@@ -15,7 +16,11 @@ class DestinationController extends Controller
     public function index()
     {
         $cities = $this->cityService->getHomepageCities(50);
-        return view('destinations', compact('cities'));
+        $citiesHeader = City::where('is_active', true)
+            ->orderBy('order_index')
+            ->orderBy('name')
+            ->get();
+        return view('destinations', compact('cities', 'citiesHeader'));
     }
 
     public function show(string $slug)
@@ -26,10 +31,13 @@ class DestinationController extends Controller
         if (!$city) {
             abort(404);
         }
-
+        $citiesHeader = City::where('is_active', true)
+            ->orderBy('order_index')
+            ->orderBy('name')
+            ->get();
         // Ebook sekarang sudah menjadi relasi dari objek $city
         $ebooks = $city->ebooks;
 
-        return view('components.destinations.show', compact('city', 'ebooks'));
+        return view('components.destinations.show', compact('city', 'ebooks', 'citiesHeader'));
     }
 }

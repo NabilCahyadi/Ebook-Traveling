@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\CategoryService;
+use App\Models\City;
 
 class FrontendCategoryController extends Controller
 {
@@ -34,6 +35,11 @@ class FrontendCategoryController extends Controller
         // Lampirkan hasil query manual ke objek kategori
         $category->setRelation('ebooks', $ebooks);
 
-        return view('components.categories.show', compact('category'));
+        $citiesHeader = City::where('is_active', true)
+            ->orderBy('order_index')
+            ->orderBy('name')
+            ->get();
+
+        return view('components.categories.show', compact('category', 'citiesHeader'));
     }
 }

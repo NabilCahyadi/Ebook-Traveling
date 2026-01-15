@@ -7,6 +7,7 @@ use App\Models\PricingBenefit;
 use App\Services\PricingBenefitService;
 use App\Models\AboutUsSection;
 use App\Models\Blog;
+use App\Models\City;
 
 class AboutController extends Controller
 {
@@ -32,7 +33,11 @@ class AboutController extends Controller
             ->get()
             ->keyBy('section_key'); // Ubah menjadi array asosiatif
         $latestBlogImages = Blog::latest()->take(4)->pluck('featured_image');
-
-        return view('about-us', compact('benefits', 'aboutSections', 'latestBlogImages'));
+        
+        $citiesHeader = City::where('is_active', true)
+            ->orderBy('order_index')
+            ->orderBy('name')
+            ->get();
+        return view('about-us', compact('benefits', 'aboutSections', 'latestBlogImages', 'citiesHeader'));
     }
 }

@@ -388,7 +388,7 @@
                         <small class="text-muted"><i class="ti ti-photo me-1"></i> Image: {{ basename($bannerPricing->image) }}</small>
                     </div>
                     <div class="mb-3">
-                        <small class="text-muted"><i class="ti ti-clock me-1"></i> Last updated: {{ $bannerPricing->updated_at->diffForHumans() }}</small>
+                        <small class="text-muted"><i class="ti ti-clock me-1"></i> Last updated : {{ $bannerPricing->updated_at->diffForHumans() }}</small>
                     </div>
                     
                     <!-- Action Buttons -->

@@ -384,7 +384,7 @@
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
-        text-transform: uppercase;
+        /* text-transform: uppercase; */
         letter-spacing: 1px;
         text-decoration: none;
         /* Hapus underline untuk link */
@@ -406,6 +406,7 @@
     .pricing-button--primary:hover {
         background-color: var(--primary-color-dark);
         transform: translateY(-3px);
+        color: #fff;
     }
 
     .pricing-button--secondary {
@@ -418,6 +419,36 @@
         background-color: var(--secondary-color);
         color: #fff;
         transform: translateY(-3px);
+    }
+
+    .custom-button {
+        padding: 10px 10px;
+        border: none;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        letter-spacing: 1px;
+        text-decoration: none;
+        text-align: center;
+        display: inline-block;
+    }
+
+    .custom-button--primary {
+        background-color: #FF4C61;
+        color: #fff;
+    }
+
+    .pricing-card--featured .custom-button--primary {
+        background-color: var(--primary-color);
+        box-shadow: 0 5px 15px rgba(255, 76, 97, 0.3);
+    }
+
+    .custom-button--primary:hover {
+        background-color: #FF416C;
+        transform: translateY(-3px);
+        color: #fff;
     }
 </style>
 <div class="container">
@@ -490,33 +521,206 @@
                             <p class="card-title">{{ $plan->name }}</p>
                             <h2>Rp {{ number_format($plan->price, 0, ',', '.') }}</h2>
                             <p class="card-price-description">{{ $plan->price_description }}</p>
-                            <p class="desc-plan">{{ $plan->description }}</p>
+                            <p class="desc-plan">{{ Str::limit($plan->description, 75) }}</p>
+
                             <div class="pricing-button-container">
-                                <!-- Tombol untuk Mayar.id -->
-                                <button class="pricing-button pricing-button--primary" onclick="subscribeWithMayar('{{ $plan->id }}', this)">
-                                    {{ $plan->button_text ?? 'Subscribe Now' }}
-                                </button>
-
-                                <!-- Tombol untuk WhatsApp -->
-                                {{-- resources/views/components/whatsapp-link.blade.php --}}
+                                @if($user)
                                 @php
-                                $settingService = app('settings');
-                                $waNumber = $settingService->get('whatsapp_number', '6289657571177');
-
-                                $selectedPlan = request('plan')
-                                ? ucwords(str_replace('-', ' ', request('plan')))
-                                : 'Pilih Paket';
+                                $currentSub = $user->currentSubscription ?? null;
+                                $isActive = $currentSub !== null;
+                                $isCurrentPlan = $isActive && $currentSub->subscription_plan_id === $plan->id;
+                                $currentPlan = $user->currentPlan ?? null;
                                 @endphp
 
-                                @if($user)
-                                <a href="https://wa.me/{{ $waNumber }}?text={{ urlencode("Halo Admin, saya ingin berlangganan.\n\nNama\t: " . $user->name . "\nEmail\t: " . $user->email . "\nPaket\t: " . $plan->name . "\nPembayaran\t: _Silakan saya sebutkan metode pembayaran_\n\nMohon bantuannya. Terima kasih!") }}"
+                                @if($isActive)
+                                @if($isCurrentPlan)
+                                <!-- RENEW: Pakai Mayar asli -->
+                                <button class="pricing-button pricing-button--primary w-100"
+                                    onclick="subscribeWithMayar('{{ $plan->id }}', this)">
+                                    Renew Subscription
+                                </button>
+                                @elseif($currentPlan && $plan->price > $currentPlan->price)
+                                <!-- UPGRADE: Pakai Mayar asli -->
+                                <button class="pricing-button pricing-button--primary w-100"
+                                    onclick="subscribeWithMayar('{{ $plan->id }}', this)">
+                                    Upgrade Subscription
+                                </button>
+                                @else
+                                <!-- DOWNGRADE: Tidak diizinkan -->
+                                <span class="text-muted small d-block text-center py-2">Upgrade only</span>
+                                @endif
+                                @else
+                                <!-- LANGGANAN BARU: Pakai Mayar asli -->
+                                <button class="pricing-button pricing-button--primary w-100"
+                                    onclick="subscribeWithMayar('{{ $plan->id }}', this)">
+                                    {{ $plan->button_text ?? 'Subscribe Now' }}
+                                </button>
+                                @endif
+
+                                <!-- 📞 WhatsApp (versi kamu: dengan data user lengkap) -->
+                                @php
+                                $waNumber = trim(app('settings')->get('whatsapp_number', '6289657571177'));
+                                $waText = urlencode("Halo Admin, saya ingin berlangganan.\n\nNama\t: " . $user->name . "\nEmail\t: " . $user->email . "\nPaket\t: " . $plan->name . "\nHarga\t: Rp " . number_format($plan->price, 0, ',', '.') . "\n\nMohon bantuannya. Terima kasih!");
+                                @endphp
+                                <a href="https://wa.me/{{ $waNumber }}?text={{ $waText }}"
                                     class="btn bg-success text-white rounded-pill py-3 w-100 mb-2"
                                     target="_blank">
                                     <i class="bi bi-whatsapp"></i> Call Us - WhatsApp
                                 </a>
+
+                                @else
+                                <!-- ❌ BELUM LOGIN -->
+                                <a href="{{ route('login') }}" class="pricing-button pricing-button--primary w-100 text-white">
+                                    Login to Subscribe
+                                </a>
                                 @endif
                             </div>
                         </div>
+
+                        {{-- ✅ MODAL: HANYA TAMPILKAN JIKA USER LOGIN & RELEVAN --}}
+                        @if($user)
+                        {{-- Modal Renew (hanya jika user punya langganan aktif & ini paketnya) --}}
+                        @if($user->currentSubscription && $user->currentSubscription->subscription_plan_id === $plan->id)
+                        <div class="modal fade" id="renewModal-{{ $plan->id }}" tabindex="-1" data-bs-focus="false">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content border-0 shadow-lg">
+                                    <div class="modal-header bg-gradient-success text-white p-4">
+                                        <div>
+                                            <h5 class="modal-title fw-bold">
+                                                <i class="fi-rs-refresh me-2"></i> Renew {{ $plan->name }}
+                                            </h5>
+                                            <small class="opacity-75">+{{ $plan->duration_days }} days access</small>
+                                        </div>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body p-4">
+                                        <div class="alert alert-light border-0 bg-light-subtle mb-4">
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-success bg-opacity-10 p-2 rounded">
+                                                    <i class="fi-rs-calendar-check text-success fs-4"></i>
+                                                </div>
+                                                <div class="ms-3">
+                                                    <div class="fw-bold">Current Expiry</div>
+                                                    <div>{{ $user->currentSubscription->end_date->format('d M Y') }}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between align-items-center bg-white p-3 rounded border">
+                                            <div>
+                                                <div class="text-muted small">NEW EXPIRY</div>
+                                                <div class="fw-bold">
+                                                    {{ $user->currentSubscription->end_date->addDays($plan->duration_days)->format('d M Y') }}
+                                                </div>
+                                            </div>
+                                            <div class="text-end">
+                                                <div class="text-success fw-bold">+{{ $plan->duration_days }} days</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mt-4 text-center">
+                                            <div class="display-6 fw-bold text-success">
+                                                Rp {{ number_format($plan->price, 0, ',', '.') }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer bg-light p-3">
+                                        <form action="{{ route('api.subscription.create') }}" method="POST" class="w-100">
+                                            @csrf
+                                            <input type="hidden" name="plan_id" value="{{ $plan->id }}">
+                                            <button type="submit" class="pricing-button pricing-button--primary w-100 text-white">
+                                                <i class="fi-rs-clock-six me-1"></i> Renew Now
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+
+                        {{-- Modal Upgrade --}}
+                        @if($user->currentPlan && $plan->price > $user->currentPlan->price)
+                        <div class="modal fade" id="upgradeModal-{{ $plan->id }}" tabindex="-1" data-bs-focus="false">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content border-0 shadow-sm" style="border-radius: 1rem;">
+                                    <!-- Header -->
+                                    <div class="modal-header border-0 pb-0">
+                                        <div class="flex-grow-1 mt-4">
+                                            <h4 class="modal-title fw-bold mb-1">Upgrade to {{ $plan->name }}</h4>
+                                            <p class="mb-0">Get more access with enhanced features</p>
+                                        </div>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+
+                                    <!-- Body -->
+                                    <div class="modal-body px-4 pt-3 pb-4">
+                                        <!-- Plan Comparison -->
+                                        <div class="d-flex align-items-center justify-content-between mb-4 p-3 bg-light rounded-3">
+                                            <div class="text-center flex-grow-1">
+                                                <div class="text-muted small fw-medium mb-1">CURRENT PLAN</div>
+                                                <h6 class="mb-1 fw-semibold">{{ $user->currentPlan->name }}</h6>
+                                                <div class="text-dark fw-bold">
+                                                    Rp {{ number_format($user->currentPlan->price, 0, ',', '.') }}
+                                                </div>
+                                            </div>
+                                            <div class="px-3 text-muted">
+                                                <i class="fi-rs-arrow-right"></i>
+                                            </div>
+                                            <div class="text-center flex-grow-1">
+                                                <div class="text-primary small fw-medium mb-1">NEW PLAN</div>
+                                                <h6 class="mb-1 fw-semibold text-primary">{{ $plan->name }}</h6>
+                                                <div class="text-primary fw-bold">
+                                                    Rp {{ number_format($plan->price, 0, ',', '.') }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Features -->
+                                        @if($plan->features && count($plan->features) > 0)
+                                        <div class="mb-4">
+                                            <h6 class="fw-bold mb-3 d-flex align-items-center">
+                                                You'll get :
+                                            </h6>
+                                            <ul class="list-unstyled mb-0">
+                                                @foreach($plan->features as $feature)
+                                                <li class="mb-2 d-flex align-items-center">
+                                                    <i class="fi-rs-check-circle text-success me-2 fs-6"></i>
+                                                    <span>{{ $feature }}</span>
+                                                </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                        @endif
+
+                                        <!-- Price Difference -->
+                                        @php
+                                        $diff = $plan->price - $user->currentPlan->price;
+                                        @endphp
+                                        <div class="bg-light rounded-3 p-3">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="fw-medium">Additional payment :</span>
+                                                <span class="fw-bold text-success fs-5">+Rp {{ number_format($diff, 0, ',', '.') }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Footer -->
+                                    <div class="modal-footer border-0 pt-0 px-4 pb-4">
+                                        <div class="d-grid gap-2 w-100">
+                                            <form action="{{ route('api.subscription.create') }}" method="POST" class="w-100">
+                                                @csrf
+                                                <input type="hidden" name="plan_id" value="{{ $plan->id }}">
+                                                <button type="submit" class="custom-button custom-button--primary px-4">
+                                                    <i class="fi-rs-arrow-up me-2"></i> Upgrade Now
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+                        @endif
                         @endforeach
                     </div>
                 </div>
@@ -641,7 +845,7 @@
     async function subscribeWithMayar(planId, buttonElement) {
         const originalText = buttonElement.innerText;
         buttonElement.disabled = true;
-        buttonElement.innerText = 'Memproses...';
+        buttonElement.innerText = 'Processing...';
 
         try {
             const response = await fetch('/api/subscription/create', {

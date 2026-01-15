@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ContactInfo;
+use App\Models\City;
 
 class ContactController extends Controller
 {
@@ -16,6 +17,10 @@ class ContactController extends Controller
 
         $contactImage = '/images/banner-contact.webp';
 
-        return view('contact', compact('contacts', 'contactImage'));
+        $citiesHeader = City::where('is_active', true)
+            ->orderBy('order_index')
+            ->orderBy('name')
+            ->get();
+        return view('contact', compact('contacts', 'contactImage', 'citiesHeader'));
     }
 }
