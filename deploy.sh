@@ -34,10 +34,10 @@ $PHP_BIN artisan migrate --force
 
 # Run seeders untuk update data yang diperlukan (tanpa hapus data existing)
 echo "🌱 Running necessary seeders..."
-$PHP_BIN artisan db:seed --class=UserSeeder
-$PHP_BIN artisan db:seed --class=RoleSeeder
-$PHP_BIN artisan db:seed --class=SubscriptionSeeder
-$PHP_BIN artisan db:seed --class=BlogCategorySeeder
+$PHP_BIN artisan db:seed --class=UserSeeder --force
+$PHP_BIN artisan db:seed --class=RoleSeeder --force
+$PHP_BIN artisan db:seed --class=SubscriptionSeeder --force
+$PHP_BIN artisan db:seed --class=BlogCategorySeeder --force
 $PHP_BIN artisan db:seed --class=faqPageSeeder --force
 $PHP_BIN artisan db:seed --class=PolicyPageSeeder --force
 $PHP_BIN artisan db:seed --class=PaymentSeeder --force
