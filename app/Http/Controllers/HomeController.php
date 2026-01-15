@@ -107,27 +107,33 @@ class HomeController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('q');
-        
+
         if (empty($query)) {
             return redirect()->route('home');
         }
 
         // Search ebooks by title, description, or creator name - only published ebooks
         $ebooks = \App\Models\Ebook::where('status', 'published')
-            ->where(function($q) use ($query) {
+            ->where(function ($q) use ($query) {
                 $q->where('title', 'LIKE', "%{$query}%")
-                  ->orWhere('description', 'LIKE', "%{$query}%")
-                  ->orWhereHas('creator', function($creatorQuery) use ($query) {
-                      $creatorQuery->where('name', 'LIKE', "%{$query}%");
-                  });
+                    ->orWhere('description', 'LIKE', "%{$query}%")
+                    ->orWhereHas('creator', function ($creatorQuery) use ($query) {
+                        $creatorQuery->where('name', 'LIKE', "%{$query}%");
+                    });
             })
             ->with(['city', 'category', 'creator', 'ratings'])
             ->orderBy('created_at', 'desc')
             ->paginate(12);
 
+        $citiesHeader = City::where('is_active', true)
+            ->orderBy('order_index')
+            ->orderBy('name')
+            ->get();
+
         return view('search-results', [
             'ebooks' => $ebooks,
-            'query' => $query
+            'query' => $query,
+            'citiesHeader' => $citiesHeadergit status
         ]);
     }
 }
