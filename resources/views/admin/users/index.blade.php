@@ -64,11 +64,62 @@
 
         <!-- Search Filter -->
         <div class="card-body border-bottom">
-            <form action="{{ route('admin.users.index') }}" method="GET" class="row g-3">
+            <form action="{{ route('admin.users.index') }}" method="GET" class="row g-3 align-items-end">
                 @if (isset($roleSlug) && $roleSlug)
                     <input type="hidden" name="role" value="{{ $roleSlug }}">
                 @endif
-                <div class="col-md-10">
+                
+                <!-- Google ID Filter -->
+                <div class="col-md-2">
+                    <label class="form-label">{{ __('admin.users.filter_by_google_id') }}</label>
+                    <select name="google_id" class="form-select">
+                        <option value="">{{ __('admin.users.all_accounts') }}</option>
+                        <option value="linked" {{ request('google_id') == 'linked' ? 'selected' : '' }}>
+                            {{ __('admin.users.google_linked') }}
+                        </option>
+                        <option value="regular" {{ request('google_id') == 'regular' ? 'selected' : '' }}>
+                            {{ __('admin.users.regular_account') }}
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Registered Time Filter -->
+                <div class="col-md-2">
+                    <label class="form-label">{{ __('admin.users.filter_by_registered') }}</label>
+                    <select name="registered" class="form-select">
+                        <option value="">{{ __('admin.users.all_time') }}</option>
+                        <option value="today" {{ request('registered') == 'today' ? 'selected' : '' }}>
+                            {{ __('admin.users.today') }}
+                        </option>
+                        <option value="week" {{ request('registered') == 'week' ? 'selected' : '' }}>
+                            {{ __('admin.users.this_week') }}
+                        </option>
+                        <option value="month" {{ request('registered') == 'month' ? 'selected' : '' }}>
+                            {{ __('admin.users.this_month') }}
+                        </option>
+                        <option value="year" {{ request('registered') == 'year' ? 'selected' : '' }}>
+                            {{ __('admin.users.this_year') }}
+                        </option>
+                    </select>
+                </div>
+
+                <!-- User Type Filter -->
+                <div class="col-md-2">
+                    <label class="form-label">{{ __('admin.users.filter_by_subscription') }}</label>
+                    <select name="user_type" class="form-select">
+                        <option value="">{{ __('admin.users.all_subscriptions') }}</option>
+                        <option value="free_user" {{ request('user_type') == 'free_user' ? 'selected' : '' }}>
+                            Free User
+                        </option>
+                        <option value="member" {{ request('user_type') == 'member' ? 'selected' : '' }}>
+                            Premium Member
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Search -->
+                <div class="col-md-4">
+                    <label class="form-label">{{ __('admin.users.search') }}</label>
                     <div class="input-group">
                         <span class="input-group-text">
                             <i class="ti ti-search"></i>
@@ -77,18 +128,34 @@
                             placeholder="{{ __('admin.users.search_placeholder') }}">
                     </div>
                 </div>
+
+                <!-- Submit Button -->
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-primary w-100">
-                        <i class="ti ti-search me-1"></i> Search
+                        <i class="ti ti-filter me-1"></i> Filter
                     </button>
                 </div>
-                @if (isset($search) && $search)
+
+                <!-- Clear Filter -->
+                @if (request('search') || request('google_id') || request('registered') || request('user_type'))
                     <div class="col-12">
-                        <a href="{{ route('admin.users.index', ['role' => $roleSlug]) }}"
-                            class="btn btn-sm btn-outline-secondary">
-                            <i class="ti ti-x me-1"></i> Clear Filter
+                        <a href="{{ route('admin.users.index') }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="ti ti-x me-1"></i> Clear All Filters
                         </a>
-                        <span class="text-muted ms-2">Showing results for: <strong>"{{ $search }}"</strong></span>
+                        <span class="text-muted ms-2">
+                            @if(request('search'))
+                                Search: <strong>"{{ request('search') }}"</strong>
+                            @endif
+                            @if(request('google_id'))
+                                | Google ID: <strong>{{ request('google_id') == 'linked' ? 'Linked' : 'Regular Account' }}</strong>
+                            @endif
+                            @if(request('registered'))
+                                | Registered: <strong>{{ ucfirst(request('registered')) }}</strong>
+                            @endif
+                            @if(request('user_type'))
+                                | Type: <strong>{{ request('user_type') == 'free_user' ? 'Free User' : 'Premium Member' }}</strong>
+                            @endif
+                        </span>
                     </div>
                 @endif
             </form>

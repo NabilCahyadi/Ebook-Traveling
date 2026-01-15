@@ -69,6 +69,12 @@
                 <i class="ti ti-tag me-1"></i> {{ __('admin.banners.banner_pricing') }}
             </a>
         </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link {{ $activeTab === 'default-background' ? 'active' : '' }}" 
+               href="{{ route('admin.banners.index', ['tab' => 'default-background']) }}">
+                <i class="ti ti-photo-filled me-1"></i> Default Background
+            </a>
+        </li>
     </ul>
 
     <!-- Success/Error Messages -->
@@ -412,6 +418,92 @@
             </div>
         @endif
     </div>
-</div>
+@endif
+
+<!-- Default Background Tab Content -->
+@if($activeTab === 'default-background')
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="ti ti-photo-filled me-2"></i>Default CTA Background</h5>
+            <p class="text-muted mb-0 mt-2">Manage default background image for CTA sections</p>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('admin.banners.update-default-background') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                
+                <!-- Current Background Preview -->
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Current Background</label>
+                    <div class="border rounded p-3 bg-light">
+                        @php
+                            $currentBg = \App\Models\SystemSetting::get('default_cta_background_path');
+                            $bgUrl = $currentBg ? asset($currentBg) : asset('images/bg-default.webp');
+                        @endphp
+                        <img src="{{ $bgUrl }}" alt="Current Background" class="img-fluid rounded" 
+                            style="max-height: 300px; width: 100%; object-fit: cover;" id="currentBgPreview">
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                <i class="ti ti-info-circle me-1"></i>
+                                Current: <strong>{{ $currentBg ?: 'images/bg-default.webp' }}</strong>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload New Background -->
+                <div class="mb-4">
+                    <label for="background_image" class="form-label fw-semibold">
+                        Upload New Background <span class="text-danger">*</span>
+                    </label>
+                    <input type="file" class="form-control @error('background_image') is-invalid @enderror" 
+                        id="background_image" name="background_image" accept="image/*" required>
+                    @error('background_image')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <div class="form-text">
+                        <i class="ti ti-info-circle me-1"></i>
+                        Recommended dimensions same as bg-default.webp. Max file size: 2MB. Image will be auto-compressed.
+                    </div>
+                </div>
+
+                <!-- Preview New Image -->
+                <div class="mb-4" id="newPreviewContainer" style="display: none;">
+                    <label class="form-label fw-semibold">Preview New Background</label>
+                    <div class="border rounded p-3">
+                        <img id="newBgPreview" src="" alt="New Background Preview" class="img-fluid rounded" 
+                            style="max-height: 300px; width: 100%; object-fit: cover;">
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="ti ti-device-floppy me-1"></i> Save Background
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('background_image').value=''; document.getElementById('newPreviewContainer').style.display='none';">
+                        <i class="ti ti-x me-1"></i> Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 @endif
 @endsection
+
+@push('scripts')
+<script>
+    // Preview new background image before upload
+    document.getElementById('background_image')?.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById('newBgPreview').src = event.target.result;
+                document.getElementById('newPreviewContainer').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+@endpush

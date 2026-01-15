@@ -32,12 +32,11 @@
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-user-shield"></i>
                 <div data-i18n="Admin Management">Admin Management</div>
-            </a>
+            </a> 
             <ul class="menu-sub">
                 <!-- Admin List -->
                 <li class="menu-item <?php echo e(Request::is('admin/admins*') && !Request::is('admin/admin-activity-logs*') ? 'active' : ''); ?>">
                     <a href="<?php echo e(route('admin.admins.index')); ?>" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-users"></i>
                         <div data-i18n="Admins">Admin List</div>
                     </a>
                 </li>
@@ -45,7 +44,6 @@
                 <!-- Admin Activity Logs -->
                 <li class="menu-item <?php echo e(Request::is('admin/admin-activity-logs*') ? 'active' : ''); ?>">
                     <a href="<?php echo e(route('admin.admin-activity-logs.index')); ?>" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-activity"></i>
                         <div data-i18n="Admin Activity Logs">Activity Logs</div>
                     </a>
                 </li>
@@ -55,7 +53,7 @@
         <!-- Users Management -->
         <?php if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['users.view', 'users.create', 'users.edit', 'users.delete', 'roles.view', 'roles.create', 'roles.edit', 'roles.delete'])): ?>
         <li
-            class="menu-item open <?php echo e(Request::is('admin/users*') || Request::is('admin/roles*') || Request::is('admin/role-permissions*') ? 'active' : ''); ?>">
+            class="menu-item <?php echo e(Request::is('admin/users*') || Request::is('admin/roles*') || Request::is('admin/role-permissions*') ? 'active' : ''); ?>">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-users"></i>
                 <div data-i18n="User Management"><?php echo e(__('admin.menu.user_management')); ?></div>
@@ -72,7 +70,6 @@
                         <li
                             class="menu-item <?php echo e(Request::is('admin/users') && !Request::get('role') ? 'active' : ''); ?>">
                             <a href="<?php echo e(route('admin.users.index', ['role' => 'all'])); ?>" class="menu-link">
-                                <i class="menu-icon tf-icons ti ti-users"></i>
                                 <div data-i18n="All Users"><?php echo e(__('admin.users.all_users')); ?></div>
                             </a>
                         </li>
@@ -81,7 +78,6 @@
                                 <li class="menu-item <?php echo e(Request::get('role') === $role->slug ? 'active' : ''); ?>">
                                     <a href="<?php echo e(route('admin.users.index', ['role' => $role->slug])); ?>"
                                         class="menu-link">
-                                        <i class="menu-icon tf-icons ti ti-user-check"></i>
                                         <div data-i18n="<?php echo e($role->name); ?>"><?php echo e($role->name); ?></div>
                                     </a>
                                 </li>
@@ -95,7 +91,7 @@
                 <?php if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['roles.view', 'roles.create', 'roles.edit', 'roles.delete'])): ?>
                 <li class="menu-item <?php echo e(Request::is('admin/roles*') ? 'active' : ''); ?>">
                     <a href="<?php echo e(route('admin.roles.index')); ?>" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-shield"></i>
+                        <i class="menu-icon tf-icons ti ti-shield-lock"></i>
                         <div data-i18n="Roles"><?php echo e(__('admin.menu.roles')); ?></div>
                     </a>
                 </li>
@@ -113,7 +109,7 @@
                 <?php if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission('users.view')): ?>
                 <li class="menu-item <?php echo e(Request::is('admin/user-activity-logs*') ? 'active' : ''); ?>">
                     <a href="<?php echo e(route('admin.user-activity-logs.index')); ?>" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-activity"></i>
+                        <i class="menu-icon tf-icons ti ti-timeline"></i>
                         <div data-i18n="Activity Logs"><?php echo e(__('admin.menu.activity_logs')); ?></div>
                     </a>
                 </li>
@@ -124,7 +120,7 @@
         <!-- Ebooks Management -->
         <?php if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['ebooks.view', 'ebooks.create', 'ebooks.edit', 'ebooks.delete', 'ebooks.approve', 'categories.view', 'categories.create', 'categories.edit', 'categories.delete', 'cities.view', 'cities.create', 'cities.edit', 'cities.delete'])): ?>
         <li
-            class="menu-item open <?php echo e(Request::is('admin/ebooks*') || Request::is('admin/categories*') || Request::is('admin/cities*') ? 'active' : ''); ?>">
+            class="menu-item <?php echo e(Request::is('admin/ebooks*') || Request::is('admin/categories*') || Request::is('admin/cities*') ? 'active' : ''); ?>">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-books"></i>
                 <div data-i18n="Ebook Management"><?php echo e(__('admin.menu.ebook_management')); ?></div>
@@ -138,30 +134,33 @@
                         <div data-i18n="Ebooks"><?php echo e(__('admin.menu.ebooks')); ?></div>
                     </a>
                     <ul class="menu-sub">
-                        <li
-                            class="menu-item <?php echo e(Request::is('admin/ebooks') && !Request::is('admin/ebooks/create') && !Request::is('admin/ebooks/pending-approval') ? 'active' : ''); ?>">
-                            <a href="<?php echo e(route('admin.ebooks.index')); ?>" class="menu-link">
-                                <i class="menu-icon tf-icons ti ti-list"></i>
-                                <div data-i18n="All Ebooks"><?php echo e(__('admin.ebooks.all_ebooks')); ?></div>
-                            </a>
-                        </li>
                         <li class="menu-item <?php echo e(Request::is('admin/ebooks/create') ? 'active' : ''); ?>">
                             <a href="<?php echo e(route('admin.ebooks.create')); ?>" class="menu-link">
-                                <i class="menu-icon tf-icons ti ti-plus"></i>
                                 <div data-i18n="Add New"><?php echo e(__('admin.ebooks.add_new')); ?></div>
                             </a>
                         </li>
-                        <!-- <li class="menu-item <?php echo e(Request::is('admin/ebooks/pending-approval') ? 'active' : ''); ?>">
-                            <a href="<?php echo e(route('admin.ebooks.pending-approval')); ?>" class="menu-link">
-                                <div data-i18n="Pending Approval">Pending Approval</div>
+                        <li
+                            class="menu-item <?php echo e(Request::is('admin/ebooks') && !Request::is('admin/ebooks/create') && !Request::is('admin/ebooks/archived') && !Request::is('admin/ebooks/trash') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('admin.ebooks.index')); ?>" class="menu-link">
+                                <div data-i18n="All Ebooks"><?php echo e(__('admin.ebooks.all_ebooks')); ?></div>
+                            </a>
+                        </li>
+                        <li class="menu-item <?php echo e(Request::is('admin/ebooks/archived') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('admin.ebooks.archived')); ?>" class="menu-link">
+                                <div data-i18n="Archived">Archived</div>
+                            </a>
+                        </li>
+                        <li class="menu-item <?php echo e(Request::is('admin/ebooks/trash') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('admin.ebooks.trash')); ?>" class="menu-link">
+                                <div data-i18n="Trash">Trash</div>
                                 <?php
-                                    $pendingCount = \App\Models\Ebook::where('status', 'waiting_approval')->count();
+                                    $trashedCount = \App\Models\Ebook::onlyTrashed()->count();
                                 ?>
-                                <?php if($pendingCount > 0): ?>
-                                    <span class="badge bg-warning rounded-pill ms-auto"><?php echo e($pendingCount); ?></span>
+                                <?php if($trashedCount > 0): ?>
+                                    <span class="badge bg-danger rounded-pill ms-auto"><?php echo e($trashedCount); ?></span>
                                 <?php endif; ?>
                             </a>
-                        </li> -->
+                        </li>
                     </ul>
                 </li>
                 <?php endif; ?>
@@ -200,7 +199,6 @@
                 <?php if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission('blogs.view')): ?>
                 <li class="menu-item <?php echo e(Request::is('admin/blogs*') && !Request::is('admin/blog-categories*') ? 'active' : ''); ?>">
                     <a href="<?php echo e(route('admin.blogs.index')); ?>" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-article"></i>
                         <div data-i18n="Blogs"><?php echo e(__('admin.menu.blogs')); ?></div>
                     </a>
                 </li>
@@ -209,7 +207,6 @@
                 <?php if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['blog-categories.view', 'blog-categories.create', 'blog-categories.edit', 'blog-categories.delete'])): ?>
                 <li class="menu-item <?php echo e(Request::is('admin/blog-categories*') ? 'active' : ''); ?>">
                     <a href="<?php echo e(route('admin.blog-categories.index')); ?>" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-category"></i>
                         <div data-i18n="Blog Categories"><?php echo e(__('admin.menu.blog_categories')); ?></div>
                     </a>
                 </li>
@@ -220,7 +217,7 @@
         <!-- Subscription Management -->
         <?php if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['subscription-plans.view', 'subscription-plans.create', 'subscription-plans.edit', 'subscription-plans.delete', 'subscriptions.view', 'subscriptions.create', 'subscriptions.edit', 'subscriptions.delete', 'promos.view', 'promos.create', 'promos.edit', 'promos.delete'])): ?>
         <li
-            class="menu-item open <?php echo e(Request::is('admin/subscription-plans*') || Request::is('admin/manual-subscriptions*') || Request::is('admin/active-subscribers*') || Request::is('admin/subscription-history*') || Request::is('admin/promos*') ? 'active' : ''); ?>">
+            class="menu-item <?php echo e(Request::is('admin/subscription-plans*') || Request::is('admin/manual-subscriptions*') || Request::is('admin/active-subscribers*') || Request::is('admin/subscription-history*') || Request::is('admin/promos*') ? 'active' : ''); ?>">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-crown"></i>
                 <div data-i18n="Subscription Management"><?php echo e(__('admin.menu.subscription_management')); ?></div>
@@ -230,7 +227,6 @@
                 <?php if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['subscription-plans.view', 'subscription-plans.create', 'subscription-plans.edit', 'subscription-plans.delete'])): ?>
                 <li class="menu-item <?php echo e(Request::is('admin/subscription-plans*') ? 'active' : ''); ?>">
                     <a href="<?php echo e(route('admin.subscription-plans.index')); ?>" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-package"></i>
                         <div data-i18n="Subscription Plans"><?php echo e(__('admin.menu.subscription_plans')); ?></div>
                     </a>
                 </li>
@@ -240,7 +236,6 @@
                 <?php if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission('subscriptions.view')): ?>
                 <li class="menu-item <?php echo e(Request::is('admin/manual-subscriptions*') ? 'active' : ''); ?>">
                     <a href="<?php echo e(route('admin.manual-subscriptions.index')); ?>" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-edit"></i>
                         <div data-i18n="Manual Subscriptions"><?php echo e(__('admin.menu.manual_subscriptions')); ?></div>
                     </a>
                 </li>
@@ -250,7 +245,6 @@
                 <?php if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission('subscriptions.view')): ?>
                 <li class="menu-item <?php echo e(Request::is('admin/active-subscribers*') ? 'active' : ''); ?>">
                     <a href="<?php echo e(route('admin.active-subscribers.index')); ?>" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-users-group"></i>
                         <div data-i18n="Active Subscribers"><?php echo e(__('admin.menu.active_subscribers')); ?></div>
                     </a>
                 </li>
@@ -260,7 +254,6 @@
                 <?php if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission('subscriptions.view')): ?>
                 <li class="menu-item <?php echo e(Request::is('admin/subscription-history*') ? 'active' : ''); ?>">
                     <a href="<?php echo e(route('admin.subscription-history.index')); ?>" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-receipt"></i>
                         <div data-i18n="Payment History"><?php echo e(__('admin.menu.subscription_history')); ?></div>
                     </a>
                 </li>
@@ -270,7 +263,6 @@
                 <?php if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['promos.view', 'promos.create', 'promos.edit', 'promos.delete'])): ?>
                 <li class="menu-item <?php echo e(Request::is('admin/promos*') ? 'active' : ''); ?>">
                     <a href="<?php echo e(route('admin.promos.index')); ?>" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-ticket"></i>
                         <div data-i18n="Promos"><?php echo e(__('admin.menu.promos_discounts')); ?></div>
                     </a>
                 </li>
@@ -279,7 +271,7 @@
         </li>
         <?php endif; ?>
 
-                <!-- Reports -->
+        <!-- Reports -->
         <li class="menu-item <?php echo e(Request::is('admin/reports*') ? 'active open' : ''); ?>">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-report-analytics"></i>
@@ -315,9 +307,9 @@
         </li>
 
         <!-- Website Management -->
-        <?php if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.landing-page', 'website.about-us.view', 'website.about-us.create', 'website.about-us.edit', 'website.about-us.delete', 'website.banners.view', 'website.banners.create', 'website.banners.edit', 'website.banners.delete', 'website.collections.view', 'website.collections.create', 'website.collections.edit', 'website.collections.delete', 'website.contact-info.view', 'website.contact-info.create', 'website.contact-info.edit', 'website.contact-info.delete', 'website.site-settings'])): ?>
+        <?php if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.landing-page', 'website.about-us.view', 'website.about-us.create', 'website.about-us.edit', 'website.about-us.delete', 'website.banners.view', 'website.banners.create', 'website.banners.edit', 'website.banners.delete', 'website.collections.view', 'website.collections.create', 'website.collections.edit', 'website.collections.delete', 'website.contact-info.view', 'website.contact-info.create', 'website.contact-info.edit', 'website.contact-info.delete', 'website.site-settings', 'website.faqs-pricing.view', 'website.faqs-pricing.create', 'website.faqs-pricing.edit', 'website.faqs-pricing.delete'])): ?>
         <li
-            class="menu-item <?php echo e(Request::is('admin/collection-order*') || Request::is('admin/banners*') || Request::is('admin/collections*') || Request::is('admin/landing-page-content*') || Request::is('admin/about-us*') || Request::is('admin/contact-info*') || Request::is('admin/site-settings*') ? 'active open' : ''); ?>">
+            class="menu-item <?php echo e(Request::is('admin/collection-order*') || Request::is('admin/banners*') || Request::is('admin/collections*') || Request::is('admin/landing-page-content*') || Request::is('admin/about-us*') || Request::is('admin/contact-info*') || Request::is('admin/site-settings*') || Request::is('admin/faqs*') ? 'active open' : ''); ?>">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-settings"></i>
                 <div data-i18n="Website Management"><?php echo e(__('admin.menu.website_setting')); ?></div>
@@ -368,6 +360,26 @@
                     </a>
                 </li>
                 <?php endif; ?>
+                
+                <!-- FAQ Management (Nested) -->
+                <?php if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.faqs-pricing.view', 'website.faqs-pricing.create', 'website.faqs-pricing.edit', 'website.faqs-pricing.delete'])): ?>
+                <li class="menu-item <?php echo e(Request::is('admin/faqs*') ? 'active open' : ''); ?>">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons ti ti-help"></i>
+                        <div data-i18n="FAQ">FAQ</div>
+                    </a>
+                    <ul class="menu-sub">
+                        <?php if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.faqs-pricing.view', 'website.faqs-pricing.create', 'website.faqs-pricing.edit', 'website.faqs-pricing.delete'])): ?>
+                        <li class="menu-item <?php echo e(Request::is('admin/faqs/pricing*') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('admin.faqs.pricing.index')); ?>" class="menu-link">
+                                <div data-i18n="Pricing">Pricing</div>
+                            </a>
+                        </li>
+                        <?php endif; ?>
+                    </ul>
+                </li>
+                <?php endif; ?>
+
                 <!-- Site Settings -->
                 <?php if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission('website.site-settings')): ?>
                 <li class="menu-item <?php echo e(Request::is('admin/site-settings*') ? 'active' : ''); ?>">

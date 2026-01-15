@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'MeatMap')</title>
     <link rel="icon" type="image/png" href="{{ asset('images/only-logoo.png') }}">
+    
+    @yield('meta')
     <!-- styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <!-- Vendor CSS (bootstrap, icons, plugins) -->

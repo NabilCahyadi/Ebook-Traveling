@@ -80,7 +80,6 @@
                                     <option value="">{{ __('admin.ebooks.all_status') }}</option>
                                     <option value="published" {{ request('status') == 'published' ? 'selected' : '' }}>{{ __('admin.ebooks.published') }}</option>
                                     <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>{{ __('admin.ebooks.draft') }}</option>
-                                    <option value="archived" {{ request('status') == 'archived' ? 'selected' : '' }}>Archived</option>
                                 </select>
 
                                 <!-- Sort By -->
@@ -135,63 +134,64 @@
                 <table class="table table-hover align-middle">
                     <thead>
                         <tr>
-                            <th style="width: 80px;">{{ __('admin.ebooks.cover') }}</th>
-                            <th style="width: 35%;">{{ __('admin.ebooks.title') }}</th>
+                            <th style="width: 60px;">{{ __('admin.ebooks.cover') }}</th>
+                            <th style="width: 40%;">{{ __('admin.ebooks.title') }}</th>
                             <th style="width: 20%;">{{ __('admin.ebooks.creator') }}</th>
                             <th style="width: 12%;">{{ __('admin.ebooks.status') }}</th>
                             <th style="width: 12%; display: none;">{{ __('admin.ebooks.views') }}</th>
-                            <th style="width: 100px;">{{ __('admin.ebooks.actions') }}</th>
+                            <th style="width: 80px; text-align: center;">{{ __('admin.ebooks.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0" id="ebookTableBody">
                         @forelse($ebooks as $ebook)
-                            <tr data-status="{{ $ebook->status }}">
-                                <td>
+                            @if($ebook->status !== 'archived')
+                            <tr data-status="{{ $ebook->status }}" style="height: 60px;">
+                                <td class="py-2">
                                     @if ($ebook->cover_image_url)
                                         <img src="{{ $ebook->cover_image_url }}" alt="{{ $ebook->title }}"
-                                            class="rounded" style="width: 50px; height: 70px; object-fit: cover;"
+                                            class="rounded" style="width: 45px; height: 60px; object-fit: cover;"
                                             onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                         <div class="bg-label-secondary rounded align-items-center justify-content-center"
-                                            style="width: 50px; height: 70px; display: none;">
-                                            <i class="ti ti-book" style="font-size: 24px;"></i>
+                                            style="width: 45px; height: 60px; display: none;">
+                                            <i class="ti ti-book" style="font-size: 20px;"></i>
                                         </div>
                                     @else
                                         <div class="bg-label-secondary rounded d-flex align-items-center justify-content-center"
-                                            style="width: 50px; height: 70px;">
-                                            <i class="ti ti-book" style="font-size: 24px;"></i>
+                                            style="width: 45px; height: 60px;">
+                                            <i class="ti ti-book" style="font-size: 20px;"></i>
                                         </div>
                                     @endif
                                 </td>
-                                <td>
-                                    <div style="max-width: 300px;">
-                                        <strong class="d-block mb-1"
-                                            style="font-size: 0.9375rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                                <td class="py-2">
+                                    <div style="max-width: 350px;">
+                                        <strong class="d-block mb-0"
+                                            style="font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
                                             title="{{ $ebook->title }}">{{ $ebook->title }}</strong>
                                         <small class="text-muted d-block"
-                                            style="font-size: 0.8125rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                                            style="font-size: 0.75rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
                                             title="{{ strip_tags($ebook->description) }}">{{ strip_tags($ebook->description) }}</small>
                                     </div>
                                 </td>
-                                <td>
-                                    <div style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.875rem;"
+                                <td class="py-2">
+                                    <div style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.85rem;"
                                         title="{{ $ebook->creator->name ?? '-' }}">{{ $ebook->creator->name ?? '-' }}</div>
                                 </td>
-                                <td>
+                                <td class="py-2">
                                     @if ($ebook->status === 'published')
-                                        <span class="badge bg-success" style="font-size: 0.8125rem;">{{ __('admin.ebooks.published') }}</span>
+                                        <span class="badge bg-success" style="font-size: 0.75rem;">{{ __('admin.ebooks.published') }}</span>
                                     @elseif($ebook->status === 'draft')
-                                        <span class="badge bg-warning" style="font-size: 0.8125rem;">{{ __('admin.ebooks.draft') }}</span>
+                                        <span class="badge bg-warning" style="font-size: 0.75rem;">{{ __('admin.ebooks.draft') }}</span>
                                     @else
-                                        <span class="badge bg-secondary" style="font-size: 0.8125rem;">Archived</span>
+                                        <span class="badge bg-secondary" style="font-size: 0.75rem;">Archived</span>
                                     @endif
                                 </td>
-                                <td style="display: none;">
-                                    <span class="text-muted d-flex align-items-center" style="font-size: 0.875rem;">
+                                <td style="display: none;" class="py-2">
+                                    <span class="text-muted d-flex align-items-center" style="font-size: 0.8rem;">
                                         <i class="ti ti-eye me-1"></i> {{ number_format($ebook->view_count ?? 0) }}
                                     </span>
                                 </td>
-                                <td>
-                                    <div class="dropdown">
+                                <td class="py-2 text-center">
+                                    <div class="dropdown d-inline-block">
                                         <button type="button"
                                             class="btn btn-sm btn-icon btn-text-secondary rounded-pill dropdown-toggle hide-arrow"
                                             data-bs-toggle="dropdown" aria-expanded="false">
@@ -218,9 +218,10 @@
                                     </div>
                                 </td>
                             </tr>
+                            @endif
                         @empty
                             <tr id="noDataRow">
-                                <td colspan="5" class="text-center py-5">
+                                <td colspan="6" class="text-center py-5">
                                     <i class="ti ti-book" style="font-size: 48px; color: #ddd;"></i>
                                     <p class="mt-2 text-muted">{{ __('admin.ebooks.no_data') }}</p>
                                     <a href="{{ route('admin.ebooks.create') }}" class="btn btn-sm btn-primary">{{ __('admin.ebooks.add_new') }}</a>

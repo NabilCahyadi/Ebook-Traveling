@@ -130,7 +130,7 @@
                             <img src="<?php echo e(asset('storage/' . Auth::user()->avatar)); ?>"
                                 alt="<?php echo e(Auth::user()->name); ?>" class="rounded-circle" />
                         <?php else: ?>
-                            <span class="avatar-initial rounded-circle bg-label-primary">
+                            <span class="avatar-initial rounded-circle bg-info">
                                 <?php echo e(getInitials(Auth::user()->name)); ?>
 
                             </span>
@@ -147,7 +147,7 @@
                                             <img src="<?php echo e(asset('storage/' . Auth::user()->avatar)); ?>"
                                                 alt="<?php echo e(Auth::user()->name); ?>" class="rounded-circle" />
                                         <?php else: ?>
-                                            <span class="avatar-initial rounded-circle bg-label-primary">
+                                            <span class="avatar-initial rounded-circle bg-info">
                                                 <?php echo e(getInitials(Auth::user()->name)); ?>
 
                                             </span>

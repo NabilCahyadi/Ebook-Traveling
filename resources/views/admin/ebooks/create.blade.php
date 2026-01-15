@@ -17,11 +17,11 @@
         font-size: 0.875rem !important;
         font-weight: 500 !important;
         line-height: 1.5 !important;
-        color: #7367f0 !important;
-        background-color: #f8f7ff !important;
-        border: 2px solid #7367f0 !important;
+        color: #868686 !important;
+        background-color: #ffe0f0 !important;
+        border: 2px solid #ff7eb3 !important;
         border-radius: 0.5rem !important;
-        box-shadow: 0 2px 6px rgba(115, 103, 240, 0.15) !important;
+        box-shadow: 0 2px 6px rgba(255, 126, 179, 0.15) !important;
     }
 
     .remove-category {
@@ -30,7 +30,7 @@
         font-size: 1rem !important;
         line-height: 1 !important;
         opacity: 0.8 !important;
-        color: #7367f0 !important;
+        color: #868686 !important;
     }
     
     .remove-category:hover {
@@ -788,11 +788,11 @@
             creatorSuggestions.hide().empty();
             
             selectedCreatorDiv.html(`
-                <div class="alert alert-info d-flex justify-content-between align-items-center py-2 mb-0">
+                <div class="alert d-flex justify-content-between align-items-center py-2 mb-0" style="background-color: #ffe0f0; border: 1px solid #ff7eb3; color: #000000;">
                     <div>
-                        <i class="ti ti-user me-1"></i>
-                        <strong>${creator.name}</strong>
-                        <br><small>${creator.email}</small>
+                        <i class="ti ti-user me-1" style="color: #000000;"></i>
+                        <strong style="color: #000000;">${creator.name}</strong>
+                        <br><small style="color: #000000;">${creator.email}</small>
                     </div>
                     <button type="button" class="btn btn-sm btn-outline-danger" onclick="clearCreator()">
                         <i class="ti ti-x"></i>

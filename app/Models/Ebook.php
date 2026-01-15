@@ -218,11 +218,5 @@ class Ebook extends Model
         return $this->belongsToMany(Category::class, 'ebook_categories');
     }
 
-    /**
-     * Get the order items for the ebook.
-     */
-    public function orderItems(): HasMany
-    {
-        return $this->hasMany(OrderItem::class, 'ebook_id');
-    }
+
 }

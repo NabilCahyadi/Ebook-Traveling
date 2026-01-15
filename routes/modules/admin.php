@@ -123,8 +123,9 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     
     Route::middleware(['admin.permission:ebooks.view'])->group(function () {
         Route::get('ebooks', [\App\Http\Controllers\Admin\EbookController::class, 'index'])->name('ebooks.index');
+        Route::get('ebooks/archived', [\App\Http\Controllers\Admin\EbookController::class, 'archived'])->name('ebooks.archived');
+        Route::get('ebooks/trash', [\App\Http\Controllers\Admin\EbookController::class, 'trash'])->name('ebooks.trash');
         Route::get('ebooks/pending-approval', [\App\Http\Controllers\Admin\EbookController::class, 'pendingApproval'])->name('ebooks.pending-approval');
-        Route::get('ebooks/trashed', [\App\Http\Controllers\Admin\EbookController::class, 'trashed'])->name('ebooks.trashed');
         Route::get('ebooks/{ebook}', [\App\Http\Controllers\Admin\EbookController::class, 'show'])->name('ebooks.show');
     });
     
@@ -273,17 +274,18 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     });
 
     // Blog Management
+    // IMPORTANT: Specific routes must come BEFORE wildcard routes
+    Route::middleware(['admin.permission:blogs.create'])->group(function () {
+        Route::get('blogs/create', [\App\Http\Controllers\Admin\BlogController::class, 'create'])->name('blogs.create');
+        Route::post('blogs', [\App\Http\Controllers\Admin\BlogController::class, 'store'])->name('blogs.store');
+        Route::get('blogs/search-authors', [\App\Http\Controllers\Admin\BlogController::class, 'searchAuthors'])->name('blogs.search-authors');
+    });
+
     Route::middleware(['admin.permission:blogs.view'])->group(function () {
         Route::get('blogs', [\App\Http\Controllers\Admin\BlogController::class, 'index'])->name('blogs.index');
         Route::get('blogs/archived', [\App\Http\Controllers\Admin\BlogController::class, 'archived'])->name('blogs.archived');
         Route::get('blogs/trashed', [\App\Http\Controllers\Admin\BlogController::class, 'trashed'])->name('blogs.trashed');
         Route::get('blogs/{blog}', [\App\Http\Controllers\Admin\BlogController::class, 'show'])->name('blogs.show');
-    });
-    
-    Route::middleware(['admin.permission:blogs.create'])->group(function () {
-        Route::get('blogs/create', [\App\Http\Controllers\Admin\BlogController::class, 'create'])->name('blogs.create');
-        Route::post('blogs', [\App\Http\Controllers\Admin\BlogController::class, 'store'])->name('blogs.store');
-        Route::get('blogs/search-authors', [\App\Http\Controllers\Admin\BlogController::class, 'searchAuthors'])->name('blogs.search-authors');
     });
     
     Route::middleware(['admin.permission:blogs.edit'])->group(function () {
@@ -347,6 +349,7 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
         Route::post('banners/update-order', [\App\Http\Controllers\Admin\BannerController::class, 'updateOrder'])->name('banners.update-order');
         Route::get('banners/{banner}/edit', [\App\Http\Controllers\Admin\BannerController::class, 'edit'])->name('banners.edit');
         Route::put('banners/{banner}', [\App\Http\Controllers\Admin\BannerController::class, 'update'])->name('banners.update');
+        Route::put('banners/default-background/update', [\App\Http\Controllers\Admin\BannerController::class, 'updateDefaultBackground'])->name('banners.update-default-background');
     });
     
     Route::middleware(['admin.permission:website.banners.delete'])->group(function () {
@@ -407,8 +410,27 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
         Route::delete('collections/{collection}', [\App\Http\Controllers\Admin\CollectionController::class, 'destroy'])->name('collections.destroy');
     });
 
-    // FAQ Management
-    // Route::resource('faqs', \App\Http\Controllers\Admin\FaqController::class);
+    // FAQ Management - Pricing FAQs
+    Route::middleware(['admin.permission:website.faqs-pricing.view'])->group(function () {
+        Route::get('faqs/pricing', [\App\Http\Controllers\Admin\FaqController::class, 'indexPricing'])->name('faqs.pricing.index');
+    });
+    
+    Route::middleware(['admin.permission:website.faqs-pricing.create'])->group(function () {
+        Route::get('faqs/pricing/create', [\App\Http\Controllers\Admin\FaqController::class, 'createPricing'])->name('faqs.pricing.create');
+        Route::post('faqs/pricing', [\App\Http\Controllers\Admin\FaqController::class, 'storePricing'])->name('faqs.pricing.store');
+    });
+    
+    Route::middleware(['admin.permission:website.faqs-pricing.edit'])->group(function () {
+        Route::get('faqs/pricing/{id}/edit', [\App\Http\Controllers\Admin\FaqController::class, 'editPricing'])->name('faqs.pricing.edit');
+        Route::put('faqs/pricing/{id}', [\App\Http\Controllers\Admin\FaqController::class, 'updatePricing'])->name('faqs.pricing.update');
+        Route::post('faqs/pricing/{id}/toggle-status', [\App\Http\Controllers\Admin\FaqController::class, 'toggleStatusPricing'])->name('faqs.pricing.toggle-status');
+        Route::post('faqs/pricing/update-order', [\App\Http\Controllers\Admin\FaqController::class, 'updateOrderPricing'])->name('faqs.pricing.update-order');
+    });
+    
+    Route::middleware(['admin.permission:website.faqs-pricing.delete'])->group(function () {
+        Route::delete('faqs/pricing/{id}', [\App\Http\Controllers\Admin\FaqController::class, 'destroyPricing'])->name('faqs.pricing.destroy');
+        Route::post('faqs/pricing/bulk-delete', [\App\Http\Controllers\Admin\FaqController::class, 'bulkDeletePricing'])->name('faqs.pricing.bulk-delete');
+    });
 
     // Static Page Management
     // Route::resource('pages', \App\Http\Controllers\Admin\PageController::class);

@@ -2,7 +2,27 @@
 
 @extends('layouts_lp.app')
 
-@section('title', 'Tags Blog & News - MeatMap')
+@section('title', isset($tag) ? 'Blog Tag: ' . ucfirst($tag) . ' - MeatMap' : 'Blog & News - MeatMap')
+
+@section('meta')
+    <meta name="description" content="@if(isset($tag))Explore articles tagged with {{ ucfirst($tag) }} on MeatMap blog. Discover travel guides, tips, and stories.@else Read the latest travel guides, destination tips, and stories from MeatMap. Your source for travel inspiration and information.@endif">
+    <meta name="keywords" content="@if(isset($tag)){{ $tag }}, @endif blog, travel, destinations, guides, meatmap">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ url()->current() }}">
+    
+    {{-- Open Graph --}}
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="@if(isset($tag))Blog Tag: {{ ucfirst($tag) }} - MeatMap@else Blog & News - MeatMap@endif">
+    <meta property="og:description" content="@if(isset($tag))Explore articles tagged with {{ ucfirst($tag) }} on MeatMap blog.@else Read the latest travel guides and stories from MeatMap.@endif">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:site_name" content="MeatMap">
+    <meta property="og:image" content="{{ asset('images/only-logoo.png') }}">
+    
+    {{-- Twitter Card --}}
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="@if(isset($tag))Blog Tag: {{ ucfirst($tag) }} - MeatMap@else Blog & News - MeatMap@endif">
+    <meta name="twitter:description" content="@if(isset($tag))Explore articles tagged with {{ ucfirst($tag) }}.@else Read the latest travel guides from MeatMap.@endif">
+@endsection
 
 @section('content')
 <style>
@@ -102,9 +122,7 @@
                             @if($blog->featured_image)
                             @php
                                 // Check if image is external URL or local storage
-                                $imageUrl = filter_var($blog->featured_image, FILTER_VALIDATE_URL) 
-                                    ? $blog->featured_image 
-                                    : asset('storage/' . $blog->featured_image);
+                                $imageUrl = $blog->featured_image_url;
                             @endphp
                             <div class="post-thumb" style="background-image: url({{ $imageUrl }})">
                                 <!-- <div class="entry-meta">

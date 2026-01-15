@@ -61,8 +61,25 @@ class BlogController extends Controller
             ->where('is_active', true)
             ->orderBy('name')
             ->get();
+        
+        // Get all published ebooks with relationships
+        $ebooks = \App\Models\Ebook::where('status', 'published')
+            ->with(['city', 'categories', 'creator'])
+            ->orderBy('title')
+            ->get();
+        
+        // Get cities for filter
+        $cities = \App\Models\City::where('is_active', true)
+            ->orderBy('name')
+            ->get();
+        
+        // Get ebook categories for filter (type = 'ebook')
+        $ebookCategories = Category::where('type', 'ebook')
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get();
             
-        return view('admin.blogs.create', compact('categories'));
+        return view('admin.blogs.create', compact('categories', 'ebooks', 'cities', 'ebookCategories'));
     }
 
     /**
@@ -75,9 +92,15 @@ class BlogController extends Controller
             'content' => 'required|string',
             'excerpt' => 'nullable|string',
             'featured_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
-            'category' => 'nullable|string|max:100',
+            'categories' => 'nullable|array',
+            'categories.*' => 'exists:categories,id',
             'author_id' => 'required|exists:users,id',
             'status' => 'required|in:draft,published,unpublished,archived',
+            'related_ebooks' => 'nullable|array',
+            'related_ebooks.*' => 'exists:ebooks,id',
+            'meta_title' => 'nullable|string|max:500',
+            'meta_description' => 'nullable|string|max:1000',
+            'meta_keywords' => 'nullable|string|max:500',
         ], [
             'title.required' => 'Judul blog wajib diisi.',
             'title.max' => 'Judul blog maksimal 255 karakter.',
@@ -85,7 +108,8 @@ class BlogController extends Controller
             'featured_image.image' => 'File harus berupa gambar.',
             'featured_image.mimes' => 'Format gambar harus JPEG, JPG, PNG, atau WebP.',
             'featured_image.max' => 'Ukuran gambar maksimal 2MB.',
-            'category.max' => 'Kategori maksimal 100 karakter.',
+            'categories.array' => 'Kategori harus berupa array.',
+            'categories.*.exists' => 'Kategori yang dipilih tidak valid.',
             'author_id.required' => 'Author (Creator) wajib dipilih.',
             'author_id.exists' => 'Author (Creator) yang dipilih tidak valid.',
             'status.required' => 'Status publikasi wajib dipilih.',
@@ -98,7 +122,18 @@ class BlogController extends Controller
         }
 
         try {
-            $this->blogService->createBlog($validated);
+            $blog = $this->blogService->createBlog($validated);
+            
+            // Sync categories if provided
+            if ($request->has('categories')) {
+                $blog->categories()->sync($request->categories);
+            }
+            
+            // Sync related ebooks if provided
+            if ($request->has('related_ebooks')) {
+                $blog->ebooks()->sync($request->related_ebooks);
+            }
+            
             return redirect()->route('admin.blogs.index')
                 ->with('success', 'Blog created successfully!');
         } catch (\Exception $e) {
@@ -129,8 +164,25 @@ class BlogController extends Controller
             ->where('is_active', true)
             ->orderBy('name')
             ->get();
-            
-        return view('admin.blogs.edit', compact('blog', 'categories'));
+        
+        // Get all published ebooks with relationships
+        $ebooks = \App\Models\Ebook::where('status', 'published')
+            ->with(['city', 'categories', 'creator'])
+            ->orderBy('title')
+            ->get();
+        
+        // Get cities for filter
+        $cities = \App\Models\City::where('is_active', true)
+            ->orderBy('name')
+            ->get();
+        
+        // Get ebook categories for filter (type = 'ebook')
+        $ebookCategories = Category::where('type', 'ebook')
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.blogs.edit', compact('blog', 'categories', 'ebooks', 'cities', 'ebookCategories'));
     }
 
     /**
@@ -143,9 +195,15 @@ class BlogController extends Controller
             'content' => 'required|string',
             'excerpt' => 'nullable|string',
             'featured_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
-            'category' => 'nullable|string|max:100',
+            'categories' => 'nullable|array',
+            'categories.*' => 'exists:categories,id',
             'status' => 'required|in:draft,published,unpublished,archived',
             'remove_image' => 'boolean',
+            'related_ebooks' => 'nullable|array',
+            'related_ebooks.*' => 'exists:ebooks,id',
+            'meta_title' => 'nullable|string|max:500',
+            'meta_description' => 'nullable|string|max:1000',
+            'meta_keywords' => 'nullable|string|max:500',
         ], [
             'title.required' => 'Judul blog wajib diisi.',
             'title.max' => 'Judul blog maksimal 255 karakter.',
@@ -153,8 +211,8 @@ class BlogController extends Controller
             'featured_image.image' => 'File harus berupa gambar.',
             'featured_image.mimes' => 'Format gambar harus JPEG, JPG, PNG, atau WebP.',
             'featured_image.max' => 'Ukuran gambar maksimal 2MB.',
-            'category.max' => 'Kategori maksimal 100 karakter.',
-            'blog_category_id.exists' => 'Kategori blog yang dipilih tidak valid.',
+            'categories.array' => 'Kategori harus berupa array.',
+            'categories.*.exists' => 'Kategori yang dipilih tidak valid.',
             'status.required' => 'Status publikasi wajib dipilih.',
             'status.in' => 'Status publikasi tidak valid.',
         ]);
@@ -168,7 +226,24 @@ class BlogController extends Controller
         }
 
         try {
-            $this->blogService->updateBlog($id, $validated);
+            $blog = $this->blogService->updateBlog($id, $validated);
+            
+            // Sync categories if provided
+            if ($request->has('categories')) {
+                $blog->categories()->sync($request->categories);
+            } else {
+                // If no categories selected, detach all
+                $blog->categories()->sync([]);
+            }
+            
+            // Sync related ebooks if provided
+            if ($request->has('related_ebooks')) {
+                $blog->ebooks()->sync($request->related_ebooks);
+            } else {
+                // If no ebooks selected, detach all
+                $blog->ebooks()->sync([]);
+            }
+            
             return redirect()->route('admin.blogs.index')
                 ->with('success', 'Blog updated successfully!');
         } catch (\Exception $e) {

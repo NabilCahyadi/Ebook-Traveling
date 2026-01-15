@@ -130,7 +130,7 @@
                             <img src="{{ asset('storage/' . Auth::user()->avatar) }}"
                                 alt="{{ Auth::user()->name }}" class="rounded-circle" />
                         @else
-                            <span class="avatar-initial rounded-circle bg-label-primary">
+                            <span class="avatar-initial rounded-circle bg-info">
                                 {{ getInitials(Auth::user()->name) }}
                             </span>
                         @endif
@@ -146,7 +146,7 @@
                                             <img src="{{ asset('storage/' . Auth::user()->avatar) }}"
                                                 alt="{{ Auth::user()->name }}" class="rounded-circle" />
                                         @else
-                                            <span class="avatar-initial rounded-circle bg-label-primary">
+                                            <span class="avatar-initial rounded-circle bg-info">
                                                 {{ getInitials(Auth::user()->name) }}
                                             </span>
                                         @endif

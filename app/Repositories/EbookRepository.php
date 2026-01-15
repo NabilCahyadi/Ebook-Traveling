@@ -19,7 +19,8 @@ class EbookRepository implements EbookRepositoryInterface
         ?string $search = null,
         ?string $status = null,
         ?string $categoryId = null,
-        ?string $cityId = null
+        ?string $cityId = null,
+        ?string $statusExclude = null
     ): mixed {
         $query = Ebook::with(['category', 'city']);
 
@@ -34,6 +35,11 @@ class EbookRepository implements EbookRepositoryInterface
         // Apply status filter
         if ($status) {
             $query->where('status', $status);
+        }
+
+        // Exclude specific status (e.g., exclude archived from main index)
+        if ($statusExclude) {
+            $query->where('status', '!=', $statusExclude);
         }
 
         // Apply category filter
@@ -52,7 +58,14 @@ class EbookRepository implements EbookRepositoryInterface
             }
         }
 
-        return $query->orderBy($sortBy, $sortOrder)->paginate($perPage);
+        // Priority sorting: draft first, then archived last, then by user's chosen sort
+        return $query->orderByRaw("CASE 
+            WHEN status = 'draft' THEN 1 
+            WHEN status = 'archived' THEN 3 
+            ELSE 2 
+        END")
+        ->orderBy($sortBy, $sortOrder)
+        ->paginate($perPage);
     }
 
     /**

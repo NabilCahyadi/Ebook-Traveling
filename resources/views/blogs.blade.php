@@ -229,11 +229,7 @@
                                         <a href="{{ route('blogs.show', $blog->slug) }}">
                                             @php
                                                 // Check if image is external URL or local storage
-                                                $imageUrl = $blog->featured_image 
-                                                    ? (filter_var($blog->featured_image, FILTER_VALIDATE_URL) 
-                                                        ? $blog->featured_image 
-                                                        : asset('storage/' . $blog->featured_image))
-                                                    : asset('images/blog-placeholder.webp');
+                                                $imageUrl = $blog->featured_image_url;
                                             @endphp
                                             <img class="border-radius-15" src="{{ $imageUrl }}" alt="{{ $blog->title }}" />
                                         </a>

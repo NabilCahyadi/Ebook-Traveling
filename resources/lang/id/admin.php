@@ -492,6 +492,37 @@ return [
         'reading_time' => 'Waktu Baca',
         'min_read' => 'menit baca',
         'actions' => 'Aksi',
+        
+        // SEO Settings
+        'seo_settings' => 'Pengaturan SEO',
+        'meta_title' => 'Meta Judul',
+        'meta_description' => 'Meta Deskripsi',
+        'meta_keywords' => 'Meta Kata Kunci',
+        'meta_title_placeholder' => 'Judul SEO untuk mesin pencari (kosongkan untuk menggunakan judul blog)',
+        'meta_description_placeholder' => 'Deskripsi SEO untuk mesin pencari (kosongkan untuk menggunakan kutipan)',
+        'meta_keywords_placeholder' => 'Pisahkan kata kunci dengan koma (misalnya: travel, ebook, indonesia)',
+        'characters_optimal_50_60' => 'karakter. Optimal: 50-60 karakter.',
+        'characters_optimal_150_160' => 'karakter. Optimal: 150-160 karakter.',
+        'characters_recommended_5_10_keywords' => 'karakter. Rekomendasi: 5-10 kata kunci.',
+        'seo_tips' => 'Tips SEO:',
+        'seo_tip_meta_title' => 'Meta Judul: Gunakan kata kunci yang relevan dan jaga agar di bawah 60 karakter',
+        'seo_tip_meta_description' => 'Meta Deskripsi: Tulis deskripsi yang menarik untuk mendorong klik (150-160 karakter)',
+        'seo_tip_meta_keywords' => 'Meta Kata Kunci: Gunakan kata kunci yang relevan dan spesifik terkait konten Anda',
+        'seo_tip_auto_fill' => 'Jika dikosongkan, sistem akan menggunakan judul blog dan kutipan secara otomatis',
+        
+        // Related Ebooks
+        'related_ebooks' => 'Ebook Terkait',
+        'search' => 'Cari',
+        'search_ebooks_placeholder' => 'Cari ebook...',
+        'filter_by_city' => 'Filter berdasarkan Kota',
+        'filter_by_category' => 'Filter berdasarkan Kategori',
+        'all_cities' => 'Semua Kota',
+        'cover' => 'Sampul',
+        'title' => 'Judul',
+        'city' => 'Kota',
+        'categories' => 'Kategori',
+        'no_ebooks_available' => 'Tidak ada ebook tersedia',
+        'ebooks_selected' => 'ebook dipilih',
     ],
 
     // Blog Categories

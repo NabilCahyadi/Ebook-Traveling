@@ -16,22 +16,16 @@
                             again</a>
                     </div>
                 @else
-                    @if (session('info'))
-                        <div class="alert-message info">
-                            {{ session('info') }}
-                        </div>
-                    @endif
-
                     @if (session('error'))
                         <div class="alert-message error">
-                            {{ session('error') }}
+                            {!! session('error') !!}
                         </div>
                     @endif
 
                     @if ($errors->any())
                         <div class="alert-message error">
                             @foreach ($errors->all() as $error)
-                                <div>{{ $error }}</div>
+                                <div>{!! $error !!}</div>
                             @endforeach
                         </div>
                     @endif
@@ -53,12 +47,7 @@
                         Password for manual login (min. 8 characters)
                     </small>
 
-                    <select name="language_pref"
-                        style="width: 100%; padding: 12px 15px; margin: 8px 0; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;">
-                        <option value="en" {{ old('language_pref', 'en') == 'en' ? 'selected' : '' }}>English</option>
-                        <option value="id" {{ old('language_pref') == 'id' ? 'selected' : '' }}>Bahasa Indonesia
-                        </option>
-                    </select>
+                    <input type="hidden" name="language_pref" value="en" />
 
                     <div class="terms-checkbox">
                         <label>
@@ -97,6 +86,7 @@
                 align-items: center;
                 height: 100vh;
                 margin: 0;
+                font-family: 'Montserrat', sans-serif;
             }
 
             /* Container adjustments */
@@ -176,8 +166,6 @@
 
             .overlay {
                 background: #FF416C;
-                background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C);
-                background: linear-gradient(to right, #FF4B2B, #FF416C);
                 background-repeat: no-repeat;
                 background-size: cover;
                 background-position: 0 0;

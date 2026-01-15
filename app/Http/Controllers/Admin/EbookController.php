@@ -34,11 +34,38 @@ class EbookController extends Controller
         $categoryId = $request->get('category_id');
         $cityId = $request->get('city_id');
 
-        $ebooks = $this->ebookService->getAllEbooks($perPage, $sortBy, $sortOrder, $search, $status, $categoryId, $cityId);
+        // Exclude archived from main index
+        if ($status !== 'archived') {
+            $statusExclude = 'archived';
+        } else {
+            $statusExclude = null;
+        }
+
+        $ebooks = $this->ebookService->getAllEbooks($perPage, $sortBy, $sortOrder, $search, $status, $categoryId, $cityId, $statusExclude);
         $categories = \App\Models\Category::orderBy('name')->get();
         $cities = \App\Models\City::orderBy('name')->get();
         
         return view('admin.ebooks.index', compact('ebooks', 'categories', 'cities'));
+    }
+
+    /**
+     * Display archived ebooks only.
+     */
+    public function archived(Request $request)
+    {
+        $perPage = $request->get('per_page', 10);
+        $sortBy = $request->get('sort_by', 'created_at');
+        $sortOrder = $request->get('sort_order', 'desc');
+        $search = $request->get('search');
+        $categoryId = $request->get('category_id');
+        $cityId = $request->get('city_id');
+
+        // Only show archived ebooks
+        $ebooks = $this->ebookService->getAllEbooks($perPage, $sortBy, $sortOrder, $search, 'archived', $categoryId, $cityId);
+        $categories = \App\Models\Category::orderBy('name')->get();
+        $cities = \App\Models\City::orderBy('name')->get();
+        
+        return view('admin.ebooks.archived', compact('ebooks', 'categories', 'cities'));
     }
 
     /**
@@ -90,6 +117,9 @@ class EbookController extends Controller
             $admin = Auth::guard('admin')->user();
             $isAdmin = $admin ? true : false;
 
+            // Get current authenticated user (try both guards)
+            $user = Auth::guard('admin')->user() ?? Auth::user();
+            
             // If user is not admin and tries to publish, change to waiting_approval
             if (!$isAdmin && $validated['status'] === 'published') {
                 $validated['status'] = 'waiting_approval';
@@ -97,7 +127,7 @@ class EbookController extends Controller
 
             // Set creator_id - if not admin, force use logged in user
             // If admin, use the selected creator from form
-            if (!$isAdmin) {
+            if (!$isAdmin && $user) {
                 $validated['creator_id'] = $user->id;
             }
             // Admin harus sudah input creator_id di form (sudah divalidasi required)
@@ -430,11 +460,12 @@ class EbookController extends Controller
     /**
      * Display trashed ebooks.
      */
-    public function trashed()
+    public function trash(Request $request)
     {
         try {
-            $ebooks = $this->ebookService->getTrashedEbooks(15);
-            return view('admin.ebooks.trashed', compact('ebooks'));
+            $perPage = $request->get('per_page', 10);
+            $ebooks = $this->ebookService->getTrashedEbooks($perPage);
+            return view('admin.ebooks.trash', compact('ebooks'));
         } catch (\Exception $e) {
             return redirect()->route('admin.ebooks.index')
                 ->with('error', 'Failed to load trashed ebooks: ' . $e->getMessage());
@@ -448,7 +479,7 @@ class EbookController extends Controller
     {
         try {
             $this->ebookService->restoreEbook($id);
-            return redirect()->route('admin.ebooks.trashed')
+            return redirect()->route('admin.ebooks.trash')
                 ->with('success', 'Ebook restored successfully!');
         } catch (\Exception $e) {
             return redirect()->back()
@@ -463,7 +494,7 @@ class EbookController extends Controller
     {
         try {
             $this->ebookService->forceDeleteEbook($id);
-            return redirect()->route('admin.ebooks.trashed')
+            return redirect()->route('admin.ebooks.trash')
                 ->with('success', 'Ebook permanently deleted!');
         } catch (\Exception $e) {
             return redirect()->back()

@@ -23,12 +23,44 @@ class UserService
     /**
      * Get all users with pagination.
      */
-    public function getAllUsers(int $perPage = 10, ?string $search = null, bool $withTrashed = false)
+    public function getAllUsers(int $perPage = 10, ?string $search = null, bool $withTrashed = false, ?string $userType = null, ?string $googleId = null, ?string $registered = null)
     {
         $query = User::with('roles');
 
         if ($withTrashed) {
             $query->withTrashed();
+        }
+
+        if ($userType) {
+            $query->where('user_type', $userType);
+        }
+
+        // Filter by Google ID
+        if ($googleId) {
+            if ($googleId === 'linked') {
+                $query->whereNotNull('google_id');
+            } elseif ($googleId === 'regular') {
+                $query->whereNull('google_id');
+            }
+        }
+
+        // Filter by registered time
+        if ($registered) {
+            switch ($registered) {
+                case 'today':
+                    $query->whereDate('created_at', today());
+                    break;
+                case 'week':
+                    $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+                    break;
+                case 'month':
+                    $query->whereMonth('created_at', now()->month)
+                          ->whereYear('created_at', now()->year);
+                    break;
+                case 'year':
+                    $query->whereYear('created_at', now()->year);
+                    break;
+            }
         }
 
         if ($search) {
@@ -45,7 +77,7 @@ class UserService
     /**
      * Get users by role slug with pagination.
      */
-    public function getUsersByRole(string $roleSlug, int $perPage = 10, ?string $search = null, bool $withTrashed = false)
+    public function getUsersByRole(string $roleSlug, int $perPage = 10, ?string $search = null, bool $withTrashed = false, ?string $userType = null, ?string $googleId = null, ?string $registered = null)
     {
         $query = User::where(function ($query) use ($roleSlug) {
             // Check if user has role in user_roles table
@@ -58,6 +90,38 @@ class UserService
 
         if ($withTrashed) {
             $query->withTrashed();
+        }
+
+        if ($userType) {
+            $query->where('user_type', $userType);
+        }
+
+        // Filter by Google ID
+        if ($googleId) {
+            if ($googleId === 'linked') {
+                $query->whereNotNull('google_id');
+            } elseif ($googleId === 'regular') {
+                $query->whereNull('google_id');
+            }
+        }
+
+        // Filter by registered time
+        if ($registered) {
+            switch ($registered) {
+                case 'today':
+                    $query->whereDate('created_at', today());
+                    break;
+                case 'week':
+                    $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+                    break;
+                case 'month':
+                    $query->whereMonth('created_at', now()->month)
+                          ->whereYear('created_at', now()->year);
+                    break;
+                case 'year':
+                    $query->whereYear('created_at', now()->year);
+                    break;
+            }
         }
 
         if ($search) {

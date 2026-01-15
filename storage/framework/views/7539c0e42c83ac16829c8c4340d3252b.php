@@ -119,7 +119,7 @@
                                                 <i class="ti ti-crown me-1"></i> Super Admin
                                             </span>
                                         <?php else: ?>
-                                            <span class="badge bg-label-primary">
+                                            <span class="badge bg-label-danger">
                                                 <i class="ti ti-user me-1"></i> Admin
                                             </span>
                                         <?php endif; ?>

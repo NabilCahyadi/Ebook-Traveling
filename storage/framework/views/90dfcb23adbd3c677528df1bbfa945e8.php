@@ -71,11 +71,68 @@
 
         <!-- Search Filter -->
         <div class="card-body border-bottom">
-            <form action="<?php echo e(route('admin.users.index')); ?>" method="GET" class="row g-3">
+            <form action="<?php echo e(route('admin.users.index')); ?>" method="GET" class="row g-3 align-items-end">
                 <?php if(isset($roleSlug) && $roleSlug): ?>
                     <input type="hidden" name="role" value="<?php echo e($roleSlug); ?>">
                 <?php endif; ?>
-                <div class="col-md-10">
+                
+                <!-- Google ID Filter -->
+                <div class="col-md-2">
+                    <label class="form-label"><?php echo e(__('admin.users.filter_by_google_id')); ?></label>
+                    <select name="google_id" class="form-select">
+                        <option value=""><?php echo e(__('admin.users.all_accounts')); ?></option>
+                        <option value="linked" <?php echo e(request('google_id') == 'linked' ? 'selected' : ''); ?>>
+                            <?php echo e(__('admin.users.google_linked')); ?>
+
+                        </option>
+                        <option value="regular" <?php echo e(request('google_id') == 'regular' ? 'selected' : ''); ?>>
+                            <?php echo e(__('admin.users.regular_account')); ?>
+
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Registered Time Filter -->
+                <div class="col-md-2">
+                    <label class="form-label"><?php echo e(__('admin.users.filter_by_registered')); ?></label>
+                    <select name="registered" class="form-select">
+                        <option value=""><?php echo e(__('admin.users.all_time')); ?></option>
+                        <option value="today" <?php echo e(request('registered') == 'today' ? 'selected' : ''); ?>>
+                            <?php echo e(__('admin.users.today')); ?>
+
+                        </option>
+                        <option value="week" <?php echo e(request('registered') == 'week' ? 'selected' : ''); ?>>
+                            <?php echo e(__('admin.users.this_week')); ?>
+
+                        </option>
+                        <option value="month" <?php echo e(request('registered') == 'month' ? 'selected' : ''); ?>>
+                            <?php echo e(__('admin.users.this_month')); ?>
+
+                        </option>
+                        <option value="year" <?php echo e(request('registered') == 'year' ? 'selected' : ''); ?>>
+                            <?php echo e(__('admin.users.this_year')); ?>
+
+                        </option>
+                    </select>
+                </div>
+
+                <!-- User Type Filter -->
+                <div class="col-md-2">
+                    <label class="form-label"><?php echo e(__('admin.users.filter_by_subscription')); ?></label>
+                    <select name="user_type" class="form-select">
+                        <option value=""><?php echo e(__('admin.users.all_subscriptions')); ?></option>
+                        <option value="free_user" <?php echo e(request('user_type') == 'free_user' ? 'selected' : ''); ?>>
+                            Free User
+                        </option>
+                        <option value="member" <?php echo e(request('user_type') == 'member' ? 'selected' : ''); ?>>
+                            Premium Member
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Search -->
+                <div class="col-md-4">
+                    <label class="form-label"><?php echo e(__('admin.users.search')); ?></label>
                     <div class="input-group">
                         <span class="input-group-text">
                             <i class="ti ti-search"></i>
@@ -84,18 +141,34 @@
                             placeholder="<?php echo e(__('admin.users.search_placeholder')); ?>">
                     </div>
                 </div>
+
+                <!-- Submit Button -->
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-primary w-100">
-                        <i class="ti ti-search me-1"></i> Search
+                        <i class="ti ti-filter me-1"></i> Filter
                     </button>
                 </div>
-                <?php if(isset($search) && $search): ?>
+
+                <!-- Clear Filter -->
+                <?php if(request('search') || request('google_id') || request('registered') || request('user_type')): ?>
                     <div class="col-12">
-                        <a href="<?php echo e(route('admin.users.index', ['role' => $roleSlug])); ?>"
-                            class="btn btn-sm btn-outline-secondary">
-                            <i class="ti ti-x me-1"></i> Clear Filter
+                        <a href="<?php echo e(route('admin.users.index')); ?>" class="btn btn-sm btn-outline-secondary">
+                            <i class="ti ti-x me-1"></i> Clear All Filters
                         </a>
-                        <span class="text-muted ms-2">Showing results for: <strong>"<?php echo e($search); ?>"</strong></span>
+                        <span class="text-muted ms-2">
+                            <?php if(request('search')): ?>
+                                Search: <strong>"<?php echo e(request('search')); ?>"</strong>
+                            <?php endif; ?>
+                            <?php if(request('google_id')): ?>
+                                | Google ID: <strong><?php echo e(request('google_id') == 'linked' ? 'Linked' : 'Regular Account'); ?></strong>
+                            <?php endif; ?>
+                            <?php if(request('registered')): ?>
+                                | Registered: <strong><?php echo e(ucfirst(request('registered'))); ?></strong>
+                            <?php endif; ?>
+                            <?php if(request('user_type')): ?>
+                                | Type: <strong><?php echo e(request('user_type') == 'free_user' ? 'Free User' : 'Premium Member'); ?></strong>
+                            <?php endif; ?>
+                        </span>
                     </div>
                 <?php endif; ?>
             </form>
