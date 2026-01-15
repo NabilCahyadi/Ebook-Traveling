@@ -129,12 +129,18 @@ class SubscriptionController extends Controller
 
     public function paymentSuccess()
     {
+        // Simpan user yang sudah di-refresh
         $user = auth()->user();
-        $user->load('currentSubscription');
+        $user->load([
+            'currentSubscription',
+            'subscriptions.plan'
+        ]);
+
         $citiesHeader = City::where('is_active', true)
             ->orderBy('order_index')
             ->orderBy('name')
             ->get();
+
         return view('payment.success', [
             'isPremium' => $user->hasActiveSubscription(),
             'citiesHeader' => $citiesHeader
