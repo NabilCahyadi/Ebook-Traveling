@@ -122,4 +122,59 @@ class SubscriptionProcessRepository implements SubscriptionProcessInterface
             }
         });
     }
+
+    public function handleMayarCallbackByPayment($payment)
+    {
+        DB::transaction(function () use ($payment) {
+            // Cek apakah payment valid
+            if (!$payment || !isset($payment->user_id) || !isset($payment->subscription_plan_id)) {
+                Log::warning('Invalid payment data in handleMayarCallbackByPayment', (array) $payment);
+                return;
+            }
+
+            // Cari plan
+            $plan = $this->findPlanById($payment->subscription_plan_id);
+            if (!$plan) {
+                Log::error("Plan not found for payment", ['plan_id' => $payment->subscription_plan_id]);
+                return;
+            }
+
+            // Cek langganan aktif user
+            $activeSub = DB::table('subscriptions')
+                ->where('user_id', $payment->user_id)
+                ->where('status', 'active')
+                ->where('end_date', '>=', now())
+                ->orderBy('end_date', 'desc')
+                ->first();
+
+            if ($activeSub) {
+                // Perpanjang langganan
+                $newEndDate = \Carbon\Carbon::parse($activeSub->end_date)->addDays($plan->duration_days);
+
+                DB::table('subscriptions')
+                    ->where('id', $activeSub->id)
+                    ->update([
+                        'end_date' => $newEndDate,
+                        'total_amount' => DB::raw("`total_amount` + {$plan->price}"),
+                        'updated_at' => now(),
+                        'notes' => DB::raw("CONCAT(IFNULL(`notes`, ''), '\nPerpanjang via {$payment->id} @ " . now()->format('Y-m-d H:i:s') . "')"),
+                    ]);
+
+                // Update payment dengan subscription_id
+                $this->updatePayment($payment->id, ['subscription_id' => $activeSub->id]);
+            } else {
+                // Buat langganan baru
+                $subscriptionData = [
+                    'user_id' => $payment->user_id,
+                    'subscription_plan_id' => $payment->subscription_plan_id,
+                    'payment_id' => $payment->id,
+                    'duration_days' => $plan->duration_days,
+                    'total_amount' => $payment->amount ?? $plan->price,
+                ];
+
+                $subscriptionId = $this->createSubscription($subscriptionData);
+                $this->updatePayment($payment->id, ['subscription_id' => $subscriptionId]);
+            }
+        });
+    }
 }

@@ -43,9 +43,23 @@ class SubscriptionController extends Controller
         }
 
         try {
-            // Gunakan MayarService → ini akan create PaymentLink & panggil Mayar API
-            $paymentLink = $this->mayarService->generatePaymentLink($user, $plan);
+            // SIMPAN DI TABEL payments DULU
+            $paymentData = [
+                'id' => (string) Str::uuid(),
+                'user_id' => $user->id,
+                'subscription_plan_id' => $plan->id,
+                'amount' => $plan->price,
+                'status' => 'pending',
+                'payment_method' => 'mayar',
+                'gateway_transaction_id' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
 
+            DB::table('payments')->insert($paymentData);
+
+            // ✅ KIRIM payment_id sebagai external_id
+            $paymentLink = $this->mayarService->generatePaymentLink($user, $plan, $paymentData['id']);
             return response()->json([
                 'success' => true,
                 'data' => [
@@ -57,7 +71,7 @@ class SubscriptionController extends Controller
         } catch (\Exception $e) {
             Log::error('Subscription create failed', [
                 'user_id' => $user->id,
-                'plan_id' => $plan->id,
+                'plan_id' => $request->plan_id,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
@@ -96,27 +110,37 @@ class SubscriptionController extends Controller
             return response('Unauthorized', 401);
         }
 
-        $data = $request->json('data');
+        $data = $request->json('tda');
         $transactionId = $data['transactionId'] ?? null;
         $status = strtoupper($data['status'] ?? 'failed');
+        $externalId = $data['externalId'] ?? null; // ✅ AMBIL externalId
 
-        if (!$transactionId) {
+        if (!$transactionId || !$externalId) {
+            Log::error('Missing transactionId or externalId', $data);
             return response('Bad Request', 400);
         }
 
         try {
-            // ✅ Ambil data payment dari service
-            $this->subscriptionProcessRepository->handleMayarCallback($transactionId, $status);
+            // ✅ UPDATE TABEL payments BERDASARKAN externalId (yang sebenarnya payment_id)
+            DB::table('payments')
+                ->where('id', $externalId)
+                ->update([
+                    'gateway_transaction_id' => $transactionId,
+                    'status' => in_array($status, ['SUCCESS', 'PAID']) ? 'success' : 'failed',
+                    'paid_at' => in_array($status, ['SUCCESS', 'PAID']) ? now() : null,
+                    'updated_at' => now(),
+                ]);
 
-            // ✅ Cari payment untuk log
-            $payment = DB::table('payments')
-                ->where('gateway_transaction_id', $transactionId)
-                ->first();
-
-            if ($payment) {
-                Log::info('Payment processed successfully', ['user_id' => $payment->user_id]);
+            // ✅ PROSES LANGGANAN JIKA SUKSES
+            if (in_array($status, ['SUCCESS', 'PAID'])) {
+                $payment = DB::table('payments')->where('id', $externalId)->first();
+                if ($payment) {
+                    // ✅ MODIFIKASI: handleMayarCallbackByPayment()
+                    $this->subscriptionProcessRepository->handleMayarCallbackByPayment($payment);
+                }
             }
 
+            Log::info('Payment processed successfully', ['user_id' => $payment->user_id ?? 'unknown']);
             return response('OK', 200);
         } catch (\Exception $e) {
             Log::error('Callback processing failed', [

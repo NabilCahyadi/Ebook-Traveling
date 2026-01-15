@@ -27,13 +27,11 @@ class MayarService
     /**
      * Generate payment link for subscription
      */
-    public function generatePaymentLink(User $user, SubscriptionPlan $plan, ?string $notes = null): PaymentLink
+    public function generatePaymentLink(User $user, SubscriptionPlan $plan, ?string $paymentId = null): PaymentLink
     {
-        // Generate invoice
         $invoiceNumber = $this->generateInvoiceNumber();
         $expiresAt = now()->addHours(24);
 
-        // Simpan record
         $paymentLink = PaymentLink::create([
             'invoice_number' => $invoiceNumber,
             'user_id' => $user->id,
@@ -41,25 +39,20 @@ class MayarService
             'amount' => $plan->price,
             'status' => 'pending',
             'expires_at' => $expiresAt,
-            'notes' => $notes,
+            'notes' => $paymentId, // Simpan payment_id di notes
         ]);
 
-        // ✅ GUNAKAN REDIRECT LINK + is_test=true (BUKAN API)
         $params = [
             'name' => $user->name,
             'email' => $user->email,
-            'phone' => $user->phone
-                ? preg_replace('/\D/', '', $user->phone)
-                : '628123456789',
-            'external_id' => $invoiceNumber,
+            'phone' => $user->phone ? preg_replace('/\D/', '', $user->phone) : '628123456789',
+            'external_id' => $paymentId, // ✅ INI YANG BARU!
         ];
 
-        // ✅ AUTO STAGING MODE: tambah is_test=true di local
         if (app()->environment('local')) {
-            $params['is_test'] = 'true'; // string 'true', bukan boolean
+            $params['is_test'] = 'true';
         }
 
-        // ✅ Bangun URL dengan LINK PEMBAYARAN (bukan API)
         $url = $plan->mayar_payment_link . '?' . http_build_query($params);
         $paymentLink->update(['payment_url' => $url]);
 
