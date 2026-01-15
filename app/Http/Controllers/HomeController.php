@@ -133,7 +133,7 @@ class HomeController extends Controller
         return view('search-results', [
             'ebooks' => $ebooks,
             'query' => $query,
-            'citiesHeader' => $citiesHeadergit status
+            'citiesHeader' => $citiesHeader
         ]);
     }
 }
