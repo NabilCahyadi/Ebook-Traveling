@@ -12,7 +12,7 @@ use App\Repositories\Interfaces\SubscriptionProcessInterface;
 use App\Services\MayarService;
 use Carbon\Carbon;
 use App\Models\SubscriptionPlan;
-use Illuminate\Support\Facades\Artisan;
+use App\Models\City;
 
 class SubscriptionController extends Controller
 {
@@ -131,9 +131,13 @@ class SubscriptionController extends Controller
     {
         $user = auth()->user();
         $user->load('currentSubscription');
-
+        $citiesHeader = City::where('is_active', true)
+            ->orderBy('order_index')
+            ->orderBy('name')
+            ->get();
         return view('payment.success', [
-            'isPremium' => $user->hasActiveSubscription()
+            'isPremium' => $user->hasActiveSubscription(),
+            'citiesHeader' => $citiesHeader
         ]);
     }
 
