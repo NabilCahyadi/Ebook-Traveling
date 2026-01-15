@@ -316,9 +316,9 @@ class UserService
             'profile',
             'orders.items.ebook.categories',
             'savedBooks.categories',
-            'readings.ebook',
+            'readings.ebook.city',
             'subscriptions.plan',
-            'ratings.ebook',
+            'ratings.ebook.city',
             'createdEbooks.categories',
             'blogs'
         ])->findOrFail($userId);
@@ -379,7 +379,7 @@ class UserService
         $cities = City::orderBy('name')->get();
 
         // === FILTER UNTUK READING HISTORY ===
-        $readingHistoryQuery = $user->readings()->with('ebook.creator.city');
+        $readingHistoryQuery = $user->readings()->with('ebook.city', 'ebook.creator');
         if ($request->filled('search')) {
             $readingHistoryQuery->whereHas('ebook', function ($q) use ($request) {
                 $q->where('title', 'like', '%' . $request->search . '%');

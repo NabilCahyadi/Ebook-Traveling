@@ -263,7 +263,8 @@
     .product-img {
         position: relative;
         width: 100%;
-        padding-top: 140%; /* Rasio 5:7 (tinggi 140% dari lebar) untuk cover buku */
+        padding-top: 140%;
+        /* Rasio 5:7 (tinggi 140% dari lebar) untuk cover buku */
         overflow: hidden;
         border-radius: 15px;
         background-color: #f5f5f5;
@@ -292,6 +293,7 @@
         text-decoration: none;
         transition: all 0.3s ease;
         margin-top: 15px;
+        min-width: 140px !important;
     }
 
     .btn-read-now {
@@ -333,57 +335,32 @@
     }
 
     /* wishlist/favorite */
-    .btn-favorite {
+    .favorite-btn {
+        width: 45px;
+        height: 45px;
+        padding: 0 !important;
+        margin-top: 15px;
+        border: 1px solid #FF4C61;
+        border-radius: 5px;
         background-color: #FF4C61;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 5px;
-        display: inline-flex;
+        display: flex;
         align-items: center;
         justify-content: center;
-        text-decoration: none;
-        transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
         cursor: pointer;
+        transition: all 0.2s ease;
     }
 
-    .btn-favorite:hover {
-        background-color: #e04355;
+    .favorite-btn i {
         color: white;
-        transform: translateY(-2px);
+        font-size: 16px;
     }
 
-    .btn-favorite i {
-        font-size: 1.2em;
+    .favorite-btn.saved {
+        background-color: white;
     }
 
-    .control-btn {
-        border: none;
-        padding: 0px;
-        border-radius: 5px;
-        margin: 0px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-        transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
-        cursor: pointer;
-    }
-
-    /* ✅ FIX PADDING BUTTON UTAMA */
-    .action-btn {
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        gap: 8px !important;
-        padding: 10px 20px !important;
-        min-width: 160px !important;
-    }
-
-    /* ✅ BUTTON FAVORITE STYLING CONSISTENT */
-    .btn-favorite-container {
-        display: inline-flex;
-        align-items: center;
+    .favorite-btn.saved i {
+        color: #FF4C61;
     }
 </style>
 <style>
@@ -486,17 +463,14 @@
 
                                             <!-- ✅ ICON ONLY DI SAMPING KANAN -->
                                             @if(auth()->check())
-                                            <form method="POST" action="{{ route('ebooks.save.toggle', $ebook->id) }}" class="d-inline btn-favorite-form">
-                                                @csrf
-                                                <button class="control-btn favorite-btn"
+                                            <div style="display: flex; align-items: center;">
+                                                <button id="favorite-btn-{{ $ebook->id }}"
+                                                    class="favorite-btn {{ $isSaved ? 'saved' : '' }}"
                                                     data-ebook-id="{{ $ebook->id }}"
-                                                    data-is-saved="{{ $isSaved ? '1' : '0' }}"
-                                                    style="background-color: {{ $isSaved ? '#ffffff' : '#FF4C61' }}; border: 1px solid #FF4C61; width: 45px; height: 45px; padding: 0; margin-top:15px;"
                                                     title="{{ $isSaved ? 'Remove from saved' : 'Save this book' }}">
-                                                    <i class="bi {{ $isSaved ? 'bi-heart-fill' : 'bi-heart' }}"
-                                                        style="color: {{ $isSaved ? '#FF4C61' : '#ffffff' }}; font-size: 16px;"></i>
+                                                    <i class="bi {{ $isSaved ? 'bi-heart-fill' : 'bi-heart' }}"></i>
                                                 </button>
-                                            </form>
+                                            </div>
                                             @endif
                                         </li>
                                     </ul>
@@ -713,9 +687,9 @@
                                         <div class="product-img product-img-zoom">
                                             <a href="{{ route('ebooks.show', $ebook->slug) }}">
                                                 @php
-                                                    $coverImage = $ebook->external_cover_url 
-                                                        ? $ebook->external_cover_url 
-                                                        : ($ebook->cover_image_url ?? 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg');
+                                                $coverImage = $ebook->external_cover_url
+                                                ? $ebook->external_cover_url
+                                                : ($ebook->cover_image_url ?? 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg');
                                                 @endphp
                                                 <img class="default-img" src="{{ $coverImage }}" alt="{{ $ebook->title }}" />
                                             </a>
@@ -836,7 +810,7 @@
         });
     });
 </script>
-<script>
+<!-- <script>
     $(document).ready(function() {
         $('.btn-favorite').on('click', function(e) {
             e.preventDefault();
@@ -884,102 +858,60 @@
             });
         });
     });
-</script>
+</script> -->
 <script>
-    // ✅ EVENT HANDLER
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.favorite-btn')) {
-            e.preventDefault();
-            const button = e.target.closest('.favorite-btn');
-            const ebookId = button.dataset.ebookId;
-            const isSaved = button.dataset.isSaved === '1';
+    document.addEventListener('DOMContentLoaded', function() {
+        const btn = document.querySelector('.favorite-btn');
+        if (!btn) return;
 
-            // ✅ OPTIMISTIC UI UPDATE (SESUAI WARNA YANG KAMU MINTA)
-            if (isSaved) {
-                // Dari saved → unsaved
-                button.style.backgroundColor = '#FF4C61'; // background merah
-                button.style.color = '#ffffff'; // text putih
-                const icon = button.querySelector('i');
-                if (icon) {
-                    icon.style.color = '#ffffff'; // icon putih
-                    icon.className = 'bi bi-heart'; // outline
-                }
-                button.title = 'Save this book';
-                button.dataset.isSaved = '0';
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const ebookId = this.dataset.ebookId;
+            const isCurrentlySaved = this.classList.contains('saved');
+            const url = `/ebooks/${ebookId}/save`;
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            // Optimistic UI update
+            if (isCurrentlySaved) {
+                this.classList.remove('saved');
+                this.querySelector('i').className = 'bi bi-heart';
+                this.title = 'Save this book';
             } else {
-                // Dari unsaved → saved
-                button.style.backgroundColor = '#ffffff'; // background putih
-                button.style.color = '#FF4C61'; // text merah
-                const icon = button.querySelector('i');
-                if (icon) {
-                    icon.style.color = '#FF4C61'; // icon merah
-                    icon.className = 'bi bi-heart-fill'; // filled
-                }
-                button.title = 'Remove from saved';
-                button.dataset.isSaved = '1';
+                this.classList.add('saved');
+                this.querySelector('i').className = 'bi bi-heart-fill';
+                this.title = 'Remove from saved';
             }
 
             // Kirim ke server
-            fetch('/toggle-favorite', {
+            fetch(url, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        'X-CSRF-TOKEN': token,
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        ebook_id: ebookId
-                    })
+                    body: JSON.stringify({})
                 })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success) {
-                        showToast(data.message);
-                    } else {
+                    if (!data.success) {
                         // Revert jika gagal
-                        button.dataset.isSaved = isSaved ? '1' : '0';
-                        if (isSaved) {
-                            button.style.backgroundColor = '#ffffff';
-                            button.style.color = '#FF4C61';
-                            const icon = button.querySelector('i');
-                            if (icon) {
-                                icon.style.color = '#FF4C61';
-                                icon.className = 'bi bi-heart-fill';
-                            }
-                        } else {
-                            button.style.backgroundColor = '#FF4C61';
-                            button.style.color = '#ffffff';
-                            const icon = button.querySelector('i');
-                            if (icon) {
-                                icon.style.color = '#ffffff';
-                                icon.className = 'bi bi-heart';
-                            }
-                        }
-                        showToast(data.message || 'Failed to update', 'error');
+                        this.classList.toggle('saved');
+                        this.querySelector('i').className = isCurrentlySaved ?
+                            'bi bi-heart-fill' :
+                            'bi bi-heart';
+                        alert(data.message || 'Failed to update');
                     }
                 })
                 .catch(() => {
                     // Revert jika error
-                    button.dataset.isSaved = isSaved ? '1' : '0';
-                    if (isSaved) {
-                        button.style.backgroundColor = '#ffffff';
-                        button.style.color = '#FF4C61';
-                        const icon = button.querySelector('i');
-                        if (icon) {
-                            icon.style.color = '#FF4C61';
-                            icon.className = 'bi bi-heart-fill';
-                        }
-                    } else {
-                        button.style.backgroundColor = '#FF4C61';
-                        button.style.color = '#ffffff';
-                        const icon = button.querySelector('i');
-                        if (icon) {
-                            icon.style.color = '#ffffff';
-                            icon.className = 'bi bi-heart';
-                        }
-                    }
-                    showToast('Connection error', 'error');
+                    this.classList.toggle('saved');
+                    this.querySelector('i').className = isCurrentlySaved ?
+                        'bi bi-heart-fill' :
+                        'bi bi-heart';
+                    alert('Connection error');
                 });
-        }
+        });
     });
 </script>
 @endsection

@@ -36,7 +36,7 @@ class Ebook extends Model
         'pdf_file',
         'content_text',
         'preview_content',
-        'page_count',
+        'total_pages',
         'language',
         'is_featured',
         'is_free',
@@ -49,6 +49,7 @@ class Ebook extends Model
         'is_active' => 'boolean',
         'id' => 'string',
         'published_at' => 'datetime',
+        'total_pages' => 'integer',
     ];
 
     /**

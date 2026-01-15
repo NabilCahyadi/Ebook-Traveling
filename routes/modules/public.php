@@ -41,11 +41,11 @@ Route::middleware(['user.session'])->group(function () {
     Route::get('/destinations/{slug}', [DestinationController::class, 'show'])->name('destination.show')->middleware('record.view');
 
 
-Route::get('/help-center', [PolicyController::class, 'show'])->defaults('type', 'help')->name('help-center');
-Route::get('/privacy-policy', [PolicyController::class, 'show'])->defaults('type', 'privacy')->name('privacy-policy');
-Route::get('/terms-conditions', [PolicyController::class, 'show'])->defaults('type', 'terms')->name('terms-conditions');
-Route::get('/shopping-policy', [PolicyController::class, 'show'])->defaults('type', 'shopping')->name('shopping-policy');
-Route::get('/payment-policy', [PolicyController::class, 'show'])->defaults('type', 'payment')->name('payment-policy');
+    Route::get('/help-center', [PolicyController::class, 'show'])->defaults('type', 'help')->name('help-center');
+    Route::get('/privacy-policy', [PolicyController::class, 'show'])->defaults('type', 'privacy')->name('privacy-policy');
+    Route::get('/terms-conditions', [PolicyController::class, 'show'])->defaults('type', 'terms')->name('terms-conditions');
+    Route::get('/shopping-policy', [PolicyController::class, 'show'])->defaults('type', 'shopping')->name('shopping-policy');
+    Route::get('/payment-policy', [PolicyController::class, 'show'])->defaults('type', 'payment')->name('payment-policy');
 
     // Page Account (Public account page/info)
     // Account Routes
@@ -59,60 +59,34 @@ Route::get('/payment-policy', [PolicyController::class, 'show'])->defaults('type
     // Route::put('/password/update', [AccountController::class, 'updatePassword'])->name('password.update')->middleware('auth');
     Route::get('/help/content/{type}', [HelpController::class, 'loadContent'])->name('help.content');
 
-Route::get('/collections/{collection:slug}', [CollectionController::class, 'show'])->name('collections.show');
-Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index');
-Route::get('/blogs/tag/{tag}', [BlogController::class, 'byTag'])->name('blogs.by.tag');
-Route::get('/blogs/{slug}', [BlogController::class, 'show'])->name('blogs.show');
-Route::get('/ebooks/{slug}', [EbookController::class, 'show'])->name('ebooks.show');
-Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store')->middleware('auth');
-// Route::get('/reader/{slug}', [ReaderController::class, 'show'])->name('reader.show')->middleware('premium');
-Route::get('/category/{slug}', [FrontendCategoryController::class, 'show'])->name('category.show');
-Route::get('/pricing', [PricingController::class, 'index'])->name('pricing');
-Route::get('/promo', [PromoController::class, 'index'])->name('promo');
-Route::get('/promo/{slug}', [PromoController::class, 'showDetail'])->name('promo.detail.show');
-// Route::post('/reader/update-progress', [ReaderController::class, 'updateProgress'])->name('reader.updateProgress');
-Route::get('/about-us', [AboutController::class, 'index'])->name('about-us');
-Route::get('/contact', [ContactController::class, 'index'])->name('contact');
-Route::get('/faq', [FaqController::class, 'faqs'])->name('faq');
-Route::get('/search', [HomeController::class, 'search'])->name('search');
+    Route::get('/collections/{collection:slug}', [CollectionController::class, 'show'])->name('collections.show');
+    Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index');
+    Route::get('/blogs/tag/{tag}', [BlogController::class, 'byTag'])->name('blogs.by.tag');
+    Route::get('/blogs/{slug}', [BlogController::class, 'show'])->name('blogs.show');
+    Route::get('/ebooks/{slug}', [EbookController::class, 'show'])->name('ebooks.show');
+    Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store')->middleware('auth');
+    // Route::get('/reader/{slug}', [ReaderController::class, 'show'])->name('reader.show')->middleware('premium');
+    Route::get('/category/{slug}', [FrontendCategoryController::class, 'show'])->name('category.show');
+    Route::get('/pricing', [PricingController::class, 'index'])->name('pricing');
+    Route::get('/promo', [PromoController::class, 'index'])->name('promo');
+    Route::get('/promo/{slug}', [PromoController::class, 'showDetail'])->name('promo.detail.show');
+    // Route::post('/reader/update-progress', [ReaderController::class, 'updateProgress'])->name('reader.updateProgress');
+    Route::get('/about-us', [AboutController::class, 'index'])->name('about-us');
+    Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+    Route::get('/faq', [FaqController::class, 'faqs'])->name('faq');
+    Route::get('/search', [HomeController::class, 'search'])->name('search');
 
-Route::post('/ebooks/{id}/save', [EbookController::class, 'toggleSaved'])
-    ->name('ebooks.save.toggle')
-    ->middleware('auth');
-Route::post('/toggle-favorite', function (Request $request) {
-    if (!auth()->check()) {
-        return response()->json(['success' => false, 'message' => 'Login required']);
-    }
+    Route::post('/ebooks/{id}/save', [EbookController::class, 'toggleSaved'])
+        ->name('ebooks.save.toggle')
+        ->middleware('auth');
 
-    $userId = auth()->id();
-    $ebookId = $request->input('ebook_id');
-
-    $exists = DB::table('user_saved_books')
-        ->where('user_id', $userId)
-        ->where('ebook_id', $ebookId)
-        ->exists();
-
-    if ($exists) {
-        DB::table('user_saved_books')
-            ->where('user_id', $userId)
-            ->where('ebook_id', $ebookId)
-            ->delete();
-        return response()->json(['success' => true, 'message' => 'Removed from saved books']);
-    } else {
-        DB::table('user_saved_books')->insert([
-            'user_id' => $userId,
-            'ebook_id' => $ebookId,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-        return response()->json(['success' => true, 'message' => 'Added to saved books']);
-    }
-})->middleware('auth');
-
-// Bungkus dengan prefix 'api'
+    // Bungkus dengan prefix 'api'
     Route::prefix('api')->group(function () {
         Route::post('/subscription/create', [SubscriptionController::class, 'create'])
-            ->middleware('auth'); // Tetap gunakan middleware auth
+            ->name('api.subscription.create')
+            ->middleware('auth');
 
-        Route::post('/payment/mayar-callback', [SubscriptionController::class, 'mayarCallback']);
+        Route::post('/payment/mayar-callback', [SubscriptionController::class, 'mayarCallback'])
+            ->name('api.payment.mayar-callback'); // Tidak perlu auth!
     });
+});

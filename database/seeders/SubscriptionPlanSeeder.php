@@ -37,7 +37,7 @@ class SubscriptionPlanSeeder extends Seeder
                 'name' => 'Menengah - Weekly',
                 'slug' => 'menengah-weekly',
                 'description' => 'Ideal for avid travelers who want new content every month.',
-                'price' => 66000,
+                'price' => 1000,
                 'price_description' => 'Per Week',
                 'duration_days' => 7,
                 'features' => [
@@ -57,7 +57,7 @@ class SubscriptionPlanSeeder extends Seeder
                 'name' => 'Monthly Explorer - Monthly',
                 'slug' => 'monthly-explorer-monthly-25465',
                 'description' => 'Best value for dedicated explorers. Save big with an annual plan.',
-                'price' => 99000,
+                'price' => 1000,
                 'price_description' => 'Per Month',
                 'duration_days' => 30,
                 'features' => [
@@ -77,7 +77,7 @@ class SubscriptionPlanSeeder extends Seeder
                 'name' => 'Yearly Voyager',
                 'slug' => 'yearly-voyager-66003',
                 'description' => 'Tailored solutions for teams and travel agencies.',
-                'price' => 399000,
+                'price' => 1000,
                 'price_description' => 'Per Year',
                 'duration_days' => 365,
                 'features' => [

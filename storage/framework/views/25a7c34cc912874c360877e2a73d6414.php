@@ -1,16 +1,14 @@
-@extends('layouts.auth')
+<?php $__env->startSection('title', 'Login'); ?>
 
-@section('title', 'Login')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container" id="container">
     <!-- Sign Up Form -->
     <div class="form-container sign-up-container">
-        <form method="POST" action="{{ route('register') }}">
-            @csrf
+        <form method="POST" action="<?php echo e(route('register')); ?>">
+            <?php echo csrf_field(); ?>
             <h1>Create Account</h1>
             <div class="social-container">
-                <a href="{{ route('register.google') }}" class="social google-btn">
+                <a href="<?php echo e(route('register.google')); ?>" class="social google-btn">
                     <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
                         <path fill="#FF416C" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
                         <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
@@ -21,28 +19,30 @@
             </div>
             <span>or use your email for registration</span>
 
-            @if (session('error'))
+            <?php if(session('error')): ?>
             <div class="alert-message error">
-                {{ session('error') }}
-            </div>
-            @endif
+                <?php echo e(session('error')); ?>
 
-            @if (session('info'))
+            </div>
+            <?php endif; ?>
+
+            <?php if(session('info')): ?>
             <div class="alert-message info">
-                {{ session('info') }}
-            </div>
-            @endif
+                <?php echo e(session('info')); ?>
 
-            <input type="text" name="name" placeholder="Name" value="{{ old('name') }}" required />
-            <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" required />
+            </div>
+            <?php endif; ?>
+
+            <input type="text" name="name" placeholder="Name" value="<?php echo e(old('name')); ?>" required />
+            <input type="email" name="email" placeholder="Email" value="<?php echo e(old('email')); ?>" required />
             <input type="password" name="password" placeholder="Password" required />
             <input type="password" name="password_confirmation" placeholder="Confirm Password" required />
 
             <div class="terms-container">
                 <label class="checkbox-label">
-                    <input type="checkbox" name="terms" value="1" {{ old('terms') ? 'checked' : '' }} required>
+                    <input type="checkbox" name="terms" value="1" <?php echo e(old('terms') ? 'checked' : ''); ?> required>
                     <span class="checkmark"></span>
-                    I agree to the <a href="{{route('terms-conditions')}}" style="color: #FF4C61;"> Terms and Conditions</a>
+                    I agree to the <a href="<?php echo e(route('terms-conditions')); ?>" style="color: #FF4C61;"> Terms and Conditions</a>
                 </label>
             </div>
 
@@ -52,11 +52,11 @@
 
     <!-- Sign In Form -->
     <div class="form-container sign-in-container">
-        <form method="POST" action="{{ route('login.post') }}">
-            @csrf
+        <form method="POST" action="<?php echo e(route('login.post')); ?>">
+            <?php echo csrf_field(); ?>
             <h1>Sign in</h1>
             <div class="social-container">
-                <a href="{{ route('login.google') }}" class="social google-btn">
+                <a href="<?php echo e(route('login.google')); ?>" class="social google-btn">
                     <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
                         <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
                         <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
@@ -67,39 +67,41 @@
             </div>
             <span>or use your account</span>
 
-            @if (session('success'))
+            <?php if(session('success')): ?>
             <div class="alert-message success">
-                {{ session('success') }}
-            </div>
-            @endif
+                <?php echo e(session('success')); ?>
 
-            @if (session('error'))
+            </div>
+            <?php endif; ?>
+
+            <?php if(session('error')): ?>
             <div class="alert-message error">
-                {{ session('error') }}
-            </div>
-            @endif
+                <?php echo e(session('error')); ?>
 
-            @if ($errors->any())
+            </div>
+            <?php endif; ?>
+
+            <?php if($errors->any()): ?>
             <div class="alert-message error">
-                @foreach ($errors->all() as $error)
-                <div>{{ $error }}</div>
-                @endforeach
+                <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <div><?php echo e($error); ?></div>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
-            @endif
+            <?php endif; ?>
 
-            <input type="text" name="email" placeholder="Email or Phone Number" value="{{ old('email') }}"
+            <input type="text" name="email" placeholder="Email or Phone Number" value="<?php echo e(old('email')); ?>"
                 required />
             <input type="password" name="password" placeholder="Password" required />
 
             <div class="remember-forgot">
                 <label class="checkbox-label">
-                    <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}>
+                    <input type="checkbox" name="remember" <?php echo e(old('remember') ? 'checked' : ''); ?>>
                     <span class="checkmark"></span>
                     Remember me
                 </label>
-                @if (Route::has('password.request'))
-                <a href="{{ route('password.request') }}">Forgot Password ?</a>
-                @endif
+                <?php if(Route::has('password.request')): ?>
+                <a href="<?php echo e(route('password.request')); ?>">Forgot Password ?</a>
+                <?php endif; ?>
             </div>
 
             <button type="submit">Sign In</button>
@@ -125,7 +127,7 @@
     </div>
 </div>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
     /* Base styles */
     .alert-message {
@@ -399,9 +401,9 @@
         transform: translateX(20%);
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Cek URL parameter
@@ -427,5 +429,6 @@
         });
     });
 </script>
-@endpush
-@endsection
+<?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.auth', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\PROJEK PROJEK\Ebook-Traveling\resources\views/auth/login.blade.php ENDPATH**/ ?>

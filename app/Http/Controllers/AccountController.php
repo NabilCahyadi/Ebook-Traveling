@@ -79,9 +79,6 @@ class AccountController extends Controller
     /**
      * Update user password
      */
-    /**
-     * Update user password
-     */
     public function updatePassword(Request $request)
     {
         $request->validate([

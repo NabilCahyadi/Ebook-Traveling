@@ -68,120 +68,52 @@ class SubscriptionController extends Controller
         }
     }
 
+    private function validateMayarSignature(Request $request)
+    {
+        $signature = $request->header('X-Mayar-Signature');
+        $payload = $request->getContent();
+        $expected = hash_hmac('sha256', $payload, config('services.mayar.webhook_token'));
+
+        if (!hash_equals($expected, $signature)) {
+            throw new \Exception('Invalid signature');
+        }
+    }
+
     /**
      * Endpoint untuk menerima callback dari Mayar.id
      * URL: POST /api/payment/mayar-callback
      */
     public function mayarCallback(Request $request)
     {
-        // 🔒 Signature verification → nonaktif sementara untuk testing
-        Log::info('Webhook received (testing mode)', $request->all());
+        // ✅ Validasi signature
+        $signature = $request->header('X-Mayar-Signature');
+        $payload = $request->getContent();
+        $expectedSignature = hash_hmac('sha256', $payload, config('services.mayar.webhook_token'));
 
-        // 2. Parse Payload
+        if (!hash_equals($expectedSignature, $signature)) {
+            Log::warning('Invalid webhook signature');
+            return response('Unauthorized', 401);
+        }
+
         $data = $request->json('data');
         $transactionId = $data['transactionId'] ?? null;
         $status = strtoupper($data['status'] ?? 'failed');
 
         if (!$transactionId) {
-            Log::error('Webhook missing transactionId', $data);
-            return response('Bad Request: Missing transactionId', 400);
+            return response('Bad Request', 400);
         }
 
-        // 3. Proses dengan transaksi database
-        DB::transaction(function () use ($transactionId, $status) {
-            // Cari payment
-            $payment = DB::table('payments')
-                ->where('gateway_transaction_id', $transactionId)
-                ->lockForUpdate()
-                ->first();
-
-            if (!$payment) {
-                Log::warning("Payment not found for transactionId: $transactionId", ['data' => $data]);
-                return;
-            }
-
-            if ($payment->status === 'success') {
-                Log::info("Payment already processed: $transactionId");
-                return;
-            }
-
-            // Update status payment
-            $newStatus = in_array($status, ['SUCCESS', 'PAID']) ? 'success' : 'failed';
-            DB::table('payments')
-                ->where('id', $payment->id)
-                ->update([
-                    'status' => $newStatus,
-                    'paid_at' => $newStatus === 'success' ? now() : null,
-                    'updated_at' => now(),
-                ]);
-
-            // ✅ JIKA SUKSES → AKTIFKAN / PERPANJANG LANGGANAN
-            if ($newStatus === 'success') {
-                $plan = DB::table('subscription_plans')
-                    ->where('id', $payment->subscription_plan_id)
-                    ->first();
-
-                if (!$plan) {
-                    Log::error("Plan not found for payment", ['plan_id' => $payment->subscription_plan_id]);
-                    return;
-                }
-
-                // 🔍 Cari langganan aktif terakhir user
-                $activeSub = DB::table('subscriptions')
-                    ->where('user_id', $payment->user_id)
-                    ->where('status', 'active')
-                    ->where('end_date', '>=', now())
-                    ->orderBy('end_date', 'desc')
-                    ->first();
-
-                if ($activeSub) {
-                    // ✅ PERPANJANG: end_date lama + N hari (24 jam/hari)
-                    $newEndDate = Carbon::parse($activeSub->end_date)->addDays($plan->duration_days);
-
-                    DB::table('subscriptions')
-                        ->where('id', $activeSub->id)
-                        ->update([
-                            'end_date' => $newEndDate, // ✅ datetime
-                            'total_amount' => DB::raw("`total_amount` + {$plan->price}"),
-                            'updated_at' => now(),
-                            'notes' => DB::raw("CONCAT(IFNULL(`notes`, ''), '\nPerpanjang via {$payment->payment_code} @ " . now()->format('Y-m-d H:i:s') . "')"),
-                        ]);
-
-                    DB::table('payments')
-                        ->where('id', $payment->id)
-                        ->update(['subscription_id' => $activeSub->id]);
-                } else {
-                    // ❌ TIDAK ADA LANGGANAN AKTIF → BUAT BARU
-                    $subscriptionId = (string) Str::uuid();
-
-                    // ✅ 1. start_date = waktu webhook diterima (saat sukses)
-                    $startDate = now();
-
-                    // ✅ 2. end_date = start_date + N hari (24 jam/hari)
-                    $endDate = $startDate->copy()->addDays($plan->duration_days);
-
-                    DB::table('subscriptions')->insert([
-                        'id' => $subscriptionId,
-                        'user_id' => $payment->user_id,
-                        'subscription_plan_id' => $payment->subscription_plan_id,
-                        'payment_id' => $payment->id,
-                        'subscription_code' => 'SUB-' . strtoupper(Str::random(6)) . '-' . $startDate->timestamp,
-                        'start_date' => $startDate,           // ✅ datetime
-                        'end_date' => $endDate,               // ✅ datetime
-                        'status' => 'active',
-                        'total_amount' => $payment->amount,
-                        'created_at' => $startDate,
-                        'updated_at' => $startDate,
-                    ]);
-
-                    DB::table('payments')
-                        ->where('id', $payment->id)
-                        ->update(['subscription_id' => $subscriptionId]);
-                }
-            }
-        });
-
-        return response('OK', 200);
+        try {
+            // ✅ DELEGASI KE SERVICE
+            $this->subscriptionProcessRepository->handleMayarCallback($transactionId, $status);
+            return response('OK', 200);
+        } catch (\Exception $e) {
+            Log::error('Callback processing failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response('Internal Error', 500);
+        }
     }
 
     public function simulateRenewal(Request $request, string $planSlug)

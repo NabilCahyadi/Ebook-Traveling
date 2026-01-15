@@ -73,4 +73,4 @@
     </style>
 </body>
 </html>
-<?php /**PATH C:\laragon\www\ebook_traveling\resources\views/errors/404.blade.php ENDPATH**/ ?>
+<?php /**PATH D:\PROJEK PROJEK\Ebook-Traveling\resources\views/errors/404.blade.php ENDPATH**/ ?>

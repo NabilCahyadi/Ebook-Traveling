@@ -68,6 +68,7 @@ class DatabaseSeeder extends Seeder
             SiteSettingsSeeder::class,          // Membuat site settings (logo, etc)
             FaqPageSeeder::class,
             PolicyPageSeeder::class,
+            PaymentSeeder::class,              // Membuat data pembayaran contoh (BUTUH: User, Subscription)
         ]);
     }
 }

@@ -19,8 +19,8 @@ class EbookController extends Controller
     {
         // Mendapatkan data ebook - hanya yang published
         $ebook = Ebook::where('slug', $slug)
-                     ->where('status', 'published')
-                     ->firstOrFail();
+            ->where('status', 'published')
+            ->firstOrFail();
 
         // Mendapatkan rating yang sudah disetujui dengan pagination (3 per halaman)
         $ratings = EbookRating::where('ebook_id', $ebook->id)
@@ -64,10 +64,11 @@ class EbookController extends Controller
                 ->exists();
         }
 
-        $isSaved = false; // Saya ganti nama variabel menjadi $isSaved agar lebih deskriptif
+        $isSaved = false;
         if (auth()->check()) {
-            // Gunakan relasi yang sudah didefinisikan
-            $isSaved = auth()->user()->savedBooks()->where('ebook_id', $ebook->id)->exists();
+            $isSaved = auth()->user()->savedBooks()
+                ->where('ebook_id', $ebook->id)
+                ->exists();
         }
 
         $citiesHeader = City::where('is_active', true)
@@ -81,31 +82,20 @@ class EbookController extends Controller
     public function toggleSaved(Request $request, string $id)
     {
         if (!auth()->check()) {
-            return response()->json(['message' => 'Unauthorized.'], 401);
+            return response()->json(['success' => false, 'message' => 'Login required'], 401);
         }
 
         $user = auth()->user();
-        $ebook = Ebook::findOrFail($id); // ✅ Langsung pakai UUID
+        Ebook::findOrFail($id);
 
-        // ✅ Cek dengan relasi langsung (lebih efisien)
-        $isSaved = $user->savedBooks()->where('ebook_id', $id)->exists();
+        $exists = $user->savedBooks()->where('ebook_id', $id)->exists();
 
-        if ($isSaved) {
-            // Hapus dari daftar
+        if ($exists) {
             $user->savedBooks()->detach($id);
-            $message = 'Ebook removed from your list.';
-            $newStatus = false;
         } else {
-            // Tambahkan ke daftar
             $user->savedBooks()->attach($id);
-            $message = 'Ebook saved to your list.';
-            $newStatus = true;
         }
 
-        return response()->json([
-            'message' => $message,
-            'is_saved' => $newStatus,
-            'ebook_id' => $id // ✅ Untuk debug
-        ]);
+        return response()->json(['success' => true]);
     }
 }

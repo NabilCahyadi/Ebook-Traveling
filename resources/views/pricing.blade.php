@@ -534,23 +534,23 @@
 
                                 @if($isActive)
                                 @if($isCurrentPlan)
-                                <!-- 🟢 RENEW: Pakai Mayar asli -->
+                                <!-- RENEW: Pakai Mayar asli -->
                                 <button class="pricing-button pricing-button--primary w-100"
                                     onclick="subscribeWithMayar('{{ $plan->id }}', this)">
                                     Renew Subscription
                                 </button>
                                 @elseif($currentPlan && $plan->price > $currentPlan->price)
-                                <!-- 🔼 UPGRADE: Pakai Mayar asli -->
+                                <!-- UPGRADE: Pakai Mayar asli -->
                                 <button class="pricing-button pricing-button--primary w-100"
                                     onclick="subscribeWithMayar('{{ $plan->id }}', this)">
                                     Upgrade Subscription
                                 </button>
                                 @else
-                                <!-- 🟡 DOWNGRADE: Tidak diizinkan -->
+                                <!-- DOWNGRADE: Tidak diizinkan -->
                                 <span class="text-muted small d-block text-center py-2">Upgrade only</span>
                                 @endif
                                 @else
-                                <!-- 🔵 LANGGANAN BARU: Pakai Mayar asli -->
+                                <!-- LANGGANAN BARU: Pakai Mayar asli -->
                                 <button class="pricing-button pricing-button--primary w-100"
                                     onclick="subscribeWithMayar('{{ $plan->id }}', this)">
                                     {{ $plan->button_text ?? 'Subscribe Now' }}
@@ -625,12 +625,6 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer bg-light p-3">
-                                        @if(app()->environment('local'))
-                                        <a href="{{ route('simulate.pay', $plan->slug) }}"
-                                            class="pricing-button pricing-button--primary w-100 text-white">
-                                            <i class="fi-rs-sparkles me-1"></i> Simulate Renewal
-                                        </a>
-                                        @else
                                         <form action="{{ route('api.subscription.create') }}" method="POST" class="w-100">
                                             @csrf
                                             <input type="hidden" name="plan_id" value="{{ $plan->id }}">
@@ -638,7 +632,6 @@
                                                 <i class="fi-rs-clock-six me-1"></i> Renew Now
                                             </button>
                                         </form>
-                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -714,12 +707,6 @@
                                     <!-- Footer -->
                                     <div class="modal-footer border-0 pt-0 px-4 pb-4">
                                         <div class="d-grid gap-2 w-100">
-                                            @if(app()->environment('local'))
-                                            <a href="{{ route('simulate.upgrade', $plan->slug) }}"
-                                                class="custom-button custom-button--primary px-4">
-                                                Simulate Upgrade
-                                            </a>
-                                            @else
                                             <form action="{{ route('api.subscription.create') }}" method="POST" class="w-100">
                                                 @csrf
                                                 <input type="hidden" name="plan_id" value="{{ $plan->id }}">
@@ -727,7 +714,6 @@
                                                     <i class="fi-rs-arrow-up me-2"></i> Upgrade Now
                                                 </button>
                                             </form>
-                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -859,7 +845,7 @@
     async function subscribeWithMayar(planId, buttonElement) {
         const originalText = buttonElement.innerText;
         buttonElement.disabled = true;
-        buttonElement.innerText = 'Memproses...';
+        buttonElement.innerText = 'Processing...';
 
         try {
             const response = await fetch('/api/subscription/create', {

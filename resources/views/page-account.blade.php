@@ -193,7 +193,8 @@
     .product-img {
         position: relative;
         width: 100%;
-        padding-top: 140%; /* Rasio 5:7 (tinggi 140% dari lebar) untuk cover buku */
+        padding-top: 140%;
+        /* Rasio 5:7 (tinggi 140% dari lebar) untuk cover buku */
         overflow: hidden;
         border-radius: 15px;
         background-color: #f5f5f5;
@@ -363,7 +364,7 @@
 </style>
 <style>
     .custom-button {
-        padding: 5px 10px !important;
+        padding: 7px 17px !important;
         border: none !important;
         border-radius: 50px !important;
         font-size: 0.7rem !important;
@@ -523,7 +524,7 @@
                             <li class="nav-item">
                                 <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'wishlist' ? 'active bg-light-subtle' : 'text-body' }}"
                                     href="{{ route('page-account') }}?tab=wishlist">
-                                    <i class="fi fi-rs-heart me-3 fs-5 mt-1 {{ request('tab') == 'wishlist' ? 'text-white' : 'text-danger' }}"></i>
+                                    <i class="fi-rs-heart me-3 fs-5 mt-1 {{ request('tab') == 'wishlist' ? 'text-white' : 'text-danger' }}"></i>
                                     <span>Wishlist</span>
                                     <!-- @if($wishlistCount > 0)
                                             <span class="badge bg-primary rounded-pill ms-auto">{{ $wishlistCount }}</span>
@@ -547,7 +548,7 @@
                                     <li class="nav-item">
                                         <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'library' ? 'active bg-light-subtle' : 'text-muted' }}"
                                             href="{{ route('page-account') }}?tab=library">
-                                            <span><i class="bi bi-collection mr-10"></i>My Library</span>
+                                            <span><i class="fi-rs-library mr-10"></i>My Library</span>
                                         </a>
                                     </li>
                                     <li class="nav-item">
@@ -644,7 +645,7 @@
                                 <!-- PREMIUM USER -->
                                 <div class="card-body p-4">
                                     <div class="d-flex align-items-start gap-3">
-                                        <i class="fi fi-rs-crown mt-1" style="font-size: 1.5rem; color: #FF416C;"></i>
+                                        <i class="fi-rs-crown mt-1" style="font-size: 1.5rem; color: #FF416C;"></i>
                                         <div>
                                             <h5 class="fw-bold mb-2" style="color: #333;">Welcome back, Premium Member!</h5>
                                             <p class="text-muted mb-0">
@@ -711,7 +712,7 @@
                                                                 style="width: 60px; height: 80px; object-fit: cover;">
                                                             @else
                                                             <div class="d-flex align-items-center justify-content-center h-100 text-muted">
-                                                                <i class="fi fi-rs-book"></i>
+                                                                <i class="fi-rs-book"></i>
                                                             </div>
                                                             @endif
                                                         </div>
@@ -762,7 +763,7 @@
                                     </div>
                                     @else
                                     <div class="text-center py-4">
-                                        <i class="fi fi-rs-heart text-muted" style="font-size: 48px;"></i>
+                                        <i class="fi-rs-heart text-muted" style="font-size: 48px;"></i>
                                         <h5 class="mt-3">No saved books yet</h5>
                                         <p class="text-muted">Start exploring our ebooks and add them to your wishlist!
                                         </p>
@@ -1115,9 +1116,9 @@
                                                     <div class="product-img product-img-zoom">
                                                         <a href="/ebooks/{{ $ebook->slug }}">
                                                             @php
-                                                                $coverImage = $ebook->external_cover_url 
-                                                                    ? $ebook->external_cover_url 
-                                                                    : ($ebook->cover_image_url ?? 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg');
+                                                            $coverImage = $ebook->external_cover_url
+                                                            ? $ebook->external_cover_url
+                                                            : ($ebook->cover_image_url ?? 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg');
                                                             @endphp
                                                             <img class="default-img"
                                                                 src="{{ $coverImage }}"
@@ -1519,9 +1520,8 @@
                                     <i class="fi-rs-star text-muted" style="font-size: 64px; color: #FF416C;"></i>
                                     <h5 class="mt-4 fw-bold text-dark">No Reviews Yet</h5>
                                     <p class="text-muted mb-4">Share your thoughts by reviewing ebooks you've read</p>
-                                    <a href="{{ route('destinations') }}"
-                                        class="btn"
-                                        style="background: #FF416C; color: white; border-radius: 6px; padding: 8px 24px;">
+                                    <a href="{{ route('page-account') }}?tab=library"
+                                        class="custom-button custom-button--primary text-white px-4">
                                         Browse Ebooks
                                     </a>
                                 </div>
@@ -1722,7 +1722,7 @@
                                                                 style="background-color:#FF416C; border-radius:100px; color:white; border:none;"
                                                                 title="Download Invoice"
                                                                 onclick="downloadInvoice('{{ $payment->id }}')">
-                                                                <i class="bi bi-file-earmark-arrow-down"></i>
+                                                                <i class="fi-rs-download"></i>
                                                             </button>
                                                         </td>
                                                     </tr>
@@ -1751,7 +1751,7 @@
                                                     <div class="card-body text-center p-4">
                                                         <div class="bg-light-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
                                                             style="width: 56px; height: 56px;">
-                                                            <i class="bi bi-journal-text" style="font-size: 24px; color: #FF416C;"></i>
+                                                            <i class="fi-rs-book" style="font-size: 24px; color: #FF416C;"></i>
                                                         </div>
                                                         <h6 class="fw-bold mb-2">Help Center</h6>
                                                         <p class="text-muted small mb-0">
@@ -1770,7 +1770,7 @@
                                                     <div class="card-body text-center p-4">
                                                         <div class="bg-light-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
                                                             style="width: 56px; height: 56px;">
-                                                            <i class="bi bi-question-circle" style="font-size: 24px; color: #FF416C;"></i>
+                                                            <i class="fi-rs-help" style="font-size: 24px; color: #FF416C;"></i>
                                                         </div>
                                                         <h6 class="fw-bold mb-2">FAQs</h6>
                                                         <p class="text-muted small mb-0">
@@ -1789,7 +1789,7 @@
                                                     <div class="card-body text-center p-4">
                                                         <div class="bg-light-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
                                                             style="width: 56px; height: 56px;">
-                                                            <i class="fi fi-rs-headset" style="font-size: 24px; color: #FF416C;"></i>
+                                                            <i class="fi-rs-headset" style="font-size: 24px; color: #FF416C;"></i>
                                                         </div>
                                                         <h6 class="fw-bold mb-2">Contact Us</h6>
                                                         <p class="text-muted small mb-0">

@@ -527,7 +527,6 @@
                             <div class="pricing-button-container">
                                 <?php if($user): ?>
                                 <?php
-                                // ✅ AMAN: semua dicek bertahap
                                 $currentSub = $user->currentSubscription ?? null;
                                 $isActive = $currentSub !== null;
                                 $isCurrentPlan = $isActive && $currentSub->subscription_plan_id === $plan->id;
@@ -536,50 +535,31 @@
 
                                 <?php if($isActive): ?>
                                 <?php if($isCurrentPlan): ?>
-                                <!-- 🟢 RENEW -->
-                                <!-- <button type="button" class="pricing-button pricing-button--primary w-100"
-                                    data-bs-toggle="modal" data-bs-target="#renewModal-<?php echo e($plan->id); ?>">
+                                <!-- RENEW: Pakai Mayar asli -->
+                                <button class="pricing-button pricing-button--primary w-100"
+                                    onclick="subscribeWithMayar('<?php echo e($plan->id); ?>', this)">
                                     Renew Subscription
-                                </button> -->
-                                <a href="<?php echo e(route('simulate.renew', $plan->slug)); ?>"
-                                    class="pricing-button pricing-button--primary w-100 text-white">
-                                    <i class="fi-rs-sparkles me-1"></i> Simulate Renewal
-                                </a>
+                                </button>
                                 <?php elseif($currentPlan && $plan->price > $currentPlan->price): ?>
-                                <!-- 🔼 UPGRADE -->
-                                <!-- <button type="button" class="pricing-button pricing-button--primary w-100"
-                                    data-bs-toggle="modal" data-bs-target="#upgradeModal-<?php echo e($plan->id); ?>">
-                                    Upgrade Subscription
-                                </button> -->
-                                <?php if(app()->environment('local')): ?>
-                                <button type="button"
-                                    class="pricing-button pricing-button--primary w-100"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#upgradeModal-<?php echo e($plan->id); ?>">
+                                <!-- UPGRADE: Pakai Mayar asli -->
+                                <button class="pricing-button pricing-button--primary w-100"
+                                    onclick="subscribeWithMayar('<?php echo e($plan->id); ?>', this)">
                                     Upgrade Subscription
                                 </button>
+                                <?php else: ?>
+                                <!-- DOWNGRADE: Tidak diizinkan -->
+                                <span class="text-muted small d-block text-center py-2">Upgrade only</span>
                                 <?php endif; ?>
                                 <?php else: ?>
-                                <!-- 🟡 SUDAH LEBIH MAHAL -->
-                                <span class="text-muted small d-block text-center py-2">Already covered</span>
-                                <?php endif; ?>
-                                <?php else: ?>
-                                <!-- 🔵 LANGGANAN BARU -->
-                                <?php if(app()->environment('local')): ?>
-                                <a href="<?php echo e(route('simulate.pay', $plan->slug)); ?>"
-                                    class="pricing-button pricing-button--primary w-100 text-white">
-                                    <i class="fi-rs-sparkles me-1"></i> Subscribe (Simulation)
-                                </a>
-                                <?php else: ?>
+                                <!-- LANGGANAN BARU: Pakai Mayar asli -->
                                 <button class="pricing-button pricing-button--primary w-100"
                                     onclick="subscribeWithMayar('<?php echo e($plan->id); ?>', this)">
                                     <?php echo e($plan->button_text ?? 'Subscribe Now'); ?>
 
                                 </button>
                                 <?php endif; ?>
-                                <?php endif; ?>
 
-                                <!-- 📞 WhatsApp (hanya untuk user login) -->
+                                <!-- 📞 WhatsApp (versi kamu: dengan data user lengkap) -->
                                 <?php
                                 $waNumber = trim(app('settings')->get('whatsapp_number', '6289657571177'));
                                 $waText = urlencode("Halo Admin, saya ingin berlangganan.\n\nNama\t: " . $user->name . "\nEmail\t: " . $user->email . "\nPaket\t: " . $plan->name . "\nHarga\t: Rp " . number_format($plan->price, 0, ',', '.') . "\n\nMohon bantuannya. Terima kasih!");
@@ -650,12 +630,6 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer bg-light p-3">
-                                        <?php if(app()->environment('local')): ?>
-                                        <a href="<?php echo e(route('simulate.pay', $plan->slug)); ?>"
-                                            class="pricing-button pricing-button--primary w-100 text-white">
-                                            <i class="fi-rs-sparkles me-1"></i> Simulate Renewal
-                                        </a>
-                                        <?php else: ?>
                                         <form action="<?php echo e(route('api.subscription.create')); ?>" method="POST" class="w-100">
                                             <?php echo csrf_field(); ?>
                                             <input type="hidden" name="plan_id" value="<?php echo e($plan->id); ?>">
@@ -663,7 +637,6 @@
                                                 <i class="fi-rs-clock-six me-1"></i> Renew Now
                                             </button>
                                         </form>
-                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
@@ -741,12 +714,6 @@
                                     <!-- Footer -->
                                     <div class="modal-footer border-0 pt-0 px-4 pb-4">
                                         <div class="d-grid gap-2 w-100">
-                                            <?php if(app()->environment('local')): ?>
-                                            <a href="<?php echo e(route('simulate.upgrade', $plan->slug)); ?>"
-                                                class="custom-button custom-button--primary px-4">
-                                                Simulate Upgrade
-                                            </a>
-                                            <?php else: ?>
                                             <form action="<?php echo e(route('api.subscription.create')); ?>" method="POST" class="w-100">
                                                 <?php echo csrf_field(); ?>
                                                 <input type="hidden" name="plan_id" value="<?php echo e($plan->id); ?>">
@@ -754,7 +721,6 @@
                                                     <i class="fi-rs-arrow-up me-2"></i> Upgrade Now
                                                 </button>
                                             </form>
-                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>
@@ -886,7 +852,7 @@
     async function subscribeWithMayar(planId, buttonElement) {
         const originalText = buttonElement.innerText;
         buttonElement.disabled = true;
-        buttonElement.innerText = 'Memproses...';
+        buttonElement.innerText = 'Processing...';
 
         try {
             const response = await fetch('/api/subscription/create', {
