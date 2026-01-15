@@ -23,13 +23,13 @@
 
             @if (session('error'))
             <div class="alert-message error">
-                {{ session('error') }}
+                {!! session('error') !!}
             </div>
             @endif
 
             @if (session('info'))
             <div class="alert-message info">
-                {{ session('info') }}
+                {!! session('info') !!}
             </div>
             @endif
 
@@ -75,14 +75,14 @@
 
             @if (session('error'))
             <div class="alert-message error">
-                {{ session('error') }}
+                {!! session('error') !!}
             </div>
             @endif
 
             @if ($errors->any())
             <div class="alert-message error">
                 @foreach ($errors->all() as $error)
-                <div>{{ $error }}</div>
+                <div>{!! $error !!}</div>
                 @endforeach
             </div>
             @endif

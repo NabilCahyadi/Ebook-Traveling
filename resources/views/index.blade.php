@@ -833,7 +833,7 @@ $collections = collect();
                     <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
                         <div class="post-thumb">
                             <a href="{{ route('blogs.show', $blog->slug) }}">
-                                <img class="border-radius-15" src="@if($blog->featured_image && filter_var($blog->featured_image, FILTER_VALIDATE_URL)){{ $blog->featured_image }}@elseif($blog->featured_image){{ asset('storage/' . $blog->featured_image) }}@else{{ asset('images/blog-placeholder.webp') }}@endif" alt="{{ $blog->title }}" />
+                                <img class="border-radius-15" src="{{ $blog->featured_image_url }}" alt="{{ $blog->title }}" />
                             </a>
                         </div>
                         <div class="entry-content-2">

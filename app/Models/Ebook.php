@@ -210,6 +210,7 @@ class Ebook extends Model
     {
         return $this->belongsToMany(Category::class, 'ebook_categories');
     }
+
     /**
      * Get the order items for the ebook.
      */

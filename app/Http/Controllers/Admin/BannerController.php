@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
+use App\Models\SystemSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class BannerController extends Controller
 {
@@ -366,5 +369,89 @@ class BannerController extends Controller
         return response()->json([
             'exists' => false
         ]);
+    }
+
+    /**
+     * Update default CTA background image
+     */
+    public function updateDefaultBackground(Request $request)
+    {
+        $validated = $request->validate([
+            'background_image' => 'required|image|mimes:jpeg,jpg,png,webp|max:2048',
+        ]);
+
+        try {
+            $file = $request->file('background_image');
+            
+            // Create directory if not exists
+            $directory = public_path('images/background_default');
+            if (!file_exists($directory)) {
+                mkdir($directory, 0755, true);
+            }
+
+            // Generate unique filename
+            $filename = 'bg-default-' . time() . '.webp';
+            $filepath = $directory . '/' . $filename;
+
+            // Process and compress image using Intervention Image
+            $manager = new ImageManager(new Driver());
+            $image = $manager->read($file->getPathname());
+            
+            // Get original dimensions
+            $originalWidth = $image->width();
+            $originalHeight = $image->height();
+            
+            // Resize if image is too large (maintaining aspect ratio)
+            $maxWidth = 1920;
+            $maxHeight = 1080;
+            
+            if ($originalWidth > $maxWidth || $originalHeight > $maxHeight) {
+                $image->scale(width: $maxWidth, height: $maxHeight);
+            }
+            
+            // Determine quality based on file size
+            $originalSize = $file->getSize();
+            $quality = 75; // Default quality
+            
+            if ($originalSize > 8 * 1024 * 1024) {
+                $quality = 60;
+            } elseif ($originalSize > 5 * 1024 * 1024) {
+                $quality = 65;
+            } elseif ($originalSize > 3 * 1024 * 1024) {
+                $quality = 70;
+            } elseif ($originalSize > 1 * 1024 * 1024) {
+                $quality = 75;
+            } else {
+                $quality = 80;
+            }
+            
+            // Save as WebP with compression
+            $image->toWebp($quality)->save($filepath);
+            
+            // Get old background path to delete
+            $oldBgPath = SystemSetting::get('default_cta_background_path');
+            
+            // Update system setting with new path
+            $newPath = 'images/background_default/' . $filename;
+            SystemSetting::set('default_cta_background_path', $newPath);
+            
+            // Delete old background file if exists and not the default
+            if ($oldBgPath && $oldBgPath !== 'images/bg-default.webp') {
+                $oldFilePath = public_path($oldBgPath);
+                if (file_exists($oldFilePath)) {
+                    unlink($oldFilePath);
+                }
+            }
+            
+            return redirect()
+                ->route('admin.banners.index', ['tab' => 'default-background'])
+                ->with('success', 'Default background updated successfully!');
+                
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Failed to update background: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 }

@@ -10,7 +10,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="avatar avatar-xl me-4">
-                            <span class="avatar-initial rounded-circle bg-label-light">
+                            <span class="avatar-initial rounded-circle bg-info">
                                 {{ substr(auth('admin')->user()->name ?? 'A', 0, 1) }}
                             </span>
                         </div>
@@ -175,7 +175,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
                         <div class="avatar">
-                            <div class="avatar-initial bg-label-primary rounded">
+                            <div class="avatar-initial bg-label-secondary rounded">
                                 <i class="ti ti-book ti-lg"></i>
                             </div>
                         </div>

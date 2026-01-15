@@ -17,19 +17,22 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Get roles
+        $readerRole = Role::where('slug', 'reader')->first();
         $creatorRole = Role::where('slug', 'creator')->first();
-        $memberRole = Role::where('slug', 'member')->first();
 
-        // Skip creating admin since AdminSeeder already creates one
+        if (!$readerRole || !$creatorRole) {
+            $this->command->error('❌ Roles not found! Please run RoleSeeder first.');
+            return;
+        }
 
-        // Create 10 Creator Users
+        // Create 10 Reader Users (free_user)
         for ($i = 1; $i <= 10; $i++) {
-            $creator = User::create([
+            $reader = User::create([
                 'id' => Str::uuid(),
-                'name' => 'Creator ' . $i,
-                'email' => 'creator' . $i . '@ebook.com',
+                'name' => 'Reader ' . $i,
+                'email' => 'reader' . $i . '@ebook.com',
                 'password' => Hash::make('password'),
-                'user_type' => 'creator',
+                'user_type' => 'free_user', // subscription status
                 'phone' => '+6281' . str_pad($i, 8, '0', STR_PAD_LEFT),
                 'status' => 'active',
                 'preferred_language' => $i % 2 == 0 ? 'en' : 'id',
@@ -37,25 +40,23 @@ class UserSeeder extends Seeder
                 'last_login_at' => now(),
             ]);
 
-            // Assign creator role
-            if ($creatorRole) {
-                UserRole::create([
-                    'user_id' => $creator->id,
-                    'role_id' => $creatorRole->id,
-                ]);
-            }
+            // Assign reader role via user_roles pivot table
+            UserRole::create([
+                'user_id' => $reader->id,
+                'role_id' => $readerRole->id,
+            ]);
         }
 
-        $this->command->info('✅ 10 Creators created');
+        $this->command->info('✅ 10 Readers created (free users)');
 
-        // Create 10 Member Users
+        // Create 10 Creator Users (member)
         for ($i = 1; $i <= 10; $i++) {
-            $member = User::create([
+            $creator = User::create([
                 'id' => Str::uuid(),
-                'name' => 'Member ' . $i,
-                'email' => 'member' . $i . '@ebook.com',
+                'name' => 'Creator ' . $i,
+                'email' => 'creator' . $i . '@ebook.com',
                 'password' => Hash::make('password'),
-                'user_type' => 'member',
+                'user_type' => 'member', // subscription status
                 'phone' => '+6282' . str_pad($i, 8, '0', STR_PAD_LEFT),
                 'status' => 'active',
                 'preferred_language' => $i % 2 == 0 ? 'en' : 'id',
@@ -63,23 +64,52 @@ class UserSeeder extends Seeder
                 'last_login_at' => now(),
             ]);
 
-            // Assign member role
-            if ($memberRole) {
-                UserRole::create([
-                    'user_id' => $member->id,
-                    'role_id' => $memberRole->id,
-                ]);
-            }
+            // Assign creator role via user_roles pivot table
+            UserRole::create([
+                'user_id' => $creator->id,
+                'role_id' => $creatorRole->id,
+            ]);
         }
 
-        $this->command->info('✅ 10 Members created');
+        $this->command->info('✅ 10 Creators created (premium members)');
+
+        // Create 2 users with multiple roles (Reader + Creator)
+        for ($i = 1; $i <= 2; $i++) {
+            $multiRole = User::create([
+                'id' => Str::uuid(),
+                'name' => 'Multi Role User ' . $i,
+                'email' => 'multirole' . $i . '@ebook.com',
+                'password' => Hash::make('password'),
+                'user_type' => 'member', // subscription status
+                'phone' => '+6283' . str_pad($i, 8, '0', STR_PAD_LEFT),
+                'status' => 'active',
+                'preferred_language' => 'en',
+                'email_verified_at' => now(),
+                'last_login_at' => now(),
+            ]);
+
+            // Assign both reader and creator roles
+            UserRole::create([
+                'user_id' => $multiRole->id,
+                'role_id' => $readerRole->id,
+            ]);
+            UserRole::create([
+                'user_id' => $multiRole->id,
+                'role_id' => $creatorRole->id,
+            ]);
+        }
+
+        $this->command->info('✅ 2 Multi-role users created (Reader + Creator)');
 
         $this->command->info('');
         $this->command->info('=== User Credentials ===');
-        $this->command->info('📧 Admin: admin@ebook.com / password');
-        $this->command->info('📧 Creators: creator1@ebook.com to creator10@ebook.com / password');
-        $this->command->info('📧 Members: member1@ebook.com to member10@ebook.com / password');
+        $this->command->info('📚 Readers: reader1@ebook.com to reader10@ebook.com / password');
+        $this->command->info('✍️  Creators: creator1@ebook.com to creator10@ebook.com / password');
+        $this->command->info('🎭 Multi-role: multirole1@ebook.com to multirole2@ebook.com / password');
         $this->command->info('');
-        $this->command->info('Total: 21 users created (1 Admin + 10 Creators + 10 Members)');
+        $this->command->info('Total: 22 users created');
+        $this->command->info('  - 10 Readers (free_user)');
+        $this->command->info('  - 10 Creators (member)');
+        $this->command->info('  -  2 Multi-role users (member with both roles)');
     }
 }

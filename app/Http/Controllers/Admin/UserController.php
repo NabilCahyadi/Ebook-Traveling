@@ -21,16 +21,22 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $roleSlug = $request->get('role');
+        $userType = $request->get('user_type');
         $search = $request->get('search');
         $showTrashed = $request->get('show_trashed', false);
+        $googleId = $request->get('google_id');
+        $registered = $request->get('registered');
+
+        // Get all roles for filter dropdown
+        $roles = \App\Models\Role::all();
 
         if ($roleSlug && $roleSlug !== 'all') {
-            $users = $this->userService->getUsersByRole($roleSlug, 10, $search, $showTrashed);
+            $users = $this->userService->getUsersByRole($roleSlug, 10, $search, $showTrashed, $userType, $googleId, $registered);
         } else {
-            $users = $this->userService->getAllUsers(10, $search, $showTrashed);
+            $users = $this->userService->getAllUsers(10, $search, $showTrashed, $userType, $googleId, $registered);
         }
 
-        return view('admin.users.index', compact('users', 'roleSlug', 'search', 'showTrashed'));
+        return view('admin.users.index', compact('users', 'roleSlug', 'userType', 'search', 'showTrashed', 'roles', 'googleId', 'registered'));
     }
 
     /**

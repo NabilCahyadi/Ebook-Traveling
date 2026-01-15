@@ -17,7 +17,8 @@ interface EbookRepositoryInterface
         ?string $search = null,
         ?string $status = null,
         ?string $categoryId = null,
-        ?string $cityId = null
+        ?string $cityId = null,
+        ?string $statusExclude = null
     ): mixed;
 
     /**

@@ -54,6 +54,175 @@
     
     <!-- Custom Toastr CSS -->
     <style>
+        /* Comprehensive override of all pink colors to match front-end red (#ff4c61) */
+        
+        /* CSS Variables */
+        :root {
+            --bs-primary: #ff4c61 !important;
+            --bs-primary-rgb: 255, 76, 97 !important;
+        }
+        
+        /* Replace all colors with #ff4c61 */
+        .text-primary,
+        .link-primary,
+        a.text-primary,
+        .btn-link.text-primary {
+            color: #ff4c61 !important;
+        }
+        
+        .btn-primary,
+        .bg-primary,
+        .badge-primary,
+        .badge.bg-primary,
+        .alert-primary,
+        .list-group-item-primary.list-group-item-action.active {
+            background-color: #ff4c61 !important;
+            border-color: #ff4c61 !important;
+        }
+        
+        .btn-primary:hover,
+        .btn-primary:focus,
+        .btn-primary:active,
+        .btn-primary.active {
+            background-color: #e6405a !important;
+            border-color: #e6405a !important;
+        }
+        
+        .btn-outline-primary {
+            color: #ff4c61 !important;
+            border-color: #ff4c61 !important;
+        }
+        
+        .btn-outline-primary:hover,
+        .btn-outline-primary:focus,
+        .btn-outline-primary:active {
+            background-color: #ff4c61 !important;
+            border-color: #ff4c61 !important;
+            color: #fff !important;
+        }
+        
+        .border-primary {
+            border-color: #ff4c61 !important;
+        }
+        
+        .border-top-primary {
+            border-top-color: #ff4c61 !important;
+        }
+        
+        .border-bottom-primary {
+            border-bottom-color: #ff4c61 !important;
+        }
+        
+        .border-start-primary {
+            border-left-color: #ff4c61 !important;
+        }
+        
+        .border-end-primary {
+            border-right-color: #ff4c61 !important;
+        }
+        
+        /* Progress bars */
+        .progress-bar.bg-primary {
+            background-color: #ff4c61 !important;
+        }
+        
+        /* Pagination */
+        .pagination .page-item.active .page-link {
+            background-color: #ff4c61 !important;
+            border-color: #ff4c61 !important;
+        }
+        
+        /* List groups */
+        .list-group-item-primary {
+            background-color: rgba(255, 76, 97, 0.1) !important;
+            color: #ff4c61 !important;
+        }
+        
+        /* Menu active state */
+        .menu-item.active > .menu-link {
+            background-color: rgba(255, 76, 97, 0.16) !important;
+            color: #ff4c61 !important;
+        }
+        
+        .menu-sub-item.active > .menu-link {
+            color: #ff4c61 !important;
+        }
+        
+        /* Forms */
+        .form-check-input:checked {
+            background-color: #ff4c61 !important;
+            border-color: #ff4c61 !important;
+        }
+        
+        .form-switch .form-check-input:checked {
+            background-color: #ff4c61 !important;
+            border-color: #ff4c61 !important;
+        }
+        
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #ff4c61 !important;
+            box-shadow: 0 0 0 0.2rem rgba(255, 76, 97, 0.25) !important;
+        }
+        
+        /* Links */
+        a:not(.btn):not(.badge):not(.menu-link):hover {
+            color: #ff4c61 !important;
+        }
+        
+        /* Navbar search */
+        .navbar-search-wrapper .search-input:focus {
+            border-color: #ff4c61 !important;
+        }
+        
+        /* Cards with primary accent */
+        .card-header.bg-primary {
+            background-color: #ff4c61 !important;
+        }
+        
+        /* Spinners */
+        .spinner-border.text-primary,
+        .spinner-grow.text-primary {
+            color: #ff4c61 !important;
+        }
+        
+        /* Dropdown active items */
+        .dropdown-item.active,
+        .dropdown-item:active {
+            background-color: #ff4c61 !important;
+        }
+        
+        /* Tabs */
+        .nav-tabs .nav-link.active,
+        .nav-pills .nav-link.active {
+            background-color: #ff4c61 !important;
+            border-color: #ff4c61 !important;
+        }
+        
+        /* Timeline */
+        .timeline-item.timeline-item-primary .timeline-indicator {
+            background-color: #ff4c61 !important;
+            border-color: #ff4c61 !important;
+        }
+        
+        /* Override background colors */
+        body {
+            background-color: #ffffff !important;
+        }
+        
+        .layout-wrapper {
+            background-color: #ffffff !important;
+        }
+        
+        .layout-page {
+            background-color: #ffffff !important;
+        }
+        
+        .content-wrapper {
+            background-color: #ffffff !important;
+        }
+        
+        /* Toastr */
         #toast-container > div {
             opacity: 1;
             box-shadow: 0 0 12px rgba(0,0,0,0.2);
@@ -344,6 +513,117 @@
         $('#notificationDropdown').on('click', function() {
             loadNotifications();
         });
+    </script>
+
+    <!-- Page Preload System -->
+    <script>
+        (function() {
+            // Preload system: load page completely before navigation
+            document.addEventListener('DOMContentLoaded', function() {
+                
+                // Function to preload page in hidden iframe
+                function preloadPageComplete(url) {
+                    return new Promise((resolve, reject) => {
+                        // Create hidden iframe
+                        const iframe = document.createElement('iframe');
+                        iframe.style.display = 'none';
+                        iframe.style.position = 'absolute';
+                        iframe.style.width = '0';
+                        iframe.style.height = '0';
+                        iframe.style.border = 'none';
+                        
+                        let timeoutId;
+                        
+                        // Set timeout (10 seconds max)
+                        timeoutId = setTimeout(() => {
+                            document.body.removeChild(iframe);
+                            reject(new Error('Timeout'));
+                        }, 10000);
+                        
+                        iframe.onload = function() {
+                            clearTimeout(timeoutId);
+                            
+                            // Wait for iframe content to be fully loaded
+                            try {
+                                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                                
+                                if (iframeDoc.readyState === 'complete') {
+                                    // Ensure all resources are loaded
+                                    setTimeout(() => {
+                                        document.body.removeChild(iframe);
+                                        resolve(true);
+                                    }, 100);
+                                } else {
+                                    // Wait for complete state
+                                    iframeDoc.addEventListener('readystatechange', function() {
+                                        if (iframeDoc.readyState === 'complete') {
+                                            setTimeout(() => {
+                                                document.body.removeChild(iframe);
+                                                resolve(true);
+                                            }, 100);
+                                        }
+                                    });
+                                }
+                            } catch (e) {
+                                // Cross-origin, just wait a bit more
+                                setTimeout(() => {
+                                    document.body.removeChild(iframe);
+                                    resolve(true);
+                                }, 500);
+                            }
+                        };
+                        
+                        iframe.onerror = function() {
+                            clearTimeout(timeoutId);
+                            document.body.removeChild(iframe);
+                            reject(new Error('Load error'));
+                        };
+                        
+                        document.body.appendChild(iframe);
+                        iframe.src = url;
+                    });
+                }
+                
+                // Handle all internal links
+                const links = document.querySelectorAll('a[href]:not([target="_blank"]):not([href^="#"]):not([href^="javascript:"]):not(.no-preload)');
+                
+                links.forEach(function(link) {
+                    link.addEventListener('click', function(e) {
+                        const href = this.getAttribute('href');
+                        
+                        // Only handle internal navigation
+                        if (href && !href.startsWith('http://') && !href.startsWith('https://') && 
+                            !href.startsWith('mailto:') && !href.startsWith('tel:')) {
+                            
+                            e.preventDefault();
+                            
+                            // Visual feedback - disable link and change cursor
+                            const originalText = this.innerHTML;
+                            this.style.opacity = '0.6';
+                            this.style.pointerEvents = 'none';
+                            document.body.style.cursor = 'wait';
+                            
+                            // Preload the page completely
+                            preloadPageComplete(href)
+                                .then(() => {
+                                    // Page is fully loaded in background, now navigate
+                                    window.location.href = href;
+                                })
+                                .catch(() => {
+                                    // If preload fails, navigate anyway
+                                    window.location.href = href;
+                                })
+                                .finally(() => {
+                                    // Reset styles (in case navigation is delayed)
+                                    this.style.opacity = '1';
+                                    this.style.pointerEvents = 'auto';
+                                    document.body.style.cursor = 'default';
+                                });
+                        }
+                    });
+                });
+            });
+        })();
     </script>
 
     @stack('scripts')
