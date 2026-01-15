@@ -131,9 +131,13 @@ class SubscriptionController extends Controller
     {
         $user = auth()->user();
         $user->load('currentSubscription');
-
+        $citiesHeader = City::where('is_active', true)
+            ->orderBy('order_index')
+            ->orderBy('name')
+            ->get();
         return view('payment.success', [
-            'isPremium' => $user->hasActiveSubscription()
+            'isPremium' => $user->hasActiveSubscription(),
+            'citiesHeader' => $citiesHeader
         ]);
     }
 
