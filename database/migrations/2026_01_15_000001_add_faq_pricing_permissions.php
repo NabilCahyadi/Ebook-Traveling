@@ -17,22 +17,30 @@ return new class extends Migration
             [
                 'name' => 'website.faqs-pricing.view',
                 'display_name' => 'View FAQ Pricing',
-                'description' => 'Can view FAQ pricing list'
+                'description' => 'Can view FAQ pricing list',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ'
             ],
             [
                 'name' => 'website.faqs-pricing.create',
                 'display_name' => 'Create FAQ Pricing',
-                'description' => 'Can create new FAQ pricing'
+                'description' => 'Can create new FAQ pricing',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ'
             ],
             [
                 'name' => 'website.faqs-pricing.edit',
                 'display_name' => 'Edit FAQ Pricing',
-                'description' => 'Can edit FAQ pricing'
+                'description' => 'Can edit FAQ pricing',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ'
             ],
             [
                 'name' => 'website.faqs-pricing.delete',
                 'display_name' => 'Delete FAQ Pricing',
-                'description' => 'Can delete FAQ pricing'
+                'description' => 'Can delete FAQ pricing',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ'
             ]
         ];
 
@@ -41,7 +49,9 @@ return new class extends Migration
                 ['name' => $permission['name']],
                 [
                     'display_name' => $permission['display_name'],
-                    'description' => $permission['description']
+                    'description' => $permission['description'],
+                    'module' => $permission['module'],
+                    'sub_module' => $permission['sub_module']
                 ]
             );
         }

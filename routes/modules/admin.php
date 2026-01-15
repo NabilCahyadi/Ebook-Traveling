@@ -410,27 +410,38 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
         Route::delete('collections/{collection}', [\App\Http\Controllers\Admin\CollectionController::class, 'destroy'])->name('collections.destroy');
     });
 
-    // FAQ Management - Pricing FAQs
-    Route::middleware(['admin.permission:website.faqs-pricing.view'])->group(function () {
-        Route::get('faqs/pricing', [\App\Http\Controllers\Admin\FaqController::class, 'indexPricing'])->name('faqs.pricing.index');
-    });
-    
-    Route::middleware(['admin.permission:website.faqs-pricing.create'])->group(function () {
-        Route::get('faqs/pricing/create', [\App\Http\Controllers\Admin\FaqController::class, 'createPricing'])->name('faqs.pricing.create');
-        Route::post('faqs/pricing', [\App\Http\Controllers\Admin\FaqController::class, 'storePricing'])->name('faqs.pricing.store');
-    });
-    
-    Route::middleware(['admin.permission:website.faqs-pricing.edit'])->group(function () {
-        Route::get('faqs/pricing/{id}/edit', [\App\Http\Controllers\Admin\FaqController::class, 'editPricing'])->name('faqs.pricing.edit');
-        Route::put('faqs/pricing/{id}', [\App\Http\Controllers\Admin\FaqController::class, 'updatePricing'])->name('faqs.pricing.update');
-        Route::post('faqs/pricing/{id}/toggle-status', [\App\Http\Controllers\Admin\FaqController::class, 'toggleStatusPricing'])->name('faqs.pricing.toggle-status');
-        Route::post('faqs/pricing/update-order', [\App\Http\Controllers\Admin\FaqController::class, 'updateOrderPricing'])->name('faqs.pricing.update-order');
-    });
-    
-    Route::middleware(['admin.permission:website.faqs-pricing.delete'])->group(function () {
-        Route::delete('faqs/pricing/{id}', [\App\Http\Controllers\Admin\FaqController::class, 'destroyPricing'])->name('faqs.pricing.destroy');
-        Route::post('faqs/pricing/bulk-delete', [\App\Http\Controllers\Admin\FaqController::class, 'bulkDeletePricing'])->name('faqs.pricing.bulk-delete');
-    });
+    // FAQ Management - All Categories
+    $faqCategories = [
+        'pricing' => 'pricing',
+        'subscription' => 'subscription',
+        'payment' => 'payment',
+        'ebook-access' => 'ebookAccess',
+        'support' => 'support',
+        'content' => 'content'
+    ];
+
+    foreach ($faqCategories as $slug => $methodSuffix) {
+        Route::middleware(["admin.permission:website.faqs-{$slug}.view"])->group(function () use ($slug, $methodSuffix) {
+            Route::get("faqs/{$slug}", [\App\Http\Controllers\Admin\FaqController::class, 'index' . ucfirst($methodSuffix)])->name("faqs.{$slug}.index");
+        });
+        
+        Route::middleware(["admin.permission:website.faqs-{$slug}.create"])->group(function () use ($slug, $methodSuffix) {
+            Route::get("faqs/{$slug}/create", [\App\Http\Controllers\Admin\FaqController::class, 'create' . ucfirst($methodSuffix)])->name("faqs.{$slug}.create");
+            Route::post("faqs/{$slug}", [\App\Http\Controllers\Admin\FaqController::class, 'store' . ucfirst($methodSuffix)])->name("faqs.{$slug}.store");
+        });
+        
+        Route::middleware(["admin.permission:website.faqs-{$slug}.edit"])->group(function () use ($slug, $methodSuffix) {
+            Route::get("faqs/{$slug}/{id}/edit", [\App\Http\Controllers\Admin\FaqController::class, 'edit' . ucfirst($methodSuffix)])->name("faqs.{$slug}.edit");
+            Route::put("faqs/{$slug}/{id}", [\App\Http\Controllers\Admin\FaqController::class, 'update' . ucfirst($methodSuffix)])->name("faqs.{$slug}.update");
+            Route::post("faqs/{$slug}/{id}/toggle-status", [\App\Http\Controllers\Admin\FaqController::class, 'toggleStatus' . ucfirst($methodSuffix)])->name("faqs.{$slug}.toggle-status");
+            Route::post("faqs/{$slug}/update-order", [\App\Http\Controllers\Admin\FaqController::class, 'updateOrder' . ucfirst($methodSuffix)])->name("faqs.{$slug}.update-order");
+        });
+        
+        Route::middleware(["admin.permission:website.faqs-{$slug}.delete"])->group(function () use ($slug, $methodSuffix) {
+            Route::delete("faqs/{$slug}/{id}", [\App\Http\Controllers\Admin\FaqController::class, 'destroy' . ucfirst($methodSuffix)])->name("faqs.{$slug}.destroy");
+            Route::post("faqs/{$slug}/bulk-delete", [\App\Http\Controllers\Admin\FaqController::class, 'bulkDelete' . ucfirst($methodSuffix)])->name("faqs.{$slug}.bulk-delete");
+        });
+    }
 
     // Static Page Management
     // Route::resource('pages', \App\Http\Controllers\Admin\PageController::class);

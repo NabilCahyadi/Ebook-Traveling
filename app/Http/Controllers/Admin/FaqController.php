@@ -10,20 +10,40 @@ class FaqController extends Controller
 {
     protected $faqRepository;
 
+    // Category mapping: slug => database value
+    protected $categoryMap = [
+        'pricing' => 'pricing',
+        'subscription' => 'subscription',
+        'payment' => 'payment',
+        'ebook-access' => 'ebook-access',
+        'support' => 'support',
+        'content' => 'content'
+    ];
+
+    // Category display names
+    protected $categoryNames = [
+        'pricing' => 'Pricing',
+        'subscription' => 'Subscription & Membership',
+        'payment' => 'Payments & Transactions',
+        'ebook-access' => 'eBook Access & Reading',
+        'support' => 'Account & Technical Support',
+        'content' => 'Content & Features'
+    ];
+
     public function __construct(FaqRepositoryInterface $faqRepository)
     {
         $this->faqRepository = $faqRepository;
     }
 
     /**
-     * Display a listing of pricing FAQs.
+     * Generic index method for all FAQ categories
      */
-    public function indexPricing(Request $request)
+    protected function indexCategory($category, Request $request)
     {
         $search = $request->get('search');
         $perPage = $request->get('per_page', 10);
 
-        $query = \App\Models\Faq::where('category', 'pricing');
+        $query = \App\Models\Faq::where('category', $category);
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -36,25 +56,30 @@ class FaqController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
 
-        return view('admin.faqs.pricing.index', compact('faqs'));
+        $categoryName = $this->categoryNames[$category] ?? ucfirst($category);
+        $categorySlug = $category;
+
+        return view('admin.faqs.index', compact('faqs', 'categoryName', 'categorySlug'));
     }
 
     /**
-     * Show the form for creating a new pricing FAQ.
+     * Generic create method for all FAQ categories
      */
-    public function createPricing()
+    protected function createCategory($category)
     {
-        // Get the highest order_index for pricing category
-        $maxOrder = \App\Models\Faq::where('category', 'pricing')->max('order_index') ?? 0;
+        $maxOrder = \App\Models\Faq::where('category', $category)->max('order_index') ?? 0;
         $nextOrder = $maxOrder + 1;
 
-        return view('admin.faqs.pricing.create', compact('nextOrder'));
+        $categoryName = $this->categoryNames[$category] ?? ucfirst($category);
+        $categorySlug = $category;
+
+        return view('admin.faqs.create', compact('nextOrder', 'categoryName', 'categorySlug'));
     }
 
     /**
-     * Store a newly created pricing FAQ in storage.
+     * Generic store method for all FAQ categories
      */
-    public function storePricing(Request $request)
+    protected function storeCategory($category, Request $request)
     {
         $validated = $request->validate([
             'question' => 'required|string|max:500',
@@ -70,37 +95,42 @@ class FaqController extends Controller
             'order_index.min' => 'Urutan minimal 0.',
         ]);
 
-        $validated['category'] = 'pricing';
+        $validated['category'] = $category;
         $validated['is_active'] = $request->has('is_active') ? true : false;
 
         $this->faqRepository->create($validated);
 
-        return redirect()->route('admin.faqs.pricing.index')
-            ->with('success', 'FAQ Pricing berhasil ditambahkan!');
+        $categoryName = $this->categoryNames[$category] ?? ucfirst($category);
+
+        return redirect()->route("admin.faqs.{$category}.index")
+            ->with('success', "FAQ {$categoryName} berhasil ditambahkan!");
     }
 
     /**
-     * Show the form for editing the specified pricing FAQ.
+     * Generic edit method for all FAQ categories
      */
-    public function editPricing(string $id)
+    protected function editCategory($category, string $id)
     {
         $faq = $this->faqRepository->findById($id);
 
-        if ($faq->category !== 'pricing') {
+        if ($faq->category !== $category) {
             abort(404);
         }
 
-        return view('admin.faqs.pricing.edit', compact('faq'));
+        $categoryName = $this->categoryNames[$category] ?? ucfirst($category);
+        $categorySlug = $category;
+
+        return view('admin.faqs.edit', compact('faq', 'categoryName', 'categorySlug'));
     }
 
     /**
-     * Update the specified pricing FAQ in storage.
+     * Generic update method for all FAQ categories
      */
-    public function updatePricing(Request $request, string $id)
+    protected function updateCategory($category, Request $request, string $id)
     {
         $faq = $this->faqRepository->findById($id);
 
-        if ($faq->category !== 'pricing') {
+        if ($faq->category !== $category) {
             abort(404);
         }
 
@@ -122,34 +152,38 @@ class FaqController extends Controller
 
         $this->faqRepository->update($id, $validated);
 
-        return redirect()->route('admin.faqs.pricing.index')
-            ->with('success', 'FAQ Pricing berhasil diperbarui!');
+        $categoryName = $this->categoryNames[$category] ?? ucfirst($category);
+
+        return redirect()->route("admin.faqs.{$category}.index")
+            ->with('success', "FAQ {$categoryName} berhasil diperbarui!");
     }
 
     /**
-     * Remove the specified pricing FAQ from storage.
+     * Generic destroy method for all FAQ categories
      */
-    public function destroyPricing(string $id)
+    protected function destroyCategory($category, string $id)
     {
         $faq = $this->faqRepository->findById($id);
 
-        if ($faq->category !== 'pricing') {
+        if ($faq->category !== $category) {
             return response()->json(['success' => false, 'message' => 'FAQ tidak ditemukan.'], 404);
         }
 
         $this->faqRepository->delete($id);
 
-        return response()->json(['success' => true, 'message' => 'FAQ Pricing berhasil dihapus!']);
+        $categoryName = $this->categoryNames[$category] ?? ucfirst($category);
+
+        return response()->json(['success' => true, 'message' => "FAQ {$categoryName} berhasil dihapus!"]);
     }
 
     /**
-     * Toggle the status of the specified pricing FAQ.
+     * Generic toggle status method for all FAQ categories
      */
-    public function toggleStatusPricing(string $id)
+    protected function toggleStatusCategory($category, string $id)
     {
         $faq = $this->faqRepository->findById($id);
 
-        if ($faq->category !== 'pricing') {
+        if ($faq->category !== $category) {
             return response()->json(['success' => false, 'message' => 'FAQ tidak ditemukan.'], 404);
         }
 
@@ -163,9 +197,9 @@ class FaqController extends Controller
     }
 
     /**
-     * Update the order of pricing FAQs.
+     * Generic update order method for all FAQ categories
      */
-    public function updateOrderPricing(Request $request)
+    protected function updateOrderCategory($category, Request $request)
     {
         $orders = $request->input('orders', []);
 
@@ -175,9 +209,9 @@ class FaqController extends Controller
     }
 
     /**
-     * Bulk delete pricing FAQs.
+     * Generic bulk delete method for all FAQ categories
      */
-    public function bulkDeletePricing(Request $request)
+    protected function bulkDeleteCategory($category, Request $request)
     {
         $ids = $request->input('ids', []);
 
@@ -185,9 +219,8 @@ class FaqController extends Controller
             return response()->json(['success' => false, 'message' => 'Tidak ada FAQ yang dipilih.'], 400);
         }
 
-        // Verify all FAQs are pricing category
         $validIds = \App\Models\Faq::whereIn('id', $ids)
-            ->where('category', 'pricing')
+            ->where('category', $category)
             ->pluck('id')
             ->toArray();
 
@@ -201,5 +234,43 @@ class FaqController extends Controller
             'success' => true,
             'message' => count($validIds) . ' FAQ berhasil dihapus!'
         ]);
+    }
+
+    // Magic method to handle all category-specific methods
+    public function __call($method, $parameters)
+    {
+        // Extract category from method name
+        // e.g., indexPricing -> pricing, createSubscription -> subscription
+        foreach ($this->categoryMap as $slug => $dbValue) {
+            $camelCase = str_replace(' ', '', ucwords(str_replace('-', ' ', $slug)));
+            
+            if (str_ends_with($method, $camelCase)) {
+                $action = str_replace($camelCase, '', $method);
+                
+                switch ($action) {
+                    case 'index':
+                        return $this->indexCategory($dbValue, $parameters[0] ?? request());
+                    case 'create':
+                        return $this->createCategory($dbValue);
+                    case 'store':
+                        return $this->storeCategory($dbValue, $parameters[0] ?? request());
+                    case 'edit':
+                        return $this->editCategory($dbValue, $parameters[0]);
+                    case 'update':
+                        return $this->updateCategory($dbValue, $parameters[0] ?? request(), $parameters[1] ?? $parameters[0]);
+                    case 'destroy':
+                        return $this->destroyCategory($dbValue, $parameters[0]);
+                    case 'toggleStatus':
+                        return $this->toggleStatusCategory($dbValue, $parameters[0]);
+                    case 'updateOrder':
+                        return $this->updateOrderCategory($dbValue, $parameters[0] ?? request());
+                    case 'bulkDelete':
+                        return $this->bulkDeleteCategory($dbValue, $parameters[0] ?? request());
+                }
+            }
+        }
+
+        // If no match found, throw error
+        throw new \BadMethodCallException("Method {$method} does not exist.");
     }
 }

@@ -307,7 +307,23 @@
         </li>
 
         <!-- Website Management -->
-        @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.landing-page', 'website.about-us.view', 'website.about-us.create', 'website.about-us.edit', 'website.about-us.delete', 'website.banners.view', 'website.banners.create', 'website.banners.edit', 'website.banners.delete', 'website.collections.view', 'website.collections.create', 'website.collections.edit', 'website.collections.delete', 'website.contact-info.view', 'website.contact-info.create', 'website.contact-info.edit', 'website.contact-info.delete', 'website.site-settings', 'website.faqs-pricing.view', 'website.faqs-pricing.create', 'website.faqs-pricing.edit', 'website.faqs-pricing.delete']))
+        @php
+            $websitePermissions = [
+                'website.landing-page', 
+                'website.about-us.view', 'website.about-us.create', 'website.about-us.edit', 'website.about-us.delete',
+                'website.banners.view', 'website.banners.create', 'website.banners.edit', 'website.banners.delete',
+                'website.collections.view', 'website.collections.create', 'website.collections.edit', 'website.collections.delete',
+                'website.contact-info.view', 'website.contact-info.create', 'website.contact-info.edit', 'website.contact-info.delete',
+                'website.site-settings',
+                'website.faqs-pricing.view', 'website.faqs-pricing.create', 'website.faqs-pricing.edit', 'website.faqs-pricing.delete',
+                'website.faqs-subscription.view', 'website.faqs-subscription.create', 'website.faqs-subscription.edit', 'website.faqs-subscription.delete',
+                'website.faqs-payment.view', 'website.faqs-payment.create', 'website.faqs-payment.edit', 'website.faqs-payment.delete',
+                'website.faqs-ebook-access.view', 'website.faqs-ebook-access.create', 'website.faqs-ebook-access.edit', 'website.faqs-ebook-access.delete',
+                'website.faqs-support.view', 'website.faqs-support.create', 'website.faqs-support.edit', 'website.faqs-support.delete',
+                'website.faqs-content.view', 'website.faqs-content.create', 'website.faqs-content.edit', 'website.faqs-content.delete'
+            ];
+        @endphp
+        @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission($websitePermissions))
         <li
             class="menu-item {{ Request::is('admin/collection-order*') || Request::is('admin/banners*') || Request::is('admin/collections*') || Request::is('admin/landing-page-content*') || Request::is('admin/about-us*') || Request::is('admin/contact-info*') || Request::is('admin/site-settings*') || Request::is('admin/faqs*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -362,7 +378,17 @@
                 @endif
                 
                 <!-- FAQ Management (Nested) -->
-                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.faqs-pricing.view', 'website.faqs-pricing.create', 'website.faqs-pricing.edit', 'website.faqs-pricing.delete']))
+                @php
+                    $faqPermissions = [
+                        'website.faqs-pricing.view', 'website.faqs-pricing.create', 'website.faqs-pricing.edit', 'website.faqs-pricing.delete',
+                        'website.faqs-subscription.view', 'website.faqs-subscription.create', 'website.faqs-subscription.edit', 'website.faqs-subscription.delete',
+                        'website.faqs-payment.view', 'website.faqs-payment.create', 'website.faqs-payment.edit', 'website.faqs-payment.delete',
+                        'website.faqs-ebook-access.view', 'website.faqs-ebook-access.create', 'website.faqs-ebook-access.edit', 'website.faqs-ebook-access.delete',
+                        'website.faqs-support.view', 'website.faqs-support.create', 'website.faqs-support.edit', 'website.faqs-support.delete',
+                        'website.faqs-content.view', 'website.faqs-content.create', 'website.faqs-content.edit', 'website.faqs-content.delete'
+                    ];
+                @endphp
+                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission($faqPermissions))
                 <li class="menu-item {{ Request::is('admin/faqs*') ? 'active open' : '' }}">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
                         <i class="menu-icon tf-icons ti ti-help"></i>
@@ -373,6 +399,46 @@
                         <li class="menu-item {{ Request::is('admin/faqs/pricing*') ? 'active' : '' }}">
                             <a href="{{ route('admin.faqs.pricing.index') }}" class="menu-link">
                                 <div data-i18n="Pricing">Pricing</div>
+                            </a>
+                        </li>
+                        @endif
+
+                        @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.faqs-subscription.view', 'website.faqs-subscription.create', 'website.faqs-subscription.edit', 'website.faqs-subscription.delete']))
+                        <li class="menu-item {{ Request::is('admin/faqs/subscription*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.faqs.subscription.index') }}" class="menu-link">
+                                <div data-i18n="Subscription">Subscription & Membership</div>
+                            </a>
+                        </li>
+                        @endif
+
+                        @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.faqs-payment.view', 'website.faqs-payment.create', 'website.faqs-payment.edit', 'website.faqs-payment.delete']))
+                        <li class="menu-item {{ Request::is('admin/faqs/payment*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.faqs.payment.index') }}" class="menu-link">
+                                <div data-i18n="Payment">Payments & Transactions</div>
+                            </a>
+                        </li>
+                        @endif
+
+                        @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.faqs-ebook-access.view', 'website.faqs-ebook-access.create', 'website.faqs-ebook-access.edit', 'website.faqs-ebook-access.delete']))
+                        <li class="menu-item {{ Request::is('admin/faqs/ebook-access*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.faqs.ebook-access.index') }}" class="menu-link">
+                                <div data-i18n="EbookAccess">eBook Access & Reading</div>
+                            </a>
+                        </li>
+                        @endif
+
+                        @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.faqs-support.view', 'website.faqs-support.create', 'website.faqs-support.edit', 'website.faqs-support.delete']))
+                        <li class="menu-item {{ Request::is('admin/faqs/support*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.faqs.support.index') }}" class="menu-link">
+                                <div data-i18n="Support">Account & Technical Support</div>
+                            </a>
+                        </li>
+                        @endif
+
+                        @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.faqs-content.view', 'website.faqs-content.create', 'website.faqs-content.edit', 'website.faqs-content.delete']))
+                        <li class="menu-item {{ Request::is('admin/faqs/content*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.faqs.content.index') }}" class="menu-link">
+                                <div data-i18n="Content">Content & Features</div>
                             </a>
                         </li>
                         @endif

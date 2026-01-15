@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'FAQ Pricing Management')
+@section('title', 'FAQ ' . $categoryName . ' Management')
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -24,12 +24,12 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h4 class="fw-bold py-3 mb-2">
-                    <span class="text-muted fw-light">Web Setting / FAQ /</span> Pricing
+                    <span class="text-muted fw-light">Web Setting / FAQ /</span> {{ $categoryName }}
                 </h4>
             </div>
             <div>
-                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission('website.faqs-pricing.create'))
-                <a href="{{ route('admin.faqs.pricing.create') }}" class="btn btn-primary">
+                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission("website.faqs-{$categorySlug}.create"))
+                <a href="{{ route("admin.faqs.{$categorySlug}.create") }}" class="btn btn-primary">
                     <i class="ti ti-plus me-1"></i> Add New FAQ
                 </a>
                 @endif
@@ -39,7 +39,7 @@
         <!-- Search and Filter -->
         <div class="card mb-4">
             <div class="card-body">
-                <form action="{{ route('admin.faqs.pricing.index') }}" method="GET">
+                <form action="{{ route("admin.faqs.{$categorySlug}.index") }}" method="GET">
                     <div class="row g-3">
                         <div class="col-md-8">
                             <label for="search" class="form-label">Search</label>
@@ -60,7 +60,7 @@
                                 <i class="ti ti-search"></i> Search
                             </button>
                             @if (request()->hasAny(['search']))
-                                <a href="{{ route('admin.faqs.pricing.index') }}" class="btn btn-label-secondary"
+                                <a href="{{ route("admin.faqs.{$categorySlug}.index") }}" class="btn btn-label-secondary"
                                     title="Clear Filters">
                                     <i class="ti ti-x"></i>
                                 </a>
@@ -74,7 +74,7 @@
         <!-- FAQs Table -->
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Pricing FAQs</h5>
+                <h5 class="mb-0">{{ $categoryName }} FAQs</h5>
                 <div class="text-muted">Total: {{ $faqs->total() }} FAQs</div>
             </div>
             <div class="card-body">
@@ -83,9 +83,7 @@
                         <table class="table table-hover" id="faqsTable">
                             <thead>
                                 <tr>
-                                    <th width="80">
-                                         Order
-                                    </th>
+                                    <th width="80">Order</th>
                                     <th>Question</th>
                                     <th>Answer</th>
                                     <th width="100">Status</th>
@@ -97,7 +95,7 @@
                                 @foreach ($faqs as $faq)
                                     <tr data-id="{{ $faq->id }}" style="cursor: move;">
                                         <td>
-                                            @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission('website.faqs-pricing.edit'))
+                                            @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission("website.faqs-{$categorySlug}.edit"))
                                             <div class="d-flex align-items-center gap-2">
                                                 <i class="ti ti-grip-vertical text-muted drag-handle" style="cursor: grab; font-size: 1.2rem;" title="Drag to reorder"></i>
                                                 <span class="badge bg-label-secondary">{{ $faq->order_index }}</span>
@@ -117,7 +115,7 @@
                                             </div>
                                         </td>
                                         <td>
-                                            @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission('website.faqs-pricing.edit'))
+                                            @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission("website.faqs-{$categorySlug}.edit"))
                                             <div class="form-check form-switch">
                                                 <input class="form-check-input status-toggle" type="checkbox" 
                                                     data-id="{{ $faq->id }}" 
@@ -139,14 +137,14 @@
                                                     <i class="ti ti-dots-vertical ti-md"></i>
                                                 </button>
                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                    @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission('website.faqs-pricing.edit'))
-                                                    <a href="{{ route('admin.faqs.pricing.edit', $faq->id) }}" class="dropdown-item">
+                                                    @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission("website.faqs-{$categorySlug}.edit"))
+                                                    <a href="{{ route("admin.faqs.{$categorySlug}.edit", $faq->id) }}" class="dropdown-item">
                                                         <i class="ti ti-edit me-2"></i>
                                                         Edit
                                                     </a>
                                                     @endif
                                                     
-                                                    @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission('website.faqs-pricing.delete'))
+                                                    @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission("website.faqs-{$categorySlug}.delete"))
                                                     <button type="button" class="dropdown-item text-danger delete-faq" data-id="{{ $faq->id }}">
                                                         <i class="ti ti-trash me-2"></i>
                                                         Delete
@@ -162,21 +160,23 @@
                     </div>
 
                     <!-- Pagination -->
-                    <div class="d-flex justify-content-between align-items-center mt-4">
-                        <div class="text-muted">
-                            Showing {{ $faqs->firstItem() }} to {{ $faqs->lastItem() }} of {{ $faqs->total() }} entries
-                        </div>
-                        <div>
-                            {{ $faqs->links() }}
-                        </div>
+                    <div class="mt-4">
+                        {{ $faqs->appends(request()->query())->links() }}
                     </div>
                 @else
                     <div class="text-center py-5">
-                        <i class="ti ti-help-circle" style="font-size: 4rem; color: #ddd;"></i>
-                        <p class="text-muted mt-3">No FAQs found.</p>
-                        @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission('website.faqs-pricing.create'))
-                        <a href="{{ route('admin.faqs.pricing.create') }}" class="btn btn-primary">
-                            <i class="ti ti-plus me-1"></i> Add Your First FAQ
+                        <i class="ti ti-help-circle ti-xl text-muted mb-3 d-block" style="font-size: 4rem;"></i>
+                        <h5 class="text-muted">No FAQs found</h5>
+                        <p class="text-muted">
+                            @if (request()->has('search'))
+                                No FAQs match your search criteria.
+                            @else
+                                Start by adding your first FAQ for {{ $categoryName }}.
+                            @endif
+                        </p>
+                        @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission("website.faqs-{$categorySlug}.create"))
+                        <a href="{{ route("admin.faqs.{$categorySlug}.create") }}" class="btn btn-primary mt-2">
+                            <i class="ti ti-plus me-1"></i> Add First FAQ
                         </a>
                         @endif
                     </div>
@@ -184,130 +184,128 @@
             </div>
         </div>
     </div>
+@endsection
 
-    @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+@push('scripts')
+    <!-- SortableJS for drag & drop -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    
     <script>
         $(document).ready(function() {
+            const categorySlug = '{{ $categorySlug }}';
+            
+            // Initialize SortableJS for drag-drop reordering
+            @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission("website.faqs-{$categorySlug}.edit"))
+            const sortable = new Sortable(document.getElementById('sortableFaqs'), {
+                handle: '.drag-handle',
+                animation: 150,
+                onEnd: function(evt) {
+                    let orders = [];
+                    $('#sortableFaqs tr').each(function(index) {
+                        orders.push({
+                            id: $(this).data('id'),
+                            order_index: index + 1
+                        });
+                    });
+
+                    // Send AJAX request to update order
+                    $.ajax({
+                        url: `/admin/faqs/${categorySlug}/update-order`,
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            orders: orders
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                // Update order badges
+                                $('#sortableFaqs tr').each(function(index) {
+                                    $(this).find('.badge.bg-label-secondary').text(index + 1);
+                                });
+                                
+                                // Show success message
+                                showToast('success', response.message);
+                            }
+                        },
+                        error: function(xhr) {
+                            showToast('error', 'Failed to update order');
+                        }
+                    });
+                }
+            });
+            @endif
+
             // Toggle Status
             $('.status-toggle').on('change', function() {
                 const faqId = $(this).data('id');
-                const isChecked = $(this).prop('checked');
+                const isChecked = $(this).is(':checked');
 
                 $.ajax({
-                    url: `/admin/faqs/pricing/${faqId}/toggle-status`,
-                    type: 'POST',
+                    url: `/admin/faqs/${categorySlug}/${faqId}/toggle-status`,
+                    method: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}'
                     },
                     success: function(response) {
                         if (response.success) {
-                            // Optional: Show success message
+                            showToast('success', response.message);
                         }
                     },
                     error: function(xhr) {
-                        alert('Error updating status. Please try again.');
-                        // Revert checkbox
+                        // Revert checkbox on error
                         $(this).prop('checked', !isChecked);
+                        showToast('error', 'Failed to update status');
                     }
                 });
             });
 
-            // Delete Single FAQ
+            // Delete FAQ
             $('.delete-faq').on('click', function() {
                 const faqId = $(this).data('id');
-                
+                const row = $(this).closest('tr');
+
                 if (confirm('Are you sure you want to delete this FAQ?')) {
                     $.ajax({
-                        url: `/admin/faqs/pricing/${faqId}`,
-                        type: 'DELETE',
+                        url: `/admin/faqs/${categorySlug}/${faqId}`,
+                        method: 'DELETE',
                         data: {
                             _token: '{{ csrf_token() }}'
                         },
                         success: function(response) {
                             if (response.success) {
-                                location.reload();
+                                row.fadeOut(300, function() {
+                                    $(this).remove();
+                                    // Update total count
+                                    location.reload();
+                                });
+                                showToast('success', response.message);
                             }
                         },
                         error: function(xhr) {
-                            alert('Error deleting FAQ. Please try again.');
+                            showToast('error', 'Failed to delete FAQ');
                         }
                     });
                 }
             });
 
-            // Sortable - Drag and Drop Reordering
-            @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission('website.faqs-pricing.edit'))
-            const el = document.getElementById('sortableFaqs');
-            if (el) {
-                const sortable = Sortable.create(el, {
-                    handle: '.drag-handle',
-                    animation: 150,
-                    ghostClass: 'sortable-ghost',
-                    dragClass: 'sortable-drag',
-                    onStart: function(evt) {
-                        evt.item.style.opacity = '0.5';
-                    },
-                    onEnd: function(evt) {
-                        evt.item.style.opacity = '1';
-                        
-                        const orders = [];
-                        $('#sortableFaqs tr').each(function(index) {
-                            orders.push({
-                                id: $(this).data('id'),
-                                order_index: index + 1
-                            });
-                        });
-
-                        $.ajax({
-                            url: '{{ route("admin.faqs.pricing.update-order") }}',
-                            type: 'POST',
-                            data: {
-                                _token: '{{ csrf_token() }}',
-                                orders: orders
-                            },
-                            success: function(response) {
-                                if (response.success) {
-                                    // Update order badges
-                                    $('#sortableFaqs tr').each(function(index) {
-                                        $(this).find('.badge').text(index + 1);
-                                    });
-                                    
-                                    // Optional: Show success toast
-                                    console.log('Order updated successfully!');
-                                }
-                            },
-                            error: function(xhr) {
-                                alert('Error updating order. Please refresh the page.');
-                                location.reload();
-                            }
-                        });
-                    }
-                });
+            // Helper function to show toast messages
+            function showToast(type, message) {
+                const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+                const alertHtml = `
+                    <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                        <strong>${type === 'success' ? 'Success!' : 'Error!'}</strong> ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `;
+                $('.container-xxl').prepend(alertHtml);
+                
+                // Auto dismiss after 3 seconds
+                setTimeout(function() {
+                    $('.alert').fadeOut(300, function() {
+                        $(this).remove();
+                    });
+                }, 3000);
             }
-            @endif
         });
     </script>
-    
-    <style>
-        .sortable-ghost {
-            opacity: 0.4;
-            background-color: #f5f5f5;
-        }
-        
-        .sortable-drag {
-            opacity: 1;
-            background-color: #fff;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        
-        .drag-handle:hover {
-            color: #696cff !important;
-        }
-        
-        .drag-handle:active {
-            cursor: grabbing !important;
-        }
-    </style>
-    @endpush
-@endsection
+@endpush
