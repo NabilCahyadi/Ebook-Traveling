@@ -10,18 +10,17 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use App\Repositories\Interfaces\SubscriptionProcessInterface;
 use App\Services\MayarService;
-use Carbon\Carbon;
 use App\Models\SubscriptionPlan;
 use App\Models\City;
 
 class SubscriptionController extends Controller
 {
-    protected $subscriptionProcessRepository; // <-- GANTI NAMA VARIABEL
+    protected $subscriptionProcessRepository;
     protected $mayarService;
 
     public function __construct(SubscriptionProcessInterface $subscriptionProcessRepository, MayarService $mayarService) // <-- GANTI INI
     {
-        $this->subscriptionProcessRepository = $subscriptionProcessRepository; // <-- GANTI INI
+        $this->subscriptionProcessRepository = $subscriptionProcessRepository; 
         $this->mayarService = $mayarService;
     }
     /**
@@ -51,6 +50,7 @@ class SubscriptionController extends Controller
                 'amount' => $plan->price,
                 'status' => 'pending',
                 'payment_method' => 'mayar',
+                'payment_code' => 'PAY-' . strtoupper(Str::random(8)),
                 'gateway_transaction_id' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -58,7 +58,7 @@ class SubscriptionController extends Controller
 
             DB::table('payments')->insert($paymentData);
 
-            // ✅ KIRIM payment_id sebagai external_id
+            // KIRIM payment_id sebagai external_id
             $paymentLink = $this->mayarService->generatePaymentLink($user, $plan, $paymentData['id']);
             return response()->json([
                 'success' => true,
@@ -100,7 +100,7 @@ class SubscriptionController extends Controller
      */
     public function mayarCallback(Request $request)
     {
-        // ✅ Validasi signature
+        // Validasi signature
         $signature = $request->header('X-Mayar-Signature');
         $payload = $request->getContent();
         $expectedSignature = hash_hmac('sha256', $payload, config('services.mayar.webhook_token'));
@@ -113,7 +113,7 @@ class SubscriptionController extends Controller
         $data = $request->json('tda');
         $transactionId = $data['transactionId'] ?? null;
         $status = strtoupper($data['status'] ?? 'failed');
-        $externalId = $data['externalId'] ?? null; // ✅ AMBIL externalId
+        $externalId = $data['externalId'] ?? null; // AMBIL externalId
 
         if (!$transactionId || !$externalId) {
             Log::error('Missing transactionId or externalId', $data);
@@ -121,7 +121,7 @@ class SubscriptionController extends Controller
         }
 
         try {
-            // ✅ UPDATE TABEL payments BERDASARKAN externalId (yang sebenarnya payment_id)
+            // UPDATE TABEL payments BERDASARKAN externalId (yang sebenarnya payment_id)
             DB::table('payments')
                 ->where('id', $externalId)
                 ->update([
@@ -131,11 +131,11 @@ class SubscriptionController extends Controller
                     'updated_at' => now(),
                 ]);
 
-            // ✅ PROSES LANGGANAN JIKA SUKSES
+            // PROSES LANGGANAN JIKA SUKSES
             if (in_array($status, ['SUCCESS', 'PAID'])) {
                 $payment = DB::table('payments')->where('id', $externalId)->first();
                 if ($payment) {
-                    // ✅ MODIFIKASI: handleMayarCallbackByPayment()
+                    // MODIFIKASI: handleMayarCallbackByPayment()
                     $this->subscriptionProcessRepository->handleMayarCallbackByPayment($payment);
                 }
             }
