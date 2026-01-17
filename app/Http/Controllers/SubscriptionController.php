@@ -20,7 +20,7 @@ class SubscriptionController extends Controller
 
     public function __construct(SubscriptionProcessInterface $subscriptionProcessRepository, MayarService $mayarService) // <-- GANTI INI
     {
-        $this->subscriptionProcessRepository = $subscriptionProcessRepository; 
+        $this->subscriptionProcessRepository = $subscriptionProcessRepository;
         $this->mayarService = $mayarService;
     }
     /**
@@ -153,12 +153,22 @@ class SubscriptionController extends Controller
 
     public function paymentSuccess()
     {
-        // Simpan user yang sudah di-refresh
+        // ✅ Cek apakah user masih login
+        if (!auth()->check()) {
+            // Redirect ke login jika session habis
+            return redirect()->route('login')->with('message', 'Please log in to access your account.');
+        }
+
+        // ✅ Ambil user & force refresh relasi dari database
         $user = auth()->user();
         $user->load([
             'currentSubscription',
             'subscriptions.plan'
         ]);
+
+        // ✅ CLEAR SESSION CACHE UNTUK STATUS PREMIUM
+        session()->forget('user_premium_status');
+        session()->put('user_premium_status', $user->hasActiveSubscription());
 
         $citiesHeader = City::where('is_active', true)
             ->orderBy('order_index')
@@ -166,7 +176,7 @@ class SubscriptionController extends Controller
             ->get();
 
         return view('payment.success', [
-            'isPremium' => $user->hasActiveSubscription(),
+            'isPremium' => $user->hasActiveSubscription(), // ✅ Gunakan $user, bukan auth()->user()
             'citiesHeader' => $citiesHeader
         ]);
     }
