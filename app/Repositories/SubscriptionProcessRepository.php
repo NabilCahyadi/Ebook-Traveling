@@ -44,13 +44,23 @@ class SubscriptionProcessRepository implements SubscriptionProcessInterface
 
         $data['start_date'] = $startDate;
         $data['end_date'] = $endDate;
-        $data['status'] = 'active';
+        $data['status'] = 'active'; // ✅ ENSURE status is 'active'
         $data['created_at'] = $startDate;
         $data['updated_at'] = $startDate;
 
         unset($data['duration_days']);
 
         DB::table('subscriptions')->insert($data);
+        
+        // ✅ LOG untuk debugging
+        Log::info('Subscription created successfully', [
+            'subscription_id' => $data['id'],
+            'user_id' => $data['user_id'] ?? 'unknown',
+            'status' => $data['status'],
+            'start_date' => $data['start_date'],
+            'end_date' => $data['end_date'],
+        ]);
+        
         return $data['id'];
     }
 
@@ -132,6 +142,12 @@ class SubscriptionProcessRepository implements SubscriptionProcessInterface
                 return;
             }
 
+            Log::info('Processing Mayar callback for payment', [
+                'payment_id' => $payment->id,
+                'user_id' => $payment->user_id,
+                'plan_id' => $payment->subscription_plan_id,
+            ]);
+
             // Cari plan
             $plan = $this->findPlanById($payment->subscription_plan_id);
             if (!$plan) {
@@ -143,7 +159,7 @@ class SubscriptionProcessRepository implements SubscriptionProcessInterface
             $activeSub = DB::table('subscriptions')
                 ->where('user_id', $payment->user_id)
                 ->where('status', 'active')
-                ->where('end_date', '>=', now())
+                ->where('end_date', '>=', now()) // ✅ ENSURE correct date comparison
                 ->orderBy('end_date', 'desc')
                 ->first();
 
@@ -162,6 +178,11 @@ class SubscriptionProcessRepository implements SubscriptionProcessInterface
 
                 // Update payment dengan subscription_id
                 $this->updatePayment($payment->id, ['subscription_id' => $activeSub->id]);
+                
+                Log::info('Subscription extended via payment', [
+                    'subscription_id' => $activeSub->id,
+                    'new_end_date' => $newEndDate,
+                ]);
             } else {
                 // Buat langganan baru
                 $subscriptionData = [
@@ -174,6 +195,11 @@ class SubscriptionProcessRepository implements SubscriptionProcessInterface
 
                 $subscriptionId = $this->createSubscription($subscriptionData);
                 $this->updatePayment($payment->id, ['subscription_id' => $subscriptionId]);
+                
+                Log::info('New subscription created via Mayar payment', [
+                    'subscription_id' => $subscriptionId,
+                    'user_id' => $payment->user_id,
+                ]);
             }
         });
     }

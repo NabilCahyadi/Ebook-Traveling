@@ -27,25 +27,27 @@ class AccountController extends Controller
      */
     public function index(Request $request)
     {
-        // $accountData = $this->userService->getAccountData(Auth::id());
-        $accountData = $this->userService->getAccountData(Auth::id(), $request);
+        // ✅ FORCE REFRESH USER DATA FROM DATABASE
         $user = auth()->user();
+        $user->refresh(); // ✅ CRITICAL: Refresh user dari database
+        
         $user->load([
             'currentSubscription.plan',
             'payments.plan',
-            // 'payments.subscription',
             'payments.subscription.plan',
+            'subscriptions.plan', // ✅ TAMBAHAN: Load all subscriptions
         ]);
 
         $accountData = $this->userService->getAccountData($user->id, $request);
         $accountData['user'] = $user;
+        
         // ✅ AMBIL DATA KOTA
         $citiesHeader = City::where('is_active', true)
             ->orderBy('order_index')
             ->orderBy('name')
             ->get();
 
-        // ✅ TAMBAHKAN KE $accountData (INI YANG KAMU LUPA!)
+        // ✅ TAMBAHKAN KE $accountData
         $accountData['citiesHeader'] = $citiesHeader;
 
         return view('page-account', $accountData);

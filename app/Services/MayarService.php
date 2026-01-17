@@ -220,7 +220,7 @@ class MayarService
 
             $subscriptionService->createManualSubscription([
                 'user_id' => $paymentLink->user_id,
-                'plan_id' => $paymentLink->plan_id,
+                'subscription_plan_id' => $paymentLink->plan_id,  // ✅ FIXED: Changed from plan_id to subscription_plan_id
             ]);
 
             Log::info('Subscription activated via Mayar payment', [
