@@ -110,7 +110,7 @@ class SubscriptionController extends Controller
             return response('Unauthorized', 401);
         }
 
-        $data = $request->json('tda');
+        $data = $request->json('data');
         $transactionId = $data['transactionId'] ?? null;
         $status = strtoupper($data['status'] ?? 'failed');
         $externalId = $data['externalId'] ?? null; // AMBIL externalId

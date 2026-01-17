@@ -34,6 +34,24 @@ class SubscriptionPlanSeeder extends Seeder
                 'mayar_payment_link' => $baseDomain . '/pl/starter-daily-30788', // ← ganti xxx
             ],
             [
+                'name' => 'Harian (Untuk Simulasi)',
+                'slug' => 'harian-untuk-simulasi',
+                'description' => 'Untuk simulasi, anda dapat subscribe paket harian ini. Dengan memilih pembayaran e-wallet -> shopeepay, lalu saat muncul qr code nya, anda klik QR CODE nya.',
+                'price' => 2000,
+                'price_description' => 'Untuk Simulasi',
+                'duration_days' => 2,
+                'features' => [
+                    'Access to 5 Free Ebooks',
+                    'Community Support',
+                ],
+                'button_text' => 'Subscribe Simulasi',
+                'is_featured' => false,
+                'sort_order' => 1,
+                'is_active' => true,
+                'category_subscription' => 'harian',
+                'mayar_payment_link' => 'https://meat-map-99805.mayar.shop/pl/starter-daily',
+            ],
+            [
                 'name' => 'Menengah - Weekly',
                 'slug' => 'menengah-weekly',
                 'description' => 'Ideal for avid travelers who want new content every month.',

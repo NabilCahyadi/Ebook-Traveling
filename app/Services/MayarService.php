@@ -46,7 +46,7 @@ class MayarService
             'name' => $user->name,
             'email' => $user->email,
             'phone' => $user->phone ? preg_replace('/\D/', '', $user->phone) : '628123456789',
-            'external_id' => $paymentId, // ✅ INI YANG BARU!
+            'external_id' => $paymentId,
         ];
 
         if (app()->environment('local')) {

@@ -53,7 +53,6 @@ class DatabaseSeeder extends Seeder
             EbookCategorySeeder::class,         // Menghubungkan ebook ke kategori (BUTUH: Ebook, Category)
             CollectionEbookSeeder::class,       // Menghubungkan ebook ke koleksi (BUTUH: Ebook, Collection)
             SubscriptionSeeder::class,          // Menghubungkan user ke paket berlangganan (BUTUH: User, Plan)
-            PremiumUserSeeder::class,           // Membuat user premium (BUTUH: User, Subscription)
 
             // ================================================
             // 6. WEBSITE CONTENT & UI
