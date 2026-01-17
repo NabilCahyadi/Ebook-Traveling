@@ -482,6 +482,14 @@
         transform: translateY(-3px) !important;
     }
 </style>
+{{-- DEBUG VISUAL - HAPUS SETELAH SELESAI --}}
+@if(auth()->check())
+<div class="alert alert-info" style="margin-bottom: 20px;">
+    <strong>STATUS PREMIUM:</strong>
+    {{ auth()->user()->hasActiveSubscription() ? '✅ PREMIUM' : '❌ BIASA' }}<br>
+    <small>Subscription count: {{ auth()->user()->subscriptions->count() }}</small>
+</div>
+@endif
 <main class="main pages">
     <div class="page-header mt-30 mb-30">
         <div class="container">

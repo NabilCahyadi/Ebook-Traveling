@@ -27,27 +27,29 @@ class AccountController extends Controller
      */
     public function index(Request $request)
     {
-        // ✅ FORCE REFRESH USER DATA FROM DATABASE
-        $user = auth()->user();
-        $user->refresh(); // ✅ CRITICAL: Refresh user dari database
-        
+        // ✅ 1. AMBIL USER BARU DARI DATABASE
+        $user = auth()->user()->fresh();
+
+        // ✅ 2. LOAD SEMUA RELASI YANG DIBUTUHKAN
         $user->load([
             'currentSubscription.plan',
+            'subscriptions.plan',
             'payments.plan',
             'payments.subscription.plan',
-            'subscriptions.plan', // ✅ TAMBAHAN: Load all subscriptions
         ]);
 
+        // ✅ 3. GANTI SESSION USER DENGAN YANG BARU
+        auth()->setUser($user);
+
+        // Lanjutkan seperti biasa
         $accountData = $this->userService->getAccountData($user->id, $request);
         $accountData['user'] = $user;
-        
-        // ✅ AMBIL DATA KOTA
+
         $citiesHeader = City::where('is_active', true)
             ->orderBy('order_index')
             ->orderBy('name')
             ->get();
 
-        // ✅ TAMBAHKAN KE $accountData
         $accountData['citiesHeader'] = $citiesHeader;
 
         return view('page-account', $accountData);
