@@ -246,8 +246,11 @@ class SubscriptionController extends Controller
         $user = auth()->user();
         $plan = SubscriptionPlan::where('slug', $slug)->firstOrFail();
 
-        // Simpan record pembayaran
         $paymentId = (string) Str::uuid();
+
+        // ✅ Generate payment code
+        $paymentCode = 'PAY-' . strtoupper(Str::random(8));
+
         DB::table('payments')->insert([
             'id' => $paymentId,
             'user_id' => $user->id,
@@ -255,13 +258,29 @@ class SubscriptionController extends Controller
             'amount' => $plan->price,
             'status' => 'pending',
             'payment_method' => 'mayar',
-            'payment_code' => 'PAY-' . strtoupper(Str::random(8)),
+            'payment_code' => $paymentCode, // ✅ TAMBAHKAN INI!
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        // Redirect ke Mayar dengan external_id
-        return redirect($plan->mayar_payment_link . '?external_id=' . $paymentId);
+        // Deteksi platform berdasarkan slug
+        $isSimulation = str_contains($slug, 'simulasi');
+
+        if ($isSimulation) {
+            $queryParams = http_build_query([
+                'external_id' => $paymentId,
+                'customer_name' => $user->name,
+                'customer_email' => $user->email,
+            ]);
+        } else {
+            $queryParams = http_build_query([
+                'external_id' => $paymentId,
+                'customerName' => $user->name,
+                'customerEmail' => $user->email,
+            ]);
+        }
+
+        return redirect($plan->mayar_payment_link . '?' . $queryParams);
     }
 
     public function paymentSuccess()
