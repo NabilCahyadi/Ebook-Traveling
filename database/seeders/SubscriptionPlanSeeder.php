@@ -116,7 +116,7 @@ class SubscriptionPlanSeeder extends Seeder
                 'sort_order' => 5, // urutan terakhir
                 'is_active' => true,
                 'category_subscription' => 'harian',
-                'mayar_payment_link' => 'https://meat-map-99805.mayar.shop/pl/starter-daily',
+                'mayar_payment_link' => 'https://meat-map-99805.mayar.shop/pl/harian-untuk-simulasi',
             ],
             [
                 'id' => 'mingguan-untuk-simulasi',

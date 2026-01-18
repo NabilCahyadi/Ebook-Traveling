@@ -32,6 +32,14 @@ class SubscriptionController extends Controller
             return response()->json(['success' => false, 'message' => 'Unauthorized.'], 401);
         }
 
+        // ✅ LOG SETELAH $user ADA
+        Log::info('=== CREATE PAYMENT START ===', [
+            'plan_id' => $request->plan_id,
+            'user_id' => $user->id,
+            'api_key_present' => !empty(config('services.mayar.api_key')),
+            'callback_url' => config('services.mayar.callback_url'),
+        ]);
+
         $request->validate([
             'plan_id' => 'required|exists:subscription_plans,id'
         ]);
@@ -59,10 +67,10 @@ class SubscriptionController extends Controller
                 'updated_at' => now(),
             ]);
 
-            // Kirim ke Mayar API
+            // ✅ HAPUS SPASI DI URL (INI JUGA KRITIS!)
             $response = Http::withToken(config('services.mayar.api_key'))
                 ->timeout(30)
-                ->post('https://api.mayar.id/v1/transactions', [
+                ->post('https://api.mayar.id/v1/transactions', [ // ← hapus spasi di akhir!
                     'amount' => (int) $plan->price,
                     'invoice_number' => 'INV-' . strtoupper(Str::random(8)) . '-' . time(),
                     'customer_name' => $user->name,
@@ -76,7 +84,6 @@ class SubscriptionController extends Controller
                     ]
                 ]);
 
-            // LOG RESPONSE UNTUK DEBUG
             Log::info('Mayar API Response', [
                 'status' => $response->status(),
                 'body' => $response->json()
@@ -100,7 +107,7 @@ class SubscriptionController extends Controller
             $data = $response->json();
 
             if (!isset($data['data']['payment_url'])) {
-                subsLog::error('Mayar API: Missing payment_url', $data);
+                Log::error('Mayar API: Missing payment_url', $data); // ✅ Perbaiki typo "subsLog"
                 return response()->json([
                     'success' => false,
                     'message' => 'Invalid response from payment gateway'
@@ -118,7 +125,6 @@ class SubscriptionController extends Controller
                 'user_id' => $user->id,
                 'plan_id' => $request->plan_id,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
             ]);
 
             return response()->json([
