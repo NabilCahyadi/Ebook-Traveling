@@ -140,10 +140,12 @@ class SubscriptionPlanSeeder extends Seeder
         ];
 
         foreach ($plans as $planData) {
-            // ✅ AMAN UNTUK PRODUCTION: updateOrCreate berdasarkan ID
+            // ✅ Generate UUID untuk id
+            $planData['id'] = (string) Str::uuid();
+
             SubscriptionPlan::updateOrCreate(
-                ['id' => $planData['id']], // Cari berdasarkan ID
-                $planData                  // Update atau buat baru
+                ['slug' => $planData['slug']], // Cari berdasarkan slug
+                $planData
             );
         }
 

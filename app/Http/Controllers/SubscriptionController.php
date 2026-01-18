@@ -12,73 +12,118 @@ use App\Repositories\Interfaces\SubscriptionProcessInterface;
 use App\Services\MayarService;
 use App\Models\SubscriptionPlan;
 use App\Models\City;
+use App\Repositories\SubscriptionProcessRepository;
 
 class SubscriptionController extends Controller
 {
     protected $subscriptionProcessRepository;
     protected $mayarService;
 
-    public function __construct(SubscriptionProcessInterface $subscriptionProcessRepository, MayarService $mayarService) // <-- GANTI INI
+    public function __construct(SubscriptionProcessRepository $subscriptionProcessRepository, MayarService $mayarService) // <-- GANTI INI
     {
         $this->subscriptionProcessRepository = $subscriptionProcessRepository;
         $this->mayarService = $mayarService;
     }
-    /**
-     * Endpoint untuk membuat pembayaran baru via Mayar.id
-     * URL: POST /api/subscription/create
-     */
-    public function create(Request $request)
+
+    public function createPayment(Request $request)
     {
         $user = $request->user();
         if (!$user) {
             return response()->json(['success' => false, 'message' => 'Unauthorized.'], 401);
         }
 
-        $request->validate(['plan_id' => 'required|uuid|exists:subscription_plans,id']);
+        $request->validate([
+            'plan_id' => 'required|exists:subscription_plans,id'
+        ]);
 
-        $plan = SubscriptionPlan::where('id', $request->plan_id)->where('is_active', true)->first();
+        $plan = SubscriptionPlan::where('id', $request->plan_id)
+            ->where('is_active', true)
+            ->first();
+
         if (!$plan) {
             return response()->json(['success' => false, 'message' => 'Subscription plan not found or inactive.'], 404);
         }
 
         try {
-            // SIMPAN DI TABEL payments DULU
-            $paymentData = [
-                'id' => (string) Str::uuid(),
+            // Simpan payment record
+            $paymentId = (string) Str::uuid();
+            DB::table('payments')->insert([
+                'id' => $paymentId,
                 'user_id' => $user->id,
                 'subscription_plan_id' => $plan->id,
                 'amount' => $plan->price,
                 'status' => 'pending',
                 'payment_method' => 'mayar',
                 'payment_code' => 'PAY-' . strtoupper(Str::random(8)),
-                'gateway_transaction_id' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
-            ];
+            ]);
 
-            DB::table('payments')->insert($paymentData);
+            // Kirim ke Mayar API
+            $response = Http::withToken(config('services.mayar.api_key'))
+                ->timeout(30)
+                ->post('https://api.mayar.id/v1/transactions', [
+                    'amount' => (int) $plan->price,
+                    'invoice_number' => 'INV-' . strtoupper(Str::random(8)) . '-' . time(),
+                    'customer_name' => $user->name,
+                    'customer_email' => $user->email,
+                    'callback_url' => config('services.mayar.callback_url'),
+                    'return_url' => config('services.mayar.return_url'),
+                    'metadata' => [
+                        'payment_id' => $paymentId,
+                        'user_id' => $user->id,
+                        'plan_id' => $plan->id,
+                    ]
+                ]);
 
-            // KIRIM payment_id sebagai external_id
-            $paymentLink = $this->mayarService->generatePaymentLink($user, $plan, $paymentData['id']);
+            // LOG RESPONSE UNTUK DEBUG
+            Log::info('Mayar API Response', [
+                'status' => $response->status(),
+                'body' => $response->json()
+            ]);
+
+            if (!$response->successful()) {
+                $errorData = $response->json();
+                $errorMessage = $errorData['message'] ?? 'Unknown Mayar API error';
+
+                Log::error('Mayar API Failed', [
+                    'error' => $errorMessage,
+                    'response' => $errorData
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Payment gateway error: ' . $errorMessage
+                ], 500);
+            }
+
+            $data = $response->json();
+
+            if (!isset($data['data']['payment_url'])) {
+                subsLog::error('Mayar API: Missing payment_url', $data);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid response from payment gateway'
+                ], 500);
+            }
+
             return response()->json([
                 'success' => true,
                 'data' => [
-                    'payment_url' => $paymentLink->payment_url,
-                    'invoice_number' => $paymentLink->invoice_number,
-                    'expires_at' => $paymentLink->expires_at,
+                    'payment_url' => $data['data']['payment_url']
                 ]
             ]);
         } catch (\Exception $e) {
-            Log::error('Subscription create failed', [
+            Log::error('Create Payment Exception', [
                 'user_id' => $user->id,
                 'plan_id' => $request->plan_id,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString()
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to create payment. Please try again later.',
+                'message' => 'System error: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -100,55 +145,43 @@ class SubscriptionController extends Controller
      */
     public function mayarCallback(Request $request)
     {
-        // Validasi signature
+        // Validasi signature (pakai webhook token)
         $signature = $request->header('X-Mayar-Signature');
         $payload = $request->getContent();
         $expectedSignature = hash_hmac('sha256', $payload, config('services.mayar.webhook_token'));
 
         if (!hash_equals($expectedSignature, $signature)) {
-            Log::warning('Invalid webhook signature');
             return response('Unauthorized', 401);
         }
 
-        $data = $request->json('data');
+        $data = $request->json('data'); // ✅ BUKAN 'tda'!
         $transactionId = $data['transactionId'] ?? null;
         $status = strtoupper($data['status'] ?? 'failed');
-        $externalId = $data['externalId'] ?? null; // AMBIL externalId
+        $metadata = $data['metadata'] ?? [];
+        $paymentId = $metadata['payment_id'] ?? null;
 
-        if (!$transactionId || !$externalId) {
-            Log::error('Missing transactionId or externalId', $data);
+        if (!$transactionId || !$paymentId) {
             return response('Bad Request', 400);
         }
 
-        try {
-            // UPDATE TABEL payments BERDASARKAN externalId (yang sebenarnya payment_id)
-            DB::table('payments')
-                ->where('id', $externalId)
-                ->update([
-                    'gateway_transaction_id' => $transactionId,
-                    'status' => in_array($status, ['SUCCESS', 'PAID']) ? 'success' : 'failed',
-                    'paid_at' => in_array($status, ['SUCCESS', 'PAID']) ? now() : null,
-                    'updated_at' => now(),
-                ]);
-
-            // PROSES LANGGANAN JIKA SUKSES
-            if (in_array($status, ['SUCCESS', 'PAID'])) {
-                $payment = DB::table('payments')->where('id', $externalId)->first();
-                if ($payment) {
-                    // MODIFIKASI: handleMayarCallbackByPayment()
-                    $this->subscriptionProcessRepository->handleMayarCallbackByPayment($payment);
-                }
-            }
-
-            Log::info('Payment processed successfully', ['user_id' => $payment->user_id ?? 'unknown']);
-            return response('OK', 200);
-        } catch (\Exception $e) {
-            Log::error('Callback processing failed', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+        // Update payment & buat subscription
+        DB::table('payments')
+            ->where('id', $paymentId)
+            ->update([
+                'gateway_transaction_id' => $transactionId,
+                'status' => in_array($status, ['SUCCESS', 'PAID']) ? 'success' : 'failed',
+                'paid_at' => in_array($status, ['SUCCESS', 'PAID']) ? now() : null,
+                'updated_at' => now(),
             ]);
-            return response('Internal Error', 500);
+
+        if (in_array($status, ['SUCCESS', 'PAID'])) {
+            $payment = DB::table('payments')->where('id', $paymentId)->first();
+            if ($payment) {
+                $this->subscriptionProcessRepository->handleMayarCallbackByPayment($payment);
+            }
         }
+
+        return response('OK', 200);
     }
 
     public function paymentSuccess()
