@@ -80,11 +80,12 @@ Route::middleware(['user.session'])->group(function () {
         ->name('ebooks.save.toggle')
         ->middleware('auth');
 
-    // Untuk AJAX dari frontend (harus login)
-    Route::post('/create-payment', [SubscriptionController::class, 'createPayment'])
-        ->middleware('auth');
-
     // Untuk webhook Mayar (tidak perlu login)
-    Route::post('/api/payment/mayar-callback', [SubscriptionController::class, 'mayarCallback'])
-        ->name('api.payment.mayar-callback');
+    // Route::post('/api/payment/mayar-callback', [SubscriptionController::class, 'mayarCallback'])
+    //     ->name('api.payment.mayar-callback');
+    // routes/web.php
+    Route::post('/api/payment/mayar-callback', [SubscriptionController::class, 'mayarCallback']);
+    Route::get('/subscribe/{slug}', [SubscriptionController::class, 'redirectToMayar'])
+        ->name('subscribe.redirect')
+        ->middleware('auth');
 });

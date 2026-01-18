@@ -551,12 +551,11 @@
                                 @endif
                                 @else
                                 <!-- LANGGANAN BARU: Pakai Mayar asli -->
-                                <button
-                                    class="pricing-button pricing-button--primary w-100 subscribe-btn"
-                                    data-plan-id="{{ $plan->id }}"
-                                    data-csrf-token="{{ csrf_token() }}">
+                                <a href="{{ route('subscribe.redirect', $plan->slug) }}"
+                                    class="pricing-button pricing-button--primary w-100 text-white text-center"
+                                    style="text-decoration: none; color: inherit;">
                                     {{ $plan->button_text ?? 'Subscribe Now' }}
-                                </button>
+                                </a>
                                 @endif
 
                                 <!-- WhatsApp (versi kamu: dengan data user lengkap) -->
@@ -841,53 +840,6 @@
                 contentElement.style.opacity = '1';
             }, 100); // 100ms delay
         }
-    });
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.subscribe-btn').forEach(button => {
-            button.addEventListener('click', async function(e) {
-                e.preventDefault();
-
-                const planId = this.dataset.planId;
-                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                const originalText = this.innerHTML;
-
-                this.disabled = true;
-                this.innerHTML = 'Processing...';
-
-                try {
-                    const response = await fetch('/create-payment', {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': csrfToken,
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            plan_id: planId
-                        })
-                    });
-
-                    const data = await response.json();
-
-                    if (data.success && data.data?.payment_url) {
-                        window.location.href = data.data.payment_url;
-                    } else {
-                        // Tampilkan error yang lebih jelas
-                        const errorMessage = data.message || 'Terjadi kesalahan saat membuat pembayaran';
-                        alert('Error: ' + errorMessage);
-                        console.error('Payment Error:', data);
-                    }
-                } catch (error) {
-                    console.error('Network Error:', error);
-                    alert('Kesalahan jaringan: ' + error.message);
-                } finally {
-                    this.disabled = false;
-                    this.innerHTML = originalText;
-                }
-            });
-        });
     });
 </script>
 @endsection
