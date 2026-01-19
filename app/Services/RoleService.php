@@ -137,9 +137,10 @@ class RoleService
                 throw new \Exception('Role not found');
             }
 
-            // Check if role has users
+            // Remove role from users before deleting (detach from pivot table)
             if ($role->users()->count() > 0) {
-                throw new \Exception('Cannot delete role that has assigned users');
+                // Detach all users from this role
+                $role->users()->detach();
             }
 
             // Soft delete the role
@@ -193,9 +194,10 @@ class RoleService
                 throw new \Exception('Role not found');
             }
 
-            // Check if role has users (even for force delete)
+            // Remove role from users before permanently deleting (detach from pivot table)
             if ($role->users()->count() > 0) {
-                throw new \Exception('Cannot permanently delete role that has assigned users');
+                // Detach all users from this role
+                $role->users()->detach();
             }
 
             $result = $role->forceDelete();

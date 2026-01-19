@@ -120,10 +120,22 @@
                 <!-- Search Row -->
                 <div class="row align-items-center mt-3">
                     <div class="col-md-12">
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="ti ti-search"></i></span>
-                            <input type="text" class="form-control" placeholder="{{ __('admin.ebooks.search_placeholder') }}" id="searchEbook" 
-                                value="{{ request('search') }}">
+                        <div class="d-flex gap-2">
+                            <div class="input-group flex-grow-1">
+                                <span class="input-group-text"><i class="ti ti-search"></i></span>
+                                <input type="text" class="form-control" placeholder="{{ __('admin.ebooks.search_placeholder') }}" id="searchEbook" 
+                                    value="{{ request('search') }}">
+                            </div>
+                            
+                            <!-- Items Per Page -->
+                            <select class="form-select form-select-sm" id="perPageSelect" onchange="changePerPage()" style="width: 120px;">
+                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 / page</option>
+                                <option value="20" {{ request('per_page', 10) == 20 ? 'selected' : '' }}>20 / page</option>
+                                <option value="30" {{ request('per_page', 10) == 30 ? 'selected' : '' }}>30 / page</option>
+                                <option value="40" {{ request('per_page', 10) == 40 ? 'selected' : '' }}>40 / page</option>
+                                <option value="50" {{ request('per_page', 10) == 50 ? 'selected' : '' }}>50 / page</option>
+                                <option value="100" {{ request('per_page', 10) == 100 ? 'selected' : '' }}>100 / page</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -181,8 +193,12 @@
                                         <span class="badge bg-success" style="font-size: 0.75rem;">{{ __('admin.ebooks.published') }}</span>
                                     @elseif($ebook->status === 'draft')
                                         <span class="badge bg-warning" style="font-size: 0.75rem;">{{ __('admin.ebooks.draft') }}</span>
+                                    @elseif($ebook->status === 'unpublished')
+                                        <span class="badge bg-danger" style="font-size: 0.75rem;">{{ __('admin.ebooks.unpublished') }}</span>
+                                    @elseif($ebook->status === 'archived')
+                                        <span class="badge bg-secondary" style="font-size: 0.75rem;">{{ __('admin.ebooks.archived') }}</span>
                                     @else
-                                        <span class="badge bg-secondary" style="font-size: 0.75rem;">Archived</span>
+                                        <span class="badge bg-secondary" style="font-size: 0.75rem;">{{ ucfirst($ebook->status) }}</span>
                                     @endif
                                 </td>
                                 <td style="display: none;" class="py-2">
@@ -335,11 +351,13 @@
             @if ($ebooks->hasPages())
                 <div class="card-footer">
                     {{ $ebooks->appends([
-                        'per_page' => request('per_page', 8), 
+                        'per_page' => request('per_page', 10), 
                         'sort_by' => request('sort_by'), 
                         'sort_order' => request('sort_order'),
                         'search' => request('search'),
-                        'status' => request('status')
+                        'status' => request('status'),
+                        'category_id' => request('category_id'),
+                        'city_id' => request('city_id')
                     ])->links() }}
                 </div>
             @endif
@@ -348,7 +366,7 @@
 
     @push('scripts')
         <script>
-            // View toggle with pagination adjustment
+            // View toggle (no longer changes per_page automatically)
             function toggleView(view) {
                 const tableView = document.getElementById('tableView');
                 const cardView = document.getElementById('cardView');
@@ -361,48 +379,18 @@
                     btnTable.classList.add('active');
                     btnCard.classList.remove('active');
                     localStorage.setItem('ebookView', 'table');
-
-                    // Reload with table pagination (6 per page)
-                    const currentUrl = new URL(window.location.href);
-                    const currentPerPage = currentUrl.searchParams.get('per_page');
-                    if (currentPerPage !== '6') {
-                        currentUrl.searchParams.set('per_page', '6');
-                        currentUrl.searchParams.delete('page'); // Reset to page 1
-                        window.location.href = currentUrl.toString();
-                    }
                 } else {
                     tableView.style.display = 'none';
                     cardView.style.display = 'block';
                     btnTable.classList.remove('active');
                     btnCard.classList.add('active');
                     localStorage.setItem('ebookView', 'card');
-
-                    // Reload with card pagination (8 per page)
-                    const currentUrl = new URL(window.location.href);
-                    const currentPerPage = currentUrl.searchParams.get('per_page');
-                    if (currentPerPage !== '8') {
-                        currentUrl.searchParams.set('per_page', '8');
-                        currentUrl.searchParams.delete('page'); // Reset to page 1
-                        window.location.href = currentUrl.toString();
-                    }
                 }
             }
 
             // Load saved view preference
             document.addEventListener('DOMContentLoaded', function() {
                 const savedView = localStorage.getItem('ebookView') || 'table';
-
-                // Set per_page based on saved view without reloading if already correct
-                const currentUrl = new URL(window.location.href);
-                const currentPerPage = currentUrl.searchParams.get('per_page');
-                const expectedPerPage = savedView === 'card' ? '8' : '6';
-
-                if (!currentPerPage) {
-                    // First load, set per_page
-                    currentUrl.searchParams.set('per_page', expectedPerPage);
-                    window.history.replaceState({}, '', currentUrl.toString());
-                }
-
                 toggleView(savedView);
             });
 
@@ -479,6 +467,20 @@
                 const currentUrl = new URL(window.location.href);
                 currentUrl.searchParams.set('sort_by', actualSortBy);
                 currentUrl.searchParams.set('sort_order', actualSortOrder);
+                window.location.href = currentUrl.toString();
+            }
+
+            // Change items per page
+            window.changePerPage = function() {
+                const perPage = document.getElementById('perPageSelect').value;
+                const currentUrl = new URL(window.location.href);
+                
+                // Set per_page parameter
+                currentUrl.searchParams.set('per_page', perPage);
+                
+                // Reset to page 1 when changing items per page
+                currentUrl.searchParams.delete('page');
+                
                 window.location.href = currentUrl.toString();
             }
 

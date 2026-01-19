@@ -38,10 +38,29 @@ class SubscriptionPlanController extends Controller
      */
     public function store(Request $request)
     {
+        // Validate category and value
+        $request->validate([
+            'category_subscription' => 'required|in:harian,mingguan,bulanan,tahunan',
+            'duration_value' => 'required|integer|min:1',
+        ]);
+
+        // Apply category-specific max limits
+        $categoryLimits = [
+            'harian' => 7,
+            'mingguan' => 4,
+            'bulanan' => 12,
+            'tahunan' => 999,
+        ];
+
+        $category = $request->input('category_subscription');
+        $maxValue = $categoryLimits[$category];
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
+            'category_subscription' => 'required|in:harian,mingguan,bulanan,tahunan',
+            'duration_value' => "required|integer|min:1|max:$maxValue",
             'duration_days' => 'required|integer|min:1',
             'features' => 'nullable|string',
             'button_text' => 'nullable|string|max:100',
@@ -53,9 +72,15 @@ class SubscriptionPlanController extends Controller
             'price.required' => 'Harga paket wajib diisi.',
             'price.numeric' => 'Harga harus berupa angka.',
             'price.min' => 'Harga tidak boleh kurang dari 0.',
-            'duration_days.required' => 'Durasi berlangganan wajib diisi.',
-            'duration_days.integer' => 'Durasi harus berupa angka.',
-            'duration_days.min' => 'Durasi minimal 1 hari.',
+            'category_subscription.required' => 'Kategori durasi wajib dipilih.',
+            'category_subscription.in' => 'Kategori durasi tidak valid.',
+            'duration_value.required' => 'Nilai durasi wajib diisi.',
+            'duration_value.integer' => 'Nilai durasi harus berupa angka.',
+            'duration_value.min' => 'Nilai durasi minimal 1.',
+            'duration_value.max' => "Nilai durasi maksimal $maxValue untuk kategori $category.",
+            'duration_days.required' => 'Total hari berlangganan wajib diisi.',
+            'duration_days.integer' => 'Total hari harus berupa angka.',
+            'duration_days.min' => 'Total hari minimal 1 hari.',
             'button_text.max' => 'Teks button maksimal 100 karakter.',
             'mayar_payment_link.url' => 'Link Mayar harus berupa URL yang valid.',
             'mayar_payment_link.max' => 'Link Mayar maksimal 500 karakter.',
@@ -107,7 +132,21 @@ class SubscriptionPlanController extends Controller
     {
         $plan = $this->subscriptionPlanService->getPlanById($id);
 
-        return view('admin.subscription-plans.edit', compact('plan'));
+        // Calculate duration_value from duration_days if category exists
+        $durationValue = null;
+        if ($plan->category_subscription && $plan->duration_days) {
+            $multipliers = [
+                'harian' => 1,
+                'mingguan' => 7,
+                'bulanan' => 30,
+                'tahunan' => 365,
+            ];
+            
+            $multiplier = $multipliers[$plan->category_subscription] ?? 1;
+            $durationValue = round($plan->duration_days / $multiplier);
+        }
+
+        return view('admin.subscription-plans.edit', compact('plan', 'durationValue'));
     }
 
     /**
@@ -115,10 +154,29 @@ class SubscriptionPlanController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        // Validate category and value
+        $request->validate([
+            'category_subscription' => 'required|in:harian,mingguan,bulanan,tahunan',
+            'duration_value' => 'required|integer|min:1',
+        ]);
+
+        // Apply category-specific max limits
+        $categoryLimits = [
+            'harian' => 7,
+            'mingguan' => 4,
+            'bulanan' => 12,
+            'tahunan' => 999,
+        ];
+
+        $category = $request->input('category_subscription');
+        $maxValue = $categoryLimits[$category];
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
+            'category_subscription' => 'required|in:harian,mingguan,bulanan,tahunan',
+            'duration_value' => "required|integer|min:1|max:$maxValue",
             'duration_days' => 'required|integer|min:1',
             'features' => 'nullable|string',
             'button_text' => 'nullable|string|max:100',
@@ -130,9 +188,15 @@ class SubscriptionPlanController extends Controller
             'price.required' => 'Harga paket wajib diisi.',
             'price.numeric' => 'Harga harus berupa angka.',
             'price.min' => 'Harga tidak boleh kurang dari 0.',
-            'duration_days.required' => 'Durasi berlangganan wajib diisi.',
-            'duration_days.integer' => 'Durasi harus berupa angka.',
-            'duration_days.min' => 'Durasi minimal 1 hari.',
+            'category_subscription.required' => 'Kategori durasi wajib dipilih.',
+            'category_subscription.in' => 'Kategori durasi tidak valid.',
+            'duration_value.required' => 'Nilai durasi wajib diisi.',
+            'duration_value.integer' => 'Nilai durasi harus berupa angka.',
+            'duration_value.min' => 'Nilai durasi minimal 1.',
+            'duration_value.max' => "Nilai durasi maksimal $maxValue untuk kategori $category.",
+            'duration_days.required' => 'Total hari berlangganan wajib diisi.',
+            'duration_days.integer' => 'Total hari harus berupa angka.',
+            'duration_days.min' => 'Total hari minimal 1 hari.',
             'button_text.max' => 'Teks button maksimal 100 karakter.',
             'mayar_payment_link.url' => 'Link Mayar harus berupa URL yang valid.',
             'mayar_payment_link.max' => 'Link Mayar maksimal 500 karakter.',

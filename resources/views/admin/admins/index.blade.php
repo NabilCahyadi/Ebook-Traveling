@@ -100,7 +100,7 @@
                                                     class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
                                             @else
                                                 <div class="avatar avatar-sm me-2">
-                                                    <span class="avatar-initial rounded-circle bg-label-primary">
+                                                    <span class="avatar-initial rounded-circle" style="background-color: rgba(236, 72, 153, 0.2); border: none; color: #ec4899; font-weight: 600;">
                                                         {{ strtoupper(substr($admin->name, 0, 2)) }}
                                                     </span>
                                                 </div>

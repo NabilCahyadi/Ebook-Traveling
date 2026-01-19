@@ -6,10 +6,39 @@ PROJECT_PATH="/home/u778058510/domains/mappy.id/ebook_traveling_core"
 # Path ke PHP (ubah jika hosting berbeda)
 PHP_BIN="/usr/bin/php"
 
+# Backup directory
+BACKUP_DIR="$PROJECT_PATH/../backups"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+
 # Masuk ke folder project
 cd $PROJECT_PATH
 
+# Function untuk rollback
+rollback() {
+    echo "❌ Deployment failed! Rolling back..."
+    /usr/bin/git reset --hard HEAD@{1}
+    composer install --no-dev --optimize-autoloader --no-interaction
+    $PHP_BIN artisan cache:clear
+    $PHP_BIN artisan config:cache
+    echo "⚠️ Rollback completed. Please check the logs."
+    exit 1
+}
+
+# Set error handler
+set -e
+trap rollback ERR
+
 echo "🚀 Starting deployment process..."
+echo "📅 Timestamp: $(date)"
+
+# Backup database sebelum deploy
+echo "💾 Creating database backup..."
+mkdir -p $BACKUP_DIR
+$PHP_BIN artisan backup:database --path="$BACKUP_DIR/db_backup_$TIMESTAMP.sql" 2>/dev/null || echo "⚠️ Backup skipped (manual backup recommended)"
+
+# Maintenance mode ON
+echo "🔧 Enabling maintenance mode..."
+$PHP_BIN artisan down --retry=60 --secret="deploy-secret-key" || true
 
 # Update repo dari GitHub
 echo "📥 Pulling latest changes from repository..."
@@ -65,7 +94,29 @@ echo "📌 Updating app version for cache busting..."
 TIMESTAMP=$(date +%s)
 sed -i "s/APP_VERSION=.*/APP_VERSION=$TIMESTAMP/" .env 2>/dev/null || echo "APP_VERSION=$TIMESTAMP" >> .env
 
-echo "✅ Deployment completed successfully!"
-echo "⚠️  Note: Clear your browser cache (Ctrl+Shift+R) to see latest changes"
-echo "📝 Deployment timestamp: $(date)"
-echo "🔖 App version: $TIMESTAMP"
+
+# Maintenance mode OFF
+echo "? Disabling maintenance mode..."
+$PHP_BIN artisan up
+
+# Health check
+echo "?? Running health check..."
+HTTP_CODE=$(curl -o /dev/null -s -w "%{http_code}\n" https://mappy.id)
+if [ "$HTTP_CODE" -eq 200 ]; then
+    echo "? Health check passed (HTTP $HTTP_CODE)"
+else
+    echo "?? Health check warning (HTTP $HTTP_CODE)"
+fi
+
+# Remove error handler
+set +e
+trap - ERR
+
+echo ""
+echo "? Deployment completed successfully!"
+echo "??  Note: Clear your browser cache (Ctrl+Shift+R) to see latest changes"
+echo "?? Deployment timestamp: $(date)"
+echo "?? App version: $TIMESTAMP"
+echo "?? Database backup: $BACKUP_DIR/db_backup_$TIMESTAMP.sql"
+echo ""
+

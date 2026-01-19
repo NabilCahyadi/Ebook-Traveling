@@ -53,7 +53,7 @@
                     </div>
 
                     <!-- Table Filter -->
-                    <div class="col-md-2">
+                    <!-- <div class="col-md-2">
                         <label class="form-label">Table</label>
                         <select name="table" class="form-select">
                             <option value="all">All Tables</option>
@@ -63,7 +63,7 @@
                                 </option>
                             @endforeach
                         </select>
-                    </div>
+                    </div> -->
 
                     <!-- Date From -->
                     <div class="col-md-2">
@@ -113,7 +113,7 @@
                                 <th>Admin</th>
                                 <th>Action</th>
                                 <th>Table</th>
-                                <th>Record ID</th>
+                                <!-- <th>Record ID</th> -->
                                 <th>IP Address</th>
                                 <th>Date/Time</th>
                                 <th>Actions</th>
@@ -129,7 +129,7 @@
                                                     <img src="{{ asset('storage/' . $log->admin->avatar) }}"
                                                         alt="{{ $log->admin->name }}" class="rounded-circle">
                                                 @else
-                                                    <span class="avatar-initial rounded-circle bg-label-primary">
+                                                    <span class="avatar-initial rounded-circle" style="background-color: rgba(236, 72, 153, 0.2); border: none; color: #ec4899; font-weight: 600;">
                                                         {{ substr($log->admin->name ?? 'A', 0, 1) }}
                                                     </span>
                                                 @endif
@@ -161,9 +161,9 @@
                                     <td>
                                         <code>{{ $log->table_name ?? '-' }}</code>
                                     </td>
-                                    <td>
+                                    <!-- <td>
                                         <span class="badge bg-label-secondary">{{ $log->record_id ?? '-' }}</span>
-                                    </td>
+                                    </td> -->
                                     <td>
                                         <small class="text-muted">{{ $log->ip_address ?? '-' }}</small>
                                     </td>

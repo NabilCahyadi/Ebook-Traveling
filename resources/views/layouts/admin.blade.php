@@ -138,16 +138,6 @@
             color: #ff4c61 !important;
         }
         
-        /* Menu active state */
-        .menu-item.active > .menu-link {
-            background-color: rgba(255, 76, 97, 0.16) !important;
-            color: #ff4c61 !important;
-        }
-        
-        .menu-sub-item.active > .menu-link {
-            color: #ff4c61 !important;
-        }
-        
         /* Forms */
         .form-check-input:checked {
             background-color: #ff4c61 !important;
@@ -204,6 +194,143 @@
             background-color: #ff4c61 !important;
             border-color: #ff4c61 !important;
         }
+        
+        /* ========================================
+           SIDEBAR MENU STYLING
+           ======================================== */
+        
+        /* Base sidebar styles */
+        .layout-menu {
+            background-color: #fff !important;
+            border-right: 1px solid rgba(255, 76, 97, 0.1);
+        }
+        
+        /* Menu item base */
+        .menu-inner .menu-item .menu-link {
+            border-radius: 6px;
+            margin: 2px 8px;
+            transition: all 0.2s ease;
+        }
+        
+        /* Menu item hover */
+        .menu-inner .menu-item .menu-link:hover {
+            background-color: rgba(255, 76, 97, 0.08) !important;
+        }
+        
+        /* Active menu item (single item, no dropdown) */
+        .menu-inner > .menu-item.active > .menu-link:not(.menu-toggle) {
+            background-color: #ff4c61 !important;
+            color: #fff !important;
+        }
+        
+        .menu-inner > .menu-item.active > .menu-link:not(.menu-toggle) .menu-icon,
+        .menu-inner > .menu-item.active > .menu-link:not(.menu-toggle) div {
+            color: #fff !important;
+        }
+        
+        /* --- LEVEL 1: Parent Dropdowns (User Management, Ebook Management) --- */
+        .menu-inner > .menu-item.open > .menu-link.menu-toggle {
+            background-color: rgba(255, 76, 97, 0.12) !important;
+            color: #ff4c61 !important;
+            font-weight: 600;
+        }
+        
+        .menu-inner > .menu-item.open > .menu-link.menu-toggle .menu-icon {
+            color: #ff4c61 !important;
+        }
+        
+        /* Level 1 dropdown when ACTIVE but CLOSED (Ebook Management active tapi dropdown tutup) */
+        .menu-inner > .menu-item.active:not(.open) > .menu-link.menu-toggle {
+            background-color: rgba(255, 76, 97, 0.08) !important;
+            color: #ff4c61 !important;
+            font-weight: 500;
+        }
+        
+        .menu-inner > .menu-item.active:not(.open) > .menu-link.menu-toggle .menu-icon {
+            color: #ff4c61 !important;
+        }
+        
+        /* Level 1 submenu container */
+        .menu-inner > .menu-item > .menu-sub {
+            background-color: rgba(255, 76, 97, 0.03);
+            border-radius: 0 0 8px 8px;
+            margin: 0 8px;
+            padding: 4px 0;
+        }
+        
+        /* --- LEVEL 2: Child Items (Roles, Activity Logs) --- */
+        .menu-inner > .menu-item > .menu-sub > .menu-item > .menu-link:not(.menu-toggle) {
+            padding-left: 2.5rem;
+        }
+        
+        .menu-inner > .menu-item > .menu-sub > .menu-item.active > .menu-link:not(.menu-toggle) {
+            background-color: rgba(255, 76, 97, 0.15) !important;
+            color: #ff4c61 !important;
+            font-weight: 500;
+        }
+        
+        /* --- LEVEL 2: Child Dropdowns (Users dropdown inside User Management) --- */
+        .menu-inner > .menu-item > .menu-sub > .menu-item > .menu-link.menu-toggle {
+            padding-left: 2.5rem;
+        }
+        
+        .menu-inner > .menu-item > .menu-sub > .menu-item.open > .menu-link.menu-toggle {
+            background-color: rgba(255, 76, 97, 0.08) !important;
+            color: #ff4c61 !important;
+            font-weight: 500;
+        }
+        
+        /* Level 2 submenu container */
+        .menu-inner > .menu-item > .menu-sub > .menu-item > .menu-sub {
+            background-color: rgba(255, 76, 97, 0.02);
+            border-left: 2px solid rgba(255, 76, 97, 0.2);
+            margin-left: 2rem;
+            padding: 4px 0;
+            border-radius: 0 6px 6px 0;
+        }
+        
+        /* --- LEVEL 3: Deepest Items (All Users, Creator, Reader) --- */
+        .menu-inner > .menu-item > .menu-sub > .menu-item > .menu-sub > .menu-item > .menu-link {
+            padding-left: 1.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .menu-inner > .menu-item > .menu-sub > .menu-item > .menu-sub > .menu-item.active > .menu-link {
+            background-color: rgba(255, 76, 97, 0.12) !important;
+            color: #ff4c61 !important;
+            font-weight: 600;
+            border-left: 3px solid #ff4c61;
+            margin-left: -2px;
+        }
+        
+        .menu-inner > .menu-item > .menu-sub > .menu-item > .menu-sub > .menu-item > .menu-link:hover {
+            background-color: rgba(255, 76, 97, 0.06) !important;
+        }
+        
+        /* Dropdown arrow rotation */
+        .menu-item.open > .menu-link.menu-toggle::after {
+            transform: rotate(90deg);
+        }
+        
+        /* Menu icons */
+        .menu-inner .menu-icon {
+            color: #697a8d;
+            transition: color 0.2s ease;
+        }
+        
+        .menu-inner .menu-item:hover .menu-icon {
+            color: #ff4c61;
+        }
+        
+        /* App brand in sidebar */
+        .app-brand {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 76, 97, 0.1);
+        }
+        
+        /* ========================================
+           END SIDEBAR STYLING
+           ======================================== */
         
         /* Override background colors */
         body {

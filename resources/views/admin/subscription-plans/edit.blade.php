@@ -97,36 +97,59 @@
                     </div>
 
                     <div class="row mb-3">
-                        <label class="col-sm-2 col-form-label" for="duration_days">{{ __('admin.subscription_plans.duration_days') }} <span
-                                class="text-danger">*</span></label>
+                        <label class="col-sm-2 col-form-label">{{ app()->getLocale() == 'id' ? 'Durasi' : 'Duration' }} <span class="text-danger">*</span></label>
                         <div class="col-sm-10">
                             <div class="row g-2">
-                                <div class="col-md-6">
-                                    <select class="form-select @error('duration_days') is-invalid @enderror" id="duration_select"
-                                        required>
-                                        <option value="">{{ __('admin.common.select') }} {{ __('admin.subscription_history.duration') }}</option>
-                                        <option value="30"
-                                            {{ old('duration_days', $plan->duration_days) == 30 ? 'selected' : '' }}>1 {{ __('admin.receipt.month') }} (30 {{ __('admin.receipt.days') }})</option>
-                                        <option value="180"
-                                            {{ old('duration_days', $plan->duration_days) == 180 ? 'selected' : '' }}>6 {{ __('admin.receipt.months') }} (180 {{ __('admin.receipt.days') }})</option>
-                                        <option value="365"
-                                            {{ old('duration_days', $plan->duration_days) == 365 ? 'selected' : '' }}>1 {{ __('admin.receipt.year') }} (365 {{ __('admin.receipt.days') }})</option>
-                                        <option value="custom"
-                                            {{ !in_array(old('duration_days', $plan->duration_days), [30, 180, 365]) ? 'selected' : '' }}>
-                                            Custom Duration</option>
+                                <!-- Category Dropdown -->
+                                <div class="col-md-4">
+                                    <label for="category_subscription" class="form-label small">{{ app()->getLocale() == 'id' ? 'Kategori' : 'Category' }}</label>
+                                    <select class="form-select @error('category_subscription') is-invalid @enderror" 
+                                            id="category_subscription" 
+                                            name="category_subscription" 
+                                            required
+                                            onchange="updateDurationLimits()">
+                                        <option value="">{{ app()->getLocale() == 'id' ? 'Pilih Kategori' : 'Select Category' }}</option>
+                                        <option value="harian" {{ old('category_subscription', $plan->category_subscription ?? '') == 'harian' ? 'selected' : '' }}>{{ app()->getLocale() == 'id' ? 'Harian' : 'Daily' }}</option>
+                                        <option value="mingguan" {{ old('category_subscription', $plan->category_subscription ?? '') == 'mingguan' ? 'selected' : '' }}>{{ app()->getLocale() == 'id' ? 'Mingguan' : 'Weekly' }}</option>
+                                        <option value="bulanan" {{ old('category_subscription', $plan->category_subscription ?? '') == 'bulanan' ? 'selected' : '' }}>{{ app()->getLocale() == 'id' ? 'Bulanan' : 'Monthly' }}</option>
+                                        <option value="tahunan" {{ old('category_subscription', $plan->category_subscription ?? '') == 'tahunan' ? 'selected' : '' }}>{{ app()->getLocale() == 'id' ? 'Tahunan' : 'Yearly' }}</option>
                                     </select>
-                                    @error('duration_days')
+                                    @error('category_subscription')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class="col-md-6" id="customDurationDiv"
-                                    style="display: {{ !in_array(old('duration_days', $plan->duration_days), [30, 180, 365]) ? 'block' : 'none' }};">
-                                    <input type="number" class="form-control" id="custom_duration"
-                                        value="{{ !in_array($plan->duration_days, [30, 180, 365]) ? $plan->duration_days : '' }}"
-                                        min="1" placeholder="Enter custom days">
+
+                                <!-- Value Input -->
+                                <div class="col-md-3">
+                                    <label for="duration_value" class="form-label small">
+                                        <span id="value_label">{{ app()->getLocale() == 'id' ? 'Nilai' : 'Value' }}</span>
+                                        <small class="text-muted" id="value_limit">(max: -)</small>
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control @error('duration_value') is-invalid @enderror" 
+                                           id="duration_value" 
+                                           name="duration_value" 
+                                           value="{{ old('duration_value', $durationValue ?? '') }}"
+                                           required
+                                           oninput="handleDurationInput(this)"
+                                           onkeydown="return checkInput(event)"
+                                           placeholder="{{ app()->getLocale() == 'id' ? 'Masukkan nilai' : 'Enter value' }}">
+                                    @error('duration_value')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <!-- Days Display -->
+                                <div class="col-md-3">
+                                    <label for="days_display" class="form-label small">{{ app()->getLocale() == 'id' ? 'Total Hari' : 'Total Days' }}</label>
+                                    <input type="text" 
+                                           class="form-control bg-light" 
+                                           id="days_display" 
+                                           value="{{ old('duration_days', $plan->duration_days) }} {{ app()->getLocale() == 'id' ? 'hari' : 'days' }}"
+                                           readonly>
                                 </div>
                             </div>
-                            <!-- Hidden input that will be submitted -->
+                            <!-- Hidden input for duration_days -->
                             <input type="hidden" name="duration_days" id="duration_days" value="{{ old('duration_days', $plan->duration_days) }}">
                         </div>
                     </div>
@@ -203,49 +226,225 @@
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                const durationSelect = document.getElementById('duration_select');
-                const hiddenInput = document.getElementById('duration_days');
-                const customDiv = document.getElementById('customDurationDiv');
-                const customInput = document.getElementById('custom_duration');
-                const form = document.querySelector('form');
+                // Define category limits and multipliers with proper limits
+                const categoryLimits = {
+                    'harian': { 
+                        max: 7, 
+                        multiplier: 1, 
+                        label: '{{ app()->getLocale() == "id" ? "Hari" : "Days" }}'
+                    },
+                    'mingguan': { 
+                        max: 4, 
+                        multiplier: 7, 
+                        label: '{{ app()->getLocale() == "id" ? "Minggu" : "Weeks" }}'
+                    },
+                    'bulanan': { 
+                        max: 12, 
+                        multiplier: 30, 
+                        label: '{{ app()->getLocale() == "id" ? "Bulan" : "Months" }}'
+                    },
+                    'tahunan': { 
+                        max: Infinity, 
+                        multiplier: 365, 
+                        label: '{{ app()->getLocale() == "id" ? "Tahun" : "Years" }}'
+                    }
+                };
 
-                // Handle duration change
-                durationSelect.addEventListener('change', function() {
-                    if (this.value === 'custom') {
-                        customDiv.style.display = 'block';
-                        customInput.required = true;
-                        customInput.focus();
-                        hiddenInput.value = ''; // Clear hidden input
+                const dayLabel = '{{ app()->getLocale() == "id" ? "hari" : "days" }}';
+
+                // Calculate duration value from existing duration_days if category exists
+                initializeDurationValue();
+                
+                function initializeDurationValue() {
+                    const category = document.getElementById('category_subscription').value;
+                    const durationDays = parseInt(document.getElementById('duration_days').value) || 0;
+                    
+                    if (category && durationDays > 0) {
+                        const multiplier = categoryLimits[category].multiplier;
+                        const calculatedValue = Math.round(durationDays / multiplier);
+                        document.getElementById('duration_value').value = calculatedValue;
+                        updateDurationLimitsWithoutReset();
+                    } else if (category) {
+                        updateDurationLimitsWithoutReset();
+                    }
+                }
+                
+                function updateDurationLimitsWithoutReset() {
+                    const category = document.getElementById('category_subscription').value;
+                    const valueLabel = document.getElementById('value_label');
+                    const valueLimit = document.getElementById('value_limit');
+                    
+                    if (!category) {
+                        valueLabel.textContent = '{{ app()->getLocale() == "id" ? "Nilai" : "Value" }}';
+                        valueLimit.textContent = '(max: -)';
+                        return;
+                    }
+                    
+                    const config = categoryLimits[category];
+                    valueLabel.textContent = config.label;
+                    
+                    if (config.max === Infinity) {
+                        valueLimit.textContent = '{{ app()->getLocale() == "id" ? "(tidak terbatas)" : "(unlimited)" }}';
                     } else {
-                        customDiv.style.display = 'none';
-                        customInput.required = false;
-                        customInput.value = '';
-                        hiddenInput.value = this.value; // Set hidden input to selected value
+                        valueLimit.textContent = `(max: ${config.max})`;
                     }
-                });
+                    
+                    calculateDurationDays();
+                }
 
-                // Update hidden input when custom duration changes
-                customInput.addEventListener('input', function() {
-                    if (durationSelect.value === 'custom' && this.value) {
-                        hiddenInput.value = this.value;
+                // Block non-numeric keys and check max on keydown
+                window.checkInput = function(evt) {
+                    // Allow: backspace, delete, tab, escape, enter, and arrows
+                    if ([8, 9, 13, 27, 46, 37, 38, 39, 40].includes(evt.keyCode)) {
+                        return true;
                     }
-                });
-
-                // Handle form submission
-                form.addEventListener('submit', function(e) {
-                    // If custom duration is selected, validate and set hidden input
-                    if (durationSelect.value === 'custom') {
-                        if (!customInput.value || customInput.value <= 0) {
-                            e.preventDefault();
-                            alert('Silakan masukkan durasi custom (minimal 1 hari)');
-                            customInput.focus();
-                            return false;
-                        }
-                        // Make sure hidden input has the custom value
-                        hiddenInput.value = customInput.value;
+                    
+                    // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                    if ((evt.ctrlKey || evt.metaKey) && [65, 67, 86, 88].includes(evt.keyCode)) {
+                        return true;
+                    }
+                    
+                    // Block non-numeric (not 0-9)
+                    if ((evt.keyCode < 48 || evt.keyCode > 57) && (evt.keyCode < 96 || evt.keyCode > 105)) {
+                        evt.preventDefault();
+                        return false;
+                    }
+                    
+                    // Get the character that will be typed
+                    const char = evt.key;
+                    if (!/^\d$/.test(char)) {
+                        evt.preventDefault();
+                        return false;
+                    }
+                    
+                    // Check if resulting number would exceed max
+                    const input = evt.target;
+                    const category = document.getElementById('category_subscription').value;
+                    if (!category) return true;
+                    
+                    const config = categoryLimits[category];
+                    if (config.max === Infinity) return true; // Yearly is unlimited
+                    
+                    // Calculate what the new value would be
+                    const selectionStart = input.selectionStart;
+                    const selectionEnd = input.selectionEnd;
+                    const currentValue = input.value;
+                    const newValue = currentValue.substring(0, selectionStart) + char + currentValue.substring(selectionEnd);
+                    const numValue = parseInt(newValue);
+                    
+                    if (numValue > config.max) {
+                        evt.preventDefault();
+                        return false;
                     }
                     
                     return true;
+                };
+
+                // Make functions globally accessible
+                window.updateDurationLimits = function() {
+                    const category = document.getElementById('category_subscription').value;
+                    const valueInput = document.getElementById('duration_value');
+                    const valueLabel = document.getElementById('value_label');
+                    const valueLimit = document.getElementById('value_limit');
+                    
+                    if (!category) {
+                        valueInput.disabled = true;
+                        valueInput.value = '';
+                        valueLabel.textContent = '{{ app()->getLocale() == "id" ? "Nilai" : "Value" }}';
+                        valueLimit.textContent = '(max: -)';
+                        document.getElementById('days_display').value = '0 ' + dayLabel;
+                        document.getElementById('duration_days').value = '0';
+                        return;
+                    }
+                    
+                    valueInput.disabled = false;
+                    const config = categoryLimits[category];
+                    
+                    // Reset value to 1 when category changes
+                    valueInput.value = 1;
+                    
+                    // Update label based on category
+                    valueLabel.textContent = config.label;
+                    
+                    if (config.max === Infinity) {
+                        valueLimit.textContent = '{{ app()->getLocale() == "id" ? "(tidak terbatas)" : "(unlimited)" }}';
+                        valueInput.removeAttribute('max');
+                    } else {
+                        valueLimit.textContent = `(max: ${config.max})`;
+                        valueInput.setAttribute('max', config.max);
+                    }
+                    
+                    // Recalculate days
+                    calculateDurationDays();
+                };
+
+                window.handleDurationInput = function(input) {
+                    const category = document.getElementById('category_subscription').value;
+                    if (!category) return;
+                    
+                    const config = categoryLimits[category];
+                    let value = input.value.replace(/[^0-9]/g, ''); // Remove non-numeric
+                    
+                    if (value !== '') {
+                        let numValue = parseInt(value);
+                        
+                        // Enforce max limit (except for yearly which is unlimited)
+                        if (config.max !== Infinity && numValue > config.max) {
+                            numValue = config.max;
+                        }
+                        
+                        // Ensure minimum is 1
+                        if (numValue < 1) {
+                            numValue = 1;
+                        }
+                        
+                        input.value = numValue;
+                    }
+                    
+                    calculateDurationDays();
+                };
+
+                window.calculateDurationDays = function() {
+                    const category = document.getElementById('category_subscription').value;
+                    const value = parseInt(document.getElementById('duration_value').value) || 0;
+                    const daysDisplay = document.getElementById('days_display');
+                    const hiddenInput = document.getElementById('duration_days');
+                    
+                    if (!category || !value) {
+                        daysDisplay.value = '0 ' + dayLabel;
+                        hiddenInput.value = '0';
+                        return;
+                    }
+                    
+                    const multiplier = categoryLimits[category].multiplier;
+                    const totalDays = value * multiplier;
+                    
+                    daysDisplay.value = totalDays + ' ' + dayLabel;
+                    hiddenInput.value = totalDays;
+                };
+                
+                // Handle paste event to validate pasted content
+                const durationInput = document.getElementById('duration_value');
+                durationInput.addEventListener('paste', function(evt) {
+                    evt.preventDefault();
+                    const pastedText = (evt.clipboardData || window.clipboardData).getData('text');
+                    const numericValue = pastedText.replace(/[^0-9]/g, '');
+                    
+                    if (numericValue) {
+                        const category = document.getElementById('category_subscription').value;
+                        if (category) {
+                            const config = categoryLimits[category];
+                            let numValue = parseInt(numericValue);
+                            
+                            // Enforce max limit
+                            if (config.max !== Infinity && numValue > config.max) {
+                                numValue = config.max;
+                            }
+                            
+                            this.value = numValue;
+                            calculateDurationDays();
+                        }
+                    }
                 });
             });
 
