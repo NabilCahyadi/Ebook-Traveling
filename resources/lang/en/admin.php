@@ -526,7 +526,7 @@ return [
         'filter_by_category' => 'Filter by Category',
         'all_cities' => 'All Cities',
         'cover' => 'Cover',
-        'title' => 'Title',
+        'column_title' => 'Title',
         'city' => 'City',
         'categories' => 'Categories',
         'no_ebooks_available' => 'No ebooks available',

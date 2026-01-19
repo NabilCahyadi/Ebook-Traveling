@@ -27,22 +27,24 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li>
-                        <a class="dropdown-item {{ app()->getLocale() == 'en' ? 'active' : '' }}" 
-                           href="{{ route('admin.language.switch', 'en') }}" 
-                           onclick="event.preventDefault(); document.getElementById('lang-en-form').submit();">
+                        <a class="dropdown-item {{ app()->getLocale() == 'en' ? 'active' : '' }}"
+                            href="{{ route('admin.language.switch', 'en') }}"
+                            onclick="event.preventDefault(); document.getElementById('lang-en-form').submit();">
                             <span class="align-middle">English</span>
                         </a>
-                        <form id="lang-en-form" action="{{ route('admin.language.switch', 'en') }}" method="POST" style="display: none;">
+                        <form id="lang-en-form" action="{{ route('admin.language.switch', 'en') }}" method="POST"
+                            style="display: none;">
                             @csrf
                         </form>
                     </li>
                     <li>
-                        <a class="dropdown-item {{ app()->getLocale() == 'id' ? 'active' : '' }}" 
-                           href="{{ route('admin.language.switch', 'id') }}" 
-                           onclick="event.preventDefault(); document.getElementById('lang-id-form').submit();">
+                        <a class="dropdown-item {{ app()->getLocale() == 'id' ? 'active' : '' }}"
+                            href="{{ route('admin.language.switch', 'id') }}"
+                            onclick="event.preventDefault(); document.getElementById('lang-id-form').submit();">
                             <span class="align-middle">Indonesia</span>
                         </a>
-                        <form id="lang-id-form" action="{{ route('admin.language.switch', 'id') }}" method="POST" style="display: none;">
+                        <form id="lang-id-form" action="{{ route('admin.language.switch', 'id') }}" method="POST"
+                            style="display: none;">
                             @csrf
                         </form>
                     </li>
@@ -83,7 +85,8 @@
                     aria-expanded="false" id="notificationDropdown">
                     <span class="position-relative">
                         <i class="ti ti-bell ti-md"></i>
-                        <span class="badge rounded-pill bg-danger badge-dot badge-notifications border d-none" id="notificationBadge"></span>
+                        <span class="badge rounded-pill bg-danger badge-dot badge-notifications border d-none"
+                            id="notificationBadge"></span>
                     </span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end p-0" style="width: 380px;">
@@ -93,15 +96,15 @@
                             <div class="d-flex align-items-center h6 mb-0">
                                 <span class="badge bg-label-primary me-2" id="unreadCount">0</span>
                                 <a href="javascript:void(0)" id="markAllAsRead"
-                                    class="btn btn-text-secondary rounded-pill btn-icon"
-                                    data-bs-toggle="tooltip" data-bs-placement="top" 
-                                    title="{{ __('admin.notifications.mark_all_read') }}">
+                                    class="btn btn-text-secondary rounded-pill btn-icon" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="{{ __('admin.notifications.mark_all_read') }}">
                                     <i class="ti ti-mail-opened text-heading"></i>
                                 </a>
                             </div>
                         </div>
                     </li>
-                    <li class="dropdown-notifications-list scrollable-container" style="max-height: 400px; overflow-y: auto;">
+                    <li class="dropdown-notifications-list scrollable-container"
+                        style="max-height: 400px; overflow-y: auto;">
                         <ul class="list-group list-group-flush" id="notificationsList">
                             <li class="list-group-item text-center py-4">
                                 <div class="spinner-border spinner-border-sm text-primary" role="status">
@@ -112,8 +115,8 @@
                     </li>
                     <li class="border-top">
                         <div class="d-grid p-4">
-                            <a class="btn btn-primary btn-sm d-flex justify-content-center" 
-                               href="{{ route('admin.notifications.index') }}">
+                            <a class="btn btn-primary btn-sm d-flex justify-content-center"
+                                href="{{ route('admin.notifications.index') }}">
                                 <small class="align-middle">{{ __('admin.notifications.view_all') }}</small>
                             </a>
                         </div>
@@ -127,10 +130,11 @@
                 <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
                         @if(Auth::user()->avatar)
-                            <img src="{{ asset('storage/' . Auth::user()->avatar) }}"
-                                alt="{{ Auth::user()->name }}" class="rounded-circle" />
+                            <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}"
+                                class="rounded-circle" />
                         @else
-                            <span class="avatar-initial rounded-circle bg-info">
+                            <span class="avatar-initial rounded-circle"
+                                style="background-color: rgba(236, 72, 153, 0.2); border: none; color: #ec4899; font-weight: 600;">
                                 {{ getInitials(Auth::user()->name) }}
                             </span>
                         @endif
@@ -146,7 +150,8 @@
                                             <img src="{{ asset('storage/' . Auth::user()->avatar) }}"
                                                 alt="{{ Auth::user()->name }}" class="rounded-circle" />
                                         @else
-                                            <span class="avatar-initial rounded-circle bg-info">
+                                            <span class="avatar-initial rounded-circle"
+                                                style="background-color: rgba(236, 72, 153, 0.2); border: none; color: #ec4899; font-weight: 600;">
                                                 {{ getInitials(Auth::user()->name) }}
                                             </span>
                                         @endif

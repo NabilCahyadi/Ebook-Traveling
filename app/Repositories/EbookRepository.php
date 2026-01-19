@@ -58,11 +58,13 @@ class EbookRepository implements EbookRepositoryInterface
             }
         }
 
-        // Priority sorting: draft first, then archived last, then by user's chosen sort
+        // Priority sorting: draft first, published middle, unpublished last
         return $query->orderByRaw("CASE 
             WHEN status = 'draft' THEN 1 
-            WHEN status = 'archived' THEN 3 
-            ELSE 2 
+            WHEN status = 'published' THEN 2 
+            WHEN status = 'unpublished' THEN 3 
+            WHEN status = 'archived' THEN 4 
+            ELSE 5 
         END")
         ->orderBy($sortBy, $sortOrder)
         ->paginate($perPage);

@@ -30,7 +30,13 @@ class UserController extends Controller
         // Get all roles for filter dropdown
         $roles = \App\Models\Role::all();
 
+        // Validate role exists if provided
         if ($roleSlug && $roleSlug !== 'all') {
+            $roleExists = \App\Models\Role::where('slug', $roleSlug)->exists();
+            if (!$roleExists) {
+                return redirect()->route('admin.users.index')
+                    ->with('error', 'Role "' . $roleSlug . '" not found! Please select a valid role.');
+            }
             $users = $this->userService->getUsersByRole($roleSlug, 10, $search, $showTrashed, $userType, $googleId, $registered);
         } else {
             $users = $this->userService->getAllUsers(10, $search, $showTrashed, $userType, $googleId, $registered);
@@ -44,8 +50,23 @@ class UserController extends Controller
      */
     public function create(Request $request)
     {
-        $roleSlug = $request->get('role');
-        return view('admin.users.create', compact('roleSlug'));
+        try {
+            $roleSlug = $request->get('role');
+            
+            // Validate role exists if provided
+            if ($roleSlug && $roleSlug !== '' && $roleSlug !== 'all') {
+                $role = \App\Models\Role::where('slug', $roleSlug)->first();
+                if (!$role) {
+                    return redirect()->route('admin.users.index')
+                        ->with('error', 'Role not found! Please select a valid role.');
+                }
+            }
+            
+            return view('admin.users.create', compact('roleSlug'));
+        } catch (\Exception $e) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'Failed to load create form: ' . $e->getMessage());
+        }
     }
 
     /**
