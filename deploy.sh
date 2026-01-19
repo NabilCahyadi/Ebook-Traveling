@@ -21,6 +21,11 @@ echo "📥 Pulling latest changes from repository..."
 echo "📦 Installing Composer dependencies..."
 composer install --no-dev --optimize-autoloader --no-interaction
 
+# Install NPM dependencies and build assets
+echo "🎨 Building frontend assets..."
+npm install --production
+npm run build
+
 # Clear all caches before migration
 echo "🧹 Clearing application cache..."
 $PHP_BIN artisan config:clear
@@ -34,7 +39,6 @@ $PHP_BIN artisan migrate --force
 
 # Run seeders untuk update data yang diperlukan (tanpa hapus data existing)
 echo "🌱 Running necessary seeders..."
-$PHP_BIN artisan db:seed --class=SubscriptionPlanSeeder --force
 
 # Create storage symlink (PENTING untuk akses file dari public)
 echo "🔗 Creating storage symbolic link..."
@@ -51,3 +55,17 @@ $PHP_BIN artisan config:cache
 $PHP_BIN artisan route:cache
 $PHP_BIN artisan view:cache
 
+# Force browser cache refresh by updating file timestamps
+echo "🔄 Updating static file timestamps..."
+touch public/assets/admin/vendor/css/rtl/theme-default.css
+touch public/assets/admin/vendor/css/theme-default.css
+
+# Update version timestamp for cache busting
+echo "📌 Updating app version for cache busting..."
+TIMESTAMP=$(date +%s)
+sed -i "s/APP_VERSION=.*/APP_VERSION=$TIMESTAMP/" .env 2>/dev/null || echo "APP_VERSION=$TIMESTAMP" >> .env
+
+echo "✅ Deployment completed successfully!"
+echo "⚠️  Note: Clear your browser cache (Ctrl+Shift+R) to see latest changes"
+echo "📝 Deployment timestamp: $(date)"
+echo "🔖 App version: $TIMESTAMP"

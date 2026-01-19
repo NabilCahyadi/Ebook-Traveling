@@ -289,13 +289,28 @@
                             </div>
                         @endif
 
-                        <div class="mb-0">
+                        <div class="mb-3">
                             <input type="file" class="form-control @error('pdf_file') is-invalid @enderror"
                                 id="pdf_file" name="pdf_file" accept=".pdf">
                             <small class="text-muted">{{ __('admin.ebooks.pdf_hint') }}</small>
                             @error('pdf_file')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                        </div>
+
+                        <!-- Total Pages (Read-only) -->
+                        <div class="mb-0">
+                            <label for="total_pages" class="form-label">{{ __('admin.ebooks.total_pages') }}</label>
+                            <input type="number" class="form-control bg-lighter" id="total_pages" 
+                                name="total_pages" value="{{ old('total_pages', $ebook->total_pages) }}" readonly 
+                                placeholder="{{ __('admin.ebooks.total_pages_placeholder') }}">
+                            <small class="text-muted">
+                                @if($ebook->total_pages)
+                                    {{ __('admin.ebooks.total_pages_current', ['count' => $ebook->total_pages]) }}
+                                @else
+                                    {{ __('admin.ebooks.total_pages_auto_update') }}
+                                @endif
+                            </small>
                         </div>
                     </div>
                 </div>
@@ -580,8 +595,13 @@
     </script>
 
     <!-- PDF validation script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
         const pdfInput = document.getElementById('pdf_file');
+        const totalPagesInput = document.getElementById('total_pages');
+
         if (pdfInput) {
             pdfInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
@@ -598,6 +618,26 @@
                     pdfInput.value = '';
                     return;
                 }
+
+                // Read PDF page count
+                const fileReader = new FileReader();
+                fileReader.onload = function() {
+                    const typedArray = new Uint8Array(this.result);
+                    
+                    pdfjsLib.getDocument(typedArray).promise.then(function(pdf) {
+                        const numPages = pdf.numPages;
+                        
+                        // Update total pages field
+                        if (totalPagesInput) {
+                            totalPagesInput.value = numPages;
+                        }
+                    }).catch(function(error) {
+                        console.error('Error reading PDF:', error);
+                        alert('Gagal membaca PDF. Pastikan file valid.');
+                    });
+                };
+                
+                fileReader.readAsArrayBuffer(file);
             });
         }
 

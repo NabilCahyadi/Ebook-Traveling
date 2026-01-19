@@ -5,15 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Services\SubscriptionPlanService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class SubscriptionPlanController extends Controller
 {
-    protected $SubscriptionPlanService;
+    protected $subscriptionPlanService;
 
-    public function __construct(SubscriptionPlanService $SubscriptionPlanService)
+    public function __construct(SubscriptionPlanService $subscriptionPlanService)
     {
-        $this->SubscriptionPlanService = $SubscriptionPlanService;
+        $this->subscriptionPlanService = $subscriptionPlanService;
     }
 
     /**
@@ -21,7 +20,7 @@ class SubscriptionPlanController extends Controller
      */
     public function index()
     {
-        $plans = $this->SubscriptionPlanService->getPaginatedPlans(5);
+        $plans = $this->subscriptionPlanService->getPaginatedPlans(5);
 
         return view('admin.subscription-plans.index', compact('plans'));
     }
@@ -46,6 +45,7 @@ class SubscriptionPlanController extends Controller
             'duration_days' => 'required|integer|min:1',
             'features' => 'nullable|string',
             'button_text' => 'nullable|string|max:100',
+            'mayar_payment_link' => 'nullable|url|max:500',
             'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ], [
             'name.required' => 'Nama paket berlangganan wajib diisi.',
@@ -57,6 +57,8 @@ class SubscriptionPlanController extends Controller
             'duration_days.integer' => 'Durasi harus berupa angka.',
             'duration_days.min' => 'Durasi minimal 1 hari.',
             'button_text.max' => 'Teks button maksimal 100 karakter.',
+            'mayar_payment_link.url' => 'Link Mayar harus berupa URL yang valid.',
+            'mayar_payment_link.max' => 'Link Mayar maksimal 500 karakter.',
             'cover_image.image' => 'File harus berupa gambar.',
             'cover_image.mimes' => 'Format gambar harus JPEG, PNG, JPG, GIF, atau WEBP.',
             'cover_image.max' => 'Ukuran gambar maksimal 2MB.',
@@ -77,7 +79,7 @@ class SubscriptionPlanController extends Controller
         }
 
         try {
-            $this->SubscriptionPlanService->createPlan($validated);
+            $this->subscriptionPlanService->createPlan($validated);
 
             return redirect()->route('admin.subscription-plans.index')
                 ->with('success', 'Subscription plan created successfully!');
@@ -93,7 +95,7 @@ class SubscriptionPlanController extends Controller
      */
     public function show(string $id)
     {
-        $plan = $this->SubscriptionPlanService->getPlanById($id);
+        $plan = $this->subscriptionPlanService->getPlanById($id);
 
         return view('admin.subscription-plans.show', compact('plan'));
     }
@@ -103,7 +105,7 @@ class SubscriptionPlanController extends Controller
      */
     public function edit(string $id)
     {
-        $plan = $this->SubscriptionPlanService->getPlanById($id);
+        $plan = $this->subscriptionPlanService->getPlanById($id);
 
         return view('admin.subscription-plans.edit', compact('plan'));
     }
@@ -120,6 +122,7 @@ class SubscriptionPlanController extends Controller
             'duration_days' => 'required|integer|min:1',
             'features' => 'nullable|string',
             'button_text' => 'nullable|string|max:100',
+            'mayar_payment_link' => 'nullable|url|max:500',
             'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ], [
             'name.required' => 'Nama paket berlangganan wajib diisi.',
@@ -131,6 +134,8 @@ class SubscriptionPlanController extends Controller
             'duration_days.integer' => 'Durasi harus berupa angka.',
             'duration_days.min' => 'Durasi minimal 1 hari.',
             'button_text.max' => 'Teks button maksimal 100 karakter.',
+            'mayar_payment_link.url' => 'Link Mayar harus berupa URL yang valid.',
+            'mayar_payment_link.max' => 'Link Mayar maksimal 500 karakter.',
             'cover_image.image' => 'File harus berupa gambar.',
             'cover_image.mimes' => 'Format gambar harus JPEG, PNG, JPG, GIF, atau WEBP.',
             'cover_image.max' => 'Ukuran gambar maksimal 2MB.',
@@ -144,8 +149,8 @@ class SubscriptionPlanController extends Controller
             $plan = $this->subscriptionPlanService->getPlanById($id);
 
             // Delete old banner if exists
-            if ($plan->cover_image && Storage::disk('public')->exists($plan->cover_image)) {
-                Storage::disk('public')->delete($plan->cover_image);
+            if ($plan->cover_image && \Storage::disk('public')->exists($plan->cover_image)) {
+                \Storage::disk('public')->delete($plan->cover_image);
             }
 
             $image = $request->file('cover_image');
@@ -155,7 +160,7 @@ class SubscriptionPlanController extends Controller
         }
 
         try {
-            $this->SubscriptionPlanService->updatePlan($id, $validated);
+            $this->subscriptionPlanService->updatePlan($id, $validated);
 
             return redirect()->route('admin.subscription-plans.index')
                 ->with('success', 'Subscription plan updated successfully!');
@@ -172,7 +177,7 @@ class SubscriptionPlanController extends Controller
     public function destroy(string $id)
     {
         try {
-            $this->SubscriptionPlanService->deletePlan($id);
+            $this->subscriptionPlanService->deletePlan($id);
 
             return redirect()->route('admin.subscription-plans.index')
                 ->with('success', 'Subscription plan moved to trash successfully!');
@@ -188,7 +193,7 @@ class SubscriptionPlanController extends Controller
     public function trashed()
     {
         try {
-            $plans = $this->SubscriptionPlanService->getTrashedPlans(15);
+            $plans = $this->subscriptionPlanService->getTrashedPlans(15);
             return view('admin.subscription-plans.trashed', compact('plans'));
         } catch (\Exception $e) {
             return redirect()->route('admin.subscription-plans.index')
@@ -202,7 +207,7 @@ class SubscriptionPlanController extends Controller
     public function restore(string $id)
     {
         try {
-            $this->SubscriptionPlanService->restorePlan($id);
+            $this->subscriptionPlanService->restorePlan($id);
             return redirect()->route('admin.subscription-plans.trashed')
                 ->with('success', 'Subscription plan restored successfully!');
         } catch (\Exception $e) {
@@ -217,7 +222,7 @@ class SubscriptionPlanController extends Controller
     public function forceDelete(string $id)
     {
         try {
-            $this->SubscriptionPlanService->forceDeletePlan($id);
+            $this->subscriptionPlanService->forceDeletePlan($id);
             return redirect()->route('admin.subscription-plans.trashed')
                 ->with('success', 'Subscription plan permanently deleted!');
         } catch (\Exception $e) {

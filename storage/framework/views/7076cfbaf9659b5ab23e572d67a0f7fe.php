@@ -792,12 +792,12 @@ $collections = collect();
 
                                             
                                             <?php if(auth()->check() && auth()->user()->hasActiveSubscription()): ?>
-                                            <a href="/reader/<?php echo e($ebook->slug); ?>" class="action-btn btn-read-now">
+                                            <a href="<?php echo e(route('user.ebook.read', $ebook->slug)); ?>" class="action-btn btn-read-now">
                                                 <i class="fi-rs-book-open"></i>
                                                 <span>Read Now</span>
                                             </a>
                                             <?php else: ?>
-                                            <a href="/pricing" class="action-btn btn-subscribe-now">
+                                            <a href="/pricing#pricing-plans" class="action-btn btn-subscribe-now">
                                                 <i class="fi-rs-lock"></i>
                                                 <span>Subscribe to Read</span>
                                             </a>

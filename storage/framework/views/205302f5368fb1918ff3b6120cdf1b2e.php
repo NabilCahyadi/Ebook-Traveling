@@ -396,7 +396,7 @@ unset($__errorArgs, $__bag); ?>
                 <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="card-title mb-3"><?php echo e(__('admin.ebooks.pdf_file')); ?></h5>
-                        <div class="mb-0">
+                        <div class="mb-3">
                             <input type="file" class="form-control <?php $__errorArgs = ['pdf_file'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -428,6 +428,15 @@ $message = $__bag->first($__errorArgs[0]); ?>
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
+                        </div>
+
+                        <!-- Total Pages (Read-only) -->
+                        <div class="mb-0">
+                            <label for="total_pages" class="form-label">Total Halaman</label>
+                            <input type="number" class="form-control bg-lighter" id="total_pages" 
+                                name="total_pages" value="" readonly 
+                                placeholder="Akan terisi otomatis setelah upload PDF">
+                            <small class="text-muted">Field ini akan terisi otomatis setelah PDF disimpan</small>
                         </div>
                     </div>
                 </div>
