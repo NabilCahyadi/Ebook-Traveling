@@ -482,8 +482,6 @@
         transform: translateY(-3px) !important;
     }
 </style>
-{{-- DEBUG VISUAL - HAPUS SETELAH SELESAI --}}
-@if(auth()->check())
 <main class="main pages">
     <div class="page-header mt-30 mb-30">
         <div class="container">
