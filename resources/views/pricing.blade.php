@@ -551,13 +551,14 @@
                                 @endif
                                 @else
                                 <!-- LANGGANAN BARU: Pakai Mayar asli -->
-                                <button class="pricing-button pricing-button--primary w-100"
-                                    onclick="subscribeWithMayar('{{ $plan->id }}', this)">
+                                <a href="{{ route('subscribe.redirect', $plan->slug) }}"
+                                    class="pricing-button pricing-button--primary w-100 text-white text-center"
+                                    style="text-decoration: none; color: inherit;">
                                     {{ $plan->button_text ?? 'Subscribe Now' }}
-                                </button>
+                                </a>
                                 @endif
 
-                                <!-- 📞 WhatsApp (versi kamu: dengan data user lengkap) -->
+                                <!-- WhatsApp (versi kamu: dengan data user lengkap) -->
                                 @php
                                 $waNumber = trim(app('settings')->get('whatsapp_number', '6289657571177'));
                                 $waText = urlencode("Halo Admin, saya ingin berlangganan.\n\nNama\t: " . $user->name . "\nEmail\t: " . $user->email . "\nPaket\t: " . $plan->name . "\nHarga\t: Rp " . number_format($plan->price, 0, ',', '.') . "\n\nMohon bantuannya. Terima kasih!");
@@ -840,57 +841,5 @@
             }, 100); // 100ms delay
         }
     });
-</script>
-<script>
-    async function subscribeWithMayar(planId, buttonElement) {
-        const originalText = buttonElement.innerText;
-        buttonElement.disabled = true;
-        buttonElement.innerText = 'Processing...';
-
-        try {
-            const response = await fetch('/api/subscription/create', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                    plan_id: planId
-                })
-            });
-
-            // CEK 1: Jika response status-nya 500 (server error)
-            if (response.status === 500) {
-                throw new Error('Server mengalami kesalahan internal. Coba lihat log Laravel.');
-            }
-
-            // CEK 2: Jika response adalah redirect ke login (status 302)
-            if (response.redirected && response.url.includes('login')) {
-                window.location.href = response.url;
-                return; // Hentikan eksekusi
-            }
-
-            // CEK 3: Jika response-nya bukan 200 OK
-            if (!response.ok) {
-                throw new Error(`Server error: ${response.status} ${response.statusText}`);
-            }
-
-            // Jika sampai sini, berarti response-nya OK dan berupa JSON
-            const result = await response.json();
-
-            if (result.success) {
-                window.location.href = result.data.payment_url;
-            } else {
-                alert('Error: ' + result.message);
-                buttonElement.disabled = false;
-                buttonElement.innerText = originalText;
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan: ' + error.message);
-            buttonElement.disabled = false;
-            buttonElement.innerText = originalText;
-        }
-    }
 </script>
 @endsection

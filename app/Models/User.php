@@ -284,7 +284,7 @@ class User extends Authenticatable
      */
     public function scopeCreators($query)
     {
-        return $query->whereHas('roles', function($q) {
+        return $query->whereHas('roles', function ($q) {
             $q->where('name', 'Creator')->orWhere('slug', 'creator');
         });
     }
@@ -294,9 +294,9 @@ class User extends Authenticatable
      */
     public function scopeAdmins($query)
     {
-        return $query->whereHas('roles', function($q) {
+        return $query->whereHas('roles', function ($q) {
             $q->whereIn('slug', ['admin', 'superadmin'])
-              ->orWhereIn('name', ['Admin', 'Super Admin']);
+                ->orWhereIn('name', ['Admin', 'Super Admin']);
         });
     }
 
@@ -454,10 +454,12 @@ class User extends Authenticatable
         return $this->canAccessPanel();
     }
 
-    // ✅ ACCESSOR: cek apakah punya langganan aktif
     public function hasActiveSubscription(): bool
     {
-        return $this->activeSubscriptions()->exists();
+        return $this->subscriptions()
+            ->where('status', 'active')
+            ->where('end_date', '>=', now())
+            ->exists();
     }
 
     // ✅ ACCESSOR: ambil subscription aktif terakhir

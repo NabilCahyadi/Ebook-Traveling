@@ -482,6 +482,14 @@
         transform: translateY(-3px) !important;
     }
 </style>
+{{-- DEBUG VISUAL - HAPUS SETELAH SELESAI --}}
+@if(auth()->check())
+<div class="alert alert-info" style="margin-bottom: 20px;">
+    <strong>STATUS PREMIUM:</strong>
+    {{ auth()->user()->hasActiveSubscription() ? '✅ PREMIUM' : '❌ BIASA' }}<br>
+    <small>Subscription count: {{ auth()->user()->subscriptions->count() }}</small>
+</div>
+@endif
 <main class="main pages">
     <div class="page-header mt-30 mb-30">
         <div class="container">
@@ -548,7 +556,7 @@
                                     <li class="nav-item">
                                         <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'library' ? 'active bg-light-subtle' : 'text-muted' }}"
                                             href="{{ route('page-account') }}?tab=library">
-                                            <span><i class="fi-rs-library mr-10"></i>My Library</span>
+                                            <span><i class="bi bi-collection mr-10"></i>My Library</span>
                                         </a>
                                     </li>
                                     <li class="nav-item">
@@ -605,9 +613,9 @@
                                         <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'payment' ? 'active bg-light-subtle' : 'text-muted' }}"
                                             href="{{ route('page-account') }}?tab=payment">
                                             <span><i class="fi-rs-credit-card mr-10"></i>Payment History</span>
-                                            @if($ordersCount > 0)
+                                            <!-- @if($ordersCount > 0)
                                             <span class="badge bg-success rounded-pill ms-auto">{{ $ordersCount }}</span>
-                                            @endif
+                                            @endif -->
                                         </a>
                                     </li>
                                     @endif
@@ -905,6 +913,281 @@
                                             </div>
                                         </div>
                                     </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- MY SUBSCRIPTION TAB -->
+                        <div class="tab-pane fade {{ request('tab') == 'subscription' ? 'active show' : '' }}" id="subscription" role="tabpanel">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
+                                    <h5 class="mb-0 fw-bold text-dark">My Subscription</h5>
+                                    @if($user->hasActiveSubscription())
+                                    <span class="badge bg-success rounded-pill px-3 py-2">Active</span>
+                                    @else
+                                    <span class="badge bg-warning text-dark rounded-pill px-3 py-2">Expired</span>
+                                    @endif
+                                </div>
+
+                                <div class="card-body">
+                                    @if($user->hasActiveSubscription())
+                                    @php
+                                    $sub = $user->currentSubscription;
+                                    $plan = $sub->plan;
+                                    $now = now();
+                                    $start = $sub->start_date;
+                                    $end = $sub->end_date;
+
+                                    $totalSeconds = $start->diffInSeconds($end);
+                                    $elapsedSeconds = $start->diffInSeconds($now->min($end));
+
+                                    $progress = $totalSeconds > 0
+                                    ? min(100, max(0, ($elapsedSeconds / $totalSeconds) * 100))
+                                    : 0;
+                                    @endphp
+
+                                    <div class="row mb-4">
+                                        <!-- Plan Info -->
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <h6 class="text-muted fw-normal mb-1">Plan</h6>
+                                                <p class="h5 mb-0">{{ $plan->name }}</p>
+                                            </div>
+                                            <div class="mb-3">
+                                                <h6 class="text-muted fw-normal mb-1">Period</h6>
+                                                <p class="mb-0">{{ $sub->start_date->format('d M Y H:i:s') }} – {{ $sub->end_date->format('d M Y H:i:s') }}</p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Financial Info -->
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <h6 class="text-muted fw-normal mb-1">Payment Method</h6>
+                                                <p class="mb-0">Mayar.id (QRIS / E-Wallet)</p>
+                                            </div>
+                                            <div class="mb-3">
+                                                <h6 class="text-muted fw-normal mb-1">Total Paid</h6>
+                                                <p class="h5 mb-0 text-success">Rp {{ number_format($sub->total_amount, 0, ',', '.') }}</p>
+                                            </div>
+                                            @php
+                                            $historyLines = $sub->notes
+                                            ? array_filter(explode("\n", trim($sub->notes)))
+                                            : [];
+                                            @endphp
+
+                                            @if(count($historyLines) > 0)
+                                            <div class="mb-3">
+                                                <h6 class="text-muted fw-normal mb-2">History</h6>
+                                                <div class="small text-muted" style="max-height: 80px; overflow-y: auto;">
+                                                    @foreach($historyLines as $line)
+                                                    <div>• {{ trim($line) }}</div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <!-- Progress Bar -->
+                                    <div class="mb-4">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <small class="text-muted">Subscription Progress</small>
+                                            <small class="fw-medium">{{ round($progress) }}%</small>
+                                        </div>
+                                        <div class="progress rounded-pill" style="height: 8px;">
+                                            <div class="progress-bar bg-success rounded-pill" role="progressbar"
+                                                style="width: {{ $progress }}%"
+                                                aria-valuenow="{{ $progress }}"
+                                                aria-valuemin="0"
+                                                aria-valuemax="100">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Action Buttons -->
+                                    <div class="d-grid gap-2 d-md-flex mb-5">
+                                        <a href="{{ route('pricing') }}" class="custom-button custom-button--primary text-white px-4">
+                                            Renew Subscription
+                                        </a>
+
+                                        <button type="button" class="custom-button custom-button--primary text-white px-4" onclick="downloadInvoice()">
+                                            <i class="fi-rs-file-invoice me-1"></i> Download Invoice
+                                        </button>
+                                    </div>
+
+                                    @else
+                                    <!-- No Active Subscription -->
+                                    <div class="text-center py-5">
+                                        <div class="bg-light-subtle rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 72px; height: 72px;">
+                                            <i class="fi-rs-lock fs-1 text-muted"></i>
+                                        </div>
+                                        <h5 class="mb-2">No Active Subscription</h5>
+                                        <p class="text-muted mb-4">Get unlimited access to all premium ebooks</p>
+                                        <a href="{{ route('pricing') }}" class="custom-button custom-button--primary text-white px-4 mt-2">
+                                            <i class="fi-rs-shopping-cart me-1"></i> Choose a Plan
+                                        </a>
+                                    </div>
+                                    @endif
+
+                                    <!-- Payment History -->
+                                    @if($user->payments()->exists())
+                                    <hr class="my-4">
+                                    <h6 class="fw-bold mb-3">Payment History</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover align-middle">
+                                            <thead class="table-light px-3">
+                                                <tr>
+                                                    <th scope="col" class="ps-3 py-3">Date</th>
+                                                    <th scope="col" class="py-3">Plan</th>
+                                                    <th scope="col" class="py-3">Period</th>
+                                                    <th scope="col" class="py-3">Amount</th>
+                                                    <th scope="col" class="py-3">Method</th>
+                                                    <th scope="col" class="py-3 text-center">Status</th>
+                                                    <th scope="col" class="text-end pe-3 py-3">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="px-3">
+                                                @foreach($user->payments()->with(['plan', 'subscription'])->latest()->get() as $payment)
+                                                @php
+                                                $sub = $payment->subscription; // Sudah di-load di controller
+                                                $now = now();
+                                                $status = 'Expired';
+                                                $badgeClass = 'bg-danger-subtle text-danger';
+
+                                                if ($sub) {
+                                                if ($sub->status === 'active') {
+                                                $hoursRemaining = $now->diffInHours($sub->end_date, false);
+
+                                                if ($hoursRemaining > 0) {
+                                                $status = 'Active';
+                                                $badgeClass = 'bg-success-subtle text-success';
+
+                                                // Expires Soon: hanya jika >0 jam dan ≤24 jam
+                                                if ($hoursRemaining <= 24) {
+                                                    $status='Expires Soon' ;
+                                                    $badgeClass='bg-warning-subtle text-warning' ;
+                                                    }
+                                                    } else {
+                                                    $status='Expired' ;
+                                                    $badgeClass='bg-danger-subtle text-danger' ;
+                                                    }
+                                                    } else {
+                                                    $status=ucfirst($sub->status);
+                                                    $badgeClass = 'bg-secondary-subtle text-secondary';
+                                                    }
+                                                    }
+                                                    @endphp
+                                                    <tr>
+                                                        <td class="ps-3 py-3">{{ $payment->created_at->format('d M Y') }}</td>
+                                                        <td class="py-3">{{ $payment->plan?->name ?? '-' }}</td>
+                                                        <td class="py-3">
+                                                            @if($payment->subscription)
+                                                            <small>
+                                                                {{ $loop->index === 0 
+                                                                ? $payment->subscription->start_date->format('d M Y H:i') . ' – ' . $payment->subscription->end_date->format('d M Y H:i')
+                                                                : 'Renewal on ' . $payment->created_at->format('d M Y') }}
+                                                            </small>
+                                                            @else
+                                                            <span class="text-muted">—</span>
+                                                            @endif
+                                                        </td>
+                                                        <td class="py-3 fw-medium">Rp {{ number_format($payment->amount, 0, ',', '.') }}</td>
+                                                        <td class="py-3">{{ ucfirst($payment->payment_method ?? '—') }}</td>
+                                                        <td class="py-3">
+                                                            @if($payment->status === 'success')
+                                                            <span class="badge bg-success-subtle text-success rounded-pill px-3 py-1">Paid</span>
+                                                            @else
+                                                            <span class="badge bg-warning-subtle text-warning rounded-pill px-3 py-1">Pending</span>
+                                                            @endif
+
+                                                            <span class="badge {{ $badgeClass }} rounded-pill py-1">
+                                                                {{ $status }}
+                                                            </span>
+                                                        </td>
+                                                        <td class="py-3 text-center">
+                                                            <button type="button"
+                                                                class="px-2 py-1"
+                                                                style="background-color:#FF416C; border-radius:100px; color:white; border:none;"
+                                                                title="Download Invoice"
+                                                                onclick="downloadInvoice('{{ $payment->id }}')">
+                                                                <i class="fi-rs-download"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HELP CENTER TAB -->
+                        <div class="tab-pane fade {{ request('tab') == 'help' ? 'active show' : '' }}" id="help" role="tabpanel">
+                            <div class="card border-0 shadow-sm rounded-3">
+                                <div class="card-header bg-white border-0 py-3">
+                                    <h5 class="mb-0 fw-bold text-dark">Help & Support</h5>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row g-4">
+                                        <!-- CARD 1: Help Center -->
+                                        <div class="col-lg-4 col-md-6">
+                                            <a href="{{ route('help-center') }}" class="text-decoration-none">
+                                                <div class="card h-100 border-0 shadow-sm hover-card transition-all"
+                                                    style="border-top: 3px solid #FF416C;">
+                                                    <div class="card-body text-center p-4">
+                                                        <div class="bg-light-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                                                            style="width: 56px; height: 56px;">
+                                                            <i class="fi-rs-book" style="font-size: 24px; color: #FF416C;"></i>
+                                                        </div>
+                                                        <h6 class="fw-bold mb-2">Help Center</h6>
+                                                        <p class="text-muted small mb-0">
+                                                            Step-by-step guides and tutorials
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+
+                                        <!-- CARD 2: FAQs -->
+                                        <div class="col-lg-4 col-md-6">
+                                            <a href="{{ route('faq') }}" class="text-decoration-none">
+                                                <div class="card h-100 border-0 shadow-sm hover-card transition-all"
+                                                    style="border-top: 3px solid #FF416C;">
+                                                    <div class="card-body text-center p-4">
+                                                        <div class="bg-light-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                                                            style="width: 56px; height: 56px;">
+                                                            <i class="bi bi-question-circle" style="font-size: 24px; color: #FF416C;"></i>
+                                                        </div>
+                                                        <h6 class="fw-bold mb-2">FAQs</h6>
+                                                        <p class="text-muted small mb-0">
+                                                            Quick answers to common questions
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+
+                                        <!-- CARD 3: Contact Us -->
+                                        <div class="col-lg-4 col-md-6">
+                                            <a href="{{ route('contact') }}" class="text-decoration-none">
+                                                <div class="card h-100 border-0 shadow-sm hover-card transition-all"
+                                                    style="border-top: 3px solid #FF416C;">
+                                                    <div class="card-body text-center p-4">
+                                                        <div class="bg-light-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                                                            style="width: 56px; height: 56px;">
+                                                            <i class="fi-rs-headset" style="font-size: 24px; color: #FF416C;"></i>
+                                                        </div>
+                                                        <h6 class="fw-bold mb-2">Contact Us</h6>
+                                                        <p class="text-muted small mb-0">
+                                                            Get direct support from our team
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1529,283 +1812,10 @@
                             </div>
                         </div>
 
-                        <!-- MY SUBSCRIPTION TAB -->
-                        <div class="tab-pane fade {{ request('tab') == 'subscription' ? 'active show' : '' }}" id="subscription" role="tabpanel">
-                            <div class="card border-0 shadow-sm">
-                                <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
-                                    <h5 class="mb-0 fw-bold text-dark">My Subscription</h5>
-                                    @if($user->hasActiveSubscription())
-                                    <span class="badge bg-success rounded-pill px-3 py-2">Active</span>
-                                    @else
-                                    <span class="badge bg-warning text-dark rounded-pill px-3 py-2">Expired</span>
-                                    @endif
-                                </div>
 
-                                <div class="card-body">
-                                    @if($user->hasActiveSubscription())
-                                    @php
-                                    $sub = $user->currentSubscription;
-                                    $plan = $sub->plan;
-                                    $now = now();
-                                    $start = $sub->start_date;
-                                    $end = $sub->end_date;
-
-                                    $totalSeconds = $start->diffInSeconds($end);
-                                    $elapsedSeconds = $start->diffInSeconds($now->min($end));
-
-                                    $progress = $totalSeconds > 0
-                                    ? min(100, max(0, ($elapsedSeconds / $totalSeconds) * 100))
-                                    : 0;
-                                    @endphp
-
-                                    <div class="row mb-4">
-                                        <!-- Plan Info -->
-                                        <div class="col-md-6">
-                                            <div class="mb-3">
-                                                <h6 class="text-muted fw-normal mb-1">Plan</h6>
-                                                <p class="h5 mb-0">{{ $plan->name }}</p>
-                                            </div>
-                                            <div class="mb-3">
-                                                <h6 class="text-muted fw-normal mb-1">Period</h6>
-                                                <p class="mb-0">{{ $sub->start_date->format('d M Y H:i:s') }} – {{ $sub->end_date->format('d M Y H:i:s') }}</p>
-                                            </div>
-                                        </div>
-
-                                        <!-- Financial Info -->
-                                        <div class="col-md-6">
-                                            <div class="mb-3">
-                                                <h6 class="text-muted fw-normal mb-1">Payment Method</h6>
-                                                <p class="mb-0">Mayar.id (QRIS / E-Wallet)</p>
-                                            </div>
-                                            <div class="mb-3">
-                                                <h6 class="text-muted fw-normal mb-1">Total Paid</h6>
-                                                <p class="h5 mb-0 text-success">Rp {{ number_format($sub->total_amount, 0, ',', '.') }}</p>
-                                            </div>
-                                            @php
-                                            $historyLines = $sub->notes
-                                            ? array_filter(explode("\n", trim($sub->notes)))
-                                            : [];
-                                            @endphp
-
-                                            @if(count($historyLines) > 0)
-                                            <div class="mb-3">
-                                                <h6 class="text-muted fw-normal mb-2">History</h6>
-                                                <div class="small text-muted" style="max-height: 80px; overflow-y: auto;">
-                                                    @foreach($historyLines as $line)
-                                                    <div>• {{ trim($line) }}</div>
-                                                    @endforeach
-                                                </div>
-                                            </div>
-                                            @endif
-                                        </div>
-                                    </div>
-
-                                    <!-- Progress Bar -->
-                                    <div class="mb-4">
-                                        <div class="d-flex justify-content-between mb-2">
-                                            <small class="text-muted">Subscription Progress</small>
-                                            <small class="fw-medium">{{ round($progress) }}%</small>
-                                        </div>
-                                        <div class="progress rounded-pill" style="height: 8px;">
-                                            <div class="progress-bar bg-success rounded-pill" role="progressbar"
-                                                style="width: {{ $progress }}%"
-                                                aria-valuenow="{{ $progress }}"
-                                                aria-valuemin="0"
-                                                aria-valuemax="100">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Action Buttons -->
-                                    <div class="d-grid gap-2 d-md-flex mb-5">
-                                        <a href="{{ route('pricing') }}" class="custom-button custom-button--primary text-white px-4">
-                                            Renew Subscription
-                                        </a>
-
-                                        <button type="button" class="custom-button custom-button--primary text-white px-4" onclick="downloadInvoice()">
-                                            <i class="fi-rs-file-invoice me-1"></i> Download Invoice
-                                        </button>
-                                    </div>
-
-                                    @else
-                                    <!-- No Active Subscription -->
-                                    <div class="text-center py-5">
-                                        <div class="bg-light-subtle rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 72px; height: 72px;">
-                                            <i class="fi-rs-lock fs-1 text-muted"></i>
-                                        </div>
-                                        <h5 class="mb-2">No Active Subscription</h5>
-                                        <p class="text-muted mb-4">Get unlimited access to all premium ebooks</p>
-                                        <a href="{{ route('pricing') }}" class="custom-button custom-button--primary text-white px-4 mt-2">
-                                            <i class="fi-rs-shopping-cart me-1"></i> Choose a Plan
-                                        </a>
-                                    </div>
-                                    @endif
-
-                                    <!-- Payment History -->
-                                    @if($user->payments()->exists())
-                                    <hr class="my-4">
-                                    <h6 class="fw-bold mb-3">Payment History</h6>
-                                    <div class="table-responsive">
-                                        <table class="table table-hover align-middle">
-                                            <thead class="table-light px-3">
-                                                <tr>
-                                                    <th scope="col" class="ps-3 py-3">Date</th>
-                                                    <th scope="col" class="py-3">Plan</th>
-                                                    <th scope="col" class="py-3">Period</th>
-                                                    <th scope="col" class="py-3">Amount</th>
-                                                    <th scope="col" class="py-3">Method</th>
-                                                    <th scope="col" class="py-3 text-center">Status</th>
-                                                    <th scope="col" class="text-end pe-3 py-3">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="px-3">
-                                                @foreach($user->payments()->with(['plan', 'subscription'])->latest()->get() as $payment)
-                                                @php
-                                                $sub = $payment->subscription; // Sudah di-load di controller
-                                                $now = now();
-                                                $status = 'Expired';
-                                                $badgeClass = 'bg-danger-subtle text-danger';
-
-                                                if ($sub) {
-                                                if ($sub->status === 'active') {
-                                                $hoursRemaining = $now->diffInHours($sub->end_date, false);
-
-                                                if ($hoursRemaining > 0) {
-                                                $status = 'Active';
-                                                $badgeClass = 'bg-success-subtle text-success';
-
-                                                // Expires Soon: hanya jika >0 jam dan ≤24 jam
-                                                if ($hoursRemaining <= 24) {
-                                                    $status='Expires Soon' ;
-                                                    $badgeClass='bg-warning-subtle text-warning' ;
-                                                    }
-                                                    } else {
-                                                    $status='Expired' ;
-                                                    $badgeClass='bg-danger-subtle text-danger' ;
-                                                    }
-                                                    } else {
-                                                    $status=ucfirst($sub->status);
-                                                    $badgeClass = 'bg-secondary-subtle text-secondary';
-                                                    }
-                                                    }
-                                                    @endphp
-                                                    <tr>
-                                                        <td class="ps-3 py-3">{{ $payment->created_at->format('d M Y') }}</td>
-                                                        <td class="py-3">{{ $payment->plan?->name ?? '-' }}</td>
-                                                        <td class="py-3">
-                                                            @if($payment->subscription)
-                                                            <small>
-                                                                {{ $loop->index === 0 
-                                                                ? $payment->subscription->start_date->format('d M Y H:i') . ' – ' . $payment->subscription->end_date->format('d M Y H:i')
-                                                                : 'Renewal on ' . $payment->created_at->format('d M Y') }}
-                                                            </small>
-                                                            @else
-                                                            <span class="text-muted">—</span>
-                                                            @endif
-                                                        </td>
-                                                        <td class="py-3 fw-medium">Rp {{ number_format($payment->amount, 0, ',', '.') }}</td>
-                                                        <td class="py-3">{{ ucfirst($payment->payment_method ?? '—') }}</td>
-                                                        <td class="py-3">
-                                                            @if($payment->status === 'success')
-                                                            <span class="badge bg-success-subtle text-success rounded-pill px-3 py-1">Paid</span>
-                                                            @else
-                                                            <span class="badge bg-warning-subtle text-warning rounded-pill px-3 py-1">Pending</span>
-                                                            @endif
-
-                                                            <span class="badge {{ $badgeClass }} rounded-pill py-1">
-                                                                {{ $status }}
-                                                            </span>
-                                                        </td>
-                                                        <td class="py-3 text-center">
-                                                            <button type="button"
-                                                                class="px-2 py-1"
-                                                                style="background-color:#FF416C; border-radius:100px; color:white; border:none;"
-                                                                title="Download Invoice"
-                                                                onclick="downloadInvoice('{{ $payment->id }}')">
-                                                                <i class="fi-rs-download"></i>
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                    @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- HELP CENTER TAB -->
-                        <div class="tab-pane fade {{ request('tab') == 'help' ? 'active show' : '' }}" id="help" role="tabpanel">
-                            <div class="card border-0 shadow-sm rounded-3">
-                                <div class="card-header bg-white border-0 py-3">
-                                    <h5 class="mb-0 fw-bold text-dark">Help & Support</h5>
-                                </div>
-                                <div class="card-body p-4">
-                                    <div class="row g-4">
-                                        <!-- CARD 1: Help Center -->
-                                        <div class="col-lg-4 col-md-6">
-                                            <a href="{{ route('help-center') }}" class="text-decoration-none">
-                                                <div class="card h-100 border-0 shadow-sm hover-card transition-all"
-                                                    style="border-top: 3px solid #FF416C;">
-                                                    <div class="card-body text-center p-4">
-                                                        <div class="bg-light-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                                                            style="width: 56px; height: 56px;">
-                                                            <i class="fi-rs-book" style="font-size: 24px; color: #FF416C;"></i>
-                                                        </div>
-                                                        <h6 class="fw-bold mb-2">Help Center</h6>
-                                                        <p class="text-muted small mb-0">
-                                                            Step-by-step guides and tutorials
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </div>
-
-                                        <!-- CARD 2: FAQs -->
-                                        <div class="col-lg-4 col-md-6">
-                                            <a href="{{ route('faq') }}" class="text-decoration-none">
-                                                <div class="card h-100 border-0 shadow-sm hover-card transition-all"
-                                                    style="border-top: 3px solid #FF416C;">
-                                                    <div class="card-body text-center p-4">
-                                                        <div class="bg-light-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                                                            style="width: 56px; height: 56px;">
-                                                            <i class="fi-rs-help" style="font-size: 24px; color: #FF416C;"></i>
-                                                        </div>
-                                                        <h6 class="fw-bold mb-2">FAQs</h6>
-                                                        <p class="text-muted small mb-0">
-                                                            Quick answers to common questions
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </div>
-
-                                        <!-- CARD 3: Contact Us -->
-                                        <div class="col-lg-4 col-md-6">
-                                            <a href="{{ route('contact') }}" class="text-decoration-none">
-                                                <div class="card h-100 border-0 shadow-sm hover-card transition-all"
-                                                    style="border-top: 3px solid #FF416C;">
-                                                    <div class="card-body text-center p-4">
-                                                        <div class="bg-light-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                                                            style="width: 56px; height: 56px;">
-                                                            <i class="fi-rs-headset" style="font-size: 24px; color: #FF416C;"></i>
-                                                        </div>
-                                                        <h6 class="fw-bold mb-2">Contact Us</h6>
-                                                        <p class="text-muted small mb-0">
-                                                            Get direct support from our team
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
                         <!-- CREATOR TAB -->
-                        <div class="tab-pane fade {{ request('tab') == 'creator' ? 'active show' : '' }}" id="creator"
+                        <!-- <div class="tab-pane fade {{ request('tab') == 'creator' ? 'active show' : '' }}" id="creator"
                             role="tabpanel">
                             <div class="card">
                                 <div class="card-header">
@@ -1893,7 +1903,7 @@
                                     @endif
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>

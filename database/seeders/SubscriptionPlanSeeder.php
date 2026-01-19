@@ -11,11 +11,12 @@ class SubscriptionPlanSeeder extends Seeder
 {
     public function run(): void
     {
-
         $baseDomain = 'https://meat-map.myr.id';
 
         $plans = [
+            // === PLAN PRODUKSI ===
             [
+                'id' => 'starter-daily-30788', // ✅ ID tetap
                 'name' => 'Starter - Daily',
                 'slug' => 'starter-daily-30788',
                 'description' => 'Perfect for trying out our platform with limited access.',
@@ -31,9 +32,10 @@ class SubscriptionPlanSeeder extends Seeder
                 'sort_order' => 1,
                 'is_active' => true,
                 'category_subscription' => 'harian',
-                'mayar_payment_link' => $baseDomain . '/pl/starter-daily-30788', // ← ganti xxx
+                'mayar_payment_link' => $baseDomain . '/pl/starter-daily-30788',
             ],
             [
+                'id' => 'menengah-weekly-62068',
                 'name' => 'Menengah - Weekly',
                 'slug' => 'menengah-weekly',
                 'description' => 'Ideal for avid travelers who want new content every month.',
@@ -54,6 +56,7 @@ class SubscriptionPlanSeeder extends Seeder
                 'mayar_payment_link' => $baseDomain . '/pl/menengah-weekly-62068',
             ],
             [
+                'id' => 'monthly-explorer-monthly-25465',
                 'name' => 'Monthly Explorer - Monthly',
                 'slug' => 'monthly-explorer-monthly-25465',
                 'description' => 'Best value for dedicated explorers. Save big with an annual plan.',
@@ -74,6 +77,7 @@ class SubscriptionPlanSeeder extends Seeder
                 'mayar_payment_link' => $baseDomain . '/pl/monthly-explorer-monthly-25465',
             ],
             [
+                'id' => 'yearly-voyager-66003',
                 'name' => 'Yearly Voyager',
                 'slug' => 'yearly-voyager-66003',
                 'description' => 'Tailored solutions for teams and travel agencies.',
@@ -93,13 +97,58 @@ class SubscriptionPlanSeeder extends Seeder
                 'category_subscription' => 'tahunan',
                 'mayar_payment_link' => $baseDomain . '/pl/yearly-voyager-66003',
             ],
+
+            // === PLAN SIMULASI (AMAN UNTUK PRODUCTION) ===
+            [
+                'id' => 'harian-untuk-simulasi', // ✅ ID tetap
+                'name' => 'Harian (Untuk Simulasi)',
+                'slug' => 'harian-untuk-simulasi',
+                'description' => 'Untuk simulasi, anda dapat subscribe paket harian ini. Dengan memilih pembayaran e-wallet -> shopeepay, lalu saat muncul qr code nya, anda klik QR CODE nya.',
+                'price' => 2000,
+                'price_description' => 'Untuk Simulasi',
+                'duration_days' => 2,
+                'features' => [
+                    'Access to 5 Free Ebooks',
+                    'Community Support',
+                ],
+                'button_text' => 'Subscribe Simulasi',
+                'is_featured' => false,
+                'sort_order' => 5, // urutan terakhir
+                'is_active' => true,
+                'category_subscription' => 'harian',
+                'mayar_payment_link' => 'https://meat-map-99805.mayar.shop/pl/harian-untuk-simulasi',
+            ],
+            [
+                'id' => 'mingguan-untuk-simulasi',
+                'name' => 'Mingguan (Untuk Simulasi)',
+                'slug' => 'mingguan-untuk-simulasi',
+                'description' => 'Untuk simulasi, anda dapat subscribe paket harian ini. Dengan memilih pembayaran e-wallet -> shopeepay, lalu saat muncul qr code nya, anda klik QR CODE nya.',
+                'price' => 10000,
+                'price_description' => 'Untuk Simulasi - Mingguan',
+                'duration_days' => 7,
+                'features' => [
+                    'Access to 5 Free Ebooks',
+                    'Community Support',
+                ],
+                'button_text' => 'Subscribe Simulasi',
+                'is_featured' => false,
+                'sort_order' => 6,
+                'is_active' => true,
+                'category_subscription' => 'mingguan',
+                'mayar_payment_link' => 'https://meat-map-99805.mayar.shop/pl/mingguan-untuk-simulasi',
+            ],
         ];
 
         foreach ($plans as $planData) {
-            $planData['id'] = Str::uuid();
-            SubscriptionPlan::create($planData);
+            // ✅ Generate UUID untuk id
+            $planData['id'] = (string) Str::uuid();
+
+            SubscriptionPlan::updateOrCreate(
+                ['slug' => $planData['slug']], // Cari berdasarkan slug
+                $planData
+            );
         }
 
-        $this->command->info('✅ Subscription Plans seeded with Mayar payment links!');
+        $this->command->info('✅ Subscription Plans seeded safely with updateOrCreate!');
     }
 }
