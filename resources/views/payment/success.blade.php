@@ -38,6 +38,17 @@
 </style>
 <div class="container py-5">
     <div class="text-center">
+        @if(session('webhookError'))
+        <div class="alert alert-danger">
+            <strong>Webhook Error:</strong> {{ session('webhookError') }}
+        </div>
+        @endif
+
+        @if($webhookError ?? null)
+        <div class="alert alert-danger">
+            <strong>Webhook Error:</strong> {{ $webhookError }}
+        </div>
+        @endif
         <div class="mb-4">
             <i class="fi-rs-check-circle text-success" style="font-size: 64px;"></i>
         </div>

@@ -97,16 +97,13 @@ class SubscriptionController extends Controller
                     'end_date' => now()->addDays($plan->duration_days),
                     'created_at' => now(),
                 ]);
-                Log::info('✅ USER BERHASIL DIJADIKAN PREMIUM', [
-                    'user_id' => $user->id,
-                    'plan_id' => $plan->id,
-                    'email' => $email
-                ]);
+                Log::info('✅ USER BERHASIL DIJADIKAN PREMIUM');
+                return response('OK', 200);
             } catch (\Exception $e) {
-                Log::error('Webhook: Gagal insert subscription', [
-                    'error' => $e->getMessage(),
-                    'user_id' => $user->id
-                ]);
+                // Simpan error ke session agar bisa ditampilkan di halaman success
+                session(['webhook_error' => $e->getMessage()]);
+                Log::error('WEBHOOK ERROR: ' . $e->getMessage());
+                return response('OK', 200); // Tetap kirim 200 ke Mayar
             }
         } else {
             Log::warning('Webhook: Plan not found', [
@@ -152,20 +149,13 @@ class SubscriptionController extends Controller
 
     public function paymentSuccess()
     {
-        // ✅ Cek apakah user masih login
         if (!auth()->check()) {
-            // Redirect ke login jika session habis
             return redirect()->route('login')->with('message', 'Please log in to access your account.');
         }
 
-        // ✅ Ambil user & force refresh relasi dari database
         $user = auth()->user();
-        $user->load([
-            'currentSubscription',
-            'subscriptions.plan'
-        ]);
+        $user->load(['currentSubscription', 'subscriptions.plan']);
 
-        // ✅ CLEAR SESSION CACHE UNTUK STATUS PREMIUM
         session()->forget('user_premium_status');
         session()->put('user_premium_status', $user->hasActiveSubscription());
 
@@ -174,9 +164,16 @@ class SubscriptionController extends Controller
             ->orderBy('name')
             ->get();
 
+        // Ambil error webhook jika ada
+        $webhookError = session('webhook_error');
+        if ($webhookError) {
+            session()->forget('webhook_error'); // Hapus setelah ditampilkan
+        }
+
         return view('payment.success', [
-            'isPremium' => $user->hasActiveSubscription(), // ✅ Gunakan $user, bukan auth()->user()
-            'citiesHeader' => $citiesHeader
+            'isPremium' => $user->hasActiveSubscription(),
+            'citiesHeader' => $citiesHeader,
+            'webhookError' => $webhookError // Kirim ke view
         ]);
     }
 
