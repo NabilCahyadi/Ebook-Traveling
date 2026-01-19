@@ -5,9 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
+use App\Models\Subscription;
 use Illuminate\Http\RedirectResponse;
 use App\Services\MayarService;
 use App\Models\SubscriptionPlan;
@@ -61,29 +60,24 @@ class SubscriptionController extends Controller
                 ->first();
 
             if (!$plan) {
-                // Fallback ke plan default
                 $plan = DB::table('subscription_plans')
                     ->where('slug', 'starter-daily-30788')
                     ->first();
             }
 
             if ($plan) {
-                // GENERATE UUID UNTUK ID
-                $subscriptionId = (string) Str::uuid();
-
-                DB::table('subscriptions')->insert([
-                    'id' => $subscriptionId, // ✅ WAJIB!
+                // ✅ GUNAKAN MODEL SUBSCRIPTION
+                Subscription::create([
                     'user_id' => $user->id,
                     'subscription_plan_id' => $plan->id,
                     'status' => 'active',
+                    'start_date' => now(),
                     'end_date' => now()->addDays($plan->duration_days),
-                    'created_at' => now(),
-                    'start_date' => now(), // ✅ Tambahkan start_date
-                    'subscription_code' => 'SUB-' . strtoupper(Str::random(8)), // ✅ subscription_code wajib
-                    'total_amount' => $plan->price, // ✅ total_amount wajib
+                    'subscription_code' => 'SUB-' . strtoupper(Str::random(8)),
+                    'total_amount' => $plan->price,
+                    'auto_renew' => false,
                 ]);
             }
-
             return response('OK', 200);
         } catch (\Exception $e) {
             // Simpan error ke session
