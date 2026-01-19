@@ -65,15 +65,15 @@ class SubscriptionController extends Controller
             return response('OK', 200);
         }
 
-        // Cari plan berdasarkan nama produk (case-insensitive)
+        // Cari plan berdasarkan nama produk (exact match)
         $plan = DB::table('subscription_plans')
-            ->whereRaw('LOWER(TRIM(name)) LIKE ?', ['%' . strtolower(trim($productName)) . '%'])
+            ->where('name', $productName)
             ->first();
 
-        // Fallback: cek berdasarkan slug juga
+        // Fallback: cek dengan TRIM jika tidak ketemu
         if (!$plan) {
             $plan = DB::table('subscription_plans')
-                ->whereRaw('LOWER(TRIM(slug)) LIKE ?', ['%' . strtolower(trim($productName)) . '%'])
+                ->whereRaw('TRIM(name) = ?', [trim($productName)])
                 ->first();
         }
 
