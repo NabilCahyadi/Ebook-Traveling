@@ -31,99 +31,49 @@ class SubscriptionController extends Controller
      */
     public function mayarCallback(Request $request)
     {
-        // === 1. Validasi Signature ===
+        // Validasi signature...
         $signature = $request->header('X-Mayar-Signature');
         $payload = $request->getContent();
         $webhookToken = config('services.mayar.webhook_token');
 
-        if (!$webhookToken) {
-            Log::error('MAYAR_WEBHOOK_TOKEN not set');
+        if (!$webhookToken || !hash_equals(hash_hmac('sha256', $payload, $webhookToken), $signature)) {
             return response('Unauthorized', 401);
         }
 
-        $expectedSignature = hash_hmac('sha256', $payload, $webhookToken);
-        if (!hash_equals($expectedSignature, $signature)) {
-            Log::warning('Invalid webhook signature');
-            return response('Unauthorized', 401);
-        }
+        $data = $request->json('data', []);
+        $event = $request->json('event', '');
 
-        // === 2. Ambil Data ===
-        $requestData = $request->all();
-        Log::info('Webhook received', $requestData);
-
-        // Cek event type
-        if (($requestData['event'] ?? '') !== 'payment.received') {
+        if ($event !== 'payment.received' || ($data['status'] ?? '') !== 'SUCCESS') {
             return response('OK', 200);
         }
 
-        $data = $requestData['data'] ?? [];
-
-        // === 3. Deteksi Status Pembayaran ===
-        $isSuccess = in_array(
-            ($data['status'] ?? ''),
-            ['SUCCESS', 'PAID', true]
-        );
-
-        $customerEmail = $data['customerEmail'] ?? null;
-        $productName = $data['productName'] ?? '';
-
-        if (!$isSuccess || !$customerEmail) {
-            Log::info('Payment not successful or no email', $data);
+        // Ambil externalId (payment_id)
+        $externalId = $data['externalId'] ?? null;
+        if (!$externalId) {
             return response('OK', 200);
         }
 
-        // === 4. Cari User ===
-        $user = DB::table('users')->where('email', $customerEmail)->first();
-        if (!$user) {
-            Log::warning('User not found for email', ['email' => $customerEmail]);
+        // Cari payment berdasarkan externalId
+        $payment = DB::table('payments')->where('id', $externalId)->first();
+        if (!$payment) {
             return response('OK', 200);
         }
 
-        // === 5. Cari Plan Berdasarkan Nama Produk ===
-        $plan = DB::table('subscription_plans')
-            ->where('name', 'LIKE', "%{$productName}%")
-            ->orWhere('slug', 'LIKE', "%{$productName}%")
-            ->first();
+        // Ambil user & plan dari payment
+        $user = DB::table('users')->where('id', $payment->user_id)->first();
+        $plan = DB::table('subscription_plans')->where('id', $payment->subscription_plan_id)->first();
 
-        // Fallback ke plan default jika tidak ketemu
-        if (!$plan) {
-            $plan = DB::table('subscription_plans')
-                ->where('slug', 'harian-untuk-simulasi')
-                ->first();
-        }
-
-        if ($plan) {
-            // Cek apakah sudah punya subscription aktif
-            $existing = DB::table('subscriptions')
-                ->where('user_id', $user->id)
-                ->where('status', 'active')
-                ->where('end_date', '>=', now())
-                ->first();
-
-            if ($existing) {
-                // Perpanjang
-                DB::table('subscriptions')
-                    ->where('id', $existing->id)
-                    ->update([
-                        'end_date' => now()->addDays($plan->duration_days),
-                        'updated_at' => now(),
-                    ]);
-            } else {
-                // Buat baru
-                DB::table('subscriptions')->insert([
-                    'user_id' => $user->id,
-                    'subscription_plan_id' => $plan->id,
-                    'status' => 'active',
-                    'end_date' => now()->addDays($plan->duration_days),
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
-
-            Log::info('User upgraded to premium', [
+        if ($user && $plan) {
+            DB::table('subscriptions')->insert([
                 'user_id' => $user->id,
-                'plan' => $plan->name
+                'subscription_plan_id' => $plan->id, // UUID langsung
+                'status' => 'active',
+                'end_date' => now()->addDays($plan->duration_days),
+                'created_at' => now(),
             ]);
+
+            // Update status payment
+            DB::table('payments')->where('id', $externalId)->update(['status' => 'success']);
         }
 
         return response('OK', 200);
@@ -134,17 +84,31 @@ class SubscriptionController extends Controller
         $user = auth()->user();
         $plan = SubscriptionPlan::where('slug', $slug)->firstOrFail();
 
-        // HANYA untuk mayar.id (live)
-        if (str_contains($plan->mayar_payment_link, 'mayar.id')) {
-            $queryParams = http_build_query([
-                'customerName' => $user->name ?? 'Customer',
-                'customerEmail' => $user->email ?? 'user@example.com',
-            ]);
-            return redirect($plan->mayar_payment_link . '?' . $queryParams);
-        }
+        // Simpan payment record
+        $paymentId = (string) Str::uuid();
+        DB::table('payments')->insert([
+            'id' => $paymentId,
+            'user_id' => $user->id,
+            'subscription_plan_id' => $plan->id, // UUID plan
+            'amount' => $plan->price,
+            'status' => 'pending',
+            'payment_method' => 'mayar',
+            'payment_code' => 'PAY-' . strtoupper(Str::random(8)),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
-        // Untuk simulasi, seharusnya tidak pernah masuk sini
-        return redirect($plan->mayar_payment_link);
+        // Kirim externalId = payment_id
+        $queryParams = http_build_query([
+            'external_id' => $paymentId,
+            'customer_name' => $user->name ?? 'Customer',
+            'customer_email' => $user->email ?? 'user@example.com',
+        ]);
+
+        $url = $plan->mayar_payment_link;
+        $url .= (str_contains($url, '?') ? '&' : '?') . $queryParams;
+
+        return redirect($url);
     }
 
     public function paymentSuccess()
