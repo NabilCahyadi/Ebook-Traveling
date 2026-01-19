@@ -31,12 +31,13 @@ class SubscriptionController extends Controller
      */
     public function mayarCallback(Request $request)
     {
-        // Validasi signature...
+        // Validasi signature
         $signature = $request->header('X-Mayar-Signature');
         $payload = $request->getContent();
         $webhookToken = config('services.mayar.webhook_token');
 
         if (!$webhookToken || !hash_equals(hash_hmac('sha256', $payload, $webhookToken), $signature)) {
+            Log::warning('Webhook: Invalid signature');
             return response('Unauthorized', 401);
         }
 
@@ -47,33 +48,71 @@ class SubscriptionController extends Controller
             return response('OK', 200);
         }
 
-        // Ambil externalId (payment_id)
-        $externalId = $data['externalId'] ?? null;
-        if (!$externalId) {
+        $email = $data['customerEmail'] ?? '';
+        $productName = $data['productName'] ?? '';
+        $amount = $data['amount'] ?? 0;
+
+        Log::info('Webhook processing', [
+            'email' => $email,
+            'product_name' => $productName,
+            'amount' => $amount
+        ]);
+
+        // Cari user
+        $user = DB::table('users')->where('email', $email)->first();
+        if (!$user) {
+            Log::warning('Webhook: User not found', ['email' => $email]);
             return response('OK', 200);
         }
 
-        // Cari payment berdasarkan externalId
-        $payment = DB::table('payments')->where('id', $externalId)->first();
-        if (!$payment) {
-            return response('OK', 200);
+        // Cari plan berdasarkan nama produk (case-insensitive)
+        $plan = DB::table('subscription_plans')
+            ->whereRaw('LOWER(TRIM(name)) LIKE ?', ['%' . strtolower(trim($productName)) . '%'])
+            ->first();
+
+        // Fallback: cek berdasarkan slug juga
+        if (!$plan) {
+            $plan = DB::table('subscription_plans')
+                ->whereRaw('LOWER(TRIM(slug)) LIKE ?', ['%' . strtolower(trim($productName)) . '%'])
+                ->first();
         }
 
-        // Ambil user & plan dari payment
-        $user = DB::table('users')->where('id', $payment->user_id)->first();
-        $plan = DB::table('subscription_plans')->where('id', $payment->subscription_plan_id)->first();
+        // Fallback akhir: pakai durasi berdasarkan amount
+        if (!$plan) {
+            if ($amount == 2000) {
+                $plan = DB::table('subscription_plans')->where('duration_days', 2)->first(); // Harian simulasi
+            } elseif ($amount == 1000) {
+                $plan = DB::table('subscription_plans')->where('duration_days', 1)->first(); // Starter daily
+            } elseif ($amount == 10000) {
+                $plan = DB::table('subscription_plans')->where('duration_days', 7)->first(); // Mingguan
+            }
+        }
 
-        if ($user && $plan) {
-            DB::table('subscriptions')->insert([
-                'user_id' => $user->id,
-                'subscription_plan_id' => $plan->id, // UUID langsung
-                'status' => 'active',
-                'end_date' => now()->addDays($plan->duration_days),
-                'created_at' => now(),
+        if ($plan) {
+            try {
+                DB::table('subscriptions')->insert([
+                    'user_id' => $user->id,
+                    'subscription_plan_id' => $plan->id,
+                    'status' => 'active',
+                    'end_date' => now()->addDays($plan->duration_days),
+                    'created_at' => now(),
+                ]);
+                Log::info('✅ USER BERHASIL DIJADIKAN PREMIUM', [
+                    'user_id' => $user->id,
+                    'plan_id' => $plan->id,
+                    'email' => $email
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Webhook: Gagal insert subscription', [
+                    'error' => $e->getMessage(),
+                    'user_id' => $user->id
+                ]);
+            }
+        } else {
+            Log::warning('Webhook: Plan not found', [
+                'product_name' => $productName,
+                'amount' => $amount
             ]);
-
-            // Update status payment
-            DB::table('payments')->where('id', $externalId)->update(['status' => 'success']);
         }
 
         return response('OK', 200);
