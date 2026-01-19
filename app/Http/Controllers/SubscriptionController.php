@@ -154,9 +154,8 @@ class SubscriptionController extends Controller
         // === 1. Validasi Signature (WAJIB) ===
         $signature = $request->header('X-Mayar-Signature');
         $payload = $request->getContent();
-
-        // Ambil webhook token dari .env
         $webhookToken = config('services.mayar.webhook_token');
+
         if (!$webhookToken) {
             Log::error('MAYAR_WEBHOOK_TOKEN not set in .env');
             return response('Unauthorized', 401);
@@ -164,10 +163,7 @@ class SubscriptionController extends Controller
 
         $expectedSignature = hash_hmac('sha256', $payload, $webhookToken);
         if (!hash_equals($expectedSignature, $signature)) {
-            Log::warning('Invalid webhook signature', [
-                'received' => $signature,
-                'expected' => $expectedSignature
-            ]);
+            Log::warning('Invalid webhook signature');
             return response('Unauthorized', 401);
         }
 
@@ -175,67 +171,41 @@ class SubscriptionController extends Controller
         $requestData = $request->all();
         Log::info('Mayar Webhook Received', $requestData);
 
-        // Deteksi format request
-        if (isset($requestData['event']) && $requestData['event'] === 'testing') {
-            // Ini hanya test webhook → respons sukses
-            return response('OK', 200);
+        // Cek event type
+        if (($requestData['event'] ?? '') !== 'payment.received') {
+            return response('OK', 200); // Abaikan event lain
         }
 
-        // Format produksi: cari externalId
-        $externalId = null;
-        $status = null;
-        $transactionId = null;
+        $data = $requestData['data'] ?? [];
+        $status = $data['status'] ?? false;
+        $customerEmail = $data['customerEmail'] ?? null;
 
-        // Coba format baru (eventType)
-        if (isset($requestData['eventType']) && $requestData['eventType'] === 'paymentReceived') {
-            $transaction = $requestData['transaction'] ?? [];
-            $externalId = $transaction['externalId'] ?? null;
-            $status = $transaction['status'] ?? null;
-            $transactionId = $transaction['id'] ?? null;
-        }
-        // Coba format lama (data)
-        elseif (isset($requestData['data'])) {
-            $data = $requestData['data'];
-            $externalId = $data['externalId'] ?? $data['invoiceNumber'] ?? null;
-            $status = strtoupper($data['status'] ?? 'failed');
-            $transactionId = $data['id'] ?? null;
-        }
+        // === 3. Proses Pembayaran Sukses ===
+        if ($status === true && $customerEmail) {
+            $user = DB::table('users')->where('email', $customerEmail)->first();
 
-        // === 3. Validasi Data Penting ===
-        if (!$externalId || !$status) {
-            Log::warning('Missing externalId or status in webhook', $requestData);
-            return response('Bad Request', 400);
-        }
+            if ($user) {
+                // Ambil plan berdasarkan nama produk atau hardcode
+                $planSlug = 'harian-untuk-simulasi'; // Sesuaikan logika
+                $plan = DB::table('subscription_plans')->where('slug', $planSlug)->first();
 
-        // === 4. Proses Pembayaran Sukses ===
-        if (in_array($status, ['PAID', 'SUCCESS', 'COMPLETED'])) {
-            // Cari payment berdasarkan externalId
-            $payment = DB::table('payments')->where('id', $externalId)->first();
+                if ($plan) {
+                    // Buat subscription
+                    DB::table('subscriptions')->insert([
+                        'user_id' => $user->id,
+                        'subscription_plan_id' => $plan->id,
+                        'status' => 'active',
+                        'end_date' => now()->addDays($plan->duration_days),
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
 
-            if ($payment) {
-                // Update status payment
-                DB::table('payments')->where('id', $externalId)->update([
-                    'status' => 'success',
-                    'gateway_transaction_id' => $transactionId,
-                    'paid_at' => now(),
-                    'updated_at' => now(),
-                ]);
-
-                // Buat subscription
-                $this->subscriptionProcessRepository->handleMayarCallbackByPayment($payment);
-
-                Log::info('Payment processed successfully', [
-                    'payment_id' => $externalId,
-                    'user_id' => $payment->user_id
-                ]);
-            } else {
-                Log::warning('Payment not found for externalId', ['externalId' => $externalId]);
+                    Log::info('User upgraded to premium', [
+                        'user_id' => $user->id,
+                        'email' => $customerEmail
+                    ]);
+                }
             }
-        } else {
-            Log::info('Payment failed or pending', [
-                'externalId' => $externalId,
-                'status' => $status
-            ]);
         }
 
         return response('OK', 200);
