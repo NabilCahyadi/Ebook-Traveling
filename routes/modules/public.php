@@ -84,5 +84,5 @@ Route::middleware(['user.session'])->group(function () {
     Route::get('/subscribe/{slug}', function ($slug) {
         $plan = SubscriptionPlan::where('slug', $slug)->firstOrFail();
         return redirect($plan->mayar_payment_link);
-    })->middleware('auth');
+    })->middleware('auth')->name('subscribe.redirect');
 });
