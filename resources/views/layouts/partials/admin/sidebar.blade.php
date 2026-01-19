@@ -53,7 +53,7 @@
         <!-- Users Management -->
         @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['users.view', 'users.create', 'users.edit', 'users.delete', 'roles.view', 'roles.create', 'roles.edit', 'roles.delete']))
         <li
-            class="menu-item {{ Request::is('admin/users*') || Request::is('admin/roles*') || Request::is('admin/role-permissions*') ? 'active' : '' }}">
+            class="menu-item {{ Request::is('admin/users*') || Request::is('admin/roles*') || Request::is('admin/role-permissions*') || Request::is('admin/user-activity-logs*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-users"></i>
                 <div data-i18n="User Management">{{ __('admin.menu.user_management') }}</div>
@@ -120,7 +120,7 @@
         <!-- Ebooks Management -->
         @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['ebooks.view', 'ebooks.create', 'ebooks.edit', 'ebooks.delete', 'ebooks.approve', 'categories.view', 'categories.create', 'categories.edit', 'categories.delete', 'cities.view', 'cities.create', 'cities.edit', 'cities.delete']))
         <li
-            class="menu-item {{ Request::is('admin/ebooks*') || Request::is('admin/categories*') || Request::is('admin/cities*') ? 'active' : '' }}">
+            class="menu-item {{ Request::is('admin/ebooks*') || Request::is('admin/categories*') || Request::is('admin/cities*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-books"></i>
                 <div data-i18n="Ebook Management">{{ __('admin.menu.ebook_management') }}</div>
@@ -217,7 +217,7 @@
         <!-- Subscription Management -->
         @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['subscription-plans.view', 'subscription-plans.create', 'subscription-plans.edit', 'subscription-plans.delete', 'subscriptions.view', 'subscriptions.create', 'subscriptions.edit', 'subscriptions.delete', 'promos.view', 'promos.create', 'promos.edit', 'promos.delete']))
         <li
-            class="menu-item {{ Request::is('admin/subscription-plans*') || Request::is('admin/manual-subscriptions*') || Request::is('admin/active-subscribers*') || Request::is('admin/subscription-history*') || Request::is('admin/promos*') ? 'active' : '' }}">
+            class="menu-item {{ Request::is('admin/subscription-plans*') || Request::is('admin/manual-subscriptions*') || Request::is('admin/active-subscribers*') || Request::is('admin/subscription-history*') || Request::is('admin/promos*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-crown"></i>
                 <div data-i18n="Subscription Management">{{ __('admin.menu.subscription_management') }}</div>
