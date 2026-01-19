@@ -608,8 +608,8 @@ $collections = collect();
                                 $lines = [];
 
                                 foreach ($words as $word) {
-                                // Jika panjang line + kata berikutnya <= 43 karakter
-                                    if (strlen($currentLine . ' ' . $word) <=43) {
+                                // Jika panjang line + kata berikutnya <= 55 karakter
+                                    if (strlen($currentLine . ' ' . $word) <=55) {
                                     $currentLine .=($currentLine ? ' ' : '' ) . $word;
                                     } else {
                                     // Simpan line saat ini dan mulai line baru
@@ -626,7 +626,7 @@ $collections = collect();
                                     }
 
                                     // Jika hanya 1 line, coba split di tengah
-                                    if (count($lines)===1 && strlen($description)> 43) {
+                                    if (count($lines)===1 && strlen($description)> 55) {
                                     $midPoint = floor(strlen($description) / 2);
                                     $spacePos = strpos($description, ' ', $midPoint);
 
