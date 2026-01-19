@@ -18,11 +18,7 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\PolicyController;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use App\Http\Controllers\ContactController as ControllersContactController;
-use App\Http\Controllers\PromoDetailController;
+use App\Models\SubscriptionPlan;
 
 
 /*
@@ -85,7 +81,8 @@ Route::middleware(['user.session'])->group(function () {
     //     ->name('api.payment.mayar-callback');
     // routes/web.php
     Route::post('/api/payment/mayar-callback', [SubscriptionController::class, 'mayarCallback']);
-    Route::get('/subscribe/{slug}', [SubscriptionController::class, 'redirectToMayar'])
-        ->name('subscribe.redirect')
-        ->middleware('auth');
+    Route::get('/subscribe/{slug}', function ($slug) {
+        $plan = SubscriptionPlan::where('slug', $slug)->firstOrFail();
+        return redirect($plan->mayar_payment_link);
+    })->middleware('auth');
 });
