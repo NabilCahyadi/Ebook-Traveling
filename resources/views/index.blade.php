@@ -468,7 +468,8 @@ $collections = collect();
     .product-img {
         position: relative;
         width: 100%;
-        padding-top: 140%; /* Rasio 5:7 (tinggi 140% dari lebar) untuk cover buku */
+        padding-top: 140%;
+        /* Rasio 5:7 (tinggi 140% dari lebar) untuk cover buku */
         overflow: hidden;
         border-radius: 15px;
         background-color: #f5f5f5;
@@ -485,8 +486,8 @@ $collections = collect();
     }
 
     /* Make columns flex to support equal height cards */
-    .product-grid-4 > [class*="col-"],
-    .scroll-wrapper > [class*="col-"] {
+    .product-grid-4>[class*="col-"],
+    .scroll-wrapper>[class*="col-"] {
         display: flex;
         flex-direction: column;
     }
@@ -598,7 +599,52 @@ $collections = collect();
                                         {{ $line }}@if(!$loop->last)<br>@endif
                                         @endforeach
                                 </h1>
-                                <p class="slider-description mb-65">{{ $slider->description }}</p>
+                                <!-- <p class="slider-description mb-65">{{ $slider->description }}</p> -->
+                                {{-- Logika untuk memecah deskripsi --}}
+                                @php
+                                $description = $slider->description;
+                                $words = explode(' ', $description);
+                                $currentLine = '';
+                                $lines = [];
+
+                                foreach ($words as $word) {
+                                // Jika panjang line + kata berikutnya <= 43 karakter
+                                    if (strlen($currentLine . ' ' . $word) <=43) {
+                                    $currentLine .=($currentLine ? ' ' : '' ) . $word;
+                                    } else {
+                                    // Simpan line saat ini dan mulai line baru
+                                    if ($currentLine) {
+                                    $lines[]=$currentLine;
+                                    }
+                                    $currentLine=$word;
+                                    }
+                                    }
+
+                                    // Tambahkan line terakhir
+                                    if ($currentLine) {
+                                    $lines[]=$currentLine;
+                                    }
+
+                                    // Jika hanya 1 line, coba split di tengah
+                                    if (count($lines)===1 && strlen($description)> 43) {
+                                    $midPoint = floor(strlen($description) / 2);
+                                    $spacePos = strpos($description, ' ', $midPoint);
+
+                                    if ($spacePos !== false) {
+                                    $lines = [
+                                    substr($description, 0, $spacePos),
+                                    substr($description, $spacePos + 1)
+                                    ];
+                                    }
+                                    }
+                                    @endphp
+
+                                    <p class="slider-description mb-65">
+                                        {{-- Tampilkan deskripsi dengan line break --}}
+                                        @foreach($lines as $line)
+                                        {{ $line }}@if(!$loop->last)<br>@endif
+                                        @endforeach
+                                    </p>
                             </div>
                         </a>
                     </div>
@@ -716,9 +762,9 @@ $collections = collect();
                                         <div class="product-img product-img-zoom">
                                             <a href="/ebooks/{{ $ebook->slug }}">
                                                 @php
-                                                    $coverImage = $ebook->external_cover_url 
-                                                        ? $ebook->external_cover_url 
-                                                        : ($ebook->cover_image_url ?? 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg');
+                                                $coverImage = $ebook->external_cover_url
+                                                ? $ebook->external_cover_url
+                                                : ($ebook->cover_image_url ?? 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg');
                                                 @endphp
                                                 <img class="default-img" src="{{ $coverImage }}" alt="{{ $ebook->title }}" />
                                             </a>
