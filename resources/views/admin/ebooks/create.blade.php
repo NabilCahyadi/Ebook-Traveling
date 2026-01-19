@@ -284,7 +284,7 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="card-title mb-3">{{ __('admin.ebooks.pdf_file') }}</h5>
-                        <div class="mb-0">
+                        <div class="mb-3">
                             <input type="file" class="form-control @error('pdf_file') is-invalid @enderror"
                                 id="pdf_file" name="pdf_file" accept=".pdf">
                             <small class="text-muted">{{ __('admin.ebooks.pdf_hint') }}</small>
@@ -302,6 +302,15 @@
                             @error('pdf_file')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                        </div>
+
+                        <!-- Total Pages (Read-only) -->
+                        <div class="mb-0">
+                            <label for="total_pages" class="form-label">{{ __('admin.ebooks.total_pages') }}</label>
+                            <input type="number" class="form-control bg-lighter" id="total_pages" 
+                                name="total_pages" value="" readonly 
+                                placeholder="{{ __('admin.ebooks.total_pages_placeholder') }}">
+                            <small class="text-muted">{{ __('admin.ebooks.total_pages_info') }}</small>
                         </div>
                     </div>
                 </div>
@@ -591,21 +600,63 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
         const pdfInput = document.getElementById('pdf_file');
+        const totalPagesInput = document.getElementById('total_pages');
+        const pdfLoadingInfo = document.getElementById('pdfLoadingInfo');
+        const pdfPageInfo = document.getElementById('pdfPageInfo');
+        const pdfPageCount = document.getElementById('pdfPageCount');
+
         pdfInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
-            if (!file) return;
+            if (!file) {
+                totalPagesInput.value = '';
+                pdfPageInfo.style.display = 'none';
+                return;
+            }
 
             if (file.type !== 'application/pdf') {
                 alert('File harus berformat PDF');
                 pdfInput.value = '';
+                totalPagesInput.value = '';
+                pdfPageInfo.style.display = 'none';
                 return;
             }
 
             if (file.size > 10 * 1024 * 1024) {
                 alert('Ukuran file maksimal 10MB');
                 pdfInput.value = '';
+                totalPagesInput.value = '';
+                pdfPageInfo.style.display = 'none';
                 return;
             }
+
+            // Show loading indicator
+            pdfLoadingInfo.style.display = 'block';
+            pdfPageInfo.style.display = 'none';
+
+            // Read PDF page count
+            const fileReader = new FileReader();
+            fileReader.onload = function() {
+                const typedArray = new Uint8Array(this.result);
+                
+                pdfjsLib.getDocument(typedArray).promise.then(function(pdf) {
+                    const numPages = pdf.numPages;
+                    
+                    // Update total pages field
+                    totalPagesInput.value = numPages;
+                    
+                    // Show success message
+                    pdfLoadingInfo.style.display = 'none';
+                    pdfPageCount.textContent = numPages;
+                    pdfPageInfo.style.display = 'block';
+                }).catch(function(error) {
+                    console.error('Error reading PDF:', error);
+                    pdfLoadingInfo.style.display = 'none';
+                    alert('Gagal membaca PDF. Pastikan file valid.');
+                    totalPagesInput.value = '';
+                });
+            };
+            
+            fileReader.readAsArrayBuffer(file);
         });
 
         

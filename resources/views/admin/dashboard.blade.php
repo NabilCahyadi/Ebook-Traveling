@@ -10,7 +10,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="avatar avatar-xl me-4">
-                            <span class="avatar-initial rounded-circle bg-info">
+                            <span class="avatar-initial rounded-circle bg-label-secondary">
                                 {{ substr(auth('admin')->user()->name ?? 'A', 0, 1) }}
                             </span>
                         </div>

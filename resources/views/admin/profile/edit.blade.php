@@ -25,9 +25,9 @@
                             <div class="d-flex align-items-start align-items-sm-center gap-4 mb-4">
                                 @if($admin->avatar)
                                     <img src="{{ asset('storage/' . $admin->avatar) }}"
-                                        alt="user-avatar" class="d-block w-px-100 h-px-100 rounded" id="uploadedAvatar" />
+                                        alt="user-avatar" class="d-block w-px-100 h-px-100 rounded-circle" id="uploadedAvatar" />
                                 @else
-                                    <div class="d-block w-px-100 h-px-100 rounded bg-label-primary d-flex align-items-center justify-content-center" id="uploadedAvatar">
+                                    <div class="d-block w-px-100 h-px-100 rounded-circle bg-label-secondary d-flex align-items-center justify-content-center" id="uploadedAvatar">
                                         <span style="font-size: 2rem; font-weight: 600;">{{ getInitials($admin->name) }}</span>
                                     </div>
                                 @endif
@@ -196,7 +196,7 @@
                             const newImg = document.createElement('img');
                             newImg.src = e.target.result;
                             newImg.alt = 'user-avatar';
-                            newImg.className = 'd-block w-px-100 h-px-100 rounded';
+                            newImg.className = 'd-block w-px-100 h-px-100 rounded-circle';
                             newImg.id = 'uploadedAvatar';
                             uploadedAvatar.replaceWith(newImg);
                         }

@@ -305,6 +305,95 @@
     <!-- Main JS -->
     <script src="{{ url('assets/admin/js/main.js') }}"></script>
 
+    <!-- Fix Menu Dropdown - Keep Open & Remember State -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const MENU_STATE_KEY = 'adminMenuState';
+            let menuInstance = null;
+
+            // Wait for menu instance to be ready
+            setTimeout(function() {
+                const layoutMenu = document.getElementById('layout-menu');
+                if (layoutMenu && layoutMenu.menuInstance) {
+                    menuInstance = layoutMenu.menuInstance;
+                }
+
+                // Mark server-opened menus (those with 'active' class on page load)
+                document.querySelectorAll('.menu-item.active.open').forEach(function(item) {
+                    item.setAttribute('data-server-open', 'true');
+                });
+
+                // Restore user-opened menus
+                restoreMenuState();
+
+                // Listen to menu toggle events
+                document.querySelectorAll('.menu-toggle').forEach(function(toggle) {
+                    toggle.addEventListener('click', function(e) {
+                        const menuItem = this.closest('.menu-item');
+                        if (menuItem && !menuItem.getAttribute('data-server-open')) {
+                            // Mark as manually toggled
+                            menuItem.setAttribute('data-manual-toggle', 'true');
+                        }
+                        
+                        setTimeout(saveMenuState, 400);
+                    });
+                });
+
+                // Save before leaving page
+                window.addEventListener('beforeunload', saveMenuState);
+            }, 300);
+
+            // Save state of manually opened menus only
+            function saveMenuState() {
+                const openMenus = [];
+                document.querySelectorAll('.menu-item.open').forEach(function(item) {
+                    // Only save if manually toggled and not server-opened
+                    if (item.getAttribute('data-manual-toggle') && !item.getAttribute('data-server-open')) {
+                        const link = item.querySelector('.menu-link');
+                        if (link) {
+                            const menuId = link.textContent.trim();
+                            openMenus.push(menuId);
+                        }
+                    }
+                });
+                localStorage.setItem(MENU_STATE_KEY, JSON.stringify(openMenus));
+            }
+
+            // Restore manually opened menus
+            function restoreMenuState() {
+                try {
+                    const savedState = localStorage.getItem(MENU_STATE_KEY);
+                    if (savedState) {
+                        const openMenus = JSON.parse(savedState);
+                        
+                        openMenus.forEach(function(menuId) {
+                            document.querySelectorAll('.menu-link').forEach(function(link) {
+                                if (link.textContent.trim() === menuId) {
+                                    const menuItem = link.closest('.menu-item');
+                                    // Only restore if not already managed by server
+                                    if (menuItem && !menuItem.getAttribute('data-server-open') && !menuItem.classList.contains('active')) {
+                                        if (menuInstance) {
+                                            menuInstance.open(menuItem, false);
+                                        } else {
+                                            menuItem.classList.add('open');
+                                            const menuSub = menuItem.querySelector('.menu-sub');
+                                            if (menuSub) {
+                                                menuSub.style.display = 'block';
+                                            }
+                                        }
+                                        menuItem.setAttribute('data-manual-toggle', 'true');
+                                    }
+                                }
+                            });
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error restoring menu state:', e);
+                }
+            }
+        });
+    </script>
+
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

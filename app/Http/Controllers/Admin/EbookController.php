@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use Smalot\PdfParser\Parser as PdfParser;
 
 class EbookController extends Controller
 {
@@ -144,7 +145,14 @@ class EbookController extends Controller
 
             // Handle PDF file upload
             if ($request->hasFile('pdf_file')) {
-                $validated['pdf_file'] = $this->savePdfFile($request->file('pdf_file'));
+                $pdfPath = $this->savePdfFile($request->file('pdf_file'));
+                $validated['pdf_file'] = $pdfPath;
+                
+                // Auto detect total pages from PDF
+                $totalPages = $this->getPdfPageCount($pdfPath);
+                if ($totalPages !== null) {
+                    $validated['total_pages'] = $totalPages;
+                }
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Ebook Validation Error:', [
@@ -314,6 +322,40 @@ class EbookController extends Controller
     }
 
     /**
+     * Get total pages from PDF file
+     */
+    private function getPdfPageCount($pdfPath)
+    {
+        try {
+            // Get full path to PDF file
+            $fullPath = storage_path('app/public/' . $pdfPath);
+            
+            if (!file_exists($fullPath)) {
+                Log::warning('PDF file not found for page count', ['path' => $fullPath]);
+                return null;
+            }
+
+            // Parse PDF and get page count
+            $parser = new PdfParser();
+            $pdf = $parser->parseFile($fullPath);
+            $pages = count($pdf->getPages());
+            
+            Log::info('PDF page count detected', [
+                'path' => $pdfPath,
+                'total_pages' => $pages
+            ]);
+            
+            return $pages;
+        } catch (\Exception $e) {
+            Log::error('Error reading PDF page count', [
+                'path' => $pdfPath,
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
+    }
+
+    /**
      * Display the specified ebook.
      */
     public function show($id)
@@ -385,7 +427,14 @@ class EbookController extends Controller
                 if ($ebook->pdf_file && Storage::disk('public')->exists($ebook->pdf_file)) {
                     Storage::disk('public')->delete($ebook->pdf_file);
                 }
-                $validated['pdf_file'] = $this->savePdfFile($request->file('pdf_file'));
+                $pdfPath = $this->savePdfFile($request->file('pdf_file'));
+                $validated['pdf_file'] = $pdfPath;
+                
+                // Auto detect total pages from PDF
+                $totalPages = $this->getPdfPageCount($pdfPath);
+                if ($totalPages !== null) {
+                    $validated['total_pages'] = $totalPages;
+                }
             }
 
             $this->ebookService->updateEbook($id, $validated);

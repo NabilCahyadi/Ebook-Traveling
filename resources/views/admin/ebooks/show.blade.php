@@ -188,6 +188,18 @@
                             </td>
                         </tr>
                         <tr>
+                            <td class="fw-semibold">Total Pages (PDF)</td>
+                            <td>
+                                @if($ebook->total_pages)
+                                    <span class="badge bg-label-success">
+                                        <i class="bx bx-file-blank me-1"></i>{{ $ebook->total_pages }} halaman
+                                    </span>
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
                             <td class="fw-semibold">Page Count</td>
                             <td>
                                 <i class="bx bx-file me-1"></i>{{ $ebook->page_count ?? '-' }} pages
