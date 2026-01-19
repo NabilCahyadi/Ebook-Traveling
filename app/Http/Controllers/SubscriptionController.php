@@ -31,88 +31,65 @@ class SubscriptionController extends Controller
      */
     public function mayarCallback(Request $request)
     {
-        // Validasi signature
-        $signature = $request->header('X-Mayar-Signature');
-        $payload = $request->getContent();
-        $webhookToken = config('services.mayar.webhook_token');
+        try {
+            // Validasi signature...
+            $signature = $request->header('X-Mayar-Signature');
+            $payload = $request->getContent();
+            $webhookToken = config('services.mayar.webhook_token');
 
-        if (!$webhookToken || !hash_equals(hash_hmac('sha256', $payload, $webhookToken), $signature)) {
-            Log::warning('Webhook: Invalid signature');
-            return response('Unauthorized', 401);
-        }
-
-        $data = $request->json('data', []);
-        $event = $request->json('event', '');
-
-        if ($event !== 'payment.received' || ($data['status'] ?? '') !== 'SUCCESS') {
-            return response('OK', 200);
-        }
-
-        $email = $data['customerEmail'] ?? '';
-        $productName = $data['productName'] ?? '';
-        $amount = $data['amount'] ?? 0;
-
-        Log::info('Webhook processing', [
-            'email' => $email,
-            'product_name' => $productName,
-            'amount' => $amount
-        ]);
-
-        // Cari user
-        $user = DB::table('users')->where('email', $email)->first();
-        if (!$user) {
-            Log::warning('Webhook: User not found', ['email' => $email]);
-            return response('OK', 200);
-        }
-
-        // Cari plan berdasarkan nama produk (exact match)
-        $plan = DB::table('subscription_plans')
-            ->where('name', $productName)
-            ->first();
-
-        // Fallback: cek dengan TRIM jika tidak ketemu
-        if (!$plan) {
-            $plan = DB::table('subscription_plans')
-                ->whereRaw('TRIM(name) = ?', [trim($productName)])
-                ->first();
-        }
-
-        // Fallback akhir: pakai durasi berdasarkan amount
-        if (!$plan) {
-            if ($amount == 2000) {
-                $plan = DB::table('subscription_plans')->where('duration_days', 2)->first(); // Harian simulasi
-            } elseif ($amount == 1000) {
-                $plan = DB::table('subscription_plans')->where('duration_days', 1)->first(); // Starter daily
-            } elseif ($amount == 10000) {
-                $plan = DB::table('subscription_plans')->where('duration_days', 7)->first(); // Mingguan
+            if (!$webhookToken || !hash_equals(hash_hmac('sha256', $payload, $webhookToken), $signature)) {
+                return response('Unauthorized', 401);
             }
-        }
 
-        if ($plan) {
-            try {
+            $data = $request->json('data', []);
+            $event = $request->json('event', '');
+
+            if ($event !== 'payment.received' || ($data['status'] ?? '') !== 'SUCCESS') {
+                return response('OK', 200);
+            }
+
+            $email = $data['customerEmail'] ?? '';
+            $user = DB::table('users')->where('email', $email)->first();
+
+            if (!$user) {
+                return response('OK', 200);
+            }
+
+            // Cari plan
+            $plan = DB::table('subscription_plans')
+                ->where('name', $data['productName'] ?? '')
+                ->first();
+
+            if (!$plan) {
+                // Fallback ke plan default
+                $plan = DB::table('subscription_plans')
+                    ->where('slug', 'starter-daily-30788')
+                    ->first();
+            }
+
+            if ($plan) {
+                // GENERATE UUID UNTUK ID
+                $subscriptionId = (string) Str::uuid();
+
                 DB::table('subscriptions')->insert([
+                    'id' => $subscriptionId, // ✅ WAJIB!
                     'user_id' => $user->id,
                     'subscription_plan_id' => $plan->id,
                     'status' => 'active',
                     'end_date' => now()->addDays($plan->duration_days),
                     'created_at' => now(),
+                    'start_date' => now(), // ✅ Tambahkan start_date
+                    'subscription_code' => 'SUB-' . strtoupper(Str::random(8)), // ✅ subscription_code wajib
+                    'total_amount' => $plan->price, // ✅ total_amount wajib
                 ]);
-                Log::info('✅ USER BERHASIL DIJADIKAN PREMIUM');
-                return response('OK', 200);
-            } catch (\Exception $e) {
-                // Simpan error ke session agar bisa ditampilkan di halaman success
-                session(['webhook_error' => $e->getMessage()]);
-                Log::error('WEBHOOK ERROR: ' . $e->getMessage());
-                return response('OK', 200); // Tetap kirim 200 ke Mayar
             }
-        } else {
-            Log::warning('Webhook: Plan not found', [
-                'product_name' => $productName,
-                'amount' => $amount
-            ]);
-        }
 
-        return response('OK', 200);
+            return response('OK', 200);
+        } catch (\Exception $e) {
+            // Simpan error ke session
+            session(['webhook_error' => $e->getMessage()]);
+            return response('OK', 200);
+        }
     }
 
     public function redirectToPaymentLink(string $slug): RedirectResponse
