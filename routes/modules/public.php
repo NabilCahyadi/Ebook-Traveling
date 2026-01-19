@@ -81,8 +81,7 @@ Route::middleware(['user.session'])->group(function () {
     //     ->name('api.payment.mayar-callback');
     // routes/web.php
     Route::post('/api/payment/mayar-callback', [SubscriptionController::class, 'mayarCallback']);
-    Route::get('/subscribe/{slug}', function ($slug) {
-        $plan = SubscriptionPlan::where('slug', $slug)->firstOrFail();
-        return redirect($plan->mayar_payment_link);
-    })->middleware('auth')->name('subscribe.redirect');
+    Route::get('/subscribe/{slug}', [SubscriptionController::class, 'redirectToPaymentLink'])
+        ->middleware('auth')
+        ->name('subscribe.redirect');
 });

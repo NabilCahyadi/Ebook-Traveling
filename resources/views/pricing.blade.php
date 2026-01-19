@@ -550,12 +550,21 @@
                                 <span class="text-muted small d-block text-center py-2">Upgrade only</span>
                                 @endif
                                 @else
-                                <!-- LANGGANAN BARU: Pakai Mayar asli -->
-                                <a href="{{ route('subscribe.redirect', $plan->slug) }}"
-                                    class="pricing-button pricing-button--primary w-100 text-white text-center"
-                                    style="text-decoration: none; color: inherit;">
-                                    {{ $plan->button_text ?? 'Subscribe Now' }}
-                                </a>
+                                    @if(str_contains($plan->mayar_payment_link, 'mayar.shop'))
+                                        {{-- SIMULASI: pakai link langsung, isi manual saat testing --}}
+                                        <a href="{{ $plan->mayar_payment_link }}"
+                                            class="pricing-button pricing-button--primary w-100 text-white text-center"
+                                            target="_blank">
+                                            {{ $plan->button_text }}
+                                        </a>
+                                    @else
+                                    {{-- LIVE: redirect via controller agar kirim data user --}}
+                                        <a href="{{ route('subscribe.redirect', $plan->slug) }}"
+                                            class="pricing-button pricing-button--primary w-100 text-white text-center"
+                                            style="text-decoration: none; color: inherit;">
+                                            {{ $plan->button_text }}
+                                        </a>
+                                    @endif
                                 @endif
 
                                 <!-- WhatsApp (versi kamu: dengan data user lengkap) -->
