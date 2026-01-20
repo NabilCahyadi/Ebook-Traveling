@@ -1,74 +1,80 @@
 @extends('layouts.admin')
 
-@section('title', 'Manajemen Admin')
+@section('title', __('admin.admins.title'))
 
 @section('content')
 
     <!-- Success/Error Messages -->
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Berhasil!</strong> {{ session('success') }}
+            <strong>{{ __('admin.messages.success_title') }}</strong> {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
 
     @if (session('error'))
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Error!</strong> {{ session('error') }}
+            <strong>{{ __('admin.messages.error_title') }}</strong> {{ session('error') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
 
     <!-- Page Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
         <div>
             <h4 class="fw-bold py-3 mb-2">
-                <span class="text-muted fw-light">Pengaturan /</span> Manajemen Admin
+                <span class="text-muted fw-light">{{ __('admin.menu.settings') }} /</span> {{ __('admin.admins.title') }}
             </h4>
         </div>
         <div>
             <a href="{{ route('admin.admins.create') }}" class="btn btn-primary">
-                <i class="ti ti-plus me-1"></i> Tambah Admin
+                <i class="ti ti-plus me-1"></i> {{ __('admin.admins.add_admin') }}
             </a>
         </div>
     </div>
 
     <!-- Admins Table -->
     <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Daftar Admin</h5>
-            <div class="text-muted">Total: {{ $admins->total() }} Admin</div>
+        <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+            <h5 class="mb-0">{{ __('admin.admins.list') }}</h5>
+            <div class="d-flex gap-2 align-items-center">
+                <a href="{{ route('admin.admins.export', request()->all()) }}" class="btn btn-success btn-sm">
+                    <i class="ti ti-download me-1"></i>
+                    {{ __('admin.common.export') }}
+                </a>
+                <div class="text-muted">{{ __('admin.admins.total_admins', ['count' => $admins->total()]) }}</div>
+            </div>
         </div>
 
         <!-- Search Filter -->
         <div class="card-body border-bottom">
             <form action="{{ route('admin.admins.index') }}" method="GET" class="row g-3">
-                <div class="col-md-7">
+                <div class="col-12 col-md-6 col-lg-7">
                     <div class="input-group">
                         <span class="input-group-text">
                             <i class="ti ti-search"></i>
                         </span>
                         <input type="text" class="form-control" name="search" value="{{ $search ?? '' }}"
-                            placeholder="Cari nama, email, atau telepon...">
+                            placeholder="{{ __('admin.admins.search_placeholder') }}">
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-12 col-sm-6 col-md-3 col-lg-3">
                     <select name="type" class="form-select">
-                        <option value="">Semua Tipe</option>
-                        <option value="admin" {{ request('type') === 'admin' ? 'selected' : '' }}>Admin</option>
-                        <option value="superadmin" {{ request('type') === 'superadmin' ? 'selected' : '' }}>Super Admin</option>
+                        <option value="">{{ __('admin.admins.all_types') }}</option>
+                        <option value="admin" {{ request('type') === 'admin' ? 'selected' : '' }}>{{ __('admin.admins.admin') }}</option>
+                        <option value="superadmin" {{ request('type') === 'superadmin' ? 'selected' : '' }}>{{ __('admin.admins.super_admin') }}</option>
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div class="col-12 col-sm-6 col-md-3 col-lg-2">
                     <button type="submit" class="btn btn-primary w-100">
-                        <i class="ti ti-search me-1"></i> Cari
+                        <i class="ti ti-search me-1"></i> {{ __('admin.common.search') }}
                     </button>
                 </div>
                 @if ((isset($search) && $search) || (isset($type) && $type))
                     <div class="col-12">
                         <a href="{{ route('admin.admins.index') }}"
                             class="btn btn-sm btn-outline-secondary">
-                            <i class="ti ti-x me-1"></i> Hapus Filter
+                            <i class="ti ti-x me-1"></i> {{ __('admin.common.clear_filters') }}
                         </a>
                     </div>
                 @endif
@@ -81,13 +87,13 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>Nama</th>
-                                <th>Email</th>
-                                <th>Telepon</th>
-                                <th>Tipe</th>
-                                <th>Status</th>
-                                <th>Login Terakhir</th>
-                                <th class="text-center">Aksi</th>
+                                <th>{{ __('admin.admins.name') }}</th>
+                                <th class="d-none d-md-table-cell">{{ __('admin.admins.email') }}</th>
+                                <th class="d-none d-lg-table-cell">{{ __('admin.admins.phone') }}</th>
+                                <th>{{ __('admin.admins.type') }}</th>
+                                <th class="d-none d-sm-table-cell">{{ __('admin.admins.status') }}</th>
+                                <th class="d-none d-lg-table-cell">{{ __('admin.admins.last_login') }}</th>
+                                <th class="text-center">{{ __('admin.common.actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -107,34 +113,35 @@
                                             @endif
                                             <div>
                                                 <strong>{{ $admin->name }}</strong>
+                                                <div class="d-md-none small text-muted">{{ $admin->email }}</div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>{{ $admin->email }}</td>
-                                    <td>{{ $admin->phone ?? '-' }}</td>
+                                    <td class="d-none d-md-table-cell">{{ $admin->email }}</td>
+                                    <td class="d-none d-lg-table-cell">{{ $admin->phone ?? '-' }}</td>
                                     <td>
                                         @if ($admin->type === 'superadmin')
                                             <span class="badge bg-label-danger">
-                                                <i class="ti ti-crown me-1"></i> Super Admin
+                                                <i class="ti ti-crown me-1 d-none d-sm-inline"></i> {{ __('admin.admins.super_admin') }}
                                             </span>
                                         @else
                                             <span class="badge bg-label-danger">
-                                                <i class="ti ti-user me-1"></i> Admin
+                                                <i class="ti ti-user me-1 d-none d-sm-inline"></i> {{ __('admin.admins.admin') }}
                                             </span>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="d-none d-sm-table-cell">
                                         @if ($admin->status === 'active')
-                                            <span class="badge bg-label-success">Aktif</span>
+                                            <span class="badge bg-label-success">{{ __('admin.admins.active') }}</span>
                                         @else
-                                            <span class="badge bg-label-secondary">Tidak Aktif</span>
+                                            <span class="badge bg-label-secondary">{{ __('admin.admins.inactive') }}</span>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="d-none d-lg-table-cell">
                                         @if ($admin->last_login_at)
                                             <small>{{ $admin->last_login_at->diffForHumans() }}</small>
                                         @else
-                                            <small class="text-muted">Belum pernah login</small>
+                                            <small class="text-muted">{{ __('admin.admins.never_logged_in') }}</small>
                                         @endif
                                     </td>
                                     <td class="text-center">
@@ -145,24 +152,24 @@
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-end">
                                                 <a class="dropdown-item" href="{{ route('admin.admins.show', $admin->id) }}">
-                                                    <i class="ti ti-eye me-2"></i> Detail
+                                                    <i class="ti ti-eye me-2"></i> {{ __('admin.common.detail') }}
                                                 </a>
                                                 <a class="dropdown-item" href="{{ route('admin.admins.edit', $admin->id) }}">
-                                                    <i class="ti ti-edit me-2"></i> Edit
+                                                    <i class="ti ti-edit me-2"></i> {{ __('admin.common.edit') }}
                                                 </a>
                                                 @if ($admin->type !== 'superadmin')
                                                     <a class="dropdown-item" href="{{ route('admin.admins.permissions.edit', $admin->id) }}">
-                                                        <i class="ti ti-shield-lock me-2"></i> Kelola Permission
+                                                        <i class="ti ti-shield-lock me-2"></i> {{ __('admin.admins.manage_permissions') }}
                                                     </a>
                                                 @endif
                                                 @if (auth('admin')->id() !== $admin->id)
                                                     <div class="dropdown-divider"></div>
                                                     <form action="{{ route('admin.admins.destroy', $admin->id) }}" method="POST"
-                                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus admin ini?')">
+                                                        onsubmit="return confirm('{{ __('admin.admins.confirm_delete') }}')">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="dropdown-item text-danger">
-                                                            <i class="ti ti-trash me-2"></i> Hapus
+                                                            <i class="ti ti-trash me-2"></i> {{ __('admin.common.delete') }}
                                                         </button>
                                                     </form>
                                                 @endif
@@ -184,12 +191,12 @@
                     <div class="mb-3">
                         <i class="ti ti-users ti-lg text-muted"></i>
                     </div>
-                    <h5 class="text-muted">Tidak ada admin ditemukan</h5>
+                    <h5 class="text-muted">{{ __('admin.admins.no_admins_found') }}</h5>
                     <p class="text-muted">
                         @if (isset($search) || isset($type))
-                            Coba ubah filter pencarian Anda.
+                            {{ __('admin.admins.try_adjusting_filters') }}
                         @else
-                            Belum ada admin yang terdaftar.
+                            {{ __('admin.admins.no_admins_yet') }}
                         @endif
                     </p>
                 </div>

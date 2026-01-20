@@ -6,8 +6,8 @@
     <meta charset="utf-8" />
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>Admin Login - MeatMap</title>
-    <meta name="description" content="Admin Login" />
+    <title>Forgot Password - Admin MeatMap</title>
+    <meta name="description" content="Admin Forgot Password" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ asset('images/only-logoo.png') }}" />
@@ -44,6 +44,34 @@
     <script src="{{ asset('assets/admin/vendor/js/helpers.js') }}"></script>
     <script src="{{ asset('assets/admin/vendor/js/template-customizer.js') }}"></script>
     <script src="{{ asset('assets/admin/js/config.js') }}"></script>
+    
+    <style>
+        :root {
+            --bs-primary: #ff4c61 !important;
+            --bs-primary-rgb: 255, 76, 97 !important;
+        }
+        
+        .btn-primary {
+            background-color: #ff4c61 !important;
+            border-color: #ff4c61 !important;
+        }
+        
+        .btn-primary:hover,
+        .btn-primary:focus,
+        .btn-primary:active {
+            background-color: #e6405a !important;
+            border-color: #e6405a !important;
+        }
+        
+        .text-primary,
+        a {
+            color: #ff4c61 !important;
+        }
+        
+        a:hover {
+            color: #e6405a !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -51,7 +79,7 @@
     <div class="container-xxl">
         <div class="authentication-wrapper authentication-basic container-p-y">
             <div class="authentication-inner py-4">
-                <!-- Login Card -->
+                <!-- Forgot Password Card -->
                 <div class="card">
                     <div class="card-body">
                         <!-- Logo -->
@@ -62,8 +90,8 @@
                         </div>
                         <!-- /Logo -->
 
-                        <h4 class="mb-1 pt-2">Welcome Admin!</h4>
-                        <p class="mb-4">Please sign-in to your account</p>
+                        <h4 class="mb-1">Lupa Password? 🔒</h4>
+                        <p class="mb-4">Masukkan email admin Anda dan kami akan mengirimkan kode verifikasi untuk reset password</p>
 
                         @if (session('success'))
                             <div class="alert alert-success alert-dismissible" role="alert">
@@ -81,61 +109,36 @@
                             </div>
                         @endif
 
-                        <form id="formAuthentication" class="mb-3" action="{{ route('admin.login.post') }}"
+                        <form id="formForgotPassword" class="mb-3" action="{{ route('admin.password.send-code') }}"
                             method="POST">
                             @csrf
                             <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
+                                <label for="email" class="form-label">Email Admin</label>
                                 <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                    id="email" name="email" placeholder="Enter your email"
+                                    id="email" name="email" placeholder="Masukkan email admin Anda"
                                     value="{{ old('email') }}" autofocus required />
                                 @error('email')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
-                            <div class="mb-3 form-password-toggle">
-                                <div class="d-flex justify-content-between">
-                                    <label class="form-label" for="password">Password</label>
-                                    <a href="{{ route('admin.password.request') }}">
-                                        <small>Lupa Password?</small>
-                                    </a>
-                                </div>
-                                <div class="input-group input-group-merge">
-                                    <input type="password"
-                                        class="form-control @error('password') is-invalid @enderror" id="password"
-                                        name="password"
-                                        placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                                        aria-describedby="password" required />
-                                    <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
-                                    @error('password')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <!-- <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="remember"
-                                        name="remember" />
-                                    <label class="form-check-label" for="remember"> Remember Me </label>
-                                </div> -->
-                            </div>
-
-                            <div class="mb-3">
-                                <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
-                            </div>
+                            <button class="btn btn-primary d-grid w-100" type="submit">
+                                <span class="d-flex align-items-center justify-content-center">
+                                    <i class="ti ti-mail me-2"></i>
+                                    <span>Kirim Kode Verifikasi</span>
+                                </span>
+                            </button>
                         </form>
 
-                        <p class="text-center">
-                            <span>Back to </span>
-                            <a href="/">
-                                <span>Homepage</span>
+                        <div class="text-center">
+                            <a href="{{ route('admin.login') }}" class="d-flex align-items-center justify-content-center">
+                                <i class="ti ti-chevron-left scaleX-n1-rtl me-1"></i>
+                                Kembali ke login
                             </a>
-                        </p>
+                        </div>
                     </div>
                 </div>
-                <!-- /Login Card -->
+                <!-- /Forgot Password Card -->
             </div>
         </div>
     </div>

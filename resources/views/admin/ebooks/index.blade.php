@@ -15,11 +15,11 @@
         }
     </style>
     <div class="container-xxl flex-grow-1 container-p-y">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
             <h4 class="fw-bold py-3 mb-0">
-                <span class="text-muted fw-light">Admin /</span> {{ __('admin.menu.ebooks') }}
+                <span class="text-muted fw-light">{{ __('admin.menu.admin') }} /</span> {{ __('admin.menu.ebooks') }}
             </h4>
-            <div class="d-flex gap-2">
+            <div class="d-flex flex-wrap gap-2">
                 <!-- Toggle Enable Download -->
                 @php
                     $downloadEnabled = \App\Models\SystemSetting::get('enable_ebook_download', '1');
@@ -46,17 +46,23 @@
 
         <div class="card">
             <div class="card-header">
-                <div class="row align-items-center">
-                    <div class="col-md-3">
+                <div class="row align-items-center g-3">
+                    <div class="col-12 col-md-3">
                         <h5 class="mb-0">{{ __('admin.ebooks.all_ebooks') }}</h5>
                     </div>
-                    <div class="col-md-9">
+                    <div class="col-12 col-md-9">
                         <div class="d-flex gap-2 justify-content-end align-items-center flex-wrap">
+                            <!-- Export Button -->
+                            <a href="{{ route('admin.ebooks.export', request()->all()) }}" class="btn btn-success btn-sm">
+                                <i class="ti ti-download me-1"></i>
+                                {{ __('admin.common.export') }}
+                            </a>
+                            
                             <!-- Filters Group -->
                             <div class="d-flex gap-2 flex-wrap">
                                 <!-- Filter Category -->
-                                <select class="form-select form-select-sm" id="filterCategory" onchange="applyFilters()" style="width: 150px;">
-                                    <option value="">All Categories</option>
+                                <select class="form-select form-select-sm" id="filterCategory" onchange="applyFilters()" style="min-width: 120px; max-width: 150px;">
+                                    <option value="">{{ __('admin.collections.all_categories') }}</option>
                                     @foreach($categories as $category)
                                         <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
                                             {{ $category->name }}
@@ -65,9 +71,9 @@
                                 </select>
 
                                 <!-- Filter City -->
-                                <select class="form-select form-select-sm" id="filterCity" onchange="applyFilters()" style="width: 140px;">
-                                    <option value="">All Cities</option>
-                                    <option value="null" {{ request('city_id') == 'null' ? 'selected' : '' }}>No City</option>
+                                <select class="form-select form-select-sm" id="filterCity" onchange="applyFilters()" style="min-width: 100px; max-width: 140px;">
+                                    <option value="">{{ __('admin.ebooks.all_cities') }}</option>
+                                    <option value="null" {{ request('city_id') == 'null' ? 'selected' : '' }}>{{ __('admin.ebooks.no_city') }}</option>
                                     @foreach($cities as $city)
                                         <option value="{{ $city->id }}" {{ request('city_id') == $city->id ? 'selected' : '' }}>
                                             {{ $city->name }}
@@ -83,22 +89,22 @@
                                 </select>
 
                                 <!-- Sort By -->
-                                <select class="form-select form-select-sm" id="sortBy" onchange="applySorting()" style="width: 160px;">
+                                <select class="form-select form-select-sm" id="sortBy" onchange="applySorting()" style="min-width: 120px; max-width: 160px;">
                                     <option value="created_at_desc"
                                         {{ request('sort_by') == 'created_at' && request('sort_order') == 'desc' ? 'selected' : '' }}>
-                                        Terbaru</option>
+                                        {{ __('admin.ebooks.sort_newest') }}</option>
                                     <option value="view_count_desc"
                                         {{ request('sort_by') == 'view_count' && request('sort_order') == 'desc' ? 'selected' : '' }}>
-                                        Views Terbanyak</option>
+                                        {{ __('admin.ebooks.sort_views_most') }}</option>
                                     <option value="view_count_asc"
                                         {{ request('sort_by') == 'view_count' && request('sort_order') == 'asc' ? 'selected' : '' }}>
-                                        Views Tersedikit</option>
+                                        {{ __('admin.ebooks.sort_views_least') }}</option>
                                     <option value="page_count_desc"
                                         {{ request('sort_by') == 'page_count' && request('sort_order') == 'desc' ? 'selected' : '' }}>
-                                        Pages Terbanyak</option>
+                                        {{ __('admin.ebooks.sort_pages_most') }}</option>
                                     <option value="page_count_asc"
                                         {{ request('sort_by') == 'page_count' && request('sort_order') == 'asc' ? 'selected' : '' }}>
-                                        Pages Tersedikit</option>
+                                        {{ __('admin.ebooks.sort_pages_least') }}</option>
                                 </select>
                             </div>
 

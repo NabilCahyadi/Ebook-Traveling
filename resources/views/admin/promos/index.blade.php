@@ -5,7 +5,7 @@
 @section('content')
     <div class="container-fluid">
         <!-- Page Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
             <div>
                 <h4 class="mb-1">{{ __('admin.promos.title') }}</h4>
                 <p class="text-muted mb-0">{{ __('admin.promos.description') }}</p>
@@ -32,7 +32,7 @@
 
         <!-- Promo List Card -->
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
                 <h5 class="mb-0">{{ __('admin.promos.all_promos') }}</h5>
                 <span class="badge bg-label-primary">{{ __('admin.common.total') }}: {{ $promos->total() }}</span>
             </div>
@@ -43,12 +43,12 @@
                             <th>#</th>
                             <th>{{ __('admin.form.name') }}</th>
                             <th>{{ __('admin.promos.code') }}</th>
-                            <th>{{ __('admin.promos.type') }}</th>
-                            <th>{{ __('admin.promos.value') }}</th>
-                            <th>{{ __('admin.promos.date_range') }}</th>
-                            <th>{{ __('admin.promos.usage') }}</th>
+                            <th class="d-none d-md-table-cell">{{ __('admin.promos.type') }}</th>
+                            <th class="d-none d-md-table-cell">{{ __('admin.promos.value') }}</th>
+                            <th class="d-none d-lg-table-cell">{{ __('admin.promos.date_range') }}</th>
+                            <th class="d-none d-lg-table-cell">{{ __('admin.promos.usage') }}</th>
                             <th>{{ __('admin.form.status') }}</th>
-                            <th>{{ __('admin.ebooks.actions') }}</th>
+                            <th>{{ __('admin.common.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -70,28 +70,28 @@
                                         <span class="text-muted">{{ __('admin.promos.auto_apply') }}</span>
                                     @endif
                                 </td>
-                                <td>
+                                <td class="d-none d-md-table-cell">
                                     @if ($promo->type === 'percentage')
-                                        <span class="badge bg-label-info"><i class="ti ti-percentage"></i> Percentage</span>
+                                        <span class="badge bg-label-info"><i class="ti ti-percentage"></i> {{ __('admin.promos.percentage') }}</span>
                                     @elseif($promo->type === 'fixed_amount')
                                         <span class="badge bg-label-success"><i class="ti ti-currency-dollar"></i>
-                                            Fixed</span>
+                                            {{ __('admin.promos.fixed') }}</span>
                                     @elseif($promo->type === 'free_trial')
-                                        <span class="badge bg-label-warning"><i class="ti ti-gift"></i> Free Trial</span>
+                                        <span class="badge bg-label-warning"><i class="ti ti-gift"></i> {{ __('admin.promos.free_trial') }}</span>
                                     @endif
                                 </td>
-                                <td>
+                                <td class="d-none d-md-table-cell">
                                     <span class="fw-medium">
                                         @if ($promo->type === 'percentage')
                                             {{ $promo->value }}%
                                         @elseif($promo->type === 'fixed_amount')
                                             ${{ number_format($promo->value, 2) }}
                                         @else
-                                            {{ $promo->value }} days
+                                            {{ $promo->value }} {{ __('admin.promos.days') }}
                                         @endif
                                     </span>
                                 </td>
-                                <td>
+                                <td class="d-none d-lg-table-cell">
                                     <small class="text-muted">
                                         <div><i class="ti ti-calendar-event"></i>
                                             {{ $promo->start_date->format('M d, Y') }}</div>
@@ -99,7 +99,7 @@
                                         </div>
                                     </small>
                                 </td>
-                                <td>
+                                <td class="d-none d-lg-table-cell">
                                     <div class="d-flex flex-column">
                                         <small class="text-muted mb-1">{{ $promo->current_usage }} /
                                             {{ $promo->max_usage ?? '∞' }}</small>
@@ -124,9 +124,9 @@
                                         <label class="form-check-label" for="status-{{ $promo->id }}"></label>
                                     </div>
                                     @if ($promo->is_active)
-                                        <span class="badge bg-label-success">Active</span>
+                                        <span class="badge bg-label-success">{{ __('admin.status.active') }}</span>
                                     @else
-                                        <span class="badge bg-label-secondary">Inactive</span>
+                                        <span class="badge bg-label-secondary">{{ __('admin.status.inactive') }}</span>
                                     @endif
                                 </td>
                                 <td>
@@ -173,9 +173,9 @@
 
             <!-- Pagination -->
             @if ($promos->hasPages())
-                <div class="card-footer d-flex justify-content-between align-items-center">
+                <div class="card-footer d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
                     <div class="text-muted">
-                        Showing {{ $promos->firstItem() }} to {{ $promos->lastItem() }} of {{ $promos->total() }} promos
+                        {{ __('admin.common.showing_results', ['from' => $promos->firstItem(), 'to' => $promos->lastItem(), 'total' => $promos->total()]) }}
                     </div>
                     <div>
                         {{ $promos->links() }}
@@ -208,7 +208,7 @@
                                     'Active');
                             } else {
                                 badge.removeClass('bg-label-success').addClass('bg-label-secondary').text(
-                                    'Inactive');
+                                    '{{ __('admin.status.inactive') }}');
                             }
 
                             // Show toast notification
@@ -218,7 +218,7 @@
                     error: function(xhr) {
                         // Revert checkbox
                         checkbox.prop('checked', !isActive);
-                        toastr.error('Failed to update status');
+                        toastr.error('{{ __('admin.messages.update_failed') }}');
                     }
                 });
             });
@@ -226,12 +226,12 @@
             // Delete Promo
             function deletePromo(id, name) {
                 Swal.fire({
-                    title: 'Are you sure?',
-                    html: `You are about to delete promo "<strong>${name}</strong>".<br>This action cannot be undone.`,
+                    title: '{{ __('admin.messages.are_you_sure') }}',
+                    html: `{{ __('admin.promos.delete_confirm') }} "<strong>${name}</strong>".<br>{{ __('admin.messages.cannot_undo') }}`,
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonText: 'Yes, delete it!',
-                    cancelButtonText: 'Cancel',
+                    confirmButtonText: '{{ __('admin.messages.yes_delete') }}',
+                    cancelButtonText: '{{ __('admin.actions.cancel') }}',
                     customClass: {
                         confirmButton: 'btn btn-danger me-2',
                         cancelButton: 'btn btn-secondary'

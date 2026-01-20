@@ -21,7 +21,7 @@
         @endif
 
         <!-- Page Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
             <div>
                 <h4 class="fw-bold py-3 mb-2">
                     <span class="text-muted fw-light">{{ __('admin.menu.website_management') }} /</span> {{ __('admin.collections.title') }}
@@ -36,7 +36,7 @@
 
         <!-- Collections Table -->
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
                 <h5 class="mb-0">{{ __('admin.collections.all_collections') }}</h5>
                 <div>
                     <span class="badge bg-label-primary me-2">{{ $collections->total() }} {{ __('admin.common.total') }}</span>
@@ -53,12 +53,12 @@
                         <thead>
                             <tr>
                                 <th width="50">{{ __('admin.collections.drag') }}</th>
-                                <th>{{ __('admin.collections.order') }}</th>
+                                <th class="d-none d-md-table-cell">{{ __('admin.collections.order') }}</th>
                                 <th>{{ __('admin.form.name') }}</th>
-                                <th>{{ __('admin.form.slug') }}</th>
-                                <th>{{ __('admin.collections.ebooks_count') }}</th>
+                                <th class="d-none d-lg-table-cell">{{ __('admin.form.slug') }}</th>
+                                <th class="d-none d-md-table-cell">{{ __('admin.collections.ebooks_count') }}</th>
                                 <th>{{ __('admin.form.status') }}</th>
-                                <th>{{ __('admin.ebooks.actions') }}</th>
+                                <th>{{ __('admin.common.actions') }}</th>
                             </tr>
                         </thead>
                         <tbody id="sortable-collections">
@@ -67,7 +67,7 @@
                                     <td class="text-center">
                                         <i class="ti ti-grip-vertical text-muted"></i>
                                     </td>
-                                    <td>
+                                    <td class="d-none d-md-table-cell">
                                         <span class="badge bg-label-secondary order-badge">{{ $collection->order }}</span>
                                     </td>
                                     <td>
@@ -77,19 +77,19 @@
                                             <small class="text-muted">{{ Str::limit($collection->description, 50) }}</small>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="d-none d-lg-table-cell">
                                         <code>{{ $collection->slug }}</code>
                                     </td>
-                                    <td>
+                                    <td class="d-none d-md-table-cell">
                                         <span class="badge bg-label-info">
-                                            {{ $collection->ebooks_count ?? 0 }} ebooks
+                                            {{ $collection->ebooks_count ?? 0 }} {{ __('admin.common.ebooks') }}
                                         </span>
                                     </td>
                                     <td>
                                         @if($collection->is_active)
-                                            <span class="badge bg-success">Active</span>
+                                            <span class="badge bg-success">{{ __('admin.status.active') }}</span>
                                         @else
-                                            <span class="badge bg-secondary">Inactive</span>
+                                            <span class="badge bg-secondary">{{ __('admin.status.inactive') }}</span>
                                         @endif
                                     </td>
                                     <td>
@@ -100,19 +100,19 @@
                                             </button>
                                             <div class="dropdown-menu">
                                                 <a class="dropdown-item" href="{{ route('admin.collections.manage-ebooks', $collection->id) }}">
-                                                    <i class="ti ti-books me-2"></i> Manage Ebooks
+                                                    <i class="ti ti-books me-2"></i> {{ __('admin.collections.manage_ebooks') }}
                                                 </a>
                                                 <a class="dropdown-item" href="{{ route('admin.collections.edit', $collection->id) }}">
-                                                    <i class="ti ti-edit me-2"></i> Edit
+                                                    <i class="ti ti-edit me-2"></i> {{ __('admin.actions.edit') }}
                                                 </a>
                                                 <div class="dropdown-divider"></div>
                                                 <form action="{{ route('admin.collections.destroy', $collection->id) }}" 
                                                       method="POST" 
-                                                      onsubmit="return confirm('Are you sure you want to delete this collection?');">
+                                                      onsubmit="return confirm('{{ __('admin.collections.delete_confirm') }}');">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="dropdown-item text-danger">
-                                                        <i class="ti ti-trash me-2"></i> Delete
+                                                        <i class="ti ti-trash me-2"></i> {{ __('admin.actions.delete') }}
                                                     </button>
                                                 </form>
                                             </div>
@@ -124,7 +124,7 @@
                                     <td colspan="9" class="text-center py-4">
                                         <div class="d-flex flex-column align-items-center">
                                             <i class="ti ti-folder-off" style="font-size: 3rem; opacity: 0.3;"></i>
-                                            <p class="mt-2 mb-0 text-muted">No collections found</p>
+                                            <p class="mt-2 mb-0 text-muted">{{ __('admin.collections.no_collections') }}</p>
                                         </div>
                                     </td>
                                 </tr>

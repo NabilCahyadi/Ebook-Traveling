@@ -18,6 +18,7 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\PolicyController;
+use App\Http\Controllers\SitemapController;
 use App\Models\SubscriptionPlan;
 
 
@@ -27,6 +28,9 @@ use App\Models\SubscriptionPlan;
 |--------------------------------------------------------------------------
 | Routes yang bisa diakses tanpa login (landing page, info pages, dll)
 */
+
+// Sitemap (outside middleware for better SEO crawling)
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 // Homepage
 Route::middleware(['user.session'])->group(function () {

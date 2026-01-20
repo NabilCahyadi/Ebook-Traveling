@@ -43,6 +43,7 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
 
     // Admin Management
     Route::resource('admins', \App\Http\Controllers\Admin\AdminController::class);
+    Route::get('admins-export', [\App\Http\Controllers\Admin\AdminController::class, 'export'])->name('admins.export');
     Route::get('admins/{id}/permissions', [\App\Http\Controllers\Admin\AdminPermissionController::class, 'edit'])->name('admins.permissions.edit');
     Route::put('admins/{id}/permissions', [\App\Http\Controllers\Admin\AdminPermissionController::class, 'update'])->name('admins.permissions.update');
     
@@ -61,6 +62,7 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
 
     Route::middleware(['admin.permission:users.view'])->group(function () {
         Route::get('users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('users.index');
+        Route::get('users/export', [\App\Http\Controllers\Admin\UserController::class, 'export'])->name('users.export');
         Route::get('users-trashed', [\App\Http\Controllers\Admin\UserController::class, 'trashed'])->name('users.trashed');
         Route::get('users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'show'])->name('users.show');
     });
@@ -125,6 +127,7 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     
     Route::middleware(['admin.permission:ebooks.view'])->group(function () {
         Route::get('ebooks', [\App\Http\Controllers\Admin\EbookController::class, 'index'])->name('ebooks.index');
+        Route::get('ebooks/export-data', [\App\Http\Controllers\Admin\EbookController::class, 'export'])->name('ebooks.export');
         Route::get('ebooks/archived', [\App\Http\Controllers\Admin\EbookController::class, 'archived'])->name('ebooks.archived');
         Route::get('ebooks/trash', [\App\Http\Controllers\Admin\EbookController::class, 'trash'])->name('ebooks.trash');
         Route::get('ebooks/pending-approval', [\App\Http\Controllers\Admin\EbookController::class, 'pendingApproval'])->name('ebooks.pending-approval');
@@ -237,6 +240,7 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     // Manual Subscription Management
     Route::middleware(['admin.permission:subscriptions.view'])->group(function () {
         Route::get('manual-subscriptions', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'index'])->name('manual-subscriptions.index');
+        Route::get('manual-subscriptions/export-data', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'export'])->name('manual-subscriptions.export');
     });
     
     Route::middleware(['admin.permission:subscriptions.create'])->group(function () {

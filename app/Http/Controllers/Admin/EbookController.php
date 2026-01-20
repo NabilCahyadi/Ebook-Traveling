@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\EbookService;
+use App\Exports\EbooksExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Smalot\PdfParser\Parser as PdfParser;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EbookController extends Controller
 {
@@ -643,5 +645,23 @@ class EbookController extends Controller
                 'message' => 'Gagal mengubah setting: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Export ebooks to Excel.
+     */
+    public function export(Request $request)
+    {
+        $filters = [
+            'search' => $request->get('search'),
+            'category_id' => $request->get('category_id'),
+            'is_active' => $request->get('is_active'),
+            'date_from' => $request->get('date_from'),
+            'date_to' => $request->get('date_to'),
+        ];
+
+        $filename = 'ebooks_' . now()->format('Y-m-d_His') . '.xlsx';
+        
+        return Excel::download(new EbooksExport($filters), $filename);
     }
 }

@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'FAQ ' . $categoryName . ' Management')
+@section('title', __('admin.faqs.title') . ' - ' . $categoryName)
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -8,29 +8,29 @@
         <!-- Success/Error Messages -->
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>Success!</strong> {{ session('success') }}
+                <strong>{{ __('admin.messages.success_title') }}</strong> {{ session('success') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
         @if (session('error'))
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Error!</strong> {{ session('error') }}
+                <strong>{{ __('admin.messages.error_title') }}</strong> {{ session('error') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
         <!-- Page Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
             <div>
                 <h4 class="fw-bold py-3 mb-2">
-                    <span class="text-muted fw-light">Web Setting / FAQ /</span> {{ $categoryName }}
+                    <span class="text-muted fw-light">{{ __('admin.menu.website_setting') }} / {{ __('admin.menu.faqs') }} /</span> {{ $categoryName }}
                 </h4>
             </div>
             <div>
                 @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission("website.faqs-{$categorySlug}.create"))
                 <a href="{{ route("admin.faqs.{$categorySlug}.create") }}" class="btn btn-primary">
-                    <i class="ti ti-plus me-1"></i> Add New FAQ
+                    <i class="ti ti-plus me-1"></i> {{ __('admin.faqs.add_faq') }}
                 </a>
                 @endif
             </div>
@@ -41,13 +41,13 @@
             <div class="card-body">
                 <form action="{{ route("admin.faqs.{$categorySlug}.index") }}" method="GET">
                     <div class="row g-3">
-                        <div class="col-md-8">
-                            <label for="search" class="form-label">Search</label>
+                        <div class="col-12 col-md-8">
+                            <label for="search" class="form-label">{{ __('admin.common.search') }}</label>
                             <input type="text" class="form-control" id="search" name="search"
-                                value="{{ request('search') }}" placeholder="Search by question or answer...">
+                                value="{{ request('search') }}" placeholder="{{ __('admin.faqs.search_placeholder') }}">
                         </div>
-                        <div class="col-md-2">
-                            <label for="per_page" class="form-label">Per Page</label>
+                        <div class="col-6 col-md-2">
+                            <label for="per_page" class="form-label">{{ __('admin.common.per_page') }}</label>
                             <select class="form-select" id="per_page" name="per_page">
                                 <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
                                 <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
@@ -55,13 +55,13 @@
                                 <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
                             </select>
                         </div>
-                        <div class="col-md-2 d-flex align-items-end gap-2">
+                        <div class="col-6 col-md-2 d-flex align-items-end gap-2">
                             <button type="submit" class="btn btn-primary flex-grow-1">
-                                <i class="ti ti-search"></i> Search
+                                <i class="ti ti-search"></i> <span class="d-none d-sm-inline">{{ __('admin.common.search') }}</span>
                             </button>
                             @if (request()->hasAny(['search']))
                                 <a href="{{ route("admin.faqs.{$categorySlug}.index") }}" class="btn btn-label-secondary"
-                                    title="Clear Filters">
+                                    title="{{ __('admin.common.clear_filters') }}">
                                     <i class="ti ti-x"></i>
                                 </a>
                             @endif
@@ -83,12 +83,12 @@
                         <table class="table table-hover" id="faqsTable">
                             <thead>
                                 <tr>
-                                    <th width="80">Order</th>
-                                    <th>Question</th>
-                                    <th>Answer</th>
-                                    <th width="100">Status</th>
-                                    <th width="120">Created</th>
-                                    <th width="80" class="text-center">Actions</th>
+                                    <th width="80">{{ __('admin.faqs.order') }}</th>
+                                    <th>{{ __('admin.faqs.question') }}</th>
+                                    <th class="d-none d-md-table-cell">{{ __('admin.faqs.answer') }}</th>
+                                    <th width="100">{{ __('admin.form.status') }}</th>
+                                    <th width="120" class="d-none d-lg-table-cell">{{ __('admin.common.date_created') }}</th>
+                                    <th width="80" class="text-center">{{ __('admin.common.actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody id="sortableFaqs">
@@ -109,7 +109,7 @@
                                                 <strong>{{ Str::limit($faq->question, 80) }}</strong>
                                             </div>
                                         </td>
-                                        <td>
+                                        <td class="d-none d-md-table-cell">
                                             <div style="max-width: 400px;">
                                                 {{ Str::limit($faq->answer, 80) }}
                                             </div>
@@ -123,11 +123,11 @@
                                             </div>
                                             @else
                                             <span class="badge {{ $faq->is_active ? 'bg-success' : 'bg-secondary' }}">
-                                                {{ $faq->is_active ? 'Active' : 'Inactive' }}
+                                                {{ $faq->is_active ? __('admin.common.active') : __('admin.common.inactive') }}
                                             </span>
                                             @endif
                                         </td>
-                                        <td>
+                                        <td class="d-none d-lg-table-cell">
                                             <small class="text-muted">{{ $faq->created_at->format('d M Y') }}</small>
                                         </td>
                                         <td class="text-center">
@@ -140,14 +140,14 @@
                                                     @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission("website.faqs-{$categorySlug}.edit"))
                                                     <a href="{{ route("admin.faqs.{$categorySlug}.edit", $faq->id) }}" class="dropdown-item">
                                                         <i class="ti ti-edit me-2"></i>
-                                                        Edit
+                                                        {{ __('admin.common.edit') }}
                                                     </a>
                                                     @endif
                                                     
                                                     @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission("website.faqs-{$categorySlug}.delete"))
                                                     <button type="button" class="dropdown-item text-danger delete-faq" data-id="{{ $faq->id }}">
                                                         <i class="ti ti-trash me-2"></i>
-                                                        Delete
+                                                        {{ __('admin.common.delete') }}
                                                     </button>
                                                     @endif
                                                 </div>
@@ -166,17 +166,17 @@
                 @else
                     <div class="text-center py-5">
                         <i class="ti ti-help-circle ti-xl text-muted mb-3 d-block" style="font-size: 4rem;"></i>
-                        <h5 class="text-muted">No FAQs found</h5>
+                        <h5 class="text-muted">{{ __('admin.faqs.no_faqs') }}</h5>
                         <p class="text-muted">
                             @if (request()->has('search'))
-                                No FAQs match your search criteria.
+                                {{ __('admin.faqs.no_match') }}
                             @else
-                                Start by adding your first FAQ for {{ $categoryName }}.
+                                {{ __('admin.faqs.start_creating') }}
                             @endif
                         </p>
                         @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission("website.faqs-{$categorySlug}.create"))
                         <a href="{{ route("admin.faqs.{$categorySlug}.create") }}" class="btn btn-primary mt-2">
-                            <i class="ti ti-plus me-1"></i> Add First FAQ
+                            <i class="ti ti-plus me-1"></i> {{ __('admin.faqs.add_first_faq') }}
                         </a>
                         @endif
                     </div>

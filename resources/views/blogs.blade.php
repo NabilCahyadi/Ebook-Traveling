@@ -1,5 +1,49 @@
 @extends('layouts_lp.app')
-@section('title', 'Blogs & News - MeatMap')
+@section('title', 'Blog & Travel Guides - MeatMap')
+
+@section('meta')
+    {{-- Basic Meta Tags --}}
+    <meta name="description" content="Explore the latest travel guides, destination tips, and inspiring stories from MeatMap. Discover hidden gems, local cuisine, and travel insights.">
+    <meta name="keywords" content="travel blog, travel guides, destination tips, travel stories, meatmap blog, travel inspiration, indonesia travel">
+    <meta name="author" content="MeatMap Team">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ url()->current() }}">
+    
+    {{-- Open Graph / Facebook --}}
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Blog & Travel Guides - MeatMap">
+    <meta property="og:description" content="Explore the latest travel guides, destination tips, and inspiring stories from MeatMap. Discover hidden gems and travel insights.">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:site_name" content="MeatMap">
+    <meta property="og:image" content="{{ asset('images/only-logoo.png') }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    
+    {{-- Twitter Card --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Blog & Travel Guides - MeatMap">
+    <meta name="twitter:description" content="Explore the latest travel guides, destination tips, and inspiring stories from MeatMap.">
+    <meta name="twitter:image" content="{{ asset('images/only-logoo.png') }}">
+    
+    {{-- Schema.org structured data for Blog --}}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Blog",
+        "name": "MeatMap Blog",
+        "description": "Travel guides, destination tips, and inspiring stories",
+        "url": "{{ url()->current() }}",
+        "publisher": {
+            "@type": "Organization",
+            "name": "MeatMap",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "{{ asset('images/only-logoo.png') }}"
+            }
+        }
+    }
+    </script>
+@endsection
 
 @section('content')
 <style>

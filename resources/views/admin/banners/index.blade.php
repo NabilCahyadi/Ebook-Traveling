@@ -29,7 +29,7 @@
 
 @section('content')
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
         <div>
             <h4 class="fw-bold mb-1">
                 <span class="text-muted fw-light">{{ __('admin.menu.website_management') }} /</span> {{ __('admin.banners.hero_banners') }}
@@ -72,7 +72,7 @@
         <li class="nav-item" role="presentation">
             <a class="nav-link {{ $activeTab === 'default-background' ? 'active' : '' }}" 
                href="{{ route('admin.banners.index', ['tab' => 'default-background']) }}">
-                <i class="ti ti-photo-filled me-1"></i> Default Background
+                <i class="ti ti-photo-filled me-1"></i> {{ __('admin.banners.default_background') }}
             </a>
         </li>
     </ul>
@@ -97,18 +97,17 @@
         <div class="alert alert-info d-flex align-items-center" role="alert">
             <i class="ti ti-info-circle me-2"></i>
             <div>
-                <strong>Tips:</strong> Banner dengan dimensi 1920x600px (3.2:1) akan terlihat sempurna. Format: JPEG, PNG,
-                atau WebP.
+                <strong>{{ __('admin.banners.tips') }}:</strong> {{ __('admin.banners.dimension_tip') }}
             </div>
         </div>
 
         <!-- Banners Card -->
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Hero Banners List</h5>
+            <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+                <h5 class="mb-0">{{ __('admin.banners.hero_list') }}</h5>
                 @if ($banners->count() > 1)
                     <div class="text-muted small">
-                        <i class="ti ti-arrows-sort me-1"></i> Drag and drop to reorder
+                        <i class="ti ti-arrows-sort me-1"></i> {{ __('admin.banners.drag_to_reorder') }}
                     </div>
                 @endif
             </div>
@@ -116,10 +115,10 @@
                 @if ($banners->isEmpty())
                 <div class="text-center py-5">
                     <i class="ti ti-photo-off display-4 text-muted"></i>
-                    <p class="mt-3 mb-2">No banners available</p>
-                    <p class="text-muted mb-3">Create your first banner to display on homepage</p>
+                    <p class="mt-3 mb-2">{{ __('admin.banners.no_banners') }}</p>
+                    <p class="text-muted mb-3">{{ __('admin.banners.no_banners_desc') }}</p>
                     <a href="{{ route('admin.banners.create') }}" class="btn btn-primary">
-                        <i class="ti ti-plus me-1"></i> Create Banner
+                        <i class="ti ti-plus me-1"></i> {{ __('admin.banners.create_banner') }}
                     </a>
                 </div>
             @else
@@ -128,11 +127,11 @@
                         <thead>
                             <tr>
                                 <th width="50">#</th>
-                                <th width="150">Banner Image</th>
-                                <th>Title</th>
-                                <th width="150">Status</th>
-                                <th width="100">Order</th>
-                                <th width="200" class="text-center">Actions</th>
+                                <th width="150">{{ __('admin.banners.banner_image') }}</th>
+                                <th>{{ __('admin.form.title') }}</th>
+                                <th width="150" class="d-none d-md-table-cell">{{ __('admin.form.status') }}</th>
+                                <th width="100" class="d-none d-lg-table-cell">{{ __('admin.form.order') }}</th>
+                                <th width="200" class="text-center">{{ __('admin.common.actions') }}</th>
                             </tr>
                         </thead>
                         <tbody id="sortable-banners">
@@ -161,28 +160,28 @@
                                             @endif
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="d-none d-md-table-cell">
                                         <div class="form-check form-switch">
                                             <input class="form-check-input status-toggle" type="checkbox"
                                                 data-id="{{ $banner->id }}" {{ $banner->is_active ? 'checked' : '' }}>
                                             <label class="form-check-label">
                                                 <span class="badge {{ $banner->is_active ? 'bg-success' : 'bg-secondary' }}">
-                                                    {{ $banner->is_active ? 'Active' : 'Inactive' }}
+                                                    {{ $banner->is_active ? __('admin.status.active') : __('admin.status.inactive') }}
                                                 </span>
                                             </label>
                                         </div>
                                         @if ($banner->start_date || $banner->end_date)
                                             <small class="text-muted d-block mt-1">
                                                 @if ($banner->start_date)
-                                                    From: {{ $banner->start_date->format('d M Y') }}<br>
+                                                    {{ __('admin.banners.from') }}: {{ $banner->start_date->format('d M Y') }}<br>
                                                 @endif
                                                 @if ($banner->end_date)
-                                                    Until: {{ $banner->end_date->format('d M Y') }}
+                                                    {{ __('admin.banners.until') }}: {{ $banner->end_date->format('d M Y') }}
                                                 @endif
                                             </small>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="d-none d-lg-table-cell">
                                         <span class="badge bg-label-secondary order-badge">{{ $banner->order_index }}</span>
                                     </td>
                                     <td>

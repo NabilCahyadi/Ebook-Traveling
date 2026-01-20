@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Dashboard')
+@section('title', __('admin.dashboard.title'))
 
 @section('content')
     <!-- Welcome Section -->
@@ -43,7 +43,7 @@
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
                                 @if (Route::has('admin.orders.index'))
-                                    <a class="dropdown-item" href="{{ route('admin.orders.index') }}">View Orders</a>
+                                    <a class="dropdown-item" href="{{ route('admin.orders.index') }}">{{ __('admin.dashboard.view_orders') }}</a>
                                 @endif
                             </div>
                         </div>
@@ -74,7 +74,7 @@
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
                                 @if (Route::has('admin.orders.index'))
-                                    <a class="dropdown-item" href="{{ route('admin.orders.index') }}">View All Orders</a>
+                                    <a class="dropdown-item" href="{{ route('admin.orders.index') }}">{{ __('admin.dashboard.view_all_orders') }}</a>
                                 @endif
                             </div>
                         </div>

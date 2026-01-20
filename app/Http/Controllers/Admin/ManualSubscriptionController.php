@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Services\SubscriptionService;
 use App\Services\MayarService;
+use App\Exports\SubscriptionsExport;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ManualSubscriptionController extends Controller
 {
@@ -302,5 +304,23 @@ class ManualSubscriptionController extends Controller
             ->get(['id', 'name', 'email']);
 
         return response()->json($users);
+    }
+
+    /**
+     * Export subscriptions to Excel.
+     */
+    public function export(Request $request)
+    {
+        $filters = [
+            'search' => $request->get('search'),
+            'status' => $request->get('status'),
+            'subscription_type' => $request->get('subscription_type'),
+            'date_from' => $request->get('date_from'),
+            'date_to' => $request->get('date_to'),
+        ];
+
+        $filename = 'subscriptions_' . now()->format('Y-m-d_His') . '.xlsx';
+        
+        return Excel::download(new SubscriptionsExport($filters), $filename);
     }
 }

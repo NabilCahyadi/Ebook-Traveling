@@ -20,7 +20,7 @@
     @endif
 
     <!-- Page Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
         <div>
             <h4 class="fw-bold py-3 mb-2">
                 <span class="text-muted fw-light">{{ __('admin.menu.admin') }} /</span> {{ __('admin.users.title') }}
@@ -57,9 +57,15 @@
 
     <!-- Users Table -->
     <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">{{ __('admin.users.users_list') }}</h5>
-            <div class="text-muted">{{ __('admin.common.total') }}: {{ $users->total() }} {{ __('admin.users.users') }}</div>
+        <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+            <div>
+                <h5 class="mb-0">{{ __('admin.users.users_list') }}</h5>
+                <div class="text-muted small">{{ __('admin.common.total') }}: {{ $users->total() }} {{ __('admin.users.users') }}</div>
+            </div>
+            <a href="{{ route('admin.users.export', request()->all()) }}" class="btn btn-success btn-sm">
+                <i class="ti ti-download me-1"></i>
+                {{ __('admin.common.export') }}
+            </a>
         </div>
 
         <!-- Search Filter -->
@@ -70,7 +76,7 @@
                 @endif
                 
                 <!-- Google ID Filter -->
-                <div class="col-md-2">
+                <div class="col-6 col-md-2">
                     <label class="form-label">{{ __('admin.users.filter_by_google_id') }}</label>
                     <select name="google_id" class="form-select">
                         <option value="">{{ __('admin.users.all_accounts') }}</option>
@@ -84,7 +90,7 @@
                 </div>
 
                 <!-- Registered Time Filter -->
-                <div class="col-md-2">
+                <div class="col-6 col-md-2">
                     <label class="form-label">{{ __('admin.users.filter_by_registered') }}</label>
                     <select name="registered" class="form-select">
                         <option value="">{{ __('admin.users.all_time') }}</option>
@@ -104,21 +110,21 @@
                 </div>
 
                 <!-- User Type Filter -->
-                <div class="col-md-2">
+                <div class="col-6 col-md-2">
                     <label class="form-label">{{ __('admin.users.filter_by_subscription') }}</label>
                     <select name="user_type" class="form-select">
                         <option value="">{{ __('admin.users.all_subscriptions') }}</option>
                         <option value="free_user" {{ request('user_type') == 'free_user' ? 'selected' : '' }}>
-                            Free User
+                            {{ __('admin.users.free_user') }}
                         </option>
                         <option value="member" {{ request('user_type') == 'member' ? 'selected' : '' }}>
-                            Premium Member
+                            {{ __('admin.users.premium_member') }}
                         </option>
                     </select>
                 </div>
 
                 <!-- Search -->
-                <div class="col-md-4">
+                <div class="col-12 col-md-4">
                     <label class="form-label">{{ __('admin.users.search') }}</label>
                     <div class="input-group">
                         <span class="input-group-text">
@@ -130,9 +136,9 @@
                 </div>
 
                 <!-- Submit Button -->
-                <div class="col-md-2">
+                <div class="col-6 col-md-2">
                     <button type="submit" class="btn btn-primary w-100">
-                        <i class="ti ti-filter me-1"></i> Filter
+                        <i class="ti ti-filter me-1"></i> {{ __('admin.common.filter') }}
                     </button>
                 </div>
 
@@ -140,7 +146,7 @@
                 @if (request('search') || request('google_id') || request('registered') || request('user_type'))
                     <div class="col-12">
                         <a href="{{ route('admin.users.index') }}" class="btn btn-sm btn-outline-secondary">
-                            <i class="ti ti-x me-1"></i> Clear All Filters
+                            <i class="ti ti-x me-1"></i> {{ __('admin.common.clear_filters') }}
                         </a>
                         <span class="text-muted ms-2">
                             @if(request('search'))
@@ -167,12 +173,12 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role(s)</th>
-                                <th>Google ID</th>
-                                <th>Registered</th>
-                                <th>Actions</th>
+                                <th>{{ __('admin.form.name') }}</th>
+                                <th>{{ __('admin.form.email') }}</th>
+                                <th class="d-none d-md-table-cell">{{ __('admin.users.roles') }}</th>
+                                <th class="d-none d-lg-table-cell">{{ __('admin.users.google_id') }}</th>
+                                <th class="d-none d-lg-table-cell">{{ __('admin.users.registered') }}</th>
+                                <th>{{ __('admin.common.actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -202,15 +208,15 @@
                                         <div>{{ $user->email }}</div>
                                         @if ($user->email_verified_at)
                                             <small class="text-success">
-                                                <i class="ti ti-check ti-xs"></i> Verified
+                                                <i class="ti ti-check ti-xs"></i> {{ __('admin.users.verified') }}
                                             </small>
                                         @else
                                             <small class="text-muted">
-                                                <i class="ti ti-x ti-xs"></i> Not verified
+                                                <i class="ti ti-x ti-xs"></i> {{ __('admin.users.not_verified') }}
                                             </small>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="d-none d-md-table-cell">
                                         @if ($user->roles && $user->roles->count() > 0)
                                             @foreach ($user->roles as $role)
                                                 @php
@@ -225,21 +231,21 @@
                                                 <span class="badge {{ $badgeClass }} mb-1">{{ $role->name }}</span>
                                             @endforeach
                                         @else
-                                            <span class="badge bg-label-secondary">No Role</span>
+                                            <span class="badge bg-label-secondary">{{ __('admin.users.no_role') }}</span>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="d-none d-lg-table-cell">
                                         @if ($user->google_id)
                                             <span class="badge bg-label-info">
-                                                <i class="ti ti-brand-google ti-xs"></i> Linked
+                                                <i class="ti ti-brand-google ti-xs"></i> {{ __('admin.users.linked') }}
                                             </span>
                                         @else
                                             <span class="badge bg-label-secondary">
-                                                <i class="ti ti-user ti-xs"></i> Regular
+                                                <i class="ti ti-user ti-xs"></i> {{ __('admin.users.regular') }}
                                             </span>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="d-none d-lg-table-cell">
                                         <small class="text-muted">
                                             {{ $user->created_at->format('d M Y') }}<br>
                                             {{ $user->created_at->format('H:i') }}
@@ -258,12 +264,12 @@
                                                     <a class="dropdown-item" href="javascript:void(0);"
                                                         onclick="editUser('{{ $user->id }}', '{{ $user->name }}', '{{ $user->email }}')">
                                                         <i class="ti ti-pencil me-2"></i>
-                                                        <span>Edit</span>
+                                                        <span>{{ __('admin.actions.edit') }}</span>
                                                     </a>
                                                     <a class="dropdown-item"
                                                         href="{{ route('admin.users.show', $user->id) }}">
                                                         <i class="ti ti-eye me-2"></i>
-                                                        <span>View Details</span>
+                                                        <span>{{ __('admin.users.view_details') }}</span>
                                                     </a>
                                                     @if ($user->id !== auth()->id())
                                                         <div class="dropdown-divider"></div>

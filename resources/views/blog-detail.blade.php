@@ -46,7 +46,12 @@
             '@type' => 'Article',
             'headline' => $blog->title,
             'description' => $blog->meta_description ?: Str::limit(strip_tags($blog->content), 160),
-            'image' => $imageUrl,
+            'image' => [
+                '@type' => 'ImageObject',
+                'url' => $imageUrl,
+                'width' => 1200,
+                'height' => 630
+            ],
             'author' => [
                 '@type' => 'Organization',
                 'name' => 'MeatMap Team'
@@ -64,16 +69,50 @@
             'mainEntityOfPage' => [
                 '@type' => 'WebPage',
                 '@id' => url()->current()
-            ]
+            ],
+            'url' => url()->current()
         ];
         
         // Add keywords only if they exist
         if ($schemaKeywords) {
             $schemaData['keywords'] = $schemaKeywords;
         }
+
+        // Breadcrumb Schema
+        $breadcrumbSchema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => [
+                [
+                    '@type' => 'ListItem',
+                    'position' => 1,
+                    'name' => 'Home',
+                    'item' => url('/')
+                ],
+                [
+                    '@type' => 'ListItem',
+                    'position' => 2,
+                    'name' => 'Blog',
+                    'item' => route('blogs.index')
+                ],
+                [
+                    '@type' => 'ListItem',
+                    'position' => 3,
+                    'name' => $blog->title,
+                    'item' => url()->current()
+                ]
+            ]
+        ];
     @endphp
+    
+    {{-- Article Schema --}}
     <script type="application/ld+json">
     {!! json_encode($schemaData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+    </script>
+    
+    {{-- Breadcrumb Schema --}}
+    <script type="application/ld+json">
+    {!! json_encode($breadcrumbSchema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
     </script>
 @endsection
 

@@ -78,53 +78,6 @@
             </li>
             <!-- / Style Switcher-->
 
-            <!-- Notification -->
-            <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-2">
-                <a class="nav-link btn btn-text-secondary btn-icon rounded-pill dropdown-toggle hide-arrow"
-                    href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside"
-                    aria-expanded="false" id="notificationDropdown">
-                    <span class="position-relative">
-                        <i class="ti ti-bell ti-md"></i>
-                        <span class="badge rounded-pill bg-danger badge-dot badge-notifications border d-none"
-                            id="notificationBadge"></span>
-                    </span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end p-0" style="width: 380px;">
-                    <li class="dropdown-menu-header border-bottom">
-                        <div class="dropdown-header d-flex align-items-center py-3">
-                            <h6 class="mb-0 me-auto">{{ __('admin.notifications.title') }}</h6>
-                            <div class="d-flex align-items-center h6 mb-0">
-                                <span class="badge bg-label-primary me-2" id="unreadCount">0</span>
-                                <a href="javascript:void(0)" id="markAllAsRead"
-                                    class="btn btn-text-secondary rounded-pill btn-icon" data-bs-toggle="tooltip"
-                                    data-bs-placement="top" title="{{ __('admin.notifications.mark_all_read') }}">
-                                    <i class="ti ti-mail-opened text-heading"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="dropdown-notifications-list scrollable-container"
-                        style="max-height: 400px; overflow-y: auto;">
-                        <ul class="list-group list-group-flush" id="notificationsList">
-                            <li class="list-group-item text-center py-4">
-                                <div class="spinner-border spinner-border-sm text-primary" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="border-top">
-                        <div class="d-grid p-4">
-                            <a class="btn btn-primary btn-sm d-flex justify-content-center"
-                                href="{{ route('admin.notifications.index') }}">
-                                <small class="align-middle">{{ __('admin.notifications.view_all') }}</small>
-                            </a>
-                        </div>
-                    </li>
-                </ul>
-            </li>
-            <!--/ Notification -->
-
             <!-- User -->
             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                 <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
@@ -201,3 +154,29 @@
         <i class="ti ti-x search-toggler cursor-pointer"></i>
     </div>
 </nav>
+
+<style>
+    /* Fix active dropdown item text visibility */
+    .dropdown-item.active,
+    .dropdown-item:active {
+        color: #fff !important;
+        background-color: var(--bs-primary) !important;
+    }
+    
+    .dropdown-item.active span,
+    .dropdown-item:active span {
+        color: #fff !important;
+    }
+    
+    /* Fix dropdown styles active state */
+    .dropdown-styles .dropdown-item.active,
+    .dropdown-styles .dropdown-item[data-theme].active {
+        color: #fff !important;
+        background-color: var(--bs-primary) !important;
+    }
+    
+    .dropdown-styles .dropdown-item.active i,
+    .dropdown-styles .dropdown-item[data-theme].active i {
+        color: #fff !important;
+    }
+</style>
