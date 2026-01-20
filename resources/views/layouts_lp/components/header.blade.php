@@ -274,14 +274,12 @@
                     <div class="header-action-right ml-20">
                         <div class="header-action-2">
                             <div class="search-location">
-                                <form action="#">
-                                    <select class="select-active">
-                                        <option>Your Location</option>
-                                        @foreach($citiesHeader as $city)
-                                        <option value="{{ $city->slug }}">{{ $city->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </form>
+                                <select class="select-active" onchange="window.location.href='/filter-by-city/'+this.value">
+                                    <option value="">Your Location</option>
+                                    @foreach($citiesHeader as $city)
+                                    <option value="{{ $city->slug }}">{{ $city->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <!-- <div class="header-action-icon-2">
                                 <a href="shop-compare.html">

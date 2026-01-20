@@ -75,6 +75,8 @@ Route::middleware(['user.session'])->group(function () {
     Route::post('/ebooks/{id}/save', [EbookController::class, 'toggleSaved'])
         ->name('ebooks.save.toggle')
         ->middleware('auth');
+    Route::get('/filter-by-city/{slug}', [HomeController::class, 'filterByCity'])
+        ->name('city-filter');
 
     // Untuk webhook Mayar (tidak perlu login)
     // Route::post('/api/payment/mayar-callback', [SubscriptionController::class, 'mayarCallback'])

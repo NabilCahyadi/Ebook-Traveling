@@ -1,6 +1,6 @@
 @extends('layouts_lp.app')
 
-@section('title', 'Search Results for "' . $query . '"')
+@section('title', 'Ebooks in ' . $city->name)
 
 @section('content')
 <style>
@@ -161,19 +161,11 @@
             <div class="col-lg-8">
                 <h4 class="mb-0">
                     @if($ebooks->total() > 0)
-                    Found <span class="text-brand">{{ $ebooks->total() }}</span> result(s) for "<strong>{{ $query }}</strong>"
+                    Found <span class="text-brand">{{ $ebooks->total() }}</span> ebook(s) in "<strong>{{ $city->name }}</strong>"
                     @else
-                    No results found for "<strong>{{ $query }}</strong>"
+                    No ebooks found in "<strong>{{ $city->name }}</strong>"
                     @endif
                 </h4>
-            </div>
-            <div class="col-lg-4 text-end">
-                <form action="{{ route('search') }}" method="GET" class="d-inline-flex gap-2 w-100">
-                    <input type="text" name="q" value="{{ $query }}" class="form-control" placeholder="Try another search...">
-                    <button type="submit" class="btn btn-brand" style="white-space: nowrap;">
-                        <i class="fi-rs-search"></i> Search
-                    </button>
-                </form>
             </div>
         </div>
     </div>
@@ -265,13 +257,6 @@
             </div>
         </div>
         @endforeach
-    </div>
-
-    {{-- Pagination --}}
-    <div class="pagination-area mt-20 mb-20">
-        <nav aria-label="Page navigation">
-            {{ $ebooks->appends(['q' => $query])->links('pagination::bootstrap-4') }}
-        </nav>
     </div>
     @else
     <div class="text-center py-5">
