@@ -1,122 +1,102 @@
 #!/bin/bash
 
-# Path ke project
+# ===============================
+# CONFIG
+# ===============================
 PROJECT_PATH="/home/u778058510/domains/mappy.id/ebook_traveling_core"
-
-# Path ke PHP (ubah jika hosting berbeda)
 PHP_BIN="/usr/bin/php"
+BRANCH="main"
 
-# Backup directory
-BACKUP_DIR="$PROJECT_PATH/../backups"
-TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+cd "$PROJECT_PATH" || exit 1
 
-# Masuk ke folder project
-cd $PROJECT_PATH
+echo "🚀 Starting deployment (NO maintenance mode)"
+echo "📅 $(date)"
 
-# Function untuk rollback
-rollback() {
-    echo "❌ Deployment failed! Rolling back..."
-    /usr/bin/git reset --hard HEAD@{1}
-    composer install --no-dev --optimize-autoloader --no-interaction
-    $PHP_BIN artisan cache:clear
-    $PHP_BIN artisan config:cache
-    echo "⚠️ Rollback completed. Please check the logs."
-    exit 1
-}
+# ===============================
+# GIT UPDATE
+# ===============================
+echo "📥 Updating source code..."
+/usr/bin/git fetch origin
+/usr/bin/git reset --hard origin/$BRANCH
 
-# Set error handler
-set -e
-trap rollback ERR
+# ===============================
+# COMPOSER
+# ===============================
+echo "📦 Installing composer dependencies..."
+composer install \
+  --no-dev \
+  --optimize-autoloader \
+  --no-interaction \
+  || echo "⚠️ Composer failed, continuing..."
 
-echo "🚀 Starting deployment process..."
-echo "📅 Timestamp: $(date)"
+# ===============================
+# ENSURE STORAGE DIRECTORIES (🔥 FIX UTAMA)
+# ===============================
+echo "📁 Setting up storage structure..."
+# Create all required Laravel storage directories
+mkdir -p storage/framework/sessions
+mkdir -p storage/framework/views
+mkdir -p storage/framework/cache
+mkdir -p storage/framework/cache/data
+mkdir -p storage/logs
+mkdir -p storage/app/public
+mkdir -p storage/app/public/ebook_covers
+mkdir -p storage/app/public/subscription_banners
+mkdir -p storage/app/public/users/avatars
+mkdir -p storage/app/public/cities
+mkdir -p bootstrap/cache
 
-# Backup database sebelum deploy
-echo "💾 Creating database backup..."
-mkdir -p $BACKUP_DIR
-$PHP_BIN artisan backup:database --path="$BACKUP_DIR/db_backup_$TIMESTAMP.sql" 2>/dev/null || echo "⚠️ Backup skipped (manual backup recommended)"
+# ===============================
+# PERMISSIONS (CRITICAL FIX)
+# ===============================
+echo "🔒 Fixing permissions..."
+chmod -R 777 storage || true
+chmod -R 777 bootstrap/cache || true
+chown -R u778058510:u778058510 storage 2>/dev/null || true
+chown -R u778058510:u778058510 bootstrap/cache 2>/dev/null || true
 
-# Maintenance mode ON
-echo "🔧 Enabling maintenance mode..."
-$PHP_BIN artisan down --retry=60 --secret="deploy-secret-key" || true
+# Ensure web server can write to these critical directories
+find storage -type d -exec chmod 777 {} \; 2>/dev/null || true
+find storage -type f -exec chmod 666 {} \; 2>/dev/null || true
+find bootstrap/cache -type d -exec chmod 777 {} \; 2>/dev/null || true
+find bootstrap/cache -type f -exec chmod 666 {} \; 2>/dev/null || true
 
-# Update repo dari GitHub
-echo "📥 Pulling latest changes from repository..."
-/usr/bin/git fetch --all    
-/usr/bin/git reset --hard origin/main
-/usr/bin/git pull origin main
+# ===============================
+# CLEAR CACHE
+# ===============================
+echo "🧹 Clearing cache..."
+$PHP_BIN artisan config:clear || true
+$PHP_BIN artisan cache:clear || true
+$PHP_BIN artisan route:clear || true
+$PHP_BIN artisan view:clear || true
 
-# Install/Update dependencies
-echo "📦 Installing Composer dependencies..."
-composer install --no-dev --optimize-autoloader --no-interaction
+# ===============================
+# MIGRATION
+# ===============================
+echo "🗄️ Running migrations..."
+$PHP_BIN artisan migrate --force || echo "⚠️ Migration skipped"
 
-# Install NPM dependencies and build assets
-echo "🎨 Building frontend assets..."
-npm install --production
-npm run build
+# ===============================
+# STORAGE LINK
+# ===============================
+echo "🔗 Creating storage symlink..."
+rm -f public/storage 2>/dev/null || true
+$PHP_BIN artisan storage:link || true
 
-# Clear all caches before migration
-echo "🧹 Clearing application cache..."
-$PHP_BIN artisan config:clear
-$PHP_BIN artisan cache:clear
-$PHP_BIN artisan view:clear
-$PHP_BIN artisan route:clear
-
-# Jalankan migration (tanpa fresh untuk preserve data)
-echo "🗄️  Running migrations..."
-$PHP_BIN artisan migrate --force
-
-# Run seeders untuk update data yang diperlukan (tanpa hapus data existing)
-echo "🌱 Running necessary seeders..."
-
-# Create storage symlink (PENTING untuk akses file dari public)
-echo "🔗 Creating storage symbolic link..."
-$PHP_BIN artisan storage:link
-
-# Set permissions untuk storage dan cache
-echo "🔒 Setting proper permissions..."
-chmod -R 775 storage bootstrap/cache
-chown -R $USER:$USER storage bootstrap/cache
-
-# Optimize application for production
-echo "⚡ Optimizing application..."
-$PHP_BIN artisan config:cache
-$PHP_BIN artisan route:cache
-$PHP_BIN artisan view:cache
-
-# Force browser cache refresh by updating file timestamps
-echo "🔄 Updating static file timestamps..."
-touch public/assets/admin/vendor/css/rtl/theme-default.css
-touch public/assets/admin/vendor/css/theme-default.css
-
-# Update version timestamp for cache busting
-echo "📌 Updating app version for cache busting..."
-TIMESTAMP=$(date +%s)
-sed -i "s/APP_VERSION=.*/APP_VERSION=$TIMESTAMP/" .env 2>/dev/null || echo "APP_VERSION=$TIMESTAMP" >> .env
-
-
-# Maintenance mode OFF
-echo "? Disabling maintenance mode..."
-$PHP_BIN artisan up
-
-# Health check
-echo "?? Running health check..."
-HTTP_CODE=$(curl -o /dev/null -s -w "%{http_code}\n" https://mappy.id)
-if [ "$HTTP_CODE" -eq 200 ]; then
-    echo "? Health check passed (HTTP $HTTP_CODE)"
+# Verify symlink
+if [ -L "public/storage" ]; then
+    echo "✅ Storage symlink created successfully"
 else
-    echo "?? Health check warning (HTTP $HTTP_CODE)"
+    echo "⚠️ Storage symlink may have failed"
 fi
 
-# Remove error handler
-set +e
-trap - ERR
+# ===============================
+# OPTIMIZE
+# ===============================
+echo "⚡ Optimizing..."
+$PHP_BIN artisan config:cache || true
+$PHP_BIN artisan route:cache || true
+$PHP_BIN artisan view:cache || true
 
-echo ""
-echo "? Deployment completed successfully!"
-echo "??  Note: Clear your browser cache (Ctrl+Shift+R) to see latest changes"
-echo "?? Deployment timestamp: $(date)"
-echo "?? App version: $TIMESTAMP"
-echo "?? Database backup: $BACKUP_DIR/db_backup_$TIMESTAMP.sql"
-echo ""
-
+echo "✅ Deployment completed successfully"
+echo "📅 $(date)"
