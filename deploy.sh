@@ -36,13 +36,22 @@ echo "📁 Ensuring Laravel storage directories..."
 mkdir -p storage/framework/sessions
 mkdir -p storage/framework/views
 mkdir -p storage/framework/cache
+mkdir -p storage/framework/cache/data
 mkdir -p storage/logs
+mkdir -p storage/app/public
 
 # ===============================
-# PERMISSIONS (SAFE)
+# PERMISSIONS (CRITICAL FIX)
 # ===============================
-echo "🔒 Fixing permissions..."
-chmod -R 775 storage bootstrap/cache || true
+echo "🔒 Fixing permissions (aggressive mode)..."
+chmod -R 777 storage || true
+chmod -R 777 bootstrap/cache || true
+
+# Ensure web server can write to these critical directories
+find storage -type d -exec chmod 777 {} \; 2>/dev/null || true
+find storage -type f -exec chmod 666 {} \; 2>/dev/null || true
+find bootstrap/cache -type d -exec chmod 777 {} \; 2>/dev/null || true
+find bootstrap/cache -type f -exec chmod 666 {} \; 2>/dev/null || true
 
 # ===============================
 # CLEAR CACHE
