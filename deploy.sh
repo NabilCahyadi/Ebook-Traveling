@@ -22,11 +22,26 @@ rm -f storage/framework/maintenance.php 2>/dev/null || true
 find storage/framework -name "*down*" -type f -delete 2>/dev/null || true
 
 # ===============================
-# GIT UPDATE
+# GIT UPDATE (SAFE METHOD - Keep local changes)
 # ===============================
-echo "📥 Updating source code..."
+echo "📥 Updating source code (safe mode)..."
+# Stash any local changes first
+/usr/bin/git stash 2>/dev/null || true
+
+# Fetch latest changes
 /usr/bin/git fetch origin
-/usr/bin/git reset --hard origin/$BRANCH
+
+# Pull without destroying local files
+/usr/bin/git pull origin $BRANCH --rebase || /usr/bin/git pull origin $BRANCH
+
+# If pull failed, try force but selective
+if [ $? -ne 0 ]; then
+    echo "⚠️ Normal pull failed, trying alternative method..."
+    /usr/bin/git reset --soft origin/$BRANCH
+    /usr/bin/git pull origin $BRANCH
+fi
+
+echo "✅ Code updated"
 
 # ===============================
 # IMMEDIATE FIX: Recreate storage directories after git reset
