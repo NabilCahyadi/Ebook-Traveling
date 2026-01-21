@@ -20,6 +20,29 @@ echo "📥 Updating source code..."
 /usr/bin/git reset --hard origin/$BRANCH
 
 # ===============================
+# IMMEDIATE FIX: Recreate storage directories after git reset
+# ===============================
+echo "📁 CRITICAL: Creating storage directories immediately..."
+mkdir -p storage/framework/sessions
+mkdir -p storage/framework/views
+mkdir -p storage/framework/cache
+mkdir -p storage/framework/cache/data
+mkdir -p storage/logs
+mkdir -p storage/app/public
+mkdir -p storage/app/public/ebook_covers
+mkdir -p storage/app/public/subscription_banners
+mkdir -p storage/app/public/users/avatars
+mkdir -p storage/app/public/cities
+mkdir -p bootstrap/cache
+
+# CRITICAL: Set permissions immediately
+echo "🔒 CRITICAL: Setting permissions immediately..."
+chmod -R 777 storage
+chmod -R 777 bootstrap/cache
+
+echo "✅ Storage structure verified"
+
+# ===============================
 # COMPOSER
 # ===============================
 echo "📦 Installing composer dependencies..."
@@ -28,30 +51,6 @@ composer install \
   --optimize-autoloader \
   --no-interaction \
   || echo "⚠️ Composer failed, continuing..."
-
-# ===============================
-# ENSURE STORAGE DIRECTORIES (🔥 FIX UTAMA)
-# ===============================
-echo "📁 Ensuring Laravel storage directories..."
-mkdir -p storage/framework/sessions
-mkdir -p storage/framework/views
-mkdir -p storage/framework/cache
-mkdir -p storage/framework/cache/data
-mkdir -p storage/logs
-mkdir -p storage/app/public
-
-# ===============================
-# PERMISSIONS (CRITICAL FIX)
-# ===============================
-echo "🔒 Fixing permissions (aggressive mode)..."
-chmod -R 777 storage || true
-chmod -R 777 bootstrap/cache || true
-
-# Ensure web server can write to these critical directories
-find storage -type d -exec chmod 777 {} \; 2>/dev/null || true
-find storage -type f -exec chmod 666 {} \; 2>/dev/null || true
-find bootstrap/cache -type d -exec chmod 777 {} \; 2>/dev/null || true
-find bootstrap/cache -type f -exec chmod 666 {} \; 2>/dev/null || true
 
 # ===============================
 # CLEAR CACHE
@@ -71,8 +70,16 @@ $PHP_BIN artisan migrate --force || echo "⚠️ Migration skipped"
 # ===============================
 # STORAGE LINK
 # ===============================
-echo "🔗 Storage link..."
+echo "🔗 Creating storage symlink..."
+rm -f public/storage 2>/dev/null || true
 $PHP_BIN artisan storage:link || true
+
+# Verify symlink
+if [ -L "public/storage" ]; then
+    echo "✅ Storage symlink created successfully"
+else
+    echo "⚠️ Storage symlink may have failed"
+fi
 
 # ===============================
 # OPTIMIZE
