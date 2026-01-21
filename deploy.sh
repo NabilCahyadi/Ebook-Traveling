@@ -13,6 +13,15 @@ echo "🚀 Starting deployment (NO maintenance mode)"
 echo "📅 $(date)"
 
 # ===============================
+# FORCE DISABLE MAINTENANCE MODE FIRST
+# ===============================
+echo "⚠️ FORCE disabling maintenance mode (pre-deployment)..."
+$PHP_BIN artisan up 2>/dev/null || true
+rm -f storage/framework/down 2>/dev/null || true
+rm -f storage/framework/maintenance.php 2>/dev/null || true
+find storage/framework -name "*down*" -type f -delete 2>/dev/null || true
+
+# ===============================
 # GIT UPDATE
 # ===============================
 echo "📥 Updating source code..."
@@ -20,20 +29,9 @@ echo "📥 Updating source code..."
 /usr/bin/git reset --hard origin/$BRANCH
 
 # ===============================
-# COMPOSER
+# IMMEDIATE FIX: Recreate storage directories after git reset
 # ===============================
-echo "📦 Installing composer dependencies..."
-composer install \
-  --no-dev \
-  --optimize-autoloader \
-  --no-interaction \
-  || echo "⚠️ Composer failed, continuing..."
-
-# ===============================
-# ENSURE STORAGE DIRECTORIES (🔥 FIX UTAMA)
-# ===============================
-echo "📁 Setting up storage structure..."
-# Create all required Laravel storage directories
+echo "📁 CRITICAL: Creating storage directories immediately..."
 mkdir -p storage/framework/sessions
 mkdir -p storage/framework/views
 mkdir -p storage/framework/cache
@@ -46,29 +44,48 @@ mkdir -p storage/app/public/users/avatars
 mkdir -p storage/app/public/cities
 mkdir -p bootstrap/cache
 
-# ===============================
-# PERMISSIONS (CRITICAL FIX)
-# ===============================
-echo "🔒 Fixing permissions..."
-chmod -R 777 storage || true
-chmod -R 777 bootstrap/cache || true
-chown -R u778058510:u778058510 storage 2>/dev/null || true
-chown -R u778058510:u778058510 bootstrap/cache 2>/dev/null || true
+# CRITICAL: Delete ALL session files (fix corrupt sessions)
+echo "🗑️ CRITICAL: Deleting all session files..."
+rm -rf storage/framework/sessions/* 2>/dev/null || true
+rm -rf storage/framework/cache/* 2>/dev/null || true
+rm -rf storage/framework/views/* 2>/dev/null || true
 
-# Ensure web server can write to these critical directories
-find storage -type d -exec chmod 777 {} \; 2>/dev/null || true
-find storage -type f -exec chmod 666 {} \; 2>/dev/null || true
-find bootstrap/cache -type d -exec chmod 777 {} \; 2>/dev/null || true
-find bootstrap/cache -type f -exec chmod 666 {} \; 2>/dev/null || true
+# CRITICAL: Set permissions immediately
+echo "🔒 CRITICAL: Setting permissions immediately..."
+chmod -R 777 storage
+chmod -R 777 bootstrap/cache
+
+echo "✅ Storage structure verified"
+
+# ===============================
+# COMPOSER
+# ===============================
+echo "📦 Installing composer dependencies..."
+composer install \
+  --no-dev \
+  --optimize-autoloader \
+  --no-interaction \
+  || echo "⚠️ Composer failed, continuing..."
 
 # ===============================
 # CLEAR CACHE
 # ===============================
-echo "🧹 Clearing cache..."
+echo "🧹 Clearing ALL caches and sessions..."
+# Clear Laravel caches
 $PHP_BIN artisan config:clear || true
 $PHP_BIN artisan cache:clear || true
 $PHP_BIN artisan route:clear || true
 $PHP_BIN artisan view:clear || true
+
+# Physically delete cache files
+rm -rf storage/framework/cache/data/* 2>/dev/null || true
+rm -rf storage/framework/views/* 2>/dev/null || true
+rm -rf bootstrap/cache/*.php 2>/dev/null || true
+
+# Delete ALL session files again (double insurance)
+rm -rf storage/framework/sessions/* 2>/dev/null || true
+
+echo "✅ All caches and sessions cleared"
 
 # ===============================
 # MIGRATION
@@ -98,5 +115,23 @@ $PHP_BIN artisan config:cache || true
 $PHP_BIN artisan route:cache || true
 $PHP_BIN artisan view:cache || true
 
+# ===============================
+# FINAL: FORCE ENSURE SITE IS UP
+# ===============================
+echo "✅ FINAL: Force ensuring site is UP..."
+$PHP_BIN artisan up 2>/dev/null || true
+rm -f storage/framework/down 2>/dev/null || true
+rm -f storage/framework/maintenance.php 2>/dev/null || true
+
+# Verify no maintenance files exist
+if [ -f storage/framework/down ]; then
+    echo "⚠️ WARNING: Maintenance file still exists! Force removing..."
+    rm -rf storage/framework/down
+fi
+
+# Triple check - artisan up again
+$PHP_BIN artisan up 2>/dev/null || true
+
 echo "✅ Deployment completed successfully"
 echo "📅 $(date)"
+echo "🌐 Site should be accessible at: https://dev-new.mappy.id"
