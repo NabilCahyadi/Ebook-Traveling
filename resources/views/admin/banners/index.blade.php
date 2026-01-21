@@ -24,6 +24,21 @@
         .action-buttons {
             gap: 0.25rem;
         }
+
+        /* Custom tab styling */
+        .nav-tabs .nav-link {
+            border-radius: 6px 6px 0 0;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #ff5b7a;
+            color: #ffffff !important;
+            border-color: #ff5b7a;
+        }
+
+        .nav-tabs .nav-link.active i {
+            color: #ffffff !important;
+        }
     </style>
 @endpush
 

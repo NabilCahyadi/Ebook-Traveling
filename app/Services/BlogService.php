@@ -133,11 +133,6 @@ class BlogService
         return $this->blogRepository->getFiltered($filters, $perPage);
     }
 
-    public function getArchivedBlogs(?string $search = null, int $perPage = 15)
-    {
-        return $this->blogRepository->getArchived($search, $perPage);
-    }
-
     public function getAllCategories()
     {
         return $this->blogRepository->getAllCategories();

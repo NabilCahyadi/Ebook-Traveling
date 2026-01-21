@@ -63,8 +63,7 @@ class EbookRepository implements EbookRepositoryInterface
             WHEN status = 'draft' THEN 1 
             WHEN status = 'published' THEN 2 
             WHEN status = 'unpublished' THEN 3 
-            WHEN status = 'archived' THEN 4 
-            ELSE 5 
+            ELSE 4 
         END")
         ->orderBy($sortBy, $sortOrder)
         ->paginate($perPage);

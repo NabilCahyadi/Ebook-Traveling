@@ -128,7 +128,6 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     Route::middleware(['admin.permission:ebooks.view'])->group(function () {
         Route::get('ebooks', [\App\Http\Controllers\Admin\EbookController::class, 'index'])->name('ebooks.index');
         Route::get('ebooks/export-data', [\App\Http\Controllers\Admin\EbookController::class, 'export'])->name('ebooks.export');
-        Route::get('ebooks/archived', [\App\Http\Controllers\Admin\EbookController::class, 'archived'])->name('ebooks.archived');
         Route::get('ebooks/trash', [\App\Http\Controllers\Admin\EbookController::class, 'trash'])->name('ebooks.trash');
         Route::get('ebooks/pending-approval', [\App\Http\Controllers\Admin\EbookController::class, 'pendingApproval'])->name('ebooks.pending-approval');
         Route::get('ebooks/{ebook}', [\App\Http\Controllers\Admin\EbookController::class, 'show'])->name('ebooks.show');
@@ -139,11 +138,15 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
         Route::put('ebooks/{ebook}', [\App\Http\Controllers\Admin\EbookController::class, 'update'])->name('ebooks.update');
         Route::patch('ebooks/{ebook}/restore', [\App\Http\Controllers\Admin\EbookController::class, 'restore'])->name('ebooks.restore');
         Route::post('ebooks/toggle-download', [\App\Http\Controllers\Admin\EbookController::class, 'toggleDownload'])->name('ebooks.toggle-download');
+        // Bulk actions
+        Route::post('ebooks/bulk-action', [\App\Http\Controllers\Admin\EbookController::class, 'bulkAction'])->name('ebooks.bulk-action');
     });
     
     Route::middleware(['admin.permission:ebooks.delete'])->group(function () {
         Route::delete('ebooks/{ebook}', [\App\Http\Controllers\Admin\EbookController::class, 'destroy'])->name('ebooks.destroy');
         Route::delete('ebooks/{ebook}/force-delete', [\App\Http\Controllers\Admin\EbookController::class, 'forceDelete'])->name('ebooks.force-delete');
+        // Bulk delete
+        Route::post('ebooks/bulk-delete', [\App\Http\Controllers\Admin\EbookController::class, 'bulkDelete'])->name('ebooks.bulk-delete');
     });
     
     Route::middleware(['admin.permission:ebooks.approve'])->group(function () {
@@ -290,20 +293,23 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
 
     Route::middleware(['admin.permission:blogs.view'])->group(function () {
         Route::get('blogs', [\App\Http\Controllers\Admin\BlogController::class, 'index'])->name('blogs.index');
-        Route::get('blogs/archived', [\App\Http\Controllers\Admin\BlogController::class, 'archived'])->name('blogs.archived');
-        Route::get('blogs/trashed', [\App\Http\Controllers\Admin\BlogController::class, 'trashed'])->name('blogs.trashed');
+        Route::get('blogs/trash', [\App\Http\Controllers\Admin\BlogController::class, 'trashed'])->name('blogs.trash');
         Route::get('blogs/{blog}', [\App\Http\Controllers\Admin\BlogController::class, 'show'])->name('blogs.show');
     });
     
     Route::middleware(['admin.permission:blogs.edit'])->group(function () {
         Route::get('blogs/{blog}/edit', [\App\Http\Controllers\Admin\BlogController::class, 'edit'])->name('blogs.edit');
         Route::put('blogs/{blog}', [\App\Http\Controllers\Admin\BlogController::class, 'update'])->name('blogs.update');
-        Route::patch('blogs/{blog}/restore', [\App\Http\Controllers\Admin\BlogController::class, 'restore'])->name('blogs.restore');
+        Route::post('blogs/{blog}/restore', [\App\Http\Controllers\Admin\BlogController::class, 'restore'])->name('blogs.restore');
+        // Bulk actions
+        Route::post('blogs/bulk-action', [\App\Http\Controllers\Admin\BlogController::class, 'bulkAction'])->name('blogs.bulk-action');
     });
     
     Route::middleware(['admin.permission:blogs.delete'])->group(function () {
         Route::delete('blogs/{blog}', [\App\Http\Controllers\Admin\BlogController::class, 'destroy'])->name('blogs.destroy');
         Route::delete('blogs/{blog}/force-delete', [\App\Http\Controllers\Admin\BlogController::class, 'forceDelete'])->name('blogs.force-delete');
+        // Bulk delete
+        Route::post('blogs/bulk-delete', [\App\Http\Controllers\Admin\BlogController::class, 'bulkDelete'])->name('blogs.bulk-delete');
     });
 
     // Blog Category Management
@@ -506,6 +512,7 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     
     Route::middleware(['admin.permission:website.contact-info.edit'])->group(function () {
         Route::post('contact-info/{id}/toggle-active', [\App\Http\Controllers\Admin\ContactInfoController::class, 'toggleActive'])->name('contact-info.toggle-active');
+        Route::put('contact-info/update-all', [\App\Http\Controllers\Admin\ContactInfoController::class, 'updateAll'])->name('contact-info.update-all');
         Route::get('contact-info/{contact_info}/edit', [\App\Http\Controllers\Admin\ContactInfoController::class, 'edit'])->name('contact-info.edit');
         Route::put('contact-info/{contact_info}', [\App\Http\Controllers\Admin\ContactInfoController::class, 'update'])->name('contact-info.update');
     });

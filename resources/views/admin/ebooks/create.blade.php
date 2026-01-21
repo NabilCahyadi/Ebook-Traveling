@@ -228,15 +228,30 @@
                                     </option>
                                     <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>
                                         {{ __('admin.ebooks.published') }}</option>
+                                    <option value="scheduled" {{ old('status') == 'scheduled' ? 'selected' : '' }}>
+                                        Scheduled</option>
                                     <option value="unpublished" {{ old('status') == 'unpublished' ? 'selected' : '' }}>
                                         {{ __('admin.ebooks.unpublished') }}</option>
-                                    <option value="archived" {{ old('status') == 'archived' ? 'selected' : '' }}>{{ __('admin.ebooks.archived') }}
-                                    </option>
                                 </select>
                                 <!-- <small class="text-muted">Admin dapat langsung publish tanpa approval</small> -->
                                 @error('status')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                            </div>
+                        </div>
+
+                        <!-- Scheduled Publishing Date/Time -->
+                        <div class="row" id="scheduledDateContainer" style="display: none;">
+                            <div class="col-md-12 mb-3">
+                                <label for="published_at" class="form-label"><i class="ti ti-calendar-time me-1"></i> Publish Date & Time <span class="text-danger">*</span></label>
+                                <input type="datetime-local" class="form-control @error('published_at') is-invalid @enderror" 
+                                    id="published_at" name="published_at" 
+                                    value="{{ old('published_at') }}"
+                                    min="{{ now()->format('Y-m-d\TH:i') }}">
+                                @error('published_at')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <div class="form-text">Set the date and time when this ebook will be automatically published</div>
                             </div>
                         </div>
                     </div>
@@ -878,5 +893,24 @@
                 creatorSuggestions.hide();
             }
         });
+
+        // Toggle scheduled date container based on status selection
+        const statusSelect = document.getElementById('status');
+        const scheduledContainer = document.getElementById('scheduledDateContainer');
+        const publishedAtInput = document.getElementById('published_at');
+        
+        function toggleScheduledDate() {
+            if (statusSelect.value === 'scheduled') {
+                scheduledContainer.style.display = 'flex';
+                publishedAtInput.required = true;
+            } else {
+                scheduledContainer.style.display = 'none';
+                publishedAtInput.required = false;
+            }
+        }
+        
+        statusSelect.addEventListener('change', toggleScheduledDate);
+        // Run on page load
+        toggleScheduledDate();
     </script>
 @endpush

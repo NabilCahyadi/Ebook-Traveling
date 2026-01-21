@@ -26,6 +26,24 @@ class AdminDashboardController extends Controller
         $totalCategories = \App\Models\Category::count();
         $totalCities = \App\Models\City::count();
 
+        // Get Ebook status counts
+        $ebookStatusCounts = [
+            'draft' => \App\Models\Ebook::where('status', 'draft')->count(),
+            'published' => \App\Models\Ebook::where('status', 'published')->count(),
+            'scheduled' => \App\Models\Ebook::where('status', 'scheduled')->count(),
+            'unpublished' => \App\Models\Ebook::where('status', 'unpublished')->count(),
+            'trash' => \App\Models\Ebook::onlyTrashed()->count(),
+        ];
+
+        // Get Blog status counts
+        $blogStatusCounts = [
+            'draft' => \App\Models\Blog::where('status', 'draft')->count(),
+            'published' => \App\Models\Blog::where('status', 'published')->count(),
+            'scheduled' => \App\Models\Blog::where('status', 'scheduled')->count(),
+            'unpublished' => \App\Models\Blog::where('status', 'unpublished')->count(),
+            'trash' => \App\Models\Blog::onlyTrashed()->count(),
+        ];
+
         // Get sales statistics from subscriptions
         $totalOrders = 0;
         $totalRevenue = 0;
@@ -113,7 +131,9 @@ class AdminDashboardController extends Controller
             'monthlyRevenue',
             'categoryStats',
             'cityStats',
-            'recentActivities'
+            'recentActivities',
+            'ebookStatusCounts',
+            'blogStatusCounts'
         ));
     }
 

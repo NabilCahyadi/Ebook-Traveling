@@ -146,15 +146,28 @@
                                     </option>
                                     <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>
                                         {{ __('admin.blogs.published') }}</option>
+                                    <option value="scheduled" {{ old('status') == 'scheduled' ? 'selected' : '' }}>
+                                        <i class="ti ti-clock"></i> Scheduled</option>
                                     <option value="unpublished" {{ old('status') == 'unpublished' ? 'selected' : '' }}>
                                         {{ __('admin.blogs.unpublished') }}</option>
-                                    <option value="archived" {{ old('status') == 'archived' ? 'selected' : '' }}>{{ __('admin.blogs.archived') }}
-                                    </option>
                                 </select>
                                 @error('status')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                                 <div class="form-text">{{ __('admin.blogs.set_blog_status') }}</div>
+                            </div>
+
+                            <!-- Scheduled Publishing Date/Time -->
+                            <div class="mb-3" id="scheduledDateContainer" style="display: none;">
+                                <label class="form-label" for="published_at"><i class="ti ti-calendar-time me-1"></i> Publish Date & Time <span class="text-danger">*</span></label>
+                                <input type="datetime-local" class="form-control @error('published_at') is-invalid @enderror" 
+                                    id="published_at" name="published_at" 
+                                    value="{{ old('published_at') }}"
+                                    min="{{ now()->format('Y-m-d\TH:i') }}">
+                                @error('published_at')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <div class="form-text">Set the date and time when this blog will be automatically published</div>
                             </div>
 
                             <div class="d-grid gap-2">
@@ -871,6 +884,25 @@
                     renderCategories();
                 });
             }
+
+            // Toggle scheduled date container based on status selection
+            const statusSelect = document.getElementById('status');
+            const scheduledContainer = document.getElementById('scheduledDateContainer');
+            const publishedAtInput = document.getElementById('published_at');
+            
+            function toggleScheduledDate() {
+                if (statusSelect.value === 'scheduled') {
+                    scheduledContainer.style.display = 'block';
+                    publishedAtInput.required = true;
+                } else {
+                    scheduledContainer.style.display = 'none';
+                    publishedAtInput.required = false;
+                }
+            }
+            
+            statusSelect.addEventListener('change', toggleScheduledDate);
+            // Run on page load
+            toggleScheduledDate();
         </script>
     @endpush
 @endsection

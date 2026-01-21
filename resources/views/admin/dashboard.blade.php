@@ -287,6 +287,178 @@
         </div>
     </div>
 
+    <!-- Content Status Widgets -->
+    <div class="row g-4 mb-4">
+        <!-- Ebook Status Widget -->
+        <div class="col-xl-6 col-12">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title mb-1"><i class="ti ti-book me-2"></i>Ebook Status Overview</h5>
+                        <p class="card-subtitle mb-0">Content distribution by status</p>
+                    </div>
+                    <a href="{{ route('admin.ebooks.index') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-6 col-md-4">
+                            <div class="d-flex align-items-center p-3 rounded bg-label-warning">
+                                <div class="avatar avatar-sm me-3">
+                                    <span class="avatar-initial rounded bg-warning"><i class="ti ti-pencil"></i></span>
+                                </div>
+                                <div>
+                                    <h5 class="mb-0">{{ $ebookStatusCounts['draft'] ?? 0 }}</h5>
+                                    <small>Draft</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="d-flex align-items-center p-3 rounded bg-label-success">
+                                <div class="avatar avatar-sm me-3">
+                                    <span class="avatar-initial rounded bg-success"><i class="ti ti-check"></i></span>
+                                </div>
+                                <div>
+                                    <h5 class="mb-0">{{ $ebookStatusCounts['published'] ?? 0 }}</h5>
+                                    <small>Published</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="d-flex align-items-center p-3 rounded bg-label-info">
+                                <div class="avatar avatar-sm me-3">
+                                    <span class="avatar-initial rounded bg-info"><i class="ti ti-clock"></i></span>
+                                </div>
+                                <div>
+                                    <h5 class="mb-0">{{ $ebookStatusCounts['scheduled'] ?? 0 }}</h5>
+                                    <small>Scheduled</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="d-flex align-items-center p-3 rounded bg-label-secondary">
+                                <div class="avatar avatar-sm me-3">
+                                    <span class="avatar-initial rounded bg-secondary"><i class="ti ti-eye-off"></i></span>
+                                </div>
+                                <div>
+                                    <h5 class="mb-0">{{ $ebookStatusCounts['unpublished'] ?? 0 }}</h5>
+                                    <small>Unpublished</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="d-flex align-items-center p-3 rounded bg-label-danger">
+                                <div class="avatar avatar-sm me-3">
+                                    <span class="avatar-initial rounded bg-danger"><i class="ti ti-trash"></i></span>
+                                </div>
+                                <div>
+                                    <h5 class="mb-0">{{ $ebookStatusCounts['trash'] ?? 0 }}</h5>
+                                    <small>Trash</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="d-flex align-items-center p-3 rounded bg-label-primary">
+                                <div class="avatar avatar-sm me-3">
+                                    <span class="avatar-initial rounded bg-primary"><i class="ti ti-stack"></i></span>
+                                </div>
+                                <div>
+                                    <h5 class="mb-0">{{ $totalEbooks }}</h5>
+                                    <small>Total</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blog Status Widget -->
+        <div class="col-xl-6 col-12">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title mb-1"><i class="ti ti-news me-2"></i>Blog Status Overview</h5>
+                        <p class="card-subtitle mb-0">Content distribution by status</p>
+                    </div>
+                    <a href="{{ route('admin.blogs.index') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-6 col-md-4">
+                            <div class="d-flex align-items-center p-3 rounded bg-label-warning">
+                                <div class="avatar avatar-sm me-3">
+                                    <span class="avatar-initial rounded bg-warning"><i class="ti ti-pencil"></i></span>
+                                </div>
+                                <div>
+                                    <h5 class="mb-0">{{ $blogStatusCounts['draft'] ?? 0 }}</h5>
+                                    <small>Draft</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="d-flex align-items-center p-3 rounded bg-label-success">
+                                <div class="avatar avatar-sm me-3">
+                                    <span class="avatar-initial rounded bg-success"><i class="ti ti-check"></i></span>
+                                </div>
+                                <div>
+                                    <h5 class="mb-0">{{ $blogStatusCounts['published'] ?? 0 }}</h5>
+                                    <small>Published</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="d-flex align-items-center p-3 rounded bg-label-info">
+                                <div class="avatar avatar-sm me-3">
+                                    <span class="avatar-initial rounded bg-info"><i class="ti ti-clock"></i></span>
+                                </div>
+                                <div>
+                                    <h5 class="mb-0">{{ $blogStatusCounts['scheduled'] ?? 0 }}</h5>
+                                    <small>Scheduled</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="d-flex align-items-center p-3 rounded bg-label-secondary">
+                                <div class="avatar avatar-sm me-3">
+                                    <span class="avatar-initial rounded bg-secondary"><i class="ti ti-eye-off"></i></span>
+                                </div>
+                                <div>
+                                    <h5 class="mb-0">{{ $blogStatusCounts['unpublished'] ?? 0 }}</h5>
+                                    <small>Unpublished</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="d-flex align-items-center p-3 rounded bg-label-danger">
+                                <div class="avatar avatar-sm me-3">
+                                    <span class="avatar-initial rounded bg-danger"><i class="ti ti-trash"></i></span>
+                                </div>
+                                <div>
+                                    <h5 class="mb-0">{{ $blogStatusCounts['trash'] ?? 0 }}</h5>
+                                    <small>Trash</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="d-flex align-items-center p-3 rounded bg-label-primary">
+                                <div class="avatar avatar-sm me-3">
+                                    <span class="avatar-initial rounded bg-primary"><i class="ti ti-stack"></i></span>
+                                </div>
+                                <div>
+                                    @php
+                                        $totalBlogs = array_sum(array_filter($blogStatusCounts ?? [], fn($v) => is_numeric($v)));
+                                    @endphp
+                                    <h5 class="mb-0">{{ $totalBlogs }}</h5>
+                                    <small>Total</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Charts Row -->
     <div class="row g-4 mb-4">
         <!-- Category Distribution -->
@@ -472,10 +644,14 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                @if ($ebook->is_active)
-                                                    <span class="badge bg-label-success">Active</span>
+                                                @if ($ebook->status === 'published')
+                                                    <span class="badge bg-label-success">Published</span>
+                                                @elseif ($ebook->status === 'draft')
+                                                    <span class="badge bg-label-warning">Draft</span>
+                                                @elseif ($ebook->status === 'unpublished')
+                                                    <span class="badge bg-label-danger">Unpublished</span>
                                                 @else
-                                                    <span class="badge bg-label-danger">Inactive</span>
+                                                    <span class="badge bg-label-secondary">{{ ucfirst($ebook->status) }}</span>
                                                 @endif
                                             </td>
                                             <td>

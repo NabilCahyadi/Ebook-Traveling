@@ -66,11 +66,7 @@ class BlogRepository implements BlogRepositoryInterface
     {
         $query = $this->model->with('author');
 
-        // ALWAYS exclude archived blogs from main listing, regardless of any filter
-        // Archived blogs should ONLY appear in the archived page
-        $query->whereIn('status', ['draft', 'published', 'unpublished']);
-
-        // Filter by specific status if provided (but never show archived)
+        // Filter by specific status if provided
         if (isset($filters['status']) && $filters['status'] && in_array($filters['status'], ['draft', 'published', 'unpublished'])) {
             $query->where('status', $filters['status']);
         }
@@ -95,21 +91,6 @@ class BlogRepository implements BlogRepositoryInterface
             ->latest('created_at');
 
         return $query->paginate($perPage);
-    }
-
-    public function getArchived(?string $search = null, int $perPage = 15)
-    {
-        $query = $this->model->with('author')->where('status', 'archived');
-
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                    ->orWhere('content', 'like', "%{$search}%")
-                    ->orWhere('excerpt', 'like', "%{$search}%");
-            });
-        }
-
-        return $query->latest('created_at')->paginate($perPage);
     }
 
     public function getAllCategories()

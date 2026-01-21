@@ -141,14 +141,9 @@
                                     </a>
                                 </li>
                                 <li
-                                    class="menu-item {{ Request::is('admin/ebooks') && !Request::is('admin/ebooks/create') && !Request::is('admin/ebooks/archived') && !Request::is('admin/ebooks/trash') ? 'active' : '' }}">
+                                    class="menu-item {{ Request::is('admin/ebooks') && !Request::is('admin/ebooks/create') && !Request::is('admin/ebooks/trash') ? 'active' : '' }}">
                                     <a href="{{ route('admin.ebooks.index') }}" class="menu-link">
                                         <div data-i18n="All Ebooks">{{ __('admin.ebooks.all_ebooks') }}</div>
-                                    </a>
-                                </li>
-                                <li class="menu-item {{ Request::is('admin/ebooks/archived') ? 'active' : '' }}">
-                                    <a href="{{ route('admin.ebooks.archived') }}" class="menu-link">
-                                        <div data-i18n="Archived">Archived</div>
                                     </a>
                                 </li>
                                 <li class="menu-item {{ Request::is('admin/ebooks/trash') ? 'active' : '' }}">
@@ -198,18 +193,45 @@
                     <div data-i18n="Blog Management">{{ __('admin.menu.blog_management') }}</div>
                 </a>
                 <ul class="menu-sub">
+                    <!-- Blogs -->
                     @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasPermission('blogs.view'))
-                        <li
-                            class="menu-item {{ Request::is('admin/blogs*') && !Request::is('admin/blog-categories*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.blogs.index') }}" class="menu-link">
+                        <li class="menu-item {{ Request::is('admin/blogs*') && !Request::is('admin/blog-categories*') ? 'active open' : '' }}">
+                            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                                <i class="menu-icon tf-icons ti ti-article"></i>
                                 <div data-i18n="Blogs">{{ __('admin.menu.blogs') }}</div>
                             </a>
+                            <ul class="menu-sub">
+                                <li class="menu-item {{ Request::is('admin/blogs/create') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.blogs.create') }}" class="menu-link">
+                                        <div data-i18n="Add New Blog">Add New Blog</div>
+                                    </a>
+                                </li>
+                                <li
+                                    class="menu-item {{ Request::is('admin/blogs') && !Request::is('admin/blogs/create') && !Request::is('admin/blogs/trash') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.blogs.index') }}" class="menu-link">
+                                        <div data-i18n="All Blogs">All Blogs</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item {{ Request::is('admin/blogs/trash') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.blogs.trash') }}" class="menu-link">
+                                        <div data-i18n="Trash">Trash</div>
+                                        @php
+                                            $trashedBlogsCount = \App\Models\Blog::onlyTrashed()->count();
+                                        @endphp
+                                        @if ($trashedBlogsCount > 0)
+                                            <span class="badge bg-danger rounded-pill ms-auto">{{ $trashedBlogsCount }}</span>
+                                        @endif
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     @endif
 
+                    <!-- Blog Categories -->
                     @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['blog-categories.view', 'blog-categories.create', 'blog-categories.edit', 'blog-categories.delete']))
                         <li class="menu-item {{ Request::is('admin/blog-categories*') ? 'active' : '' }}">
                             <a href="{{ route('admin.blog-categories.index') }}" class="menu-link">
+                                <i class="menu-icon tf-icons ti ti-category"></i>
                                 <div data-i18n="Blog Categories">{{ __('admin.menu.blog_categories') }}</div>
                             </a>
                         </li>

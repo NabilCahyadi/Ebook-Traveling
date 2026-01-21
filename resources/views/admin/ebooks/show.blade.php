@@ -84,9 +84,20 @@
                                 <span class="badge bg-warning">
                                     <i class="bx bx-time"></i> Draft
                                 </span>
+                            @elseif($ebook->status === 'scheduled')
+                                <span class="badge bg-info">
+                                    <i class="ti ti-clock"></i> Scheduled
+                                    @if($ebook->published_at)
+                                        <small class="ms-1">({{ $ebook->published_at->format('d M Y, H:i') }})</small>
+                                    @endif
+                                </span>
+                            @elseif($ebook->status === 'unpublished')
+                                <span class="badge bg-secondary">
+                                    <i class="bx bx-eye-off"></i> Unpublished
+                                </span>
                             @else
                                 <span class="badge bg-secondary">
-                                    <i class="bx bx-archive"></i> Archived
+                                    <i class="bx bx-help-circle"></i> {{ ucfirst($ebook->status) }}
                                 </span>
                             @endif
                         </div>

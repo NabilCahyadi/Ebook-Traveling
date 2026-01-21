@@ -4,17 +4,18 @@
 
 @push('styles')
     <style>
-        .setting-card {
-            border-left: 4px solid #696cff;
-        }
 
+        .bg-label-primary {
+            background-color: rgba(255, 76, 97, 0.12) !important;
+            color: #ff4c61 !important;
+        }
         .add-setting-card {
             border: 2px dashed #ddd;
             transition: all 0.3s;
         }
 
         .add-setting-card:hover {
-            border-color: #696cff;
+            border-color: #ff4c61;
             background-color: #f8f9fa;
         }
     </style>

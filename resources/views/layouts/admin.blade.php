@@ -250,6 +250,18 @@
             color: #ff4c61 !important;
         }
         
+        /* Level 1 dropdown when ACTIVE AND OPEN - Icon putih seperti menu active biasa */
+        .menu-inner > .menu-item.active.open > .menu-link.menu-toggle {
+            background-color: #ff4c61 !important;
+            color: #fff !important;
+            font-weight: 600;
+        }
+        
+        .menu-inner > .menu-item.active.open > .menu-link.menu-toggle .menu-icon,
+        .menu-inner > .menu-item.active.open > .menu-link.menu-toggle div {
+            color: #fff !important;
+        }
+        
         /* Level 1 submenu container */
         .menu-inner > .menu-item > .menu-sub {
             background-color: rgba(255, 76, 97, 0.03);

@@ -53,10 +53,10 @@
                                 <span class="badge bg-success">Published</span>
                             @elseif($blog->status === 'draft')
                                 <span class="badge bg-warning">Draft</span>
+                            @elseif($blog->status === 'scheduled')
+                                <span class="badge bg-info"><i class="ti ti-clock me-1"></i>Scheduled</span>
                             @elseif($blog->status === 'unpublished')
                                 <span class="badge bg-secondary">Unpublished</span>
-                            @elseif($blog->status === 'archived')
-                                <span class="badge bg-dark">Archived</span>
                             @else
                                 <span class="badge bg-danger">{{ $blog->status ?: 'Unknown' }}</span>
                             @endif
@@ -130,10 +130,10 @@
                                 <span class="badge bg-success">{{ __('admin.blogs.published') }}</span>
                             @elseif($blog->status === 'draft')
                                 <span class="badge bg-warning">{{ __('admin.blogs.draft') }}</span>
+                            @elseif($blog->status === 'scheduled')
+                                <span class="badge bg-info"><i class="ti ti-clock me-1"></i>Scheduled</span>
                             @elseif($blog->status === 'unpublished')
                                 <span class="badge bg-secondary">{{ __('admin.blogs.unpublished') }}</span>
-                            @elseif($blog->status === 'archived')
-                                <span class="badge bg-dark">{{ __('admin.blogs.archived') }}</span>
                             @else
                                 <span class="badge bg-danger">{{ $blog->status ?: __('admin.blogs.unknown') }}</span>
                             @endif

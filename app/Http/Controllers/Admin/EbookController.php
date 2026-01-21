@@ -37,38 +37,11 @@ class EbookController extends Controller
         $categoryId = $request->get('category_id');
         $cityId = $request->get('city_id');
 
-        // Exclude archived from main index
-        if ($status !== 'archived') {
-            $statusExclude = 'archived';
-        } else {
-            $statusExclude = null;
-        }
-
-        $ebooks = $this->ebookService->getAllEbooks($perPage, $sortBy, $sortOrder, $search, $status, $categoryId, $cityId, $statusExclude);
+        $ebooks = $this->ebookService->getAllEbooks($perPage, $sortBy, $sortOrder, $search, $status, $categoryId, $cityId);
         $categories = \App\Models\Category::orderBy('name')->get();
         $cities = \App\Models\City::orderBy('name')->get();
         
         return view('admin.ebooks.index', compact('ebooks', 'categories', 'cities'));
-    }
-
-    /**
-     * Display archived ebooks only.
-     */
-    public function archived(Request $request)
-    {
-        $perPage = $request->get('per_page', 10);
-        $sortBy = $request->get('sort_by', 'created_at');
-        $sortOrder = $request->get('sort_order', 'desc');
-        $search = $request->get('search');
-        $categoryId = $request->get('category_id');
-        $cityId = $request->get('city_id');
-
-        // Only show archived ebooks
-        $ebooks = $this->ebookService->getAllEbooks($perPage, $sortBy, $sortOrder, $search, 'archived', $categoryId, $cityId);
-        $categories = \App\Models\Category::orderBy('name')->get();
-        $cities = \App\Models\City::orderBy('name')->get();
-        
-        return view('admin.ebooks.archived', compact('ebooks', 'categories', 'cities'));
     }
 
     /**
@@ -97,7 +70,8 @@ class EbookController extends Controller
                 'description' => 'required|string',
                 'cover_image_cropped' => 'nullable|string', // base64 dari auto crop
                 'pdf_file' => 'nullable|file|mimes:pdf|max:10240',
-                'status' => 'required|in:draft,published,unpublished,archived',
+                'status' => 'required|in:draft,published,scheduled,unpublished',
+                'published_at' => 'nullable|date|after:now',
             ], [
                 'category_ids.required' => 'Kategori ebook wajib dipilih minimal 1.',
                 'category_ids.array' => 'Format kategori tidak valid.',
@@ -114,7 +88,13 @@ class EbookController extends Controller
                 'pdf_file.max' => 'Ukuran file PDF maksimal 10MB.',
                 'status.required' => 'Status publikasi wajib dipilih.',
                 'status.in' => 'Status publikasi tidak valid.',
+                'published_at.after' => 'Tanggal publish harus di masa depan.',
             ]);
+
+            // Require published_at for scheduled status
+            if ($validated['status'] === 'scheduled' && empty($validated['published_at'])) {
+                return back()->withErrors(['published_at' => 'Tanggal publish wajib diisi untuk status Scheduled.'])->withInput();
+            }
 
             // Check if user is admin (using admin guard)
             $admin = Auth::guard('admin')->user();
@@ -392,7 +372,8 @@ class EbookController extends Controller
             'description' => 'required|string',
             'cover_image_cropped' => 'nullable|string', // base64 dari auto crop
             'pdf_file' => 'nullable|file|mimes:pdf|max:10240',
-            'status' => 'required|in:draft,published,unpublished,archived',
+            'status' => 'required|in:draft,published,scheduled,unpublished',
+            'published_at' => 'nullable|date',
         ], [
             'category_ids.required' => 'Kategori ebook wajib dipilih minimal 1.',
             'category_ids.array' => 'Format kategori tidak valid.',
@@ -410,6 +391,11 @@ class EbookController extends Controller
             'status.required' => 'Status publikasi wajib dipilih.',
             'status.in' => 'Status publikasi tidak valid.',
         ]);
+
+        // Require published_at for scheduled status
+        if ($validated['status'] === 'scheduled' && empty($validated['published_at'])) {
+            return back()->withErrors(['published_at' => 'Tanggal publish wajib diisi untuk status Scheduled.'])->withInput();
+        }
 
         try {
             // Extract category_ids for pivot table sync
@@ -663,5 +649,59 @@ class EbookController extends Controller
         $filename = 'ebooks_' . now()->format('Y-m-d_His') . '.xlsx';
         
         return Excel::download(new EbooksExport($filters), $filename);
+    }
+
+    /**
+     * Bulk action for changing status
+     */
+    public function bulkAction(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'required|string',
+            'action' => 'required|in:draft,published,scheduled,unpublished',
+        ]);
+
+        try {
+            $updateData = [
+                'status' => $validated['action'],
+            ];
+            
+            // Set published_at based on action
+            if ($validated['action'] === 'published') {
+                $updateData['published_at'] = now();
+            }
+
+            $count = \App\Models\Ebook::whereIn('id', $validated['ids'])
+                ->update($updateData);
+
+            $statusLabel = ucfirst($validated['action']);
+            return redirect()->back()
+                ->with('success', "{$count} ebook(s) status changed to {$statusLabel}!");
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to perform bulk action: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Bulk delete (soft delete)
+     */
+    public function bulkDelete(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'required|string',
+        ]);
+
+        try {
+            $count = \App\Models\Ebook::whereIn('id', $validated['ids'])->delete();
+
+            return redirect()->back()
+                ->with('success', "{$count} ebook(s) moved to trash!");
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to delete ebooks: ' . $e->getMessage());
+        }
     }
 }
