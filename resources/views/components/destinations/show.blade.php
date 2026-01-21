@@ -441,7 +441,7 @@
                         @endforeach
                         @else
                         <div class="col-12 text-center py-5">
-                            <p class="text-muted">Belum ada e-book untuk destinasi ini.</p>
+                            <p class="text-muted">No e-book available for this destination yet.</p>
                         </div>
                         @endif
                     </div>

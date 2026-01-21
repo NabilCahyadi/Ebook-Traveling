@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Banner;
 use App\Models\City;
 use App\Services\BannerService;
 use App\Services\CityService;
 use App\Services\SubscriptionPlanService;
 use App\Services\CollectionService;
 use App\Services\BlogService;
-use Illuminate\Support\Facades\DB;
+use App\Models\Ebook;
 
 class HomeController extends Controller
 {
@@ -135,5 +134,23 @@ class HomeController extends Controller
             'query' => $query,
             'citiesHeader' => $citiesHeader
         ]);
+    }
+
+    public function filterByCity($slug)
+    {
+        $city = City::where('slug', $slug)->firstOrFail();
+
+        $ebooks = Ebook::where('status', 'published')
+            ->where('city_id', $city->id)
+            ->with(['city', 'category', 'creator', 'ratings'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
+
+        $citiesHeader = City::where('is_active', true)
+            ->orderBy('order_index')
+            ->orderBy('name')
+            ->get();
+
+        return view('city-filter', compact('ebooks', 'city', 'citiesHeader'));
     }
 }

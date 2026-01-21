@@ -25,8 +25,6 @@
             </a>
         </li>
 
-
-
         <!-- Admin Management (Only for Superadmin) -->
         @if(auth('admin')->check() && auth('admin')->user()->type === 'superadmin')
             <li

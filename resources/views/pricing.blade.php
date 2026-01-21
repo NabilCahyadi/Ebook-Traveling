@@ -550,28 +550,34 @@
                                 <span class="text-muted small d-block text-center py-2">Upgrade only</span>
                                 @endif
                                 @else
-                                    @if(str_contains($plan->mayar_payment_link, 'mayar.shop'))
-                                        {{-- SIMULASI: pakai link langsung, isi manual saat testing --}}
-                                        <a href="{{ $plan->mayar_payment_link }}"
-                                            class="pricing-button pricing-button--primary w-100 text-white text-center"
-                                            target="_blank">
-                                            {{ $plan->button_text }}
-                                        </a>
-                                    @else
-                                    {{-- LIVE: redirect via controller agar kirim data user --}}
-                                        <a href="{{ route('subscribe.redirect', $plan->slug) }}"
-                                            class="pricing-button pricing-button--primary w-100 text-white text-center"
-                                            style="text-decoration: none; color: inherit;">
-                                            {{ $plan->button_text }}
-                                        </a>
-                                    @endif
+                                @if(str_contains($plan->mayar_payment_link, 'mayar.shop'))
+                                {{-- SIMULASI: pakai link langsung, isi manual saat testing --}}
+                                <a href="{{ $plan->mayar_payment_link }}"
+                                    class="pricing-button pricing-button--primary w-100 text-white text-center"
+                                    target="_blank">
+                                    {{ $plan->button_text }}
+                                </a>
+                                @else
+                                {{-- LIVE: redirect via controller agar kirim data user --}}
+                                <a href="{{ route('subscribe.redirect', $plan->slug) }}"
+                                    class="pricing-button pricing-button--primary w-100 text-white text-center"
+                                    style="text-decoration: none; color: inherit;">
+                                    {{ $plan->button_text }}
+                                </a>
+                                @endif
                                 @endif
 
-                                <!-- WhatsApp (versi kamu: dengan data user lengkap) -->
                                 @php
-                                $waNumber = trim(app('settings')->get('whatsapp_number', '6289657571177'));
-                                $waText = urlencode("Halo Admin, saya ingin berlangganan.\n\nNama\t: " . $user->name . "\nEmail\t: " . $user->email . "\nPaket\t: " . $plan->name . "\nHarga\t: Rp " . number_format($plan->price, 0, ',', '.') . "\n\nMohon bantuannya. Terima kasih!");
+                                    // Ambil data WhatsApp dari database
+                                    $whatsappInfo = \App\Models\ContactInfo::where('contact_type', 'whatsapp')->first();
+                                    $waNumber = $whatsappInfo
+                                    ? preg_replace('/[^0-9]/', '', $whatsappInfo->link) // Hapus semua non-digit
+                                    : '6289657571177'; // Fallback
+
+                                    // Format teks pesan
+                                    $waText = urlencode("Halo Admin, saya ingin berlangganan.\n\nNama\t: " . $user->name . "\nEmail\t: " . $user->email . "\nPaket\t: " . $plan->name . "\nHarga\t: Rp " . number_format($plan->price, 0, ',', '.') . "\n\nMohon bantuannya. Terima kasih!");
                                 @endphp
+
                                 <a href="https://wa.me/{{ $waNumber }}?text={{ $waText }}"
                                     class="btn bg-success text-white rounded-pill py-3 w-100 mb-2"
                                     target="_blank">

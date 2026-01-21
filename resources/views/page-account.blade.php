@@ -488,7 +488,7 @@
             <div class="archive-header">
                 <div class="row align-items-center">
                     <div class="col-xl-3">
-                        <h1 class="mb-15">My Account</h1>
+                        <h3 class="mb-15">My Account</h3>
                         <div class="breadcrumb">
                             <a href="/" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
                             <span></span> My Account

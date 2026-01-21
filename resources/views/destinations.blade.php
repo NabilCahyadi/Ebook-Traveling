@@ -226,11 +226,6 @@
         transition: all 0.3s ease;
     }
 
-    .destination-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    }
-
     .destination-thumb {
         height: 170px;
         background-position: center;
@@ -240,7 +235,7 @@
     }
 
     .destination-card:hover .destination-thumb {
-        transform: scale(1.05);
+        transform: scale(1.09);
     }
 
     .destination-badge {
@@ -256,46 +251,28 @@
         box-shadow: 0 6px 18px rgba(255, 76, 97, 0.18);
         z-index: 2;
     }
+</style>
+<style>
+    .destination-link {
+        display: block;
+        height: 100%;
+        transition: transform 0.3s ease;
+    }
 
-    .destination-content {
-        padding: 12px 14px 8px 12px;
+    .destination-card {
+        height: 250px;
+        border-radius: 12px;
+        overflow: hidden;
     }
 
     .destination-title {
-        font-size: 1rem;
-        font-weight: 600;
-        margin: 0 0 6px;
-        color: #0f172a;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+        font-size: 1.1rem;
     }
 
-    .destination-meta {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 0.9rem;
-        color: #6b7280;
-    }
-
-    .destination-stars {
-        color: #FFB74D;
-    }
-
-    .destination-stars i {
-        color: #FFB74D;
-        margin-right: 2px;
-    }
-
-    .destination-rating {
-        font-weight: 600;
-        color: #111827;
-        margin-left: 6px;
-    }
-
-    @media(min-width:1200px) {
-        .col-xl-3 {
-            flex: 0 0 25%;
-            max-width: 25%;
-        }
+    .destination-badge {
+        font-size: 0.85rem;
+        font-weight: bold;
     }
 </style>
 
@@ -346,9 +323,9 @@
 <!-- cards -->
 <section class="destinations-cards py-5">
     <div class="container">
-        <div class="text-center mb-10">
-            <h3 class="mb-4">Destinations Across Indonesia</h3>
-            <p class="mb-4 mx-auto" style="max-width:50rem;">
+        <div class="text-center mb-16">
+            <h3 class="mb-1">Destinations Across Indonesia</h3>
+            <p class="mb-3 mx-auto" style="max-width:50rem;">
                 Explore diverse destinations from beaches to cities — discover hidden gems and popular spots with authentic local experiences.
             </p>
         </div>
@@ -356,17 +333,18 @@
             @forelse ($allCities as $index => $city)
             <div class="col-lg-3 col-md-4 col-sm-6">
                 {{-- Bungkus seluruh card dengan tag <a> --}}
-                <a href="{{ route('destination.show', $city->slug) }}" class="text-decoration-none">
-                    <div class="destination-card position-relative">
-                        <div class="destination-thumb" style="background-image:url('{{ asset($city->image) }}');"></div>
+                <a href="{{ route('destination.show', $city->slug) }}" class="text-decoration-none destination-link">
+                    <div class="destination-card position-relative overflow-hidden" style="height: 250px; border-radius: 12px;">
+                        <!-- Gambar sebagai background -->
+                        <div class="destination-thumb" style="background-image: url('{{ asset($city->image) }}'); height: 100%; background-size: cover; background-position: center;"></div>
 
-                        @if($city->is_popular && $city->order_index <= 10)
-                            <span class="destination-badge">#{{ $city->order_index }}</span>
-                        @endif
+                        <!-- Overlay gelap untuk teks lebih terbaca -->
+                        <div class="destination-overlay position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0,0,0,0.3);"></div>
 
-                            <div class="destination-content">
-                                <div class="destination-title">{{ $city->name }}</div>
-                            </div>
+                        <!-- Konten overlay (nama kota) -->
+                        <div class="destination-content position-absolute bottom-0 start-0 w-100 p-3 text-center">
+                            <div class="destination-title text-white fw-bold fs-5">{{ $city->name }}</div>
+                        </div>
                     </div>
                 </a>
             </div>
