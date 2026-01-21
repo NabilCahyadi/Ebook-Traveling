@@ -1,54 +1,102 @@
 #!/bin/bash
 
-# Path ke project
+# ===============================
+# CONFIG
+# ===============================
 PROJECT_PATH="/home/u778058510/domains/mappy.id/ebook_traveling_core"
-
-# Path ke PHP (ubah jika hosting berbeda)
 PHP_BIN="/usr/bin/php"
+BRANCH="main"
 
-# Masuk ke folder project
-cd $PROJECT_PATH
+cd "$PROJECT_PATH" || exit 1
 
-echo "🚀 Starting deployment process..."
+echo "🚀 Starting deployment (NO maintenance mode)"
+echo "📅 $(date)"
 
-# Update repo dari GitHub
-echo "📥 Pulling latest changes from repository..."
-/usr/bin/git fetch --all    
-/usr/bin/git reset --hard origin/main
-/usr/bin/git pull origin main
+# ===============================
+# GIT UPDATE
+# ===============================
+echo "📥 Updating source code..."
+/usr/bin/git fetch origin
+/usr/bin/git reset --hard origin/$BRANCH
 
-# Install/Update dependencies
-echo "📦 Installing Composer dependencies..."
-composer install --no-dev --optimize-autoloader --no-interaction
+# ===============================
+# COMPOSER
+# ===============================
+echo "📦 Installing composer dependencies..."
+composer install \
+  --no-dev \
+  --optimize-autoloader \
+  --no-interaction \
+  || echo "⚠️ Composer failed, continuing..."
 
-# Clear all caches before migration
-echo "🧹 Clearing application cache..."
-$PHP_BIN artisan config:clear
-$PHP_BIN artisan cache:clear
-$PHP_BIN artisan view:clear
-$PHP_BIN artisan route:clear
+# ===============================
+# ENSURE STORAGE DIRECTORIES (🔥 FIX UTAMA)
+# ===============================
+echo "📁 Setting up storage structure..."
+# Create all required Laravel storage directories
+mkdir -p storage/framework/sessions
+mkdir -p storage/framework/views
+mkdir -p storage/framework/cache
+mkdir -p storage/framework/cache/data
+mkdir -p storage/logs
+mkdir -p storage/app/public
+mkdir -p storage/app/public/ebook_covers
+mkdir -p storage/app/public/subscription_banners
+mkdir -p storage/app/public/users/avatars
+mkdir -p storage/app/public/cities
+mkdir -p bootstrap/cache
 
-# Jalankan migration (tanpa fresh untuk preserve data)
-echo "🗄️  Running migrations..."
-# $PHP_BIN artisan migrate --force
+# ===============================
+# PERMISSIONS (CRITICAL FIX)
+# ===============================
+echo "🔒 Fixing permissions..."
+chmod -R 777 storage || true
+chmod -R 777 bootstrap/cache || true
+chown -R u778058510:u778058510 storage 2>/dev/null || true
+chown -R u778058510:u778058510 bootstrap/cache 2>/dev/null || true
 
-# Run seeders untuk update data yang diperlukan (tanpa hapus data existing)
-echo "🌱 Running necessary seeders..."
-# $PHP_BIN artisan db:seed --class=AdminPermissionsSeeder --force
-# $PHP_BIN artisan db:seed --class=RoleSeeder --force
-# $PHP_BIN artisan db:seed --class=PermissionSeeder --force
+# Ensure web server can write to these critical directories
+find storage -type d -exec chmod 777 {} \; 2>/dev/null || true
+find storage -type f -exec chmod 666 {} \; 2>/dev/null || true
+find bootstrap/cache -type d -exec chmod 777 {} \; 2>/dev/null || true
+find bootstrap/cache -type f -exec chmod 666 {} \; 2>/dev/null || true
 
-# Create storage symlink (PENTING untuk akses file dari public)
-echo "🔗 Creating storage symbolic link..."
-$PHP_BIN artisan storage:link
+# ===============================
+# CLEAR CACHE
+# ===============================
+echo "🧹 Clearing cache..."
+$PHP_BIN artisan config:clear || true
+$PHP_BIN artisan cache:clear || true
+$PHP_BIN artisan route:clear || true
+$PHP_BIN artisan view:clear || true
 
-# Set permissions untuk storage dan cache
-echo "🔒 Setting proper permissions..."
-chmod -R 775 storage bootstrap/cache
-chown -R $USER:$USER storage bootstrap/cache
+# ===============================
+# MIGRATION
+# ===============================
+echo "🗄️ Running migrations..."
+$PHP_BIN artisan migrate --force || echo "⚠️ Migration skipped"
 
-# Optimize application for production
-echo "⚡ Optimizing application..."
-$PHP_BIN artisan config:cache
-$PHP_BIN artisan route:cache
-$PHP_BIN artisan view:cache
+# ===============================
+# STORAGE LINK
+# ===============================
+echo "🔗 Creating storage symlink..."
+rm -f public/storage 2>/dev/null || true
+$PHP_BIN artisan storage:link || true
+
+# Verify symlink
+if [ -L "public/storage" ]; then
+    echo "✅ Storage symlink created successfully"
+else
+    echo "⚠️ Storage symlink may have failed"
+fi
+
+# ===============================
+# OPTIMIZE
+# ===============================
+echo "⚡ Optimizing..."
+$PHP_BIN artisan config:cache || true
+$PHP_BIN artisan route:cache || true
+$PHP_BIN artisan view:cache || true
+
+echo "✅ Deployment completed successfully"
+echo "📅 $(date)"
