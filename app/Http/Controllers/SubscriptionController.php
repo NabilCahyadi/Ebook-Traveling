@@ -12,6 +12,8 @@ use App\Services\MayarService;
 use App\Models\SubscriptionPlan;
 use App\Models\City;
 use App\Repositories\SubscriptionProcessRepository;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 
 class SubscriptionController extends Controller
 {

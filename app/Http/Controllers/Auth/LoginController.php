@@ -146,7 +146,7 @@ class LoginController extends Controller
     {
         $callbackUrl = config('app.url') . '/login/google/callback';
         
-        \Log::info('Google Login Redirect', [
+        Log::info('Google Login Redirect', [
             'app_url' => config('app.url'),
             'callback_url' => $callbackUrl,
             'request_url' => request()->url(),

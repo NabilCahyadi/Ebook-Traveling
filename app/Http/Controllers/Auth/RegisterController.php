@@ -71,7 +71,7 @@ class RegisterController extends Controller
     {
         $callbackUrl = config('services.google.redirect_register') ?: config('app.url') . '/register/google/callback';
         
-        \Log::info('Google Register Redirect', [
+        Log::info('Google Register Redirect', [
             'app_url' => config('app.url'),
             'callback_url' => $callbackUrl,
             'request_url' => request()->url(),
