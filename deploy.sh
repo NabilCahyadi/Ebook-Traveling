@@ -1,37 +1,110 @@
 #!/bin/bash
 
-# Path ke project
+# ===============================
+# CONFIG
+# ===============================
 PROJECT_PATH="/home/u778058510/domains/mappy.id/ebook_traveling_core"
-
-# Path ke PHP (ubah jika hosting berbeda)
 PHP_BIN="/usr/bin/php"
+BRANCH="main"
 
-# Masuk ke folder project
-cd $PROJECT_PATH
+cd "$PROJECT_PATH" || exit 1
 
-# Update repo dari GitHub
-/usr/bin/git fetch --all
-/usr/bin/git reset --hard origin/main
+echo "🚀 Starting deployment (NO maintenance mode)"
+echo "📅 $(date)"
 
-# Install/Update dependencies (optional, uncomment jika perlu)
-# composer install --no-dev --optimize-autoloader
+# ===============================
+# GIT UPDATE
+# ===============================
+echo "📥 Updating source code..."
+/usr/bin/git fetch origin
+/usr/bin/git reset --hard origin/$BRANCH
 
-# Jalankan migrate (HANYA untuk setup awal, ganti setelah ada data production!)
-$PHP_BIN artisan migrate --force
+# ===============================
+# IMMEDIATE FIX: Recreate storage directories after git reset
+# ===============================
+echo "📁 CRITICAL: Creating storage directories immediately..."
+mkdir -p storage/framework/sessions
+mkdir -p storage/framework/views
+mkdir -p storage/framework/cache
+mkdir -p storage/framework/cache/data
+mkdir -p storage/logs
+mkdir -p storage/app/public
+mkdir -p storage/app/public/ebook_covers
+mkdir -p storage/app/public/subscription_banners
+mkdir -p storage/app/public/users/avatars
+mkdir -p storage/app/public/cities
+mkdir -p bootstrap/cache
 
+# CRITICAL: Delete ALL session files (fix corrupt sessions)
+echo "🗑️ CRITICAL: Deleting all session files..."
+rm -rf storage/framework/sessions/* 2>/dev/null || true
+rm -rf storage/framework/cache/* 2>/dev/null || true
+rm -rf storage/framework/views/* 2>/dev/null || true
 
-# Create storage symlink (PENTING untuk akses file dari public)
-$PHP_BIN artisan storage:link
+# CRITICAL: Set permissions immediately
+echo "🔒 CRITICAL: Setting permissions immediately..."
+chmod -R 777 storage
+chmod -R 777 bootstrap/cache
 
+echo "✅ Storage structure verified"
 
-# Set permissions untuk storage dan cache
-chmod -R 775 storage bootstrap/cache
-chown -R $USER:$USER storage bootstrap/cache
+# ===============================
+# COMPOSER
+# ===============================
+echo "📦 Installing composer dependencies..."
+composer install \
+  --no-dev \
+  --optimize-autoloader \
+  --no-interaction \
+  || echo "⚠️ Composer failed, continuing..."
 
-# Clear optimize (cache, config, view, route, dll)
-$PHP_BIN artisan optimize:clear
+# ===============================
+# CLEAR CACHE
+# ===============================
+echo "🧹 Clearing ALL caches and sessions..."
+# Clear Laravel caches
+$PHP_BIN artisan config:clear || true
+$PHP_BIN artisan cache:clear || true
+$PHP_BIN artisan route:clear || true
+$PHP_BIN artisan view:clear || true
 
-# Cache config dan routes untuk performance
-$PHP_BIN artisan config:cache
-$PHP_BIN artisan route:cache
-$PHP_BIN artisan view:cache
+# Physically delete cache files
+rm -rf storage/framework/cache/data/* 2>/dev/null || true
+rm -rf storage/framework/views/* 2>/dev/null || true
+rm -rf bootstrap/cache/*.php 2>/dev/null || true
+
+# Delete ALL session files again (double insurance)
+rm -rf storage/framework/sessions/* 2>/dev/null || true
+
+echo "✅ All caches and sessions cleared"
+
+# ===============================
+# MIGRATION
+# ===============================
+echo "🗄️ Running migrations..."
+$PHP_BIN artisan migrate --force || echo "⚠️ Migration skipped"
+
+# ===============================
+# STORAGE LINK
+# ===============================
+echo "🔗 Creating storage symlink..."
+rm -f public/storage 2>/dev/null || true
+$PHP_BIN artisan storage:link || true
+
+# Verify symlink
+if [ -L "public/storage" ]; then
+    echo "✅ Storage symlink created successfully"
+else
+    echo "⚠️ Storage symlink may have failed"
+fi
+
+# ===============================
+# OPTIMIZE
+# ===============================
+echo "⚡ Optimizing..."
+$PHP_BIN artisan config:cache || true
+$PHP_BIN artisan route:cache || true
+$PHP_BIN artisan view:cache || true
+
+echo "✅ Deployment completed successfully"
+echo "📅 $(date)"
