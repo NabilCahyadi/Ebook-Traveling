@@ -24,8 +24,6 @@
             </a>
         </li>
 
-
-
         <!-- Admin Management (Only for Superadmin) -->
         @if(auth('admin')->check() && auth('admin')->user()->type === 'superadmin')
         <li class="menu-item {{ Request::is('admin/admins*') || Request::is('admin/admin-activity-logs*') ? 'active open' : '' }}">

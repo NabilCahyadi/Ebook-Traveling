@@ -139,13 +139,21 @@
         background-color: #de364aff;
         color: white;
     }
+
+    .product-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        font-size: 0.8rem;
+    }
 </style>
 <div class="page-header mt-30 mb-50">
     <div class="container">
         <div class="archive-header">
             <div class="row align-items-center">
                 <div class="col-xl-12">
-                    <h1 class="mb-15">Search Results</h1>
+                    <h3 class="mb-15">Search Results</h3>
                     <div class="breadcrumb">
                         <a href="/" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
                         <span></span> Search Results
@@ -276,7 +284,7 @@
     @else
     <div class="text-center py-5">
         <img src="/images/no-results.svg" alt="No Results" style="max-width: 300px; opacity: 0.5;" onerror="this.style.display='none'">
-        <h3 class="mt-4">No ebooks found</h3>
+        <h4 class="mt-4">No ebooks found</h4>
         <p class="text-muted">Try searching with different keywords or browse our collections</p>
         <a href="/" class="btn btn-brand mt-3">Browse All Ebooks</a>
     </div>
