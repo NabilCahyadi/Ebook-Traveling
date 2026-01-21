@@ -1,20 +1,21 @@
 @extends('layouts.admin')
 
-@section('title', 'Site Settings')
+@section('title', __('admin.site_settings.title'))
 
 @push('styles')
     <style>
-        .setting-card {
-            border-left: 4px solid #696cff;
-        }
 
+        .bg-label-primary {
+            background-color: rgba(255, 76, 97, 0.12) !important;
+            color: #ff4c61 !important;
+        }
         .add-setting-card {
             border: 2px dashed #ddd;
             transition: all 0.3s;
         }
 
         .add-setting-card:hover {
-            border-color: #696cff;
+            border-color: #ff4c61;
             background-color: #f8f9fa;
         }
     </style>
@@ -22,12 +23,12 @@
 
 @section('content')
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
         <div>
             <h4 class="fw-bold mb-1">
-                <span class="text-muted fw-light">Website Management /</span> Site Settings
+                <span class="text-muted fw-light">{{ __('admin.menu.website_management') }} /</span> {{ __('admin.site_settings.title') }}
             </h4>
-            <p class="mb-0">Kelola pengaturan website secara global</p>
+            <p class="mb-0">{{ __('admin.site_settings.description') }}</p>
         </div>
         {{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSettingModal">
             <i class="ti ti-plus me-1"></i> Add New Setting
@@ -51,7 +52,7 @@
 
     @if ($errors->any())
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Error!</strong> Please check the form.
+            <strong>{{ __('admin.messages.error_title') }}</strong> {{ __('admin.messages.validation_error') }}
             <ul class="mb-0 mt-2">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -65,7 +66,7 @@
     <div class="alert alert-info d-flex align-items-center" role="alert">
         <i class="ti ti-info-circle me-2"></i>
         <div>
-            <strong>Tips:</strong> Site Settings digunakan untuk menyimpan konfigurasi global website seperti alamat, telepon, email, dll.
+            <strong>{{ __('admin.site_settings.tip_title') }}</strong> {{ __('admin.site_settings.tip_description') }}
         </div>
     </div>
 
@@ -101,12 +102,12 @@
                             <input type="hidden" name="settings[{{ $loop->index }}][type]" value="{{ $setting->type }}">
 
                             <div class="mb-2">
-                                <label class="form-label">Key</label>
+                                <label class="form-label">{{ __('admin.site_settings.key') }}</label>
                                 <input type="text" class="form-control-plaintext" value="{{ $setting->key }}" readonly>
                             </div>
 
                             <div class="mb-0">
-                                <label for="value_{{ $setting->key }}" class="form-label">Value</label>
+                                <label for="value_{{ $setting->key }}" class="form-label">{{ __('admin.site_settings.value') }}</label>
                                 @if($setting->type === 'textarea')
                                     <textarea class="form-control" 
                                               id="value_{{ $setting->key }}"
@@ -121,9 +122,9 @@
                                            placeholder="Enter {{ $setting->key }}">
                                 @endif
                                 @if($setting->type === 'phone')
-                                    <small class="form-text text-muted">Format: 628xxx (tanpa +, tanpa 0 di depan)</small>
+                                    <small class="form-text text-muted">{{ __('admin.site_settings.phone_format') }}</small>
                                 @elseif($setting->type === 'email')
-                                    <small class="form-text text-muted">Format: email@example.com</small>
+                                    <small class="form-text text-muted">{{ __('admin.site_settings.email_format') }}</small>
                                 @endif
                             </div>
                         </div>
@@ -135,14 +136,14 @@
         @if($settings->count() > 0)
             <div class="mt-4">
                 <button type="submit" class="btn btn-primary">
-                    <i class="ti ti-check me-1"></i> Save All Settings
+                    <i class="ti ti-check me-1"></i> {{ __('admin.site_settings.save_all') }}
                 </button>
             </div>
         @else
             <div class="card">
                 <div class="card-body text-center py-5">
                     <i class="ti ti-settings" style="font-size: 4rem; color: #ddd;"></i>
-                    <p class="text-muted mt-3 mb-0">Belum ada settings. Tambahkan setting pertama!</p>
+                    <p class="text-muted mt-3 mb-0">{{ __('admin.site_settings.no_settings') }}</p>
                 </div>
             </div>
         @endif

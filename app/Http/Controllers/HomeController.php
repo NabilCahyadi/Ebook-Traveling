@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Banner;
+use App\Models\City;
 use App\Services\BannerService;
 use App\Services\CityService;
 use App\Services\SubscriptionPlanService;
 use App\Services\CollectionService;
 use App\Services\BlogService;
-use Illuminate\Support\Facades\DB;
+use App\Models\Ebook;
 
 class HomeController extends Controller
 {
@@ -53,7 +53,7 @@ class HomeController extends Controller
         }
         $SubscriptionPlans = $this->SubscriptionPlanService->getActivePlans()->take(3);
         $groupedSubscriptionPlans = $this->SubscriptionPlanService->getPlansGroupedByCategory();
-        
+
         // Tambahkan image property jika belum ada
         $SubscriptionPlans = $SubscriptionPlans->map(function ($plan, $index) {
             if (!isset($plan->image)) {
@@ -65,6 +65,10 @@ class HomeController extends Controller
         // $collections = $this->collectionService->getHomepageCollections();
         $collectionData = $this->collectionService->getHomepageCollectionsWithSubscriptionStatus();
 
+        $citiesHeader = City::where('is_active', true)
+            ->orderBy('order_index')
+            ->orderBy('name')
+            ->get();
 
         return view('index', [
             'homeSliders' => $homeSliders,
@@ -74,6 +78,7 @@ class HomeController extends Controller
             'isSubscribed' => $collectionData['isSubscribed'],
             'latestBlogs' => $latestBlogs,
             'groupedSubscriptionPlans' => $groupedSubscriptionPlans,
+            'citiesHeader' => $citiesHeader,
         ]);
     }
 
@@ -101,27 +106,51 @@ class HomeController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('q');
-        
+
         if (empty($query)) {
             return redirect()->route('home');
         }
 
         // Search ebooks by title, description, or creator name - only published ebooks
         $ebooks = \App\Models\Ebook::where('status', 'published')
-            ->where(function($q) use ($query) {
+            ->where(function ($q) use ($query) {
                 $q->where('title', 'LIKE', "%{$query}%")
-                  ->orWhere('description', 'LIKE', "%{$query}%")
-                  ->orWhereHas('creator', function($creatorQuery) use ($query) {
-                      $creatorQuery->where('name', 'LIKE', "%{$query}%");
-                  });
+                    ->orWhere('description', 'LIKE', "%{$query}%")
+                    ->orWhereHas('creator', function ($creatorQuery) use ($query) {
+                        $creatorQuery->where('name', 'LIKE', "%{$query}%");
+                    });
             })
             ->with(['city', 'category', 'creator', 'ratings'])
             ->orderBy('created_at', 'desc')
             ->paginate(12);
 
+        $citiesHeader = City::where('is_active', true)
+            ->orderBy('order_index')
+            ->orderBy('name')
+            ->get();
+
         return view('search-results', [
             'ebooks' => $ebooks,
-            'query' => $query
+            'query' => $query,
+            'citiesHeader' => $citiesHeader
         ]);
+    }
+
+    public function filterByCity($slug)
+    {
+        $city = City::where('slug', $slug)->firstOrFail();
+
+        $ebooks = Ebook::where('status', 'published')
+            ->where('city_id', $city->id)
+            ->with(['city', 'category', 'creator', 'ratings'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
+
+        $citiesHeader = City::where('is_active', true)
+            ->orderBy('order_index')
+            ->orderBy('name')
+            ->get();
+
+        return view('city-filter', compact('ebooks', 'city', 'citiesHeader'));
     }
 }

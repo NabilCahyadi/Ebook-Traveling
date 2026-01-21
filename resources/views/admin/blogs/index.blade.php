@@ -29,56 +29,78 @@
 
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-3">{{ __('admin.blogs.all_blogs') }}</h5>
+                <div class="row align-items-center g-3">
+                    <div class="col-12 col-md-3">
+                        <h5 class="mb-0">{{ __('admin.blogs.all_blogs') }}</h5>
+                    </div>
+                    <div class="col-12 col-md-9">
+                        <div class="d-flex gap-2 justify-content-end align-items-center flex-wrap">
+                            <!-- Filter Status -->
+                            <select class="form-select form-select-sm" id="status" onchange="applyBlogFilters()" style="width: 130px;">
+                                <option value="">{{ __('admin.blogs.all_status') }}</option>
+                                <option value="draft" {{ $status == 'draft' ? 'selected' : '' }}>{{ __('admin.status.draft') }}</option>
+                                <option value="published" {{ $status == 'published' ? 'selected' : '' }}>{{ __('admin.status.published') }}</option>
+                                <option value="scheduled" {{ $status == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
+                                <option value="unpublished" {{ $status == 'unpublished' ? 'selected' : '' }}>{{ __('admin.status.unpublished') }}</option>
+                            </select>
 
-                <!-- Filter Section -->
-                <form method="GET" action="{{ route('admin.blogs.index') }}" class="row g-3">
-                    <div class="col-md-3">
-                        <label for="status" class="form-label">{{ __('admin.form.status') }}</label>
-                        <select class="form-select" id="status" name="status">
-                            <option value="">{{ __('admin.blogs.all_status') }}</option>
-                            <option value="draft" {{ $status == 'draft' ? 'selected' : '' }}>{{ __('admin.status.draft') }}</option>
-                            <option value="published" {{ $status == 'published' ? 'selected' : '' }}>{{ __('admin.status.published') }}</option>
-                            <option value="unpublished" {{ $status == 'unpublished' ? 'selected' : '' }}>{{ __('admin.status.unpublished') }}
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="category" class="form-label">{{ __('admin.blogs.category') }}</label>
-                        <select class="form-select" id="category" name="category">
-                            <option value="">{{ __('admin.blogs.all_categories') }}</option>
-                            @foreach ($categories as $cat)
-                                <option value="{{ $cat }}" {{ $category == $cat ? 'selected' : '' }}>
-                                    {{ $cat }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="search" class="form-label">{{ __('admin.common.search') }}</label>
-                        <input type="text" class="form-control" id="search" name="search"
-                            placeholder="{{ __('admin.blogs.search_placeholder') }}" value="{{ $search ?? '' }}">
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">&nbsp;</label>
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bx bx-search-alt me-1"></i> {{ __('admin.common.filter') }}
-                            </button>
-                            @if ($status || $category || $search)
-                                <a href="{{ route('admin.blogs.index') }}" class="btn btn-outline-secondary">
-                                    <i class="bx bx-x"></i>
-                                </a>
-                            @endif
+                            <!-- Filter Category -->
+                            <select class="form-select form-select-sm" id="category" onchange="applyBlogFilters()" style="min-width: 120px; max-width: 150px;">
+                                <option value="">{{ __('admin.blogs.all_categories') }}</option>
+                                @foreach ($categories as $cat)
+                                    <option value="{{ $cat }}" {{ $category == $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
-                </form>
+                </div>
+                
+                <!-- Search and Bulk Mode Toggle -->
+                <div class="d-flex justify-content-between align-items-center mt-3 gap-2">
+                    <div class="d-flex gap-2 flex-grow-1" style="max-width: 600px;">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="ti ti-search"></i></span>
+                            <input type="text" class="form-control" placeholder="{{ __('admin.blogs.search_placeholder') }}" id="searchBlog" 
+                                value="{{ $search ?? '' }}" onkeyup="applyBlogFilters()">
+                        </div>
+                        <select class="form-select" id="perPageBlog" onchange="changeBlogPerPage()" style="width: 130px;">
+                            <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 / page</option>
+                            <option value="20" {{ request('per_page', 10) == 20 ? 'selected' : '' }}>20 / page</option>
+                            <option value="30" {{ request('per_page', 10) == 30 ? 'selected' : '' }}>30 / page</option>
+                            <option value="50" {{ request('per_page', 10) == 50 ? 'selected' : '' }}>50 / page</option>
+                            <option value="100" {{ request('per_page', 10) == 100 ? 'selected' : '' }}>100 / page</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="toggleBulkMode" onclick="toggleBulkMode()">
+                        <i class="ti ti-checkbox me-1"></i> Select Multiple
+                    </button>
+                </div>
 
-                <!-- Stats -->
-                <div class="d-flex justify-content-between align-items-center mt-3">
-                    <span class="badge bg-primary">Total: {{ $blogs->total() }} Blog</span>
-                    <a href="{{ route('admin.blogs.archived') }}" class="btn btn-sm btn-outline-secondary">
-                        <i class="bx bx-archive me-1"></i> {{ __('admin.blogs.view_archived') }}
-                    </a>
+                <!-- Bulk Actions Bar -->
+                <div id="bulkActionsBar" class="mt-3 p-3 bg-light rounded d-none">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div class="d-flex align-items-center">
+                            <span class="me-3"><strong id="selectedCount">0</strong> item(s) selected</span>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <!-- Change Status Dropdown -->
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    <i class="ti ti-switch-horizontal me-1"></i> Change Status
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#" onclick="bulkChangeStatus('draft')"><i class="ti ti-pencil me-2 text-warning"></i>Draft</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="bulkChangeStatus('published')"><i class="ti ti-check me-2 text-success"></i>Published</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="bulkChangeStatus('scheduled')"><i class="ti ti-clock me-2 text-info"></i>Scheduled</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="bulkChangeStatus('unpublished')"><i class="ti ti-eye-off me-2 text-secondary"></i>Unpublished</a></li>
+                                </ul>
+                            </div>
+                            <!-- Delete Button -->
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="bulkDelete()">
+                                <i class="ti ti-trash me-1"></i> Move to Trash
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -87,11 +109,13 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
+                                    <th class="bulk-checkbox-column" style="width: 40px; display: none;">
+                                        <input type="checkbox" class="form-check-input" id="selectAll" onclick="toggleSelectAll()">
+                                    </th>
                                     <th>{{ __('admin.blogs.image') }}</th>
                                     <th>{{ __('admin.blogs.title') }}</th>
                                     <th>{{ __('admin.blogs.creator') }}</th>
                                     <th>{{ __('admin.blogs.category') }}</th>
-                                    <!-- <th>{{ __('admin.blogs.views') }}</th> -->
                                     <th>{{ __('admin.blogs.status') }}</th>
                                     <th>{{ __('admin.blogs.published') }}</th>
                                     <th>{{ __('admin.actions.actions') }}</th>
@@ -100,6 +124,10 @@
                             <tbody>
                                 @foreach ($blogs as $blog)
                                     <tr>
+                                        <td class="bulk-checkbox-column" style="display: none;">
+                                            <input type="checkbox" class="form-check-input blog-checkbox" 
+                                                value="{{ $blog->id }}" onchange="updateBulkActions()">
+                                        </td>
                                         <td>
                                             @if ($blog->featured_image)
                                                 @php
@@ -140,10 +168,10 @@
                                                 <span class="badge bg-success">{{ __('admin.blogs.published') }}</span>
                                             @elseif($blog->status === 'draft')
                                                 <span class="badge bg-warning">{{ __('admin.blogs.draft') }}</span>
+                                            @elseif($blog->status === 'scheduled')
+                                                <span class="badge bg-info"><i class="ti ti-clock me-1"></i>Scheduled</span>
                                             @elseif($blog->status === 'unpublished')
                                                 <span class="badge bg-secondary">{{ __('admin.blogs.unpublished') }}</span>
-                                            @elseif($blog->status === 'archived')
-                                                <span class="badge bg-dark">{{ __('admin.blogs.archived') }}</span>
                                             @else
                                                 <span class="badge bg-danger">{{ $blog->status ?: __('admin.blogs.unknown') }}</span>
                                             @endif
@@ -193,7 +221,7 @@
                     </div>
 
                     <div class="mt-3">
-                        {{ $blogs->appends(['status' => $status, 'category' => $category, 'search' => $search])->links() }}
+                        {{ $blogs->appends(['status' => $status, 'category' => $category, 'search' => $search, 'per_page' => request('per_page', 10)])->links() }}
                     </div>
                 @else
                     <div class="text-center py-5">
@@ -207,4 +235,156 @@
             </div>
         </div>
     </div>
+
+    <!-- Hidden forms for bulk actions -->
+    <form id="bulkActionForm" action="{{ route('admin.blogs.bulk-action') }}" method="POST" style="display: none;">
+        @csrf
+        <input type="hidden" name="action" id="bulkActionType">
+        <div id="bulkActionIds"></div>
+    </form>
+    
+    <form id="bulkDeleteForm" action="{{ route('admin.blogs.bulk-delete') }}" method="POST" style="display: none;">
+        @csrf
+        <div id="bulkDeleteIds"></div>
+    </form>
+
+    @push('scripts')
+    <script>
+        let isBulkMode = false;
+
+        // Filter and Pagination Functions
+        function applyBlogFilters() {
+            const status = document.getElementById('status').value;
+            const category = document.getElementById('category').value;
+            const search = document.getElementById('searchBlog').value;
+            const perPage = document.getElementById('perPageBlog').value;
+            
+            let url = new URL(window.location.href);
+            url.searchParams.set('status', status);
+            url.searchParams.set('category', category);
+            url.searchParams.set('search', search);
+            url.searchParams.set('per_page', perPage);
+            
+            window.location.href = url.toString();
+        }
+
+        function changeBlogPerPage() {
+            applyBlogFilters();
+        }
+
+        // Bulk Mode Functions
+        function toggleBulkMode() {
+            const toggleBtn = document.getElementById('toggleBulkMode');
+            isBulkMode = !isBulkMode;
+            
+            if (isBulkMode) {
+                // Activate bulk mode
+                document.querySelectorAll('.bulk-checkbox-column').forEach(el => {
+                    el.style.display = '';
+                });
+                document.getElementById('bulkActionsBar').classList.remove('d-none');
+                // Change button style to dark
+                toggleBtn.classList.remove('btn-outline-secondary');
+                toggleBtn.classList.add('btn-dark');
+            } else {
+                // Deactivate bulk mode
+                clearSelection();
+                document.querySelectorAll('.bulk-checkbox-column').forEach(el => {
+                    el.style.display = 'none';
+                });
+                document.getElementById('bulkActionsBar').classList.add('d-none');
+                // Change button style back to outline
+                toggleBtn.classList.remove('btn-dark');
+                toggleBtn.classList.add('btn-outline-secondary');
+            }
+        }
+
+        function toggleSelectAll() {
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('.blog-checkbox');
+            checkboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
+            updateBulkActions();
+        }
+
+        function updateBulkActions() {
+            const checkboxes = document.querySelectorAll('.blog-checkbox:checked');
+            const selectedCount = document.getElementById('selectedCount');
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const allCheckboxes = document.querySelectorAll('.blog-checkbox');
+
+            selectedCount.textContent = checkboxes.length;
+
+            // Update "select all" checkbox state
+            selectAllCheckbox.checked = checkboxes.length === allCheckboxes.length && allCheckboxes.length > 0;
+            selectAllCheckbox.indeterminate = checkboxes.length > 0 && checkboxes.length < allCheckboxes.length;
+        }
+
+        function getSelectedIds() {
+            const checkboxes = document.querySelectorAll('.blog-checkbox:checked');
+            return Array.from(checkboxes).map(cb => cb.value);
+        }
+
+        function clearSelection() {
+            document.getElementById('selectAll').checked = false;
+            document.querySelectorAll('.blog-checkbox').forEach(cb => cb.checked = false);
+            updateBulkActions();
+        }
+
+        function bulkChangeStatus(status) {
+            const ids = getSelectedIds();
+            if (ids.length === 0) {
+                alert('Please select at least one blog');
+                return;
+            }
+
+            const statusLabels = {
+                'draft': 'Draft',
+                'published': 'Published',
+                'scheduled': 'Scheduled',
+                'unpublished': 'Unpublished'
+            };
+
+            if (confirm(`Change status of ${ids.length} blog(s) to "${statusLabels[status]}"?`)) {
+                const form = document.getElementById('bulkActionForm');
+                document.getElementById('bulkActionType').value = status;
+                
+                const idsContainer = document.getElementById('bulkActionIds');
+                idsContainer.innerHTML = '';
+                ids.forEach(id => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'ids[]';
+                    input.value = id;
+                    idsContainer.appendChild(input);
+                });
+                
+                form.submit();
+            }
+        }
+
+        function bulkDelete() {
+            const ids = getSelectedIds();
+            if (ids.length === 0) {
+                alert('Please select at least one blog');
+                return;
+            }
+
+            if (confirm(`Move ${ids.length} blog(s) to trash?`)) {
+                const form = document.getElementById('bulkDeleteForm');
+                
+                const idsContainer = document.getElementById('bulkDeleteIds');
+                idsContainer.innerHTML = '';
+                ids.forEach(id => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'ids[]';
+                    input.value = id;
+                    idsContainer.appendChild(input);
+                });
+                
+                form.submit();
+            }
+        }
+    </script>
+    @endpush
 @endsection

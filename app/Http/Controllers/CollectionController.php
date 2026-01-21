@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Collection;
+use App\Models\City;
 use App\Services\CollectionService;
 
 class CollectionController extends Controller
@@ -15,6 +16,8 @@ class CollectionController extends Controller
     {
         $this->collectionService = $collectionService;
     }
+
+
 
     /**
      * Display the specified collection.
@@ -28,7 +31,15 @@ class CollectionController extends Controller
         // kita kirim objek ini ke service untuk dimuat dengan data yang lengkap.
         $detailedCollection = $this->collectionService->getCollectionDetailWithEbooks($collection);
 
+        $citiesHeader = City::where('is_active', true)
+            ->orderBy('order_index')
+            ->orderBy('name')
+            ->get();
+
         // Kirim data yang sudah lengkap ke view
-        return view('collections.show', ['collection' => $detailedCollection]);
+        return view('collections.show', [
+            'collection' => $detailedCollection,
+            'citiesHeader' => $citiesHeader,
+        ]);
     }
 }

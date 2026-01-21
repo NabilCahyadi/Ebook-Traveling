@@ -13,32 +13,27 @@ class UserReading extends Model
     protected $fillable = [
         'user_id',
         'ebook_id',
-        'current_page',
+        'last_page',
         'total_pages',
         'progress_percentage',
         'last_read_at',
     ];
 
     protected $casts = [
-        'current_page' => 'integer',
+        'last_page' => 'integer',
         'total_pages' => 'integer',
         'progress_percentage' => 'decimal:2',
         'last_read_at' => 'datetime',
     ];
 
-    /**
-     * Get the user that owns the reading.
-     */
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    /**
-     * Get the ebook.
-     */
     public function ebook()
     {
-        return $this->belongsTo(Ebook::class);
+        return $this->belongsTo(Ebook::class, 'ebook_id');
+    }
+
+    // ✅ RELASI KE USER
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

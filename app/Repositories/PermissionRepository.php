@@ -7,6 +7,7 @@ use App\Models\RolePermission;
 use App\Repositories\Interfaces\PermissionRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PermissionRepository implements PermissionRepositoryInterface
 {
@@ -86,7 +87,7 @@ class PermissionRepository implements PermissionRepositoryInterface
         // If you need to manage permissions, please use the Role Permissions page
         // at /admin/role-permissions instead of /admin/permissions
         
-        \Log::warning('Deprecated method syncRolePermissions called', [
+        Log::warning('Deprecated method syncRolePermissions called', [
             'role_id' => $roleId,
             'permissions_count' => count($permissions),
             'stack_trace' => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5)

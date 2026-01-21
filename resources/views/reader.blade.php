@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $ebook->title }} - Reader</title>
     <!-- PDF.js CSS -->
@@ -50,36 +51,28 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            /* Jarak antar elemen */
         }
 
         .control-btn {
             background-color: #5a5a5a;
-            /* Warna tombol yang lebih terang */
             border: 1px solid #6a6a6a;
             color: #ffffff;
             padding: 10px 15px;
-            /* Padding lebih besar untuk sentuhan yang mudah */
             border-radius: 8px;
-            /* Sudut lebih melengkung */
             cursor: pointer;
             font-size: 16px;
-            /* Ikon lebih besar */
             font-weight: bold;
             transition: all 0.2s ease-in-out;
-            /* Transisi halus */
             display: flex;
             align-items: center;
             justify-content: center;
             min-width: 44px;
-            /* Ukuran minimum untuk sentuhan */
             min-height: 44px;
         }
 
         .control-btn:hover {
             background-color: #7a7a7a;
             transform: translateY(-2px);
-            /* Efek mengangkat saat hover */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
@@ -242,6 +235,32 @@
             padding: 10px 20px;
             border-radius: 10px;
         }
+
+        /* --- GROUP KANAN UNTUK BOOKMARK INFO --- */
+        .bookmark-info-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-left: auto;
+        }
+
+        .bookmark-info {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(64, 64, 64, 0.7);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #e0e0e0;
+            border: 1px solid #4a4a4a;
+            white-space: nowrap;
+        }
+
+        .bookmark-info i {
+            color: #FF4C61;
+            font-size: 16px;
+        }
     </style>
 </head>
 
@@ -249,26 +268,31 @@
     <!-- Loading Indicator -->
     <div id="loading-indicator">
         <i class="fas fa-spinner fa-spin"></i>
-        <span>Memuat Ebook...</span>
+        <span>Loading Ebook...</span>
     </div>
 
     <div id="pdf-container">
         <div id="pdf-controls">
+            <button id="fullscreen" class="control-btn" title="Fullscreen"><i class="fas fa-expand"></i></button>
+            <button id="bookmark-btn" class="control-btn" style="background-color: #FF4C61; border-color: #FF4C61;" title="Mark as last read"><i class="fas fa-bookmark"></i></button>
+            <div class="zoom-controls">
+                <button id="zoom-out" class="control-btn" title="Zoom In"><i class="fas fa-search-minus"></i></button>
+                <button id="fit-width" class="control-btn" title="Fit Width">100%</button>
+                <button id="zoom-in" class="control-btn" title="Zoom Out"><i class="fas fa-search-plus"></i></button>
+            </div>
+
+            <div class="bookmark-info-container">
+                <div class="bookmark-info">
+                    <span>Last : Pg. {{ $startPage ?? 1 }}</span>
+                </div>
+            </div>
             <div class="nav-controls">
-                <button id="prev-page" class="control-btn" title="Halaman Sebelumnya"><i class="fas fa-chevron-left"></i></button>
+                <button id="prev-page" class="control-btn" title="Previous Page"><i class="fas fa-chevron-left"></i></button>
                 <div class="page-info">
                     <span id="page-num">1</span> / <span id="page-count">-</span>
                 </div>
-                <button id="next-page" class="control-btn" title="Halaman Selanjutnya"><i class="fas fa-chevron-right"></i></button>
+                <button id="next-page" class="control-btn" title="Next page"><i class="fas fa-chevron-right"></i></button>
             </div>
-
-            <div class="zoom-controls">
-                <button id="zoom-out" class="control-btn" title="Perkecil"><i class="fas fa-search-minus"></i></button>
-                <button id="fit-width" class="control-btn" title="Sesuaikan Lebar">100%</button>
-                <button id="zoom-in" class="control-btn" title="Perbesar"><i class="fas fa-search-plus"></i></button>
-            </div>
-
-            <button id="fullscreen" class="control-btn" title="Layar Penuh"><i class="fas fa-expand"></i></button>
         </div>
         <div id="pdf-canvas-container">
             <!-- TAMBAHKAN WATERMARK BACKGROUND -->
@@ -435,46 +459,58 @@
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // --- GANTI VARIABEL INI SESUAIKAN DENGAN IMPLEMENTASI ANDA ---
-            // Anda perlu cara untuk mendapatkan ebook_id dan halaman saat ini dari PDF viewer Anda
-            const ebookId = "{{ $ebook->id }}"; // Sudah benar
-            let currentPage = 1; // Ganti ini dengan cara mendapatkan halaman saat ini dari viewer Anda
+            // ✅ Ambil halaman awal dari URL
+            const urlParams = new URLSearchParams(window.location.search);
+            let currentPage = parseInt(urlParams.get('page')) || {
+                {
+                    $startPage ?? 1
+                }
+            };
+            const ebookId = "{{ $ebook->id }}";
+            const updateUrl = '{{ route("user.reader.updateProgress") }}';
+            const csrfToken = '{{ csrf_token() }}';
 
-            // Fungsi untuk mengirim progress ke server
-            function sendProgress() {
-                fetch('{{ route("reader.updateProgress") }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            ebook_id: ebookId,
-                            last_page: currentPage
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            console.log('Progress saved:', data.data);
-                        }
-                    })
-                    .catch(error => console.error('Error saving progress:', error));
+            // ✅ Scroll ke halaman awal
+            if (pdfDoc) {
+                pageNum = currentPage;
+                queueRenderPage(currentPage);
             }
 
-            // --- ANDA HARUS MENYESUAIKAN BAGIAN INI ---
-            // Contoh: Jika menggunakan PDF.js, Anda bisa mendapatkan event saat halaman berubah
-            // pdfViewer.currentPageLabel = (val) => {
-            //     currentPage = parseInt(val, 10);
-            //     sendProgress(); // Kirim progress setiap halaman berubah
-            // };
+            // ✅ Kirim progress saat halaman berubah
+            function sendProgress(page) {
+                fetch(updateUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        ebook_id: ebookId,
+                        last_page: page
+                    })
+                }).catch(err => console.warn('Progress save:', err));
+            }
 
-            // Simpan progress saat pengguna akan menutup tab
-            window.addEventListener('beforeunload', function(e) {
-                // Kirim request sinkron agar tidak terpotong saat tab ditutup
-                navigator.sendBeacon('{{ route("reader.updateProgress") }}', JSON.stringify({
+            // ✅ Hook ke nextPage/prevPage
+            document.getElementById('next-page').addEventListener('click', () => {
+                if (pageNum < pdfDoc.numPages) {
+                    pageNum++;
+                    sendProgress(pageNum);
+                }
+            });
+
+            document.getElementById('prev-page').addEventListener('click', () => {
+                if (pageNum > 1) {
+                    pageNum--;
+                    sendProgress(pageNum);
+                }
+            });
+
+            // ✅ Simpan saat unload
+            window.addEventListener('beforeunload', () => {
+                navigator.sendBeacon(updateUrl, JSON.stringify({
                     ebook_id: ebookId,
-                    last_page: currentPage
+                    last_page: pageNum
                 }));
             });
         });
@@ -499,7 +535,7 @@
 
         // --- Variabel untuk Progress ---
         const ebookId = "{{ $ebook->id }}";
-        const updateUrl = '{{ route("reader.updateProgress") }}';
+        const updateUrl = '{{ route("user.reader.updateProgress") }}';
         const csrfToken = '{{ csrf_token() }}';
 
         // --- Fungsi untuk Mengirim Progress ke Server ---
@@ -637,6 +673,54 @@
         }).catch(function(error) {
             console.error('Error loading PDF:', error);
             loadingIndicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Gagal memuat PDF. File mungkin rusak atau tidak ditemukan.</span>';
+        });
+    </script>
+    <script>
+        document.getElementById('bookmark-btn').addEventListener('click', function() {
+            const btn = this;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+
+            // ✅ Ambil data dari DOM (lebih aman)
+            const currentPage = parseInt(document.getElementById('page-num').textContent) || 1;
+            const totalPages = parseInt(document.getElementById('page-count').textContent) || 1;
+            const progress = Math.round((currentPage / totalPages) * 100);
+
+            // ✅ Ambil CSRF dari meta tag (lebih aman)
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            fetch('/user/reader/update-progress', { // ✅ URL langsung (bukan route())
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest' // ✅ Penting untuk Laravel
+                    },
+                    body: JSON.stringify({
+                        ebook_id: '{{ $ebook->id }}',
+                        last_page: currentPage,
+                        progress_percentage: progress
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    btn.innerHTML = '<i class="fas fa-check text-success"></i>';
+                    setTimeout(() => {
+                        btn.innerHTML = '<i class="fas fa-bookmark"></i>';
+                        btn.disabled = false;
+                    }, 1500);
+                })
+                .catch(err => {
+                    console.error('Bookmark error:', err);
+                    btn.innerHTML = '<i class="fas fa-exclamation text-danger"></i>';
+                    setTimeout(() => {
+                        btn.innerHTML = '<i class="fas fa-bookmark"></i>';
+                        btn.disabled = false;
+                    }, 1500);
+                });
         });
     </script>
 </body>

@@ -27,13 +27,11 @@ class MayarService
     /**
      * Generate payment link for subscription
      */
-    public function generatePaymentLink(User $user, SubscriptionPlan $plan, ?string $notes = null): PaymentLink
+    public function generatePaymentLink(User $user, SubscriptionPlan $plan, ?string $paymentId = null): PaymentLink
     {
-        // Generate invoice
         $invoiceNumber = $this->generateInvoiceNumber();
         $expiresAt = now()->addHours(24);
 
-        // Simpan record (untuk webhook & audit)
         $paymentLink = PaymentLink::create([
             'invoice_number' => $invoiceNumber,
             'user_id' => $user->id,
@@ -41,23 +39,21 @@ class MayarService
             'amount' => $plan->price,
             'status' => 'pending',
             'expires_at' => $expiresAt,
-            'notes' => $notes,
+            'notes' => $paymentId, // Simpan payment_id di notes
         ]);
 
-        // Dapatkan link checkout dari plan (simpan di kolom `mayar_payment_link`)
-        if (!$plan->mayar_payment_link) {
-            throw new \Exception("Mayar payment link belum diatur untuk plan: {$plan->name}");
-        }
-
-        // Bangun URL dengan data user
-        $url = $plan->mayar_payment_link . '?' . http_build_query([
+        $params = [
             'name' => $user->name,
             'email' => $user->email,
-            'phone' => $user->phone ?? '',
-            'external_id' => $paymentLink->invoice_number, // dikirim ke webhook
-        ]);
+            'phone' => $user->phone ? preg_replace('/\D/', '', $user->phone) : '628123456789',
+            'external_id' => $paymentId,
+        ];
 
-        // Simpan URL
+        if (app()->environment('local')) {
+            $params['is_test'] = 'true';
+        }
+
+        $url = $plan->mayar_payment_link . '?' . http_build_query($params);
         $paymentLink->update(['payment_url' => $url]);
 
         return $paymentLink->fresh();
@@ -224,7 +220,7 @@ class MayarService
 
             $subscriptionService->createManualSubscription([
                 'user_id' => $paymentLink->user_id,
-                'plan_id' => $paymentLink->plan_id,
+                'subscription_plan_id' => $paymentLink->plan_id,  // ✅ FIXED: Changed from plan_id to subscription_plan_id
             ]);
 
             Log::info('Subscription activated via Mayar payment', [

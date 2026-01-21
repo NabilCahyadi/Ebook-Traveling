@@ -19,7 +19,8 @@ class EbookRepository implements EbookRepositoryInterface
         ?string $search = null,
         ?string $status = null,
         ?string $categoryId = null,
-        ?string $cityId = null
+        ?string $cityId = null,
+        ?string $statusExclude = null
     ): mixed {
         $query = Ebook::with(['category', 'city']);
 
@@ -34,6 +35,11 @@ class EbookRepository implements EbookRepositoryInterface
         // Apply status filter
         if ($status) {
             $query->where('status', $status);
+        }
+
+        // Exclude specific status (e.g., exclude archived from main index)
+        if ($statusExclude) {
+            $query->where('status', '!=', $statusExclude);
         }
 
         // Apply category filter
@@ -52,7 +58,15 @@ class EbookRepository implements EbookRepositoryInterface
             }
         }
 
-        return $query->orderBy($sortBy, $sortOrder)->paginate($perPage);
+        // Priority sorting: draft first, published middle, unpublished last
+        return $query->orderByRaw("CASE 
+            WHEN status = 'draft' THEN 1 
+            WHEN status = 'published' THEN 2 
+            WHEN status = 'unpublished' THEN 3 
+            ELSE 4 
+        END")
+        ->orderBy($sortBy, $sortOrder)
+        ->paginate($perPage);
     }
 
     /**
@@ -74,15 +88,15 @@ class EbookRepository implements EbookRepositoryInterface
         return Ebook::with(['category', 'city', 'creator'])->find($id);
     }
 
-    /**
-     * Find ebook by slug.
-     */
-    public function findBySlug(string $slug): ?Ebook
-    {
-        return Ebook::with(['category', 'city', 'sections'])
-            ->where('slug', $slug)
-            ->first();
-    }
+        /**
+         * Find ebook by slug.
+         */
+        public function findBySlug(string $slug): ?Ebook
+        {
+            return Ebook::with(['category', 'city', 'creator'])
+                ->where('slug', $slug)
+                ->first();
+        }
 
     /**
      * Create a new ebook.

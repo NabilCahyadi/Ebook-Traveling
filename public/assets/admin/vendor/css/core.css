@@ -22,7 +22,7 @@
   --bs-gray-dark: rgba(47, 43, 61, 0.8);
   --bs-gray-25: rgba(47, 43, 61, 0.015);
   --bs-gray-50: rgba(47, 43, 61, 0.06);
-  --bs-primary: #FF4C61;
+  --bs-primary: #ff4c61;
   --bs-secondary: #808390;
   --bs-success: #28c76f;
   --bs-info: #00bad1;
@@ -40,7 +40,7 @@
   --bs-light-rgb: 223, 223, 227;
   --bs-dark-rgb: 75, 75, 75;
   --bs-gray-rgb: 47, 43, 61;
-  --bs-primary-text-emphasis: #661e27;
+  --bs-primary-text-emphasis: #5c1924;
   --bs-secondary-text-emphasis: #33343a;
   --bs-success-text-emphasis: #10502c;
   --bs-info-text-emphasis: #004a54;
@@ -89,11 +89,11 @@
   --bs-tertiary-bg: rgba(47, 43, 61, 0.1);
   --bs-tertiary-bg-rgb: 47, 43, 61;
   --bs-heading-color: #444050;
-  --bs-link-color: #f74b81;
-  --bs-link-color-rgb: 115, 103, 240;
+  --bs-link-color: #ff4c61;
+  --bs-link-color-rgb: 255, 76, 97;
   --bs-link-decoration: none;
-  --bs-link-hover-color: #685dd8;
-  --bs-link-hover-color-rgb: 104, 93, 216;
+  --bs-link-hover-color: #FF4C61;
+  --bs-link-hover-color-rgb: 255, 76, 97;
   --bs-code-color: #e83e8c;
   --bs-highlight-color: #6d6b77;
   --bs-highlight-bg: #ffecd9;
@@ -30443,5 +30443,11 @@ a.bg-vimeo:hover, a.bg-vimeo:focus {
 .footer.bg-lighter hr {
   border-color: rgba(68, 64, 80, 0.0774680392);
 }
+
+
+
+
+
+
 
 

@@ -8,27 +8,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserSavedBook extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory;
+
+    protected $table = 'user_saved_books';
 
     protected $fillable = [
         'user_id',
         'ebook_id',
-        'notes',
     ];
 
-    /**
-     * Get the user that owns the saved book.
-     */
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    /**
-     * Get the ebook.
-     */
     public function ebook()
     {
-        return $this->belongsTo(Ebook::class);
+        return $this->belongsTo(Ebook::class, 'ebook_id');
     }
 }

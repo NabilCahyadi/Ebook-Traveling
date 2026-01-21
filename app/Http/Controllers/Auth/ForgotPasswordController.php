@@ -57,7 +57,7 @@ class ForgotPasswordController extends Controller
             
             return redirect()->route('password.verify-code')
                 ->with('email', $request->email)
-                ->with('success', 'Kode verifikasi telah dikirim ke email Anda. Silakan cek inbox/spam.');
+                ->with('success', 'Verification code has been sent to your email. Please check your inbox or spam folder.');
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal mengirim email. Silakan coba lagi.');
         }

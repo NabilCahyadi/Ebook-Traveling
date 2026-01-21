@@ -24,12 +24,27 @@
         .action-buttons {
             gap: 0.25rem;
         }
+
+        /* Custom tab styling */
+        .nav-tabs .nav-link {
+            border-radius: 6px 6px 0 0;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #ff5b7a;
+            color: #ffffff !important;
+            border-color: #ff5b7a;
+        }
+
+        .nav-tabs .nav-link.active i {
+            color: #ffffff !important;
+        }
     </style>
 @endpush
 
 @section('content')
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
         <div>
             <h4 class="fw-bold mb-1">
                 <span class="text-muted fw-light">{{ __('admin.menu.website_management') }} /</span> {{ __('admin.banners.hero_banners') }}
@@ -69,6 +84,12 @@
                 <i class="ti ti-tag me-1"></i> {{ __('admin.banners.banner_pricing') }}
             </a>
         </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link {{ $activeTab === 'default-background' ? 'active' : '' }}" 
+               href="{{ route('admin.banners.index', ['tab' => 'default-background']) }}">
+                <i class="ti ti-photo-filled me-1"></i> {{ __('admin.banners.default_background') }}
+            </a>
+        </li>
     </ul>
 
     <!-- Success/Error Messages -->
@@ -91,18 +112,17 @@
         <div class="alert alert-info d-flex align-items-center" role="alert">
             <i class="ti ti-info-circle me-2"></i>
             <div>
-                <strong>Tips:</strong> Banner dengan dimensi 1920x600px (3.2:1) akan terlihat sempurna. Format: JPEG, PNG,
-                atau WebP.
+                <strong>{{ __('admin.banners.tips') }}:</strong> {{ __('admin.banners.dimension_tip') }}
             </div>
         </div>
 
         <!-- Banners Card -->
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Hero Banners List</h5>
+            <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+                <h5 class="mb-0">{{ __('admin.banners.hero_list') }}</h5>
                 @if ($banners->count() > 1)
                     <div class="text-muted small">
-                        <i class="ti ti-arrows-sort me-1"></i> Drag and drop to reorder
+                        <i class="ti ti-arrows-sort me-1"></i> {{ __('admin.banners.drag_to_reorder') }}
                     </div>
                 @endif
             </div>
@@ -110,10 +130,10 @@
                 @if ($banners->isEmpty())
                 <div class="text-center py-5">
                     <i class="ti ti-photo-off display-4 text-muted"></i>
-                    <p class="mt-3 mb-2">No banners available</p>
-                    <p class="text-muted mb-3">Create your first banner to display on homepage</p>
+                    <p class="mt-3 mb-2">{{ __('admin.banners.no_banners') }}</p>
+                    <p class="text-muted mb-3">{{ __('admin.banners.no_banners_desc') }}</p>
                     <a href="{{ route('admin.banners.create') }}" class="btn btn-primary">
-                        <i class="ti ti-plus me-1"></i> Create Banner
+                        <i class="ti ti-plus me-1"></i> {{ __('admin.banners.create_banner') }}
                     </a>
                 </div>
             @else
@@ -122,11 +142,11 @@
                         <thead>
                             <tr>
                                 <th width="50">#</th>
-                                <th width="150">Banner Image</th>
-                                <th>Title</th>
-                                <th width="150">Status</th>
-                                <th width="100">Order</th>
-                                <th width="200" class="text-center">Actions</th>
+                                <th width="150">{{ __('admin.banners.banner_image') }}</th>
+                                <th>{{ __('admin.form.title') }}</th>
+                                <th width="150" class="d-none d-md-table-cell">{{ __('admin.form.status') }}</th>
+                                <th width="100" class="d-none d-lg-table-cell">{{ __('admin.form.order') }}</th>
+                                <th width="200" class="text-center">{{ __('admin.common.actions') }}</th>
                             </tr>
                         </thead>
                         <tbody id="sortable-banners">
@@ -155,28 +175,28 @@
                                             @endif
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="d-none d-md-table-cell">
                                         <div class="form-check form-switch">
                                             <input class="form-check-input status-toggle" type="checkbox"
                                                 data-id="{{ $banner->id }}" {{ $banner->is_active ? 'checked' : '' }}>
                                             <label class="form-check-label">
                                                 <span class="badge {{ $banner->is_active ? 'bg-success' : 'bg-secondary' }}">
-                                                    {{ $banner->is_active ? 'Active' : 'Inactive' }}
+                                                    {{ $banner->is_active ? __('admin.status.active') : __('admin.status.inactive') }}
                                                 </span>
                                             </label>
                                         </div>
                                         @if ($banner->start_date || $banner->end_date)
                                             <small class="text-muted d-block mt-1">
                                                 @if ($banner->start_date)
-                                                    From: {{ $banner->start_date->format('d M Y') }}<br>
+                                                    {{ __('admin.banners.from') }}: {{ $banner->start_date->format('d M Y') }}<br>
                                                 @endif
                                                 @if ($banner->end_date)
-                                                    Until: {{ $banner->end_date->format('d M Y') }}
+                                                    {{ __('admin.banners.until') }}: {{ $banner->end_date->format('d M Y') }}
                                                 @endif
                                             </small>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="d-none d-lg-table-cell">
                                         <span class="badge bg-label-secondary order-badge">{{ $banner->order_index }}</span>
                                     </td>
                                     <td>
@@ -382,7 +402,7 @@
                         <small class="text-muted"><i class="ti ti-photo me-1"></i> Image: {{ basename($bannerPricing->image) }}</small>
                     </div>
                     <div class="mb-3">
-                        <small class="text-muted"><i class="ti ti-clock me-1"></i> Last updated: {{ $bannerPricing->updated_at->diffForHumans() }}</small>
+                        <small class="text-muted"><i class="ti ti-clock me-1"></i> Last updated : {{ $bannerPricing->updated_at->diffForHumans() }}</small>
                     </div>
                     
                     <!-- Action Buttons -->
@@ -412,6 +432,92 @@
             </div>
         @endif
     </div>
-</div>
+@endif
+
+<!-- Default Background Tab Content -->
+@if($activeTab === 'default-background')
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="ti ti-photo-filled me-2"></i>Default CTA Background</h5>
+            <p class="text-muted mb-0 mt-2">Manage default background image for CTA sections</p>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('admin.banners.update-default-background') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                
+                <!-- Current Background Preview -->
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Current Background</label>
+                    <div class="border rounded p-3 bg-light">
+                        @php
+                            $currentBg = \App\Models\SystemSetting::get('default_cta_background_path');
+                            $bgUrl = $currentBg ? asset($currentBg) : asset('images/bg-default.webp');
+                        @endphp
+                        <img src="{{ $bgUrl }}" alt="Current Background" class="img-fluid rounded" 
+                            style="max-height: 300px; width: 100%; object-fit: cover;" id="currentBgPreview">
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                <i class="ti ti-info-circle me-1"></i>
+                                Current: <strong>{{ $currentBg ?: 'images/bg-default.webp' }}</strong>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload New Background -->
+                <div class="mb-4">
+                    <label for="background_image" class="form-label fw-semibold">
+                        Upload New Background <span class="text-danger">*</span>
+                    </label>
+                    <input type="file" class="form-control @error('background_image') is-invalid @enderror" 
+                        id="background_image" name="background_image" accept="image/*" required>
+                    @error('background_image')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <div class="form-text">
+                        <i class="ti ti-info-circle me-1"></i>
+                        Recommended dimensions same as bg-default.webp. Max file size: 2MB. Image will be auto-compressed.
+                    </div>
+                </div>
+
+                <!-- Preview New Image -->
+                <div class="mb-4" id="newPreviewContainer" style="display: none;">
+                    <label class="form-label fw-semibold">Preview New Background</label>
+                    <div class="border rounded p-3">
+                        <img id="newBgPreview" src="" alt="New Background Preview" class="img-fluid rounded" 
+                            style="max-height: 300px; width: 100%; object-fit: cover;">
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="ti ti-device-floppy me-1"></i> Save Background
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('background_image').value=''; document.getElementById('newPreviewContainer').style.display='none';">
+                        <i class="ti ti-x me-1"></i> Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 @endif
 @endsection
+
+@push('scripts')
+<script>
+    // Preview new background image before upload
+    document.getElementById('background_image')?.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById('newBgPreview').src = event.target.result;
+                document.getElementById('newPreviewContainer').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+@endpush

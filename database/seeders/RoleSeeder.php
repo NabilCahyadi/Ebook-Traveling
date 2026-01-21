@@ -14,27 +14,15 @@ class RoleSeeder extends Seeder
     {
         $roles = [
             [
-                'name' => 'Admin',
-                'slug' => 'admin',
-                'description' => 'Administrator with full access',
+                'name' => 'Reader',
+                'slug' => 'reader',
+                'description' => 'Regular reader who can read and interact with ebooks',
                 'is_active' => true,
             ],
             [
                 'name' => 'Creator',
                 'slug' => 'creator',
-                'description' => 'Content creator can manage their own content',
-                'is_active' => true,
-            ],
-            [
-                'name' => 'Free User',
-                'slug' => 'free-user',
-                'description' => 'Free user without subscription',
-                'is_active' => true,
-            ],
-            [
-                'name' => 'Member',
-                'slug' => 'member',
-                'description' => 'Premium member with active subscription',
+                'description' => 'Content creator who can create and manage ebooks',
                 'is_active' => true,
             ],
         ];
@@ -45,5 +33,9 @@ class RoleSeeder extends Seeder
                 $role
             );
         }
+
+        $this->command->info('✅ Roles seeded successfully');
+        $this->command->info('   - Reader: Regular users who can read ebooks');
+        $this->command->info('   - Creator: Users who can create and manage ebooks');
     }
 }

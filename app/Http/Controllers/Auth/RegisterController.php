@@ -69,9 +69,9 @@ class RegisterController extends Controller
      */
     public function redirectToGoogleRegister()
     {
-        $callbackUrl = config('app.url') . '/register/google/callback';
+        $callbackUrl = config('services.google.redirect_register') ?: config('app.url') . '/register/google/callback';
         
-        \Log::info('Google Register Redirect', [
+        Log::info('Google Register Redirect', [
             'app_url' => config('app.url'),
             'callback_url' => $callbackUrl,
             'request_url' => request()->url(),
@@ -90,11 +90,22 @@ class RegisterController extends Controller
     public function handleGoogleRegisterCallback()
     {
         try {
-            $googleUser = Socialite::driver('google')->stateless()->user();
+            $callbackUrl = config('services.google.redirect_register') ?: config('app.url') . '/register/google/callback';
+            
+            $googleUser = Socialite::driver('google')
+                ->redirectUrl($callbackUrl)
+                ->stateless()
+                ->user();
 
             $result = $this->authService->handleGoogleCallback($googleUser);
 
             if ($result['exists']) {
+                // Check if account is soft deleted
+                if (isset($result['soft_deleted']) && $result['soft_deleted']) {
+                    return redirect()->route('login')
+                        ->with('error', $result['message'] ?? 'Your account has been deactivated. Please <a href="/contact" style="color: #FF416C; text-decoration: underline;">contact support</a>.');
+                }
+                
                 // User already exists - redirect to login page with instruction
                 return redirect()->route('login')
                     ->with('info', 'Akun Google Anda (' . $googleUser->getEmail() . ') sudah terdaftar. Silakan login menggunakan tombol Google di bawah ini.');
@@ -108,13 +119,14 @@ class RegisterController extends Controller
                     ->with('info', 'Silakan lengkapi data Anda untuk menyelesaikan pendaftaran.');
             }
         } catch (\Exception $e) {
-            $callbackUrl = config('app.url') . '/register/google/callback';
+            $callbackUrl = config('services.google.redirect_register') ?: config('app.url') . '/register/google/callback';
             
             Log::error('Google Registration Error: ' . $e->getMessage(), [
                 'exception' => get_class($e),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
                 'callback_url_used' => $callbackUrl,
+                'config_redirect_register' => config('services.google.redirect_register'),
                 'app_url' => config('app.url'),
                 'request_url' => request()->url(),
                 'trace' => $e->getTraceAsString()

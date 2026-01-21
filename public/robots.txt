@@ -1,2 +1,12 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin/
+Disallow: /creator/
+Disallow: /api/
+Disallow: /*.pdf$
+
+# Sitemap
+Sitemap: https://www.meatmap.id/sitemap.xml
+
+# Crawl-delay
+Crawl-delay: 10

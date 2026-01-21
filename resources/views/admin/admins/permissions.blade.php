@@ -1,20 +1,73 @@
 @extends('layouts.admin')
 
-@section('title', 'Kelola Permission Admin')
+@section('title', __('admin.permissions.title'))
+
+@push('styles')
+<style>
+    /* Override warna primary untuk halaman permission */
+    .bg-label-primary {
+        background-color: rgba(255, 76, 97, 0.12) !important;
+        color: #ff4c61 !important;
+    }
+    
+    .badge.bg-label-primary {
+        background-color: rgba(255, 76, 97, 0.12) !important;
+        color: #ff4c61 !important;
+    }
+    
+    .avatar-initial.bg-label-primary {
+        background-color: rgba(255, 76, 97, 0.12) !important;
+        color: #ff4c61 !important;
+        font-weight: 600;
+    }
+    
+    .text-primary,
+    .form-check-label.text-primary {
+        color: #ff4c61 !important;
+    }
+    
+    .card-header.bg-label-primary {
+        background-color: rgba(255, 76, 97, 0.12) !important;
+        border-bottom: 2px solid #ff4c61;
+    }
+    
+    .card-header.bg-label-primary h5,
+    .card-header.bg-label-primary i {
+        color: #ff4c61 !important;
+    }
+    
+    .form-check-input:checked {
+        background-color: #ff4c61 !important;
+        border-color: #ff4c61 !important;
+    }
+    
+    .btn-primary {
+        background-color: #ff4c61 !important;
+        border-color: #ff4c61 !important;
+    }
+    
+    .btn-primary:hover,
+    .btn-primary:focus,
+    .btn-primary:active {
+        background-color: #e6405a !important;
+        border-color: #e6405a !important;
+    }
+</style>
+@endpush
 
 @section('content')
 
     <!-- Success/Error Messages -->
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Berhasil!</strong> {{ session('success') }}
+            <strong>{{ __('admin.messages.success_title') }}</strong> {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
 
     @if (session('error'))
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Error!</strong> {{ session('error') }}
+            <strong>{{ __('admin.messages.error_title') }}</strong> {{ session('error') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
@@ -24,16 +77,16 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="{{ route('admin.dashboard') }}">Dashboard</a>
+                    <a href="{{ route('admin.dashboard') }}">{{ __('admin.menu.dashboard') }}</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="{{ route('admin.admins.index') }}">Manajemen Admin</a>
+                    <a href="{{ route('admin.admins.index') }}">{{ __('admin.admins.title') }}</a>
                 </li>
-                <li class="breadcrumb-item active">Kelola Permission</li>
+                <li class="breadcrumb-item active">{{ __('admin.permissions.manage_permissions') }}</li>
             </ol>
         </nav>
         <h4 class="fw-bold py-3 mb-2">
-            <span class="text-muted fw-light">Pengaturan /</span> Kelola Permission Admin
+            <span class="text-muted fw-light">{{ __('admin.menu.settings') }} /</span> {{ __('admin.permissions.title') }}
         </h4>
     </div>
 
@@ -69,9 +122,9 @@
                 <div class="card-header">
                     <h5 class="mb-0">
                         <i class="ti ti-shield-lock me-2"></i>
-                        Kelola Permission
+                        {{ __('admin.permissions.manage_permissions') }}
                     </h5>
-                    <p class="text-muted mb-0 mt-2">Pilih permission yang akan diberikan kepada admin ini. Super Admin memiliki semua akses secara otomatis.</p>
+                    <p class="text-muted mb-0 mt-2">{{ __('admin.permissions.select_description') }}</p>
                 </div>
 
                 <form action="{{ route('admin.admins.permissions.update', $admin->id) }}" method="POST">
@@ -80,6 +133,16 @@
 
                     <div class="card-body">
                         @if ($permissions->count() > 0)
+                            <!-- Global Select All -->
+                            <div class="mb-4 p-3 bg-light rounded border">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="select-all-global">
+                                    <label class="form-check-label fw-bold text-primary" for="select-all-global">
+                                        <i class="ti ti-checkbox me-1"></i> {{ __('admin.permissions.select_all_permissions') }}
+                                    </label>
+                                </div>
+                            </div>
+
                             <div class="row">
                                 @foreach ($permissions as $module => $subModules)
                                     @php
@@ -88,10 +151,21 @@
                                     <div class="col-12 mb-4">
                                         <div class="card">
                                             <div class="card-header bg-label-primary">
-                                                <h5 class="mb-0">
-                                                    <i class="ti ti-folder me-2"></i>
-                                                    {{ $module }}
-                                                </h5>
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <h5 class="mb-0">
+                                                        <i class="ti ti-folder me-2"></i>
+                                                        {{ $module }}
+                                                    </h5>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input module-checkbox" 
+                                                               type="checkbox" 
+                                                               id="select-all-module-{{ $moduleSlug }}"
+                                                               data-module="{{ $moduleSlug }}">
+                                                        <label class="form-check-label fw-semibold text-primary" for="select-all-module-{{ $moduleSlug }}">
+                                                            {{ __('admin.permissions.select_all') }}
+                                                        </label>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="card-body mt-4">
                                                 <div class="row">
@@ -110,9 +184,10 @@
                                                                     <input class="form-check-input submodule-checkbox" 
                                                                            type="checkbox" 
                                                                            id="select-all-{{ $moduleSlug }}-{{ $subModuleSlug }}"
+                                                                           data-module="{{ $moduleSlug }}"
                                                                            data-submodule="{{ $moduleSlug }}-{{ $subModuleSlug }}">
                                                                     <label class="form-check-label fw-semibold text-primary" for="select-all-{{ $moduleSlug }}-{{ $subModuleSlug }}">
-                                                                        All
+                                                                        {{ __('admin.permissions.all') }}
                                                                     </label>
                                                                 </div>
 
@@ -125,6 +200,8 @@
                                                                                name="permissions[]"
                                                                                value="{{ $permission->id }}" 
                                                                                id="permission-{{ $permission->id }}"
+                                                                               data-module="{{ $moduleSlug }}"
+                                                                               data-submodule="{{ $moduleSlug }}-{{ $subModuleSlug }}"
                                                                                {{ in_array($permission->id, $adminPermissions) ? 'checked' : '' }}>
                                                                         <label class="form-check-label" for="permission-{{ $permission->id }}">
                                                                             <strong>{{ $permission->display_name }}</strong>
@@ -147,18 +224,18 @@
                         @else
                             <div class="text-center py-4">
                                 <i class="ti ti-shield-off ti-lg text-muted mb-3"></i>
-                                <p class="text-muted">Belum ada permission yang tersedia. Silakan tambahkan permission terlebih dahulu.</p>
+                                <p class="text-muted">{{ __('admin.permissions.no_permissions') }}</p>
                             </div>
                         @endif
                     </div>
 
-                    <div class="card-footer d-flex justify-content-between">
+                    <div class="card-footer d-flex flex-column flex-sm-row justify-content-between gap-2">
                         <a href="{{ route('admin.admins.index') }}" class="btn btn-label-secondary">
-                            <i class="ti ti-arrow-left me-1"></i> Kembali
+                            <i class="ti ti-arrow-left me-1"></i> {{ __('admin.common.back') }}
                         </a>
                         @if ($permissions->count() > 0)
                             <button type="submit" class="btn btn-primary">
-                                <i class="ti ti-device-floppy me-1"></i> Simpan Permission
+                                <i class="ti ti-device-floppy me-1"></i> {{ __('admin.permissions.save') }}
                             </button>
                         @endif
                     </div>
@@ -172,71 +249,161 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Function to update submodule checkbox state
-        function updateSubmoduleCheckbox(submodule) {
-            const submoduleCheckbox = document.querySelector('[data-submodule="' + submodule + '"]');
-            if (!submoduleCheckbox) {
-                console.log('Submodule checkbox not found:', submodule);
-                return;
-            }
+        const globalCheckbox = document.getElementById('select-all-global');
+        
+        // Function to update global checkbox state
+        function updateGlobalCheckbox() {
+            if (!globalCheckbox) return;
             
-            const allPermissions = document.querySelectorAll('.permission-' + submodule);
-            const checkedPermissions = document.querySelectorAll('.permission-' + submodule + ':checked');
-            
-            console.log('Submodule:', submodule, 'Total:', allPermissions.length, 'Checked:', checkedPermissions.length);
+            const allPermissions = document.querySelectorAll('.permission-checkbox');
+            const checkedPermissions = document.querySelectorAll('.permission-checkbox:checked');
             
             if (allPermissions.length === checkedPermissions.length && allPermissions.length > 0) {
-                // All checked
+                globalCheckbox.checked = true;
+                globalCheckbox.indeterminate = false;
+            } else if (checkedPermissions.length > 0) {
+                globalCheckbox.checked = false;
+                globalCheckbox.indeterminate = true;
+            } else {
+                globalCheckbox.checked = false;
+                globalCheckbox.indeterminate = false;
+            }
+        }
+        
+        // Function to update module checkbox state
+        function updateModuleCheckbox(module) {
+            const moduleCheckbox = document.querySelector('.module-checkbox[data-module="' + module + '"]');
+            if (!moduleCheckbox) return;
+            
+            const allPermissions = document.querySelectorAll('.permission-checkbox[data-module="' + module + '"]');
+            const checkedPermissions = document.querySelectorAll('.permission-checkbox[data-module="' + module + '"]:checked');
+            
+            if (allPermissions.length === checkedPermissions.length && allPermissions.length > 0) {
+                moduleCheckbox.checked = true;
+                moduleCheckbox.indeterminate = false;
+            } else if (checkedPermissions.length > 0) {
+                moduleCheckbox.checked = false;
+                moduleCheckbox.indeterminate = true;
+            } else {
+                moduleCheckbox.checked = false;
+                moduleCheckbox.indeterminate = false;
+            }
+        }
+        
+        // Function to update submodule checkbox state
+        function updateSubmoduleCheckbox(submodule) {
+            const submoduleCheckbox = document.querySelector('.submodule-checkbox[data-submodule="' + submodule + '"]');
+            if (!submoduleCheckbox) return;
+            
+            const allPermissions = document.querySelectorAll('.permission-checkbox[data-submodule="' + submodule + '"]');
+            const checkedPermissions = document.querySelectorAll('.permission-checkbox[data-submodule="' + submodule + '"]:checked');
+            
+            if (allPermissions.length === checkedPermissions.length && allPermissions.length > 0) {
                 submoduleCheckbox.checked = true;
                 submoduleCheckbox.indeterminate = false;
             } else if (checkedPermissions.length > 0) {
-                // Some checked
                 submoduleCheckbox.checked = false;
                 submoduleCheckbox.indeterminate = true;
             } else {
-                // None checked
                 submoduleCheckbox.checked = false;
                 submoduleCheckbox.indeterminate = false;
             }
         }
+        
+        // Update all parent checkboxes
+        function updateAllParentCheckboxes(module, submodule) {
+            updateSubmoduleCheckbox(submodule);
+            updateModuleCheckbox(module);
+            updateGlobalCheckbox();
+        }
 
-        // Select/Deselect all in a sub-module
-        document.querySelectorAll('.submodule-checkbox').forEach(function(submoduleCheckbox) {
-            submoduleCheckbox.addEventListener('click', function(e) {
-                const submodule = this.dataset.submodule;
+        // Global Select All
+        if (globalCheckbox) {
+            globalCheckbox.addEventListener('change', function() {
                 const isChecked = this.checked;
                 
-                console.log('All checkbox clicked for:', submodule, 'New state:', isChecked);
-                
-                document.querySelectorAll('.permission-' + submodule).forEach(function(permCheckbox) {
+                // Update all permission checkboxes
+                document.querySelectorAll('.permission-checkbox').forEach(function(permCheckbox) {
                     permCheckbox.checked = isChecked;
                 });
                 
-                // Update state immediately after changing all checkboxes
-                updateSubmoduleCheckbox(submodule);
+                // Update all submodule checkboxes
+                document.querySelectorAll('.submodule-checkbox').forEach(function(subCheckbox) {
+                    subCheckbox.checked = isChecked;
+                    subCheckbox.indeterminate = false;
+                });
+                
+                // Update all module checkboxes
+                document.querySelectorAll('.module-checkbox').forEach(function(modCheckbox) {
+                    modCheckbox.checked = isChecked;
+                    modCheckbox.indeterminate = false;
+                });
+            });
+        }
+
+        // Module Select All
+        document.querySelectorAll('.module-checkbox').forEach(function(moduleCheckbox) {
+            moduleCheckbox.addEventListener('change', function() {
+                const module = this.dataset.module;
+                const isChecked = this.checked;
+                
+                // Update all permission checkboxes in this module
+                document.querySelectorAll('.permission-checkbox[data-module="' + module + '"]').forEach(function(permCheckbox) {
+                    permCheckbox.checked = isChecked;
+                });
+                
+                // Update all submodule checkboxes in this module
+                document.querySelectorAll('.submodule-checkbox[data-module="' + module + '"]').forEach(function(subCheckbox) {
+                    subCheckbox.checked = isChecked;
+                    subCheckbox.indeterminate = false;
+                });
+                
+                // Update global checkbox
+                updateGlobalCheckbox();
             });
         });
 
-        // Update sub-module checkbox when individual permissions change
+        // Submodule Select All
+        document.querySelectorAll('.submodule-checkbox').forEach(function(submoduleCheckbox) {
+            submoduleCheckbox.addEventListener('change', function() {
+                const submodule = this.dataset.submodule;
+                const module = this.dataset.module;
+                const isChecked = this.checked;
+                
+                // Update all permission checkboxes in this submodule
+                document.querySelectorAll('.permission-checkbox[data-submodule="' + submodule + '"]').forEach(function(permCheckbox) {
+                    permCheckbox.checked = isChecked;
+                });
+                
+                // Update module checkbox and global checkbox
+                updateModuleCheckbox(module);
+                updateGlobalCheckbox();
+            });
+        });
+
+        // Individual permission change
         document.querySelectorAll('.permission-checkbox').forEach(function(permCheckbox) {
             permCheckbox.addEventListener('change', function() {
-                const classList = Array.from(this.classList);
-                const submoduleClass = classList.find(c => c.startsWith('permission-'));
+                const module = this.dataset.module;
+                const submodule = this.dataset.submodule;
                 
-                if (submoduleClass) {
-                    const submodule = submoduleClass.replace('permission-', '');
-                    console.log('Individual checkbox changed, updating:', submodule);
-                    updateSubmoduleCheckbox(submodule);
-                }
+                // Update all parent checkboxes
+                updateAllParentCheckboxes(module, submodule);
             });
         });
 
-        // Initialize state on page load
-        console.log('Initializing checkboxes...');
+        // Initialize all checkbox states on page load
         document.querySelectorAll('.submodule-checkbox').forEach(function(submoduleCheckbox) {
             const submodule = submoduleCheckbox.dataset.submodule;
             updateSubmoduleCheckbox(submodule);
         });
+        
+        document.querySelectorAll('.module-checkbox').forEach(function(moduleCheckbox) {
+            const module = moduleCheckbox.dataset.module;
+            updateModuleCheckbox(module);
+        });
+        
+        updateGlobalCheckbox();
     });
 </script>
 @endpush

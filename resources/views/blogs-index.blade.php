@@ -2,7 +2,43 @@
 
 @extends('layouts_lp.app')
 
-@section('title', 'Tags Blog & News - MeatMap')
+@section('title', isset($tag) ? 'Blog Tag: ' . ucfirst($tag) . ' - MeatMap' : 'Blog & News - MeatMap')
+
+@section('meta')
+    @php
+        $metaDescription = isset($tag) 
+            ? "Explore articles tagged with " . ucfirst($tag) . " on MeatMap blog. Discover travel guides, tips, and stories."
+            : "Read the latest travel guides, destination tips, and stories from MeatMap. Your source for travel inspiration and information.";
+        
+        $metaKeywords = isset($tag) ? $tag . ", " : "";
+        $metaKeywords .= "blog, travel, destinations, guides, meatmap";
+        
+        $ogTitle = isset($tag) ? "Blog Tag: " . ucfirst($tag) . " - MeatMap" : "Blog & News - MeatMap";
+        $ogDescription = isset($tag) 
+            ? "Explore articles tagged with " . ucfirst($tag) . " on MeatMap blog."
+            : "Read the latest travel guides and stories from MeatMap.";
+        $twitterDescription = isset($tag) 
+            ? "Explore articles tagged with " . ucfirst($tag) . "."
+            : "Read the latest travel guides from MeatMap.";
+    @endphp
+    <meta name="description" content="{{ $metaDescription }}">
+    <meta name="keywords" content="{{ $metaKeywords }}">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ url()->current() }}">
+    
+    {{-- Open Graph --}}
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ $ogTitle }}">
+    <meta property="og:description" content="{{ $ogDescription }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:site_name" content="MeatMap">
+    <meta property="og:image" content="{{ asset('images/only-logoo.png') }}">
+    
+    {{-- Twitter Card --}}
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{{ $ogTitle }}">
+    <meta name="twitter:description" content="{{ $twitterDescription }}">
+@endsection
 
 @section('content')
 <style>
@@ -18,7 +54,7 @@
             <div class="archive-header">
                 <div class="row align-items-center">
                     <div class="col-xl-3">
-                        <h1 class="mb-15">Tags Blog</h1>
+                        <h3 class="mb-15">Tags Blog</h3>
                         <div class="breadcrumb">
                             <a href="{{ route('home') }}" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
                             <span></span> <a href="{{ route('blogs.index') }}">Blog & News</a>
@@ -53,7 +89,26 @@
                                 @endif
                             </h4>
                         </div>
-                        {{-- Dropdown filter ini statis, perlu pengembangan lebih lanjut untuk fungsional --}}
+                        @php
+                            $perPage = request('per_page', 20);
+                            $sortBy = request('sort_by', 'newest');
+                            
+                            $perPageOptions = [
+                                20 => '20',
+                                40 => '40',
+                                60 => '60',
+                                80 => '80',
+                                100 => '100',
+                                'all' => 'All'
+                            ];
+                            
+                            $sortOptions = [
+                                'newest' => 'Newest',
+                                'oldest' => 'Oldest',
+                                'most_viewed' => 'Most Viewed',
+                                'title' => 'Title (A-Z)'
+                            ];
+                        @endphp
                         <div class="sort-by-product-area">
                             <div class="sort-by-cover mr-10">
                                 <div class="sort-by-product-wrap">
@@ -61,16 +116,19 @@
                                         <span><i class="fi-rs-apps"></i>Show :</span>
                                     </div>
                                     <div class="sort-by-dropdown-wrap">
-                                        <span> 50 <i class="fi-rs-angle-small-down"></i></span>
+                                        <span>{{ $perPageOptions[$perPage] ?? '10' }} <i class="fi-rs-angle-small-down"></i></span>
                                     </div>
                                 </div>
                                 <div class="sort-by-dropdown">
                                     <ul>
-                                        <li><a class="active" href="#">50</a></li>
-                                        <li><a href="#">100</a></li>
-                                        <li><a href="#">150</a></li>
-                                        <li><a href="#">200</a></li>
-                                        <li><a href="#">All</a></li>
+                                        @foreach($perPageOptions as $value => $label)
+                                        <li>
+                                            <a class="{{ $perPage == $value ? 'active' : '' }}" 
+                                               href="{{ request()->fullUrlWithQuery(['per_page' => $value, 'page' => 1]) }}">
+                                                {{ $label }}
+                                            </a>
+                                        </li>
+                                        @endforeach
                                     </ul>
                                 </div>
                             </div>
@@ -80,15 +138,19 @@
                                         <span><i class="fi-rs-apps-sort"></i>Sort :</span>
                                     </div>
                                     <div class="sort-by-dropdown-wrap">
-                                        <span>Featured <i class="fi-rs-angle-small-down"></i></span>
+                                        <span>{{ $sortOptions[$sortBy] ?? 'Newest' }} <i class="fi-rs-angle-small-down"></i></span>
                                     </div>
                                 </div>
                                 <div class="sort-by-dropdown">
                                     <ul>
-                                        <li><a class="active" href="#">Featured</a></li>
-                                        <li><a href="#">Newest</a></li>
-                                        <li><a href="#">Most comments</a></li>
-                                        <li><a href="#">Release Date</a></li>
+                                        @foreach($sortOptions as $value => $label)
+                                        <li>
+                                            <a class="{{ $sortBy == $value ? 'active' : '' }}" 
+                                               href="{{ request()->fullUrlWithQuery(['sort_by' => $value, 'page' => 1]) }}">
+                                                {{ $label }}
+                                            </a>
+                                        </li>
+                                        @endforeach
                                     </ul>
                                 </div>
                             </div>
@@ -102,9 +164,7 @@
                             @if($blog->featured_image)
                             @php
                                 // Check if image is external URL or local storage
-                                $imageUrl = filter_var($blog->featured_image, FILTER_VALIDATE_URL) 
-                                    ? $blog->featured_image 
-                                    : asset('storage/' . $blog->featured_image);
+                                $imageUrl = $blog->featured_image_url;
                             @endphp
                             <div class="post-thumb" style="background-image: url({{ $imageUrl }})">
                                 <!-- <div class="entry-meta">

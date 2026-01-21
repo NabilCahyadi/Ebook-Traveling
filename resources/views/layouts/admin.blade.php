@@ -54,6 +54,314 @@
     
     <!-- Custom Toastr CSS -->
     <style>
+        /* Comprehensive override of all pink colors to match front-end red (#ff4c61) */
+        
+        /* CSS Variables */
+        :root {
+            --bs-primary: #ff4c61 !important;
+            --bs-primary-rgb: 255, 76, 97 !important;
+        }
+        
+        /* Replace all colors with #ff4c61 */
+        .text-primary,
+        .link-primary,
+        a.text-primary,
+        .btn-link.text-primary {
+            color: #ff4c61 !important;
+        }
+        
+        .btn-primary,
+        .bg-primary,
+        .badge-primary,
+        .badge.bg-primary,
+        .alert-primary,
+        .list-group-item-primary.list-group-item-action.active {
+            background-color: #ff4c61 !important;
+            border-color: #ff4c61 !important;
+        }
+        
+        .btn-primary:hover,
+        .btn-primary:focus,
+        .btn-primary:active,
+        .btn-primary.active {
+            background-color: #e6405a !important;
+            border-color: #e6405a !important;
+        }
+        
+        .btn-outline-primary {
+            color: #ff4c61 !important;
+            border-color: #ff4c61 !important;
+        }
+        
+        .btn-outline-primary:hover,
+        .btn-outline-primary:focus,
+        .btn-outline-primary:active {
+            background-color: #ff4c61 !important;
+            border-color: #ff4c61 !important;
+            color: #fff !important;
+        }
+        
+        .border-primary {
+            border-color: #ff4c61 !important;
+        }
+        
+        .border-top-primary {
+            border-top-color: #ff4c61 !important;
+        }
+        
+        .border-bottom-primary {
+            border-bottom-color: #ff4c61 !important;
+        }
+        
+        .border-start-primary {
+            border-left-color: #ff4c61 !important;
+        }
+        
+        .border-end-primary {
+            border-right-color: #ff4c61 !important;
+        }
+        
+        /* Progress bars */
+        .progress-bar.bg-primary {
+            background-color: #ff4c61 !important;
+        }
+        
+        /* Pagination */
+        .pagination .page-item.active .page-link {
+            background-color: #ff4c61 !important;
+            border-color: #ff4c61 !important;
+        }
+        
+        /* List groups */
+        .list-group-item-primary {
+            background-color: rgba(255, 76, 97, 0.1) !important;
+            color: #ff4c61 !important;
+        }
+        
+        /* Forms */
+        .form-check-input:checked {
+            background-color: #ff4c61 !important;
+            border-color: #ff4c61 !important;
+        }
+        
+        .form-switch .form-check-input:checked {
+            background-color: #ff4c61 !important;
+            border-color: #ff4c61 !important;
+        }
+        
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #ff4c61 !important;
+            box-shadow: 0 0 0 0.2rem rgba(255, 76, 97, 0.25) !important;
+        }
+        
+        /* Links */
+        a:not(.btn):not(.badge):not(.menu-link):hover {
+            color: #ff4c61 !important;
+        }
+        
+        /* Navbar search */
+        .navbar-search-wrapper .search-input:focus {
+            border-color: #ff4c61 !important;
+        }
+        
+        /* Cards with primary accent */
+        .card-header.bg-primary {
+            background-color: #ff4c61 !important;
+        }
+        
+        /* Spinners */
+        .spinner-border.text-primary,
+        .spinner-grow.text-primary {
+            color: #ff4c61 !important;
+        }
+        
+        /* Dropdown active items */
+        .dropdown-item.active,
+        .dropdown-item:active {
+            background-color: #ff4c61 !important;
+        }
+        
+        /* Tabs */
+        .nav-tabs .nav-link.active,
+        .nav-pills .nav-link.active {
+            background-color: #ff4c61 !important;
+            border-color: #ff4c61 !important;
+        }
+        
+        /* Timeline */
+        .timeline-item.timeline-item-primary .timeline-indicator {
+            background-color: #ff4c61 !important;
+            border-color: #ff4c61 !important;
+        }
+        
+        /* ========================================
+           SIDEBAR MENU STYLING
+           ======================================== */
+        
+        /* Base sidebar styles */
+        .layout-menu {
+            background-color: #fff !important;
+            border-right: 1px solid rgba(255, 76, 97, 0.1);
+        }
+        
+        /* Menu item base */
+        .menu-inner .menu-item .menu-link {
+            border-radius: 6px;
+            margin: 2px 8px;
+            transition: all 0.2s ease;
+        }
+        
+        /* Menu item hover */
+        .menu-inner .menu-item .menu-link:hover {
+            background-color: rgba(255, 76, 97, 0.08) !important;
+        }
+        
+        /* Active menu item (single item, no dropdown) */
+        .menu-inner > .menu-item.active > .menu-link:not(.menu-toggle) {
+            background-color: #ff4c61 !important;
+            color: #fff !important;
+        }
+        
+        .menu-inner > .menu-item.active > .menu-link:not(.menu-toggle) .menu-icon,
+        .menu-inner > .menu-item.active > .menu-link:not(.menu-toggle) div {
+            color: #fff !important;
+        }
+        
+        /* --- LEVEL 1: Parent Dropdowns (User Management, Ebook Management) --- */
+        .menu-inner > .menu-item.open > .menu-link.menu-toggle {
+            background-color: rgba(255, 76, 97, 0.12) !important;
+            color: #ff4c61 !important;
+            font-weight: 600;
+        }
+        
+        .menu-inner > .menu-item.open > .menu-link.menu-toggle .menu-icon {
+            color: #ff4c61 !important;
+        }
+        
+        /* Level 1 dropdown when ACTIVE but CLOSED (Ebook Management active tapi dropdown tutup) */
+        .menu-inner > .menu-item.active:not(.open) > .menu-link.menu-toggle {
+            background-color: rgba(255, 76, 97, 0.08) !important;
+            color: #ff4c61 !important;
+            font-weight: 500;
+        }
+        
+        .menu-inner > .menu-item.active:not(.open) > .menu-link.menu-toggle .menu-icon {
+            color: #ff4c61 !important;
+        }
+        
+        /* Level 1 dropdown when ACTIVE AND OPEN - Icon putih seperti menu active biasa */
+        .menu-inner > .menu-item.active.open > .menu-link.menu-toggle {
+            background-color: #ff4c61 !important;
+            color: #fff !important;
+            font-weight: 600;
+        }
+        
+        .menu-inner > .menu-item.active.open > .menu-link.menu-toggle .menu-icon,
+        .menu-inner > .menu-item.active.open > .menu-link.menu-toggle div {
+            color: #fff !important;
+        }
+        
+        /* Level 1 submenu container */
+        .menu-inner > .menu-item > .menu-sub {
+            background-color: rgba(255, 76, 97, 0.03);
+            border-radius: 0 0 8px 8px;
+            margin: 0 8px;
+            padding: 4px 0;
+        }
+        
+        /* --- LEVEL 2: Child Items (Roles, Activity Logs) --- */
+        .menu-inner > .menu-item > .menu-sub > .menu-item > .menu-link:not(.menu-toggle) {
+            padding-left: 2.5rem;
+        }
+        
+        .menu-inner > .menu-item > .menu-sub > .menu-item.active > .menu-link:not(.menu-toggle) {
+            background-color: rgba(255, 76, 97, 0.15) !important;
+            color: #ff4c61 !important;
+            font-weight: 500;
+        }
+        
+        /* --- LEVEL 2: Child Dropdowns (Users dropdown inside User Management) --- */
+        .menu-inner > .menu-item > .menu-sub > .menu-item > .menu-link.menu-toggle {
+            padding-left: 2.5rem;
+        }
+        
+        .menu-inner > .menu-item > .menu-sub > .menu-item.open > .menu-link.menu-toggle {
+            background-color: rgba(255, 76, 97, 0.08) !important;
+            color: #ff4c61 !important;
+            font-weight: 500;
+        }
+        
+        /* Level 2 submenu container */
+        .menu-inner > .menu-item > .menu-sub > .menu-item > .menu-sub {
+            background-color: rgba(255, 76, 97, 0.02);
+            border-left: 2px solid rgba(255, 76, 97, 0.2);
+            margin-left: 2rem;
+            padding: 4px 0;
+            border-radius: 0 6px 6px 0;
+        }
+        
+        /* --- LEVEL 3: Deepest Items (All Users, Creator, Reader) --- */
+        .menu-inner > .menu-item > .menu-sub > .menu-item > .menu-sub > .menu-item > .menu-link {
+            padding-left: 1.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .menu-inner > .menu-item > .menu-sub > .menu-item > .menu-sub > .menu-item.active > .menu-link {
+            background-color: rgba(255, 76, 97, 0.12) !important;
+            color: #ff4c61 !important;
+            font-weight: 600;
+            border-left: 3px solid #ff4c61;
+            margin-left: -2px;
+        }
+        
+        .menu-inner > .menu-item > .menu-sub > .menu-item > .menu-sub > .menu-item > .menu-link:hover {
+            background-color: rgba(255, 76, 97, 0.06) !important;
+        }
+        
+        /* Dropdown arrow rotation */
+        .menu-item.open > .menu-link.menu-toggle::after {
+            transform: rotate(90deg);
+        }
+        
+        /* Menu icons */
+        .menu-inner .menu-icon {
+            color: #697a8d;
+            transition: color 0.2s ease;
+        }
+        
+        .menu-inner .menu-item:hover .menu-icon {
+            color: #ff4c61;
+        }
+        
+        /* App brand in sidebar */
+        .app-brand {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 76, 97, 0.1);
+        }
+        
+        /* ========================================
+           END SIDEBAR STYLING
+           ======================================== */
+        
+        /* Override background colors */
+        body {
+            background-color: #ffffff !important;
+        }
+        
+        .layout-wrapper {
+            background-color: #ffffff !important;
+        }
+        
+        .layout-page {
+            background-color: #ffffff !important;
+        }
+        
+        .content-wrapper {
+            background-color: #ffffff !important;
+        }
+        
+        /* Toastr */
         #toast-container > div {
             opacity: 1;
             box-shadow: 0 0 12px rgba(0,0,0,0.2);
@@ -135,6 +443,95 @@
 
     <!-- Main JS -->
     <script src="{{ url('assets/admin/js/main.js') }}"></script>
+
+    <!-- Fix Menu Dropdown - Keep Open & Remember State -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const MENU_STATE_KEY = 'adminMenuState';
+            let menuInstance = null;
+
+            // Wait for menu instance to be ready
+            setTimeout(function() {
+                const layoutMenu = document.getElementById('layout-menu');
+                if (layoutMenu && layoutMenu.menuInstance) {
+                    menuInstance = layoutMenu.menuInstance;
+                }
+
+                // Mark server-opened menus (those with 'active' class on page load)
+                document.querySelectorAll('.menu-item.active.open').forEach(function(item) {
+                    item.setAttribute('data-server-open', 'true');
+                });
+
+                // Restore user-opened menus
+                restoreMenuState();
+
+                // Listen to menu toggle events
+                document.querySelectorAll('.menu-toggle').forEach(function(toggle) {
+                    toggle.addEventListener('click', function(e) {
+                        const menuItem = this.closest('.menu-item');
+                        if (menuItem && !menuItem.getAttribute('data-server-open')) {
+                            // Mark as manually toggled
+                            menuItem.setAttribute('data-manual-toggle', 'true');
+                        }
+                        
+                        setTimeout(saveMenuState, 400);
+                    });
+                });
+
+                // Save before leaving page
+                window.addEventListener('beforeunload', saveMenuState);
+            }, 300);
+
+            // Save state of manually opened menus only
+            function saveMenuState() {
+                const openMenus = [];
+                document.querySelectorAll('.menu-item.open').forEach(function(item) {
+                    // Only save if manually toggled and not server-opened
+                    if (item.getAttribute('data-manual-toggle') && !item.getAttribute('data-server-open')) {
+                        const link = item.querySelector('.menu-link');
+                        if (link) {
+                            const menuId = link.textContent.trim();
+                            openMenus.push(menuId);
+                        }
+                    }
+                });
+                localStorage.setItem(MENU_STATE_KEY, JSON.stringify(openMenus));
+            }
+
+            // Restore manually opened menus
+            function restoreMenuState() {
+                try {
+                    const savedState = localStorage.getItem(MENU_STATE_KEY);
+                    if (savedState) {
+                        const openMenus = JSON.parse(savedState);
+                        
+                        openMenus.forEach(function(menuId) {
+                            document.querySelectorAll('.menu-link').forEach(function(link) {
+                                if (link.textContent.trim() === menuId) {
+                                    const menuItem = link.closest('.menu-item');
+                                    // Only restore if not already managed by server
+                                    if (menuItem && !menuItem.getAttribute('data-server-open') && !menuItem.classList.contains('active')) {
+                                        if (menuInstance) {
+                                            menuInstance.open(menuItem, false);
+                                        } else {
+                                            menuItem.classList.add('open');
+                                            const menuSub = menuItem.querySelector('.menu-sub');
+                                            if (menuSub) {
+                                                menuSub.style.display = 'block';
+                                            }
+                                        }
+                                        menuItem.setAttribute('data-manual-toggle', 'true');
+                                    }
+                                }
+                            });
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error restoring menu state:', e);
+                }
+            }
+        });
+    </script>
 
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -344,6 +741,117 @@
         $('#notificationDropdown').on('click', function() {
             loadNotifications();
         });
+    </script>
+
+    <!-- Page Preload System -->
+    <script>
+        (function() {
+            // Preload system: load page completely before navigation
+            document.addEventListener('DOMContentLoaded', function() {
+                
+                // Function to preload page in hidden iframe
+                function preloadPageComplete(url) {
+                    return new Promise((resolve, reject) => {
+                        // Create hidden iframe
+                        const iframe = document.createElement('iframe');
+                        iframe.style.display = 'none';
+                        iframe.style.position = 'absolute';
+                        iframe.style.width = '0';
+                        iframe.style.height = '0';
+                        iframe.style.border = 'none';
+                        
+                        let timeoutId;
+                        
+                        // Set timeout (10 seconds max)
+                        timeoutId = setTimeout(() => {
+                            document.body.removeChild(iframe);
+                            reject(new Error('Timeout'));
+                        }, 10000);
+                        
+                        iframe.onload = function() {
+                            clearTimeout(timeoutId);
+                            
+                            // Wait for iframe content to be fully loaded
+                            try {
+                                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                                
+                                if (iframeDoc.readyState === 'complete') {
+                                    // Ensure all resources are loaded
+                                    setTimeout(() => {
+                                        document.body.removeChild(iframe);
+                                        resolve(true);
+                                    }, 100);
+                                } else {
+                                    // Wait for complete state
+                                    iframeDoc.addEventListener('readystatechange', function() {
+                                        if (iframeDoc.readyState === 'complete') {
+                                            setTimeout(() => {
+                                                document.body.removeChild(iframe);
+                                                resolve(true);
+                                            }, 100);
+                                        }
+                                    });
+                                }
+                            } catch (e) {
+                                // Cross-origin, just wait a bit more
+                                setTimeout(() => {
+                                    document.body.removeChild(iframe);
+                                    resolve(true);
+                                }, 500);
+                            }
+                        };
+                        
+                        iframe.onerror = function() {
+                            clearTimeout(timeoutId);
+                            document.body.removeChild(iframe);
+                            reject(new Error('Load error'));
+                        };
+                        
+                        document.body.appendChild(iframe);
+                        iframe.src = url;
+                    });
+                }
+                
+                // Handle all internal links
+                const links = document.querySelectorAll('a[href]:not([target="_blank"]):not([href^="#"]):not([href^="javascript:"]):not(.no-preload)');
+                
+                links.forEach(function(link) {
+                    link.addEventListener('click', function(e) {
+                        const href = this.getAttribute('href');
+                        
+                        // Only handle internal navigation
+                        if (href && !href.startsWith('http://') && !href.startsWith('https://') && 
+                            !href.startsWith('mailto:') && !href.startsWith('tel:')) {
+                            
+                            e.preventDefault();
+                            
+                            // Visual feedback - disable link and change cursor
+                            const originalText = this.innerHTML;
+                            this.style.opacity = '0.6';
+                            this.style.pointerEvents = 'none';
+                            document.body.style.cursor = 'wait';
+                            
+                            // Preload the page completely
+                            preloadPageComplete(href)
+                                .then(() => {
+                                    // Page is fully loaded in background, now navigate
+                                    window.location.href = href;
+                                })
+                                .catch(() => {
+                                    // If preload fails, navigate anyway
+                                    window.location.href = href;
+                                })
+                                .finally(() => {
+                                    // Reset styles (in case navigation is delayed)
+                                    this.style.opacity = '1';
+                                    this.style.pointerEvents = 'auto';
+                                    document.body.style.cursor = 'default';
+                                });
+                        }
+                    });
+                });
+            });
+        })();
     </script>
 
     @stack('scripts')

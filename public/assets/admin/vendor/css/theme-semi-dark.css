@@ -57,6 +57,8 @@
   width: 0.25rem;
   height: 2.6845rem;
   border-radius: 0.375rem 0 0 0.375rem;
+  background: #e91e63;
+  box-shadow: 0 0 8px rgba(233, 30, 99, 0.6);
 }
 
 body {
@@ -1448,17 +1450,19 @@ li.ui-timepicker-selected,
   color: #fff;
 }
 .bg-menu-theme.menu-vertical .menu-item.active > .menu-link:not(.menu-toggle) {
-  background: linear-gradient(270deg, rgba(247, 75, 129, 0.7) 0%, #f74b81 100%);
-  box-shadow: 0px 2px 6px 0px rgba(115, 103, 240, 0.3);
+  background: linear-gradient(270deg, #e91e63 0%, #d81b60 100%);
+  box-shadow: 0px 4px 12px 0px rgba(233, 30, 99, 0.5);
   color: #fff !important;
+  font-weight: 600;
 }
 .bg-menu-theme.menu-vertical .menu-item.active > .menu-link:not(.menu-toggle).menu-toggle::after {
   color: #fff !important;
 }
 .bg-menu-theme.menu-horizontal .menu-inner > .menu-item.active > .menu-link.menu-toggle {
-  background: linear-gradient(270deg, rgba(247, 75, 129, 0.7) 0%, #f74b81 100%);
+  background: linear-gradient(270deg, #e91e63 0%, #d81b60 100%);
   color: #fff !important;
-  box-shadow: 0px 2px 6px 0px rgba(115, 103, 240, 0.3);
+  box-shadow: 0px 4px 12px 0px rgba(233, 30, 99, 0.5);
+  font-weight: 600;
 }
 .bg-menu-theme.menu-horizontal .menu-inner > .menu-item.active > .menu-link.menu-toggle.menu-toggle::after {
   color: #fff !important;
@@ -1469,7 +1473,8 @@ li.ui-timepicker-selected,
 }
 .bg-menu-theme.menu-horizontal .menu-item.active > .menu-link:not(.menu-toggle) {
   background: #3a3b64;
-  color: #f74b81 !important;
+  color: #e91e63 !important;
+  font-weight: 600;
 }
 .bg-menu-theme .menu-inner > .menu-item.menu-item-closing .menu-item.open .menu-sub,
 .bg-menu-theme .menu-inner > .menu-item.menu-item-closing .menu-item.open .menu-toggle {

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Ebook;
 use App\Models\Rating;
 use App\Models\EbookRating;
+use App\Models\City;
 
 class EbookController extends Controller
 {
@@ -18,8 +19,8 @@ class EbookController extends Controller
     {
         // Mendapatkan data ebook - hanya yang published
         $ebook = Ebook::where('slug', $slug)
-                     ->where('status', 'published')
-                     ->firstOrFail();
+            ->where('status', 'published')
+            ->firstOrFail();
 
         // Mendapatkan rating yang sudah disetujui dengan pagination (3 per halaman)
         $ratings = EbookRating::where('ebook_id', $ebook->id)
@@ -63,6 +64,38 @@ class EbookController extends Controller
                 ->exists();
         }
 
-        return view('ebooks-detail', compact('ebook', 'ratings', 'ratingDistribution', 'hasReviewed'));
+        $isSaved = false;
+        if (auth()->check()) {
+            $isSaved = auth()->user()->savedBooks()
+                ->where('ebook_id', $ebook->id)
+                ->exists();
+        }
+
+        $citiesHeader = City::where('is_active', true)
+            ->orderBy('order_index')
+            ->orderBy('name')
+            ->get();
+
+        return view('ebooks-detail', compact('ebook', 'ratings', 'ratingDistribution', 'hasReviewed', 'isSaved', 'citiesHeader'));
+    }
+
+    public function toggleSaved(Request $request, string $id)
+    {
+        if (!auth()->check()) {
+            return response()->json(['success' => false, 'message' => 'Login required'], 401);
+        }
+
+        $user = auth()->user();
+        Ebook::findOrFail($id);
+
+        $exists = $user->savedBooks()->where('ebook_id', $id)->exists();
+
+        if ($exists) {
+            $user->savedBooks()->detach($id);
+        } else {
+            $user->savedBooks()->attach($id);
+        }
+
+        return response()->json(['success' => true]);
     }
 }

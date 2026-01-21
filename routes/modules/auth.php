@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\Admin\AdminForgotPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,6 +48,15 @@ Route::middleware(['user.session', 'guest:web'])->group(function () {
 Route::prefix('admin')->name('admin.')->middleware(['admin.session'])->group(function () {
     Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AdminAuthController::class, 'login'])->name('login.post');
+
+    // Forgot Password Routes for Admin
+    Route::get('/forgot-password', [AdminForgotPasswordController::class, 'showForgotForm'])->name('password.request');
+    Route::post('/forgot-password', [AdminForgotPasswordController::class, 'sendCode'])->name('password.send-code');
+    Route::get('/verify-code', [AdminForgotPasswordController::class, 'showVerifyForm'])->name('password.verify-code');
+    Route::post('/verify-code', [AdminForgotPasswordController::class, 'verifyCode'])->name('password.verify');
+    Route::post('/resend-code', [AdminForgotPasswordController::class, 'resendCode'])->name('password.resend-code');
+    Route::get('/reset-password', [AdminForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/reset-password', [AdminForgotPasswordController::class, 'reset'])->name('password.update');
 
     // Google OAuth Routes for Admin
     Route::get('/login/google', [AdminAuthController::class, 'redirectToGoogle'])->name('login.google');

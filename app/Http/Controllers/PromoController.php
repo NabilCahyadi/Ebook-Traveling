@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\PromoService;
 use App\Models\Promo;
+use App\Models\City;
 
 class PromoController extends Controller
 {
@@ -19,7 +20,11 @@ class PromoController extends Controller
     public function index()
     {
         $promos = $this->promoService->getActivePromosForDisplay();
-        return view('promo', compact('promos'));
+        $citiesHeader = City::where('is_active', true)
+            ->orderBy('order_index')
+            ->orderBy('name')
+            ->get();
+        return view('promo', compact('promos', 'citiesHeader'));
     }
 
     public function showDetail($slug)

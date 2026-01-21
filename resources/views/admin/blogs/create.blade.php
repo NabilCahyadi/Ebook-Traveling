@@ -38,6 +38,17 @@
         #author_suggestions .list-group-item.text-danger {
             cursor: default;
         }
+        
+        /* Category Badges */
+        #selected-categories .category-badge {
+            display: inline-block;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        #selected-categories .category-badge .remove-category:hover {
+            color: #d32f2f;
+        }
     </style>
 @endpush
 
@@ -135,15 +146,28 @@
                                     </option>
                                     <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>
                                         {{ __('admin.blogs.published') }}</option>
+                                    <option value="scheduled" {{ old('status') == 'scheduled' ? 'selected' : '' }}>
+                                        <i class="ti ti-clock"></i> Scheduled</option>
                                     <option value="unpublished" {{ old('status') == 'unpublished' ? 'selected' : '' }}>
                                         {{ __('admin.blogs.unpublished') }}</option>
-                                    <option value="archived" {{ old('status') == 'archived' ? 'selected' : '' }}>{{ __('admin.blogs.archived') }}
-                                    </option>
                                 </select>
                                 @error('status')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                                 <div class="form-text">{{ __('admin.blogs.set_blog_status') }}</div>
+                            </div>
+
+                            <!-- Scheduled Publishing Date/Time -->
+                            <div class="mb-3" id="scheduledDateContainer" style="display: none;">
+                                <label class="form-label" for="published_at"><i class="ti ti-calendar-time me-1"></i> Publish Date & Time <span class="text-danger">*</span></label>
+                                <input type="datetime-local" class="form-control @error('published_at') is-invalid @enderror" 
+                                    id="published_at" name="published_at" 
+                                    value="{{ old('published_at') }}"
+                                    min="{{ now()->format('Y-m-d\TH:i') }}">
+                                @error('published_at')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <div class="form-text">Set the date and time when this blog will be automatically published</div>
                             </div>
 
                             <div class="d-grid gap-2">
@@ -181,19 +205,24 @@
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label class="form-label" for="category">{{ __('admin.blogs.blog_category') }}</label>
-                                <select class="form-select @error('category') is-invalid @enderror" 
-                                    id="category" 
-                                    name="category">
+                                <label class="form-label" for="category_selector">{{ __('admin.blogs.blog_category') }}</label>
+                                <select class="form-select @error('categories') is-invalid @enderror" 
+                                    id="category_selector">
                                     <option value="">{{ __('admin.blogs.select_category') }}</option>
                                     @foreach($categories as $category)
-                                        <option value="{{ $category->name }}" {{ old('category') == $category->name ? 'selected' : '' }}>
+                                        <option value="{{ $category->id }}" data-name="{{ $category->name }}">
                                             {{ $category->name }}
                                         </option>
                                     @endforeach
                                 </select>
-                                @error('category')
-                                    <div class="invalid-feedback">{{ $message }}</div>
+                                
+                                <!-- Selected Categories Display -->
+                                <div id="selected-categories" class="mt-2">
+                                    <!-- Badges will appear here -->
+                                </div>
+                                
+                                @error('categories')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                                 <div class="form-text">
                                     {{ __('admin.blogs.select_category_text') }}
@@ -204,7 +233,276 @@
                     </div>
                 </div>
             </div>
+
+            <!-- SEO Section - Full Width Below -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="bx bx-search-alt me-2"></i>SEO Settings</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label" for="meta_title">Meta Title</label>
+                                    <input type="text" 
+                                        class="form-control @error('meta_title') is-invalid @enderror" 
+                                        id="meta_title" 
+                                        name="meta_title" 
+                                        value="{{ old('meta_title') }}"
+                                        maxlength="500"
+                                        placeholder="SEO title for search engines (leave empty to use blog title)">
+                                    @error('meta_title')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    <div class="form-text">
+                                        <span id="meta_title_count">0</span>/500 characters. Optimal: 50-60 characters.
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label" for="meta_description">Meta Description</label>
+                                    <textarea 
+                                        class="form-control @error('meta_description') is-invalid @enderror" 
+                                        id="meta_description" 
+                                        name="meta_description" 
+                                        rows="3"
+                                        maxlength="1000"
+                                        placeholder="SEO description for search engines (leave empty to use excerpt)">{{ old('meta_description') }}</textarea>
+                                    @error('meta_description')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    <div class="form-text">
+                                        <span id="meta_description_count">0</span>/1000 characters. Optimal: 150-160 characters.
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label" for="meta_keywords">Meta Keywords</label>
+                                    <input type="text" 
+                                        class="form-control @error('meta_keywords') is-invalid @enderror" 
+                                        id="meta_keywords" 
+                                        name="meta_keywords" 
+                                        value="{{ old('meta_keywords') }}"
+                                        maxlength="500"
+                                        placeholder="Separate keywords with commas (e.g., travel, ebook, indonesia)">
+                                    @error('meta_keywords')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    <div class="form-text">
+                                        <span id="meta_keywords_count">0</span>/500 characters. Recommended: 5-10 keywords.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-info mb-0">
+                                <i class="bx bx-info-circle me-2"></i>
+                                <strong>SEO Tips:</strong>
+                                <ul class="mb-0 mt-2">
+                                    <li>Meta Title: Use relevant keywords and keep it under 60 characters</li>
+                                    <li>Meta Description: Write compelling descriptions that encourage clicks (150-160 characters)</li>
+                                    <li>Meta Keywords: Use relevant, specific keywords related to your content</li>
+                                    <li>If left empty, the system will use the blog title and excerpt automatically</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Ebooks Section - Full Width Below -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Related Ebooks</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Filters -->
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Search</label>
+                                    <input type="text" 
+                                        class="form-control" 
+                                        id="ebook_search" 
+                                        placeholder="Search ebooks...">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Filter by City</label>
+                                    <select class="form-select" id="city_filter">
+                                        <option value="">All Cities</option>
+                                        @foreach($cities as $city)
+                                            <option value="{{ $city->id }}">{{ $city->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Filter by Category</label>
+                                    <select class="form-select" id="category_filter">
+                                        <option value="">All Categories</option>
+                                        @foreach($ebookCategories as $category)
+                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Ebooks Table -->
+                            <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                                <table class="table table-hover">
+                                    <thead style="background-color: #fff; position: sticky; top: 0; z-index: 10;">
+                                        <tr>
+                                            <th style="width: 50px;">
+                                                <input type="checkbox" class="form-check-input" id="select_all">
+                                            </th>
+                                            <th style="width: 100px;">Cover</th>
+                                            <th>Title</th>
+                                            <th style="width: 150px;">Creator</th>
+                                            <th style="width: 150px;">City</th>
+                                            <th style="width: 200px;">Categories</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ebooks_table_body">
+                                        @if($ebooks->count() > 0)
+                                            @foreach($ebooks as $ebook)
+                                                <tr class="ebook-row" 
+                                                    data-city="{{ $ebook->city_id ?? '' }}" 
+                                                    data-category="{{ $ebook->categories->pluck('id')->join(',') }}"
+                                                    data-title="{{ strtolower($ebook->title) }}"
+                                                    style="cursor: pointer;">
+                                                    <td onclick="event.stopPropagation();">
+                                                        <input class="form-check-input ebook-checkbox" 
+                                                            type="checkbox" 
+                                                            name="related_ebooks[]" 
+                                                            value="{{ $ebook->id }}"
+                                                            {{ in_array($ebook->id, old('related_ebooks', [])) ? 'checked' : '' }}>
+                                                    </td>
+                                                    <td>
+                                                        <img src="{{ $ebook->cover_image_url }}" 
+                                                            alt="{{ $ebook->title }}" 
+                                                            class="img-thumbnail"
+                                                            style="width: 70px; height: 100px; object-fit: cover;"
+                                                            onerror="this.src='{{ asset('images/no-cover.png') }}'">
+                                                    </td>
+                                                    <td>{{ $ebook->title }}</td>
+                                                    <td>
+                                                        <span class="badge bg-label-success">
+                                                            {{ $ebook->creator->name ?? 'N/A' }}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-label-info">
+                                                            {{ $ebook->city->name ?? 'N/A' }}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        @if($ebook->categories->count() > 0)
+                                                            @foreach($ebook->categories as $cat)
+                                                                <span class="badge bg-label-primary me-1">{{ $cat->name }}</span>
+                                                            @endforeach
+                                                        @else
+                                                            <span class="badge bg-label-secondary">N/A</span>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        @else
+                                            <tr>
+                                                <td colspan="6" class="text-center text-muted">No ebooks available</td>
+                                            </tr>
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            @error('related_ebooks')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                            <div class="form-text mt-2">
+                                <span id="selected_count">0</span> ebook(s) selected
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
+
+        @push('scripts')
+        <script>
+            // Filter and search functionality
+            function filterEbooks() {
+                const searchText = document.getElementById('ebook_search').value.toLowerCase();
+                const cityFilter = document.getElementById('city_filter').value;
+                const categoryFilter = document.getElementById('category_filter').value;
+                const rows = document.querySelectorAll('.ebook-row');
+                
+                rows.forEach(row => {
+                    const title = row.dataset.title;
+                    const city = row.dataset.city;
+                    const categories = row.dataset.category.split(',');
+                    
+                    let showRow = true;
+                    
+                    // Search filter
+                    if (searchText && !title.includes(searchText)) {
+                        showRow = false;
+                    }
+                    
+                    // City filter
+                    if (cityFilter && city !== cityFilter) {
+                        showRow = false;
+                    }
+                    
+                    // Category filter - check if any category matches
+                    if (categoryFilter && !categories.includes(categoryFilter)) {
+                        showRow = false;
+                    }
+                    
+                    row.style.display = showRow ? '' : 'none';
+                });
+                
+                updateSelectedCount();
+            }
+            
+            // Update selected count
+            function updateSelectedCount() {
+                const visibleChecked = document.querySelectorAll('.ebook-row:not([style*="display: none"]) .ebook-checkbox:checked');
+                document.getElementById('selected_count').textContent = visibleChecked.length;
+            }
+            
+            // Select all functionality
+            document.getElementById('select_all').addEventListener('change', function() {
+                const visibleCheckboxes = document.querySelectorAll('.ebook-row:not([style*="display: none"]) .ebook-checkbox');
+                visibleCheckboxes.forEach(cb => cb.checked = this.checked);
+                updateSelectedCount();
+            });
+            
+            // Individual checkbox change
+            document.querySelectorAll('.ebook-checkbox').forEach(cb => {
+                cb.addEventListener('change', updateSelectedCount);
+            });
+            
+            // Click row to toggle checkbox
+            document.querySelectorAll('.ebook-row').forEach(row => {
+                row.addEventListener('click', function(e) {
+                    // Don't toggle if clicking on checkbox itself
+                    if (e.target.type !== 'checkbox') {
+                        const checkbox = this.querySelector('.ebook-checkbox');
+                        checkbox.checked = !checkbox.checked;
+                        updateSelectedCount();
+                    }
+                });
+            });
+            
+            // Attach filter event listeners
+            document.getElementById('ebook_search').addEventListener('keyup', filterEbooks);
+            document.getElementById('city_filter').addEventListener('change', filterEbooks);
+            document.getElementById('category_filter').addEventListener('change', filterEbooks);
+            
+            // Initial count
+            updateSelectedCount();
+        </script>
+        @endpush
     </div>
 
     @push('scripts')
@@ -516,6 +814,95 @@
                     authorSuggestions.hide();
                 }
             });
+            
+            // SEO Character Counters
+            $('#meta_title').on('input', function() {
+                $('#meta_title_count').text($(this).val().length);
+            });
+            
+            $('#meta_description').on('input', function() {
+                $('#meta_description_count').text($(this).val().length);
+            });
+            
+            $('#meta_keywords').on('input', function() {
+                $('#meta_keywords_count').text($(this).val().length);
+            });
+            
+            // Initialize counters on page load
+            $('#meta_title_count').text($('#meta_title').val().length);
+            $('#meta_description_count').text($('#meta_description').val().length);
+            $('#meta_keywords_count').text($('#meta_keywords').val().length);
+            
+            // Category Selection Handler
+            const selectedCategories = new Map();
+            const categorySelector = $('#category_selector');
+            const selectedContainer = $('#selected-categories');
+
+            // Handle old input on validation errors
+            @if(old('categories'))
+                const oldCategories = @json(old('categories'));
+                $('#category_selector option').each(function() {
+                    const optionValue = $(this).val();
+                    const optionName = $(this).data('name');
+                    if (oldCategories.includes(optionValue)) {
+                        selectedCategories.set(optionValue, optionName);
+                    }
+                });
+                renderCategories();
+            @endif
+
+            // Add category when selected
+            categorySelector.on('change', function() {
+                const selectedValue = $(this).val();
+                const selectedText = $(this).find('option:selected').data('name');
+                
+                if (selectedValue && !selectedCategories.has(selectedValue)) {
+                    selectedCategories.set(selectedValue, selectedText);
+                    renderCategories();
+                    $(this).val(''); // Reset selector
+                }
+            });
+
+            // Render selected categories as badges
+            function renderCategories() {
+                selectedContainer.empty();
+                selectedCategories.forEach((name, id) => {
+                    const badge = $(`
+                        <span class="badge bg-primary category-badge">
+                            ${name}
+                            <input type="hidden" name="categories[]" value="${id}">
+                            <i class="bx bx-x ms-1 remove-category" style="cursor: pointer;" data-id="${id}"></i>
+                        </span>
+                    `);
+                    selectedContainer.append(badge);
+                });
+                
+                // Bind remove handlers
+                $('.remove-category').on('click', function() {
+                    const id = $(this).data('id');
+                    selectedCategories.delete(id);
+                    renderCategories();
+                });
+            }
+
+            // Toggle scheduled date container based on status selection
+            const statusSelect = document.getElementById('status');
+            const scheduledContainer = document.getElementById('scheduledDateContainer');
+            const publishedAtInput = document.getElementById('published_at');
+            
+            function toggleScheduledDate() {
+                if (statusSelect.value === 'scheduled') {
+                    scheduledContainer.style.display = 'block';
+                    publishedAtInput.required = true;
+                } else {
+                    scheduledContainer.style.display = 'none';
+                    publishedAtInput.required = false;
+                }
+            }
+            
+            statusSelect.addEventListener('change', toggleScheduledDate);
+            // Run on page load
+            toggleScheduledDate();
         </script>
     @endpush
 @endsection

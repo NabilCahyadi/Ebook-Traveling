@@ -25,24 +25,24 @@
         @endif
 
         <!-- Page Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
             <div>
                 <h4 class="fw-bold py-3 mb-2">
                     <span class="text-muted fw-light">{{ __('admin.menu.master_data') }} /</span> {{ __('admin.cities.title') }}
                 </h4>
             </div>
-            <div class="d-flex gap-2">
+            <div class="d-flex flex-wrap gap-2">
                 <!-- View Toggle -->
                 <div class="btn-group" role="group">
                     <button type="button" class="btn btn-outline-primary" id="cardViewBtn" onclick="switchView('card')">
-                        <i class="ti ti-layout-grid me-1"></i> {{ __('admin.cities.cards_view') }}
+                        <i class="ti ti-layout-grid me-1"></i> <span class="d-none d-sm-inline">{{ __('admin.cities.cards_view') }}</span>
                     </button>
                     <button type="button" class="btn btn-outline-primary" id="tableViewBtn" onclick="switchView('table')">
-                        <i class="ti ti-table me-1"></i> {{ __('admin.cities.table_view') }}
+                        <i class="ti ti-table me-1"></i> <span class="d-none d-sm-inline">{{ __('admin.cities.table_view') }}</span>
                     </button>
                 </div>
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
-                    <i class="ti ti-plus me-1"></i> {{ __('admin.cities.add_city') }}
+                    <i class="ti ti-plus me-1"></i> <span class="d-none d-sm-inline">{{ __('admin.cities.add_city') }}</span>
                 </button>
             </div>
         </div>
@@ -52,12 +52,12 @@
             <div class="card-body">
                 <form action="{{ route('admin.cities.index') }}" method="GET">
                     <div class="row g-3">
-                        <div class="col-md-4">
+                        <div class="col-12 col-md-4">
                             <label for="search" class="form-label">{{ __('admin.common.search') }}</label>
                             <input type="text" class="form-control" id="search" name="search"
                                 value="{{ request('search') }}" placeholder="{{ __('admin.cities.search_placeholder') }}">
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-6 col-md-3">
                             <label for="province" class="form-label">{{ __('admin.cities.filter_province') }}</label>
                             <select class="form-select" id="province" name="province">
                                 <option value="">{{ __('admin.cities.all_provinces') }}</option>
@@ -69,7 +69,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-6 col-md-2">
                             <label for="sort_by" class="form-label">{{ __('admin.cities.sort_by') }}</label>
                             <select class="form-select" id="sort_by" name="sort_by">
                                 <option value="created_at" {{ request('sort_by') == 'created_at' ? 'selected' : '' }}>{{ __('admin.cities.date') }}
@@ -79,7 +79,7 @@
                                 </option>
                             </select>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-6 col-md-2">
                             <label for="sort_order" class="form-label">{{ __('admin.cities.order') }}</label>
                             <select class="form-select" id="sort_order" name="sort_order">
                                 <option value="asc" {{ request('sort_order') == 'asc' ? 'selected' : '' }}>{{ __('admin.cities.ascending') }}
@@ -88,7 +88,7 @@
                                 </option>
                             </select>
                         </div>
-                        <div class="col-md-1 d-flex align-items-end">
+                        <div class="col-6 col-md-1 d-flex align-items-end">
                             <button type="submit" class="btn btn-primary w-100">
                                 <i class="ti ti-search"></i>
                             </button>
@@ -107,10 +107,10 @@
 
         <!-- Cities Cards -->
         @if ($cities->count() > 0)
-            <div class="mb-3 d-flex justify-content-between align-items-center">
-                <div class="text-muted">Total: {{ $cities->total() }} cities</div>
+            <div class="mb-3 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+                <div class="text-muted">{{ __('admin.common.total') }}: {{ $cities->total() }} {{ __('admin.cities.title') }}</div>
                 <div class="text-muted">
-                    Showing {{ $cities->firstItem() }} to {{ $cities->lastItem() }} of {{ $cities->total() }} results
+                    {{ __('admin.common.showing_results', ['from' => $cities->firstItem(), 'to' => $cities->lastItem(), 'total' => $cities->total()]) }}
                 </div>
             </div>
 
@@ -132,7 +132,7 @@
                                             <li>
                                                 <a class="dropdown-item" href="javascript:void(0);"
                                                     onclick="editCity('{{ $city->id }}', '{{ $city->name }}', '{{ $city->province }}', '{{ $city->image_url }}')">
-                                                    <i class="ti ti-pencil me-2"></i> Edit
+                                                    <i class="ti ti-pencil me-2"></i> {{ __('admin.common.edit') }}
                                                 </a>
                                             </li>
                                             <li>
@@ -141,11 +141,11 @@
                                             <li>
                                                 <form action="{{ route('admin.cities.destroy', $city->id) }}"
                                                     method="POST"
-                                                    onsubmit="return confirm('Are you sure you want to delete this city?');">
+                                                    onsubmit="return confirm('{{ __('admin.messages.confirm_delete') }}');">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="dropdown-item text-danger">
-                                                        <i class="ti ti-trash me-2"></i> Delete
+                                                        <i class="ti ti-trash me-2"></i> {{ __('admin.common.delete') }}
                                                     </button>
                                                 </form>
                                             </li>
@@ -179,10 +179,10 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>City Name</th>
-                                    <th>Province</th>
-                                    <th>Created</th>
-                                    <th>Actions</th>
+                                    <th>{{ __('admin.cities.city_name') }}</th>
+                                    <th>{{ __('admin.cities.province') }}</th>
+                                    <th class="d-none d-md-table-cell">{{ __('admin.common.date_created') }}</th>
+                                    <th>{{ __('admin.common.actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -203,7 +203,7 @@
                                         <td>
                                             <span class="badge bg-label-primary">{{ $city->province }}</span>
                                         </td>
-                                        <td>
+                                        <td class="d-none d-md-table-cell">
                                             <small class="text-muted">{{ $city->created_at->format('d M Y') }}</small>
                                         </td>
                                         <td>
@@ -216,17 +216,17 @@
                                                 <div class="dropdown-menu dropdown-menu-end">
                                                     <a class="dropdown-item" href="javascript:void(0);"
                                                         onclick="editCity('{{ $city->id }}', '{{ $city->name }}', '{{ $city->province }}', '{{ $city->image_url }}')">
-                                                        <i class="ti ti-pencil me-2"></i> Edit
+                                                        <i class="ti ti-pencil me-2"></i> {{ __('admin.common.edit') }}
                                                     </a>
                                                     <div class="dropdown-divider"></div>
                                                     <form action="{{ route('admin.cities.destroy', $city->id) }}"
                                                         method="POST"
-                                                        onsubmit="return confirm('Are you sure you want to delete this city?');"
+                                                        onsubmit="return confirm('{{ __('admin.messages.confirm_delete') }}');"
                                                         style="display: inline;">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="dropdown-item text-danger">
-                                                            <i class="ti ti-trash me-2"></i> Delete
+                                                            <i class="ti ti-trash me-2"></i> {{ __('admin.common.delete') }}
                                                         </button>
                                                     </form>
                                                 </div>
@@ -248,11 +248,11 @@
             <div class="card">
                 <div class="card-body text-center py-5">
                     <i class="ti ti-map-off ti-xl text-muted mb-3"></i>
-                    <h5 class="text-muted">No cities found</h5>
-                    <p class="text-muted">Start by creating your first city</p>
+                    <h5 class="text-muted">{{ __('admin.cities.no_cities') }}</h5>
+                    <p class="text-muted">{{ __('admin.common.try_adjusting_filters') }}</p>
                     <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal"
                         data-bs-target="#createModal">
-                        <i class="ti ti-plus me-1"></i> Add New City
+                        <i class="ti ti-plus me-1"></i> {{ __('admin.cities.add_city') }}
                     </button>
                 </div>
             </div>
@@ -266,12 +266,12 @@
                 <form action="{{ route('admin.cities.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title">Create New City</h5>
+                        <h5 class="modal-title">{{ __('admin.cities.add_city') }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="name" class="form-label">City Name <span class="text-danger">*</span></label>
+                            <label for="name" class="form-label">{{ __('admin.cities.city_name') }} <span class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
                                 name="name" value="{{ old('name') }}" placeholder="e.g. Bali" required>
                             @error('name')
@@ -279,20 +279,19 @@
                             @enderror
                         </div>
                         <div class="mb-3">
-                            <label for="province" class="form-label">Province <span class="text-danger">*</span></label>
+                            <label for="province" class="form-label">{{ __('admin.cities.province') }} <span class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('province') is-invalid @enderror"
                                 id="province" name="province" value="{{ old('province') }}"
-                                placeholder="e.g. Jawa Barat" required>
+                                placeholder="{{ __('admin.cities.province_placeholder') }}" required>
                             @error('province')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-3">
-                            <label for="cityImageInput" class="form-label">City Image (Ratio 4:3)</label>
+                            <label for="cityImageInput" class="form-label">{{ __('admin.cities.city_image') }}</label>
                             <input type="file" class="form-control @error('image') is-invalid @enderror"
                                 id="cityImageInput" name="image" accept="image/*">
-                            <small class="text-muted">Gambar akan otomatis di-crop ke rasio 4:3 (980x735px). Max
-                                2MB.</small>
+                            <small class="text-muted">{{ __('admin.cities.image_hint') }}</small>
                             @error('image')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -300,14 +299,14 @@
 
                         <!-- Preview Area Create -->
                         <div id="cityPreviewArea" style="display: none;" class="mb-3">
-                            <label class="form-label">Preview (Auto-cropped)</label>
+                            <label class="form-label">{{ __('admin.cities.preview') }}</label>
                             <div style="max-width: 300px;">
                                 <img id="cityPreviewImage" src="" alt="Preview"
                                     style="width: 100%; border: 2px solid #ddd; border-radius: 8px;">
                             </div>
                             <button type="button" class="btn btn-sm btn-outline-secondary mt-2"
                                 onclick="resetCityImage()">
-                                <i class="ti ti-x me-1"></i> Hapus
+                                <i class="ti ti-x me-1"></i> {{ __('admin.actions.remove') }}
                             </button>
                         </div>
 
@@ -315,9 +314,9 @@
                         <input type="hidden" name="city_image_cropped" id="cityCroppedImageData">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('admin.actions.cancel') }}</button>
                         <button type="submit" class="btn btn-primary">
-                            <i class="ti ti-device-floppy me-1"></i> Create City
+                            <i class="ti ti-device-floppy me-1"></i> {{ __('admin.cities.create_city') }}
                         </button>
                     </div>
                 </form>
@@ -333,46 +332,45 @@
                     @csrf
                     @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title">Edit City</h5>
+                        <h5 class="modal-title">{{ __('admin.cities.edit_city') }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="edit_name" class="form-label">City Name <span
+                            <label for="edit_name" class="form-label">{{ __('admin.cities.city_name') }} <span
                                     class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="edit_name" name="name"
-                                placeholder="e.g. Bali" required>
+                                placeholder="{{ __('admin.cities.name_placeholder') }}" required>
                         </div>
                         <div class="mb-3">
-                            <label for="edit_province" class="form-label">Province <span
+                            <label for="edit_province" class="form-label">{{ __('admin.cities.province') }} <span
                                     class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="edit_province" name="province"
-                                placeholder="e.g. Jawa Barat" required>
+                                placeholder="{{ __('admin.cities.province_placeholder') }}" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Current Image</label>
+                            <label class="form-label">{{ __('admin.cities.current_image') }}</label>
                             <div id="edit_current_image" class="mb-2">
                                 <!-- Will be populated by JavaScript -->
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="editCityImageInput" class="form-label">Change City Image (Ratio 4:3)</label>
+                            <label for="editCityImageInput" class="form-label">{{ __('admin.cities.change_image') }}</label>
                             <input type="file" class="form-control" id="editCityImageInput" name="image"
                                 accept="image/*">
-                            <small class="text-muted">Gambar akan otomatis di-crop ke rasio 4:3 (980x735px). Max
-                                2MB.</small>
+                            <small class="text-muted">{{ __('admin.cities.image_hint') }}</small>
                         </div>
 
                         <!-- Preview Area Edit -->
                         <div id="editCityPreviewArea" style="display: none;" class="mb-3">
-                            <label class="form-label">Preview (Auto-cropped)</label>
+                            <label class="form-label">{{ __('admin.cities.preview') }}</label>
                             <div style="max-width: 300px;">
                                 <img id="editCityPreviewImage" src="" alt="Preview"
                                     style="width: 100%; border: 2px solid #ddd; border-radius: 8px;">
                             </div>
                             <button type="button" class="btn btn-sm btn-outline-secondary mt-2"
                                 onclick="resetEditCityImage()">
-                                <i class="ti ti-x me-1"></i> Hapus
+                                <i class="ti ti-x me-1"></i> {{ __('admin.actions.remove') }}
                             </button>
                         </div>
 
@@ -380,9 +378,9 @@
                         <input type="hidden" name="city_image_cropped" id="editCityCroppedImageData">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('admin.actions.cancel') }}</button>
                         <button type="submit" class="btn btn-primary">
-                            <i class="ti ti-device-floppy me-1"></i> Update City
+                            <i class="ti ti-device-floppy me-1"></i> {{ __('admin.cities.update_city') }}
                         </button>
                     </div>
                 </form>

@@ -9,4 +9,5 @@ interface SubscriptionProcessInterface
     public function findPaymentByGatewayId(string $gatewayId);
     public function updatePayment(string $paymentId, array $data);
     public function createSubscription(array $data);
+    public function handleMayarCallback(string $transactionId, string $status): void;
 }

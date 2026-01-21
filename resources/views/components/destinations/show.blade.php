@@ -262,6 +262,26 @@
         margin-top: 10px;
     }
 </style>
+<style>
+    .city-hero-card {
+        border-radius: 12px !important;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    @media (max-width: 768px) {
+        .city-hero-card {
+            height: 380px !important;
+        }
+
+        .city-hero-content h1 {
+            font-size: 1.8rem !important;
+        }
+
+        .city-hero-content p {
+            font-size: 0.95rem !important;
+        }
+    }
+</style>
 
 <div class="container mt-5 mb-5">
     <!-- Bagian Utama Detail Kota -->
@@ -270,39 +290,64 @@
             {{-- Kontainer untuk Detail Kota --}}
             <div class="row">
                 <div class="col-lg-12">
-                    <!-- Tombol Kembali -->
-                    <a href="{{ url('/destinations') }}" class="btn mb-4 fs-6">
-                        <i class="bi bi-arrow-left"></i>‎ ‎ Back
-                    </a>
-                    <div class="city-detail-card">
-                        {{-- Gambar Kota --}}
-                        <div class="city-image">
-                            @if($city->image)
-                            <img src="{{ $city->image }}" alt="{{ $city->name }}">
+                    <div class="breadcrumb mb-15">
+                        <a href="/" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
+                        <span></span>
+                        <a href="{{ route('destinations') }}">Destinations</a>
+                        <span></span>
+                        {{ $city->name }}
+                    </div>
+
+                    {{-- HERO: Gambar + Teks di Tengah Bawah --}}
+                    <div class="city-hero-card rounded-3 overflow-hidden shadow-sm" style="position: relative; height: 450px;">
+                        <!-- Gambar sebagai background -->
+                        <img src="{{ $city->image ?: 'https://via.placeholder.com/1200x450.png?text=' . urlencode($city->name) }}"
+                            alt="{{ $city->name }}"
+                            class="w-100 h-100"
+                            style="object-fit: cover;">
+
+                        <!-- Overlay gelap lembut -->
+                        <div class="city-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent 60%);"></div>
+
+                        <!-- Teks: putih, center, di tengah bawah -->
+                        <div class="city-hero-content" style="position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); text-align: center; color: white; z-index: 2; max-width: 90%;">
+                            <h1 class="mb-2" style="font-size: 2.25rem; font-weight: 700; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.6);">
+                                {{ $city->name }}
+                            </h1>
+
+                            @if($city->province)
+                            <p class="mb-2" style="font-size: 1.1rem; color: white; opacity: 0.95; font-weight: 500;">
+                                <i class="bi bi-geo-alt me-1"></i>
+                                {{ $city->province }}
+                                @if($city->country)
+                                , {{ $city->country }}
+                                @endif
+                            </p>
+                            @endif
+
+                            @if($city->description)
+                            <p class="mb-0" style="font-size: 1rem; line-height: 1.6; color: white; opacity: 0.9;">
+                                {{ Str::limit($city->description, 180, '...') }}
+                            </p>
                             @else
-                            <img src="https://via.placeholder.com/1200x450.png?text=Gambar+Tidak+Tersedia" alt="Gambar Tidak Tersedia">
+                            <p class="mb-0" style="font-size: 1rem; color: white; opacity: 0.85;">
+                                Informasi detail tentang kota ini belum tersedia.
+                            </p>
                             @endif
                         </div>
-
-                        {{-- Konten Detail --}}
-                        <div class="city-content">
-                            <div class="row">
-                                <div class="col-lg-8">
-                                    <h3 class="mb-3">{{ $city->name }}</h3>
-                                    <p class="city-description">
-                                        {{-- Jika deskripsi panjang, Anda bisa menampilkannya di sini --}}
-                                        {{ $city->description ?? 'Informasi detail tentang kota ini belum tersedia.' }}
-                                    <div class="city-meta-item">
-                                        <i class="bi bi-geo-alt"></i>
-                                        <span><strong>Province :</strong> {{ $city->province }}</span>
-                                    </div>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
+
+                    {{-- Deskripsi lengkap (opsional) --}}
+                    @if($city->description && strlen($city->description) > 180)
+                    <div class="city-full-desc mt-4 p-4 bg-white rounded-3 shadow-sm">
+                        <p class="mb-0" style="line-height: 1.7; color: #444; text-align: justify;">
+                            {{ $city->description }}
+                        </p>
+                    </div>
+                    @endif
                 </div>
             </div>
+
             {{-- Tampilkan List E-books Terkait --}}
             <section class="ebooks-section mt-5">
                 <div class="container">
@@ -380,7 +425,7 @@
                                         </p>
                                         {{-- Logika Tombol Aksi --}}
                                         @if(auth()->check() && auth()->user()->hasActiveSubscription())
-                                        <a href="/reader/{{ $ebook->slug }}" class="action-btn btn-read-now">
+                                        <a href="{{ route('user.ebook.read', $ebook->slug) }}" class="action-btn btn-read-now">
                                             <i class="fi-rs-book-open"></i>
                                             <span>Read Now</span>
                                         </a>
@@ -396,7 +441,7 @@
                         @endforeach
                         @else
                         <div class="col-12 text-center py-5">
-                            <p class="text-muted">Belum ada e-book untuk destinasi ini.</p>
+                            <p class="text-muted">No e-book available for this destination yet.</p>
                         </div>
                         @endif
                     </div>

@@ -6,7 +6,7 @@
     <title>Internal Server Error - {{ config('app.name') }}</title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('assets/admin/img/favicon/favicon.ico') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('images/only-logoo.png') }}" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,18 +23,18 @@
     <!-- Content -->
     <div class="container-xxl container-p-y">
         <div class="misc-wrapper">
-            <h1 class="mb-2 mx-2" style="font-size: 6rem; line-height: 6rem; color: #ea5455;">500</h1>
-            <h4 class="mb-2">Terjadi Kesalahan Server 😵</h4>
+            <h1 class="mb-2 mx-2 text-primary" style="font-size: 6rem; line-height: 6rem;">500</h1>
+            <h4 class="mb-2">Terjadi Kesalahan Server</h4>
             <p class="mb-6 mx-2">Maaf, terjadi kesalahan pada server. Tim kami sedang memperbaikinya.</p>
             <a href="{{ route('admin.dashboard') }}" class="btn btn-primary mb-6 waves-effect waves-light">
                 Kembali ke Dashboard
             </a>
-            <div class="mt-12">
+            <!-- <div class="mt-12">
                 <img src="{{ asset('assets/admin/img/illustrations/page-misc-error-light.png') }}"
                     alt="page-misc-error-light"
                     width="250"
                     class="img-fluid">
-            </div>
+            </div> -->
         </div>
     </div>
     <!-- / Content -->

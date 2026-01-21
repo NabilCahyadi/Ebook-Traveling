@@ -24,6 +24,9 @@ class Blog extends Model
         'view_count',
         'status',
         'published_at',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
     ];
 
     protected $casts = [
@@ -79,5 +82,14 @@ class Blog extends Model
     public function ebooks(): BelongsToMany
     {
         return $this->belongsToMany(Ebook::class, 'blog_ebook', 'blog_id', 'ebook_id');
+    }
+
+    /**
+     * Get the categories for the blog.
+     */
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'blog_categories', 'blog_id', 'category_id')
+            ->withTimestamps();
     }
 }

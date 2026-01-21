@@ -26,9 +26,10 @@ class EbookService
         ?string $search = null,
         ?string $status = null,
         ?string $categoryId = null,
-        ?string $cityId = null
+        ?string $cityId = null,
+        ?string $statusExclude = null
     ) {
-        return $this->ebookRepository->getAllPaginated($perPage, $sortBy, $sortOrder, $search, $status, $categoryId, $cityId);
+        return $this->ebookRepository->getAllPaginated($perPage, $sortBy, $sortOrder, $search, $status, $categoryId, $cityId, $statusExclude);
     }
 
     /**

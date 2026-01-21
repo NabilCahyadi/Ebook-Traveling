@@ -95,7 +95,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(SubscriptionRepositoryInterface::class, SubscriptionRepository::class);
 
         // TAMBAHKAN binding baru untuk repository proses pembayaran
-        $this->app->bind(SubscriptionProcessInterface::class, SubscriptionProcessRepository::class);
+        $this->app->bind(
+            SubscriptionProcessInterface::class,
+            SubscriptionProcessRepository::class
+        );
         $this->app->singleton('settings', function ($app) {
             return new SettingService();
         });
