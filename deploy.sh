@@ -9,17 +9,11 @@ BRANCH="main"
 
 cd "$PROJECT_PATH" || exit 1
 
-echo "🚀 Starting SAFE deployment..."
+echo "🚀 Starting deployment (NO maintenance mode)"
 echo "📅 $(date)"
 
 # ===============================
-# MAINTENANCE MODE ON (SAFE)
-# ===============================
-echo "🔧 Enabling maintenance mode..."
-$PHP_BIN artisan down --retry=60 --secret="deploy" || true
-
-# ===============================
-# GIT UPDATE (FORCE SAFE)
+# GIT UPDATE
 # ===============================
 echo "📥 Updating source code..."
 /usr/bin/git fetch origin
@@ -36,7 +30,22 @@ composer install \
   || echo "⚠️ Composer failed, continuing..."
 
 # ===============================
-# CLEAR CACHE (SAFE)
+# ENSURE STORAGE DIRECTORIES (🔥 FIX UTAMA)
+# ===============================
+echo "📁 Ensuring Laravel storage directories..."
+mkdir -p storage/framework/sessions
+mkdir -p storage/framework/views
+mkdir -p storage/framework/cache
+mkdir -p storage/logs
+
+# ===============================
+# PERMISSIONS (SAFE)
+# ===============================
+echo "🔒 Fixing permissions..."
+chmod -R 775 storage bootstrap/cache || true
+
+# ===============================
+# CLEAR CACHE
 # ===============================
 echo "🧹 Clearing cache..."
 $PHP_BIN artisan config:clear || true
@@ -45,37 +54,24 @@ $PHP_BIN artisan route:clear || true
 $PHP_BIN artisan view:clear || true
 
 # ===============================
-# MIGRATION (SAFE)
+# MIGRATION
 # ===============================
 echo "🗄️ Running migrations..."
 $PHP_BIN artisan migrate --force || echo "⚠️ Migration skipped"
 
 # ===============================
-# STORAGE LINK (SAFE)
+# STORAGE LINK
 # ===============================
 echo "🔗 Storage link..."
 $PHP_BIN artisan storage:link || true
 
 # ===============================
-# PERMISSIONS (SHARED HOSTING SAFE)
-# ===============================
-echo "🔒 Setting permissions..."
-chmod -R 775 storage bootstrap/cache || true
-
-# ===============================
-# OPTIMIZE (SAFE)
+# OPTIMIZE
 # ===============================
 echo "⚡ Optimizing..."
 $PHP_BIN artisan config:cache || true
 $PHP_BIN artisan route:cache || true
 $PHP_BIN artisan view:cache || true
 
-# ===============================
-# MAINTENANCE MODE OFF (WAJIB)
-# ===============================
-echo "🟢 Disabling maintenance mode..."
-$PHP_BIN artisan up || true
-rm -f storage/framework/down || true
-
-echo "✅ Deployment finished SAFELY"
+echo "✅ Deployment completed successfully"
 echo "📅 $(date)"
