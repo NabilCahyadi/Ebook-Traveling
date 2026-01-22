@@ -50,7 +50,7 @@
         </div>
         @endif
         <div class="mb-4">
-            <i class="fi-rs-check-circle text-success" style="font-size: 64px;"></i>
+            <i class="fi fi-rs-check-circle text-success" style="font-size: 64px;"></i>
         </div>
         <h2>Payment Successful!</h2>
         <p class="text-muted">Your subscription is now active.</p>

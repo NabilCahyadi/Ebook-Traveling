@@ -291,7 +291,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="breadcrumb mb-15">
-                        <a href="/" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
+                        <a href="/" rel="nofollow"><i class="fi fi-rs-home mr-5"></i>Home</a>
                         <span></span>
                         <a href="{{ route('destinations') }}">Destinations</a>
                         <span></span>
@@ -396,7 +396,7 @@
                                             </div>
                                         </div>
                                         <div class="read-count">
-                                            <i class="fi-rs-eye align-middle"></i>
+                                            <i class="fi fi-rs-eye align-middle"></i>
                                             <span class="post-on">
                                                 @php
                                                 $views = $ebook->view_count;
@@ -426,12 +426,12 @@
                                         {{-- Logika Tombol Aksi --}}
                                         @if(auth()->check() && auth()->user()->hasActiveSubscription())
                                         <a href="{{ route('user.ebook.read', $ebook->slug) }}" class="action-btn btn-read-now">
-                                            <i class="fi-rs-book-open"></i>
+                                            <i class="fi fi-rs-book-open"></i>
                                             <span>Read Now</span>
                                         </a>
                                         @else
                                         <a href="/pricing" class="action-btn btn-subscribe-now">
-                                            <i class="fi-rs-lock"></i>
+                                            <i class="fi fi-rs-lock"></i>
                                             <span>Subscribe to Read</span>
                                         </a>
                                         @endif

@@ -230,7 +230,7 @@
                                             </div>
                                         </div>
                                         <div class="read-count">
-                                            <i class="fi-rs-eye align-middle"></i><!--  {{ number_format($ebook->view_count) }} -->
+                                            <i class="fi fi-rs-eye align-middle"></i><!--  {{ number_format($ebook->view_count) }} -->
                                             <span class="post-on">
                                                 @php
                                                 $views = $ebook->view_count;
@@ -254,12 +254,12 @@
                                     {{-- LOGIKA HANYA PADA TOMBOL AKSI --}}
                                     @if(auth()->check() && auth()->user()->hasActiveSubscription())
                                     <a href="{{ route('user.ebook.read', $ebook->slug) }}" class="action-btn btn-read-now">
-                                        <i class="fi-rs-book-open"></i>
+                                        <i class="fi fi-rs-book-open"></i>
                                         <span>Read Now</span>
                                     </a>
                                     @else
                                     <a href="/pricing" class="action-btn btn-subscribe-now">
-                                        <i class="fi-rs-lock"></i>
+                                        <i class="fi fi-rs-lock"></i>
                                         <span>Subscribe to Read</span>
                                     </a>
                                     @endif
