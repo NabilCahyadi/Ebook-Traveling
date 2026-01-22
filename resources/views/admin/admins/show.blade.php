@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Detail Admin')
+@section('title', __('admin.admins.admin_detail'))
 
 @section('content')
 
@@ -8,9 +8,9 @@
     <div class="mb-4">
         <h4 class="fw-bold py-3 mb-2">
             <span class="text-muted fw-light">
-                <a href="{{ route('admin.admins.index') }}" class="text-muted">Manajemen Admin</a> /
+                <a href="{{ route('admin.admins.index') }}" class="text-muted">{{ __('admin.admins.title') }}</a> /
             </span> 
-            Detail Admin
+            {{ __('admin.admins.admin_detail') }}
         </h4>
     </div>
 
@@ -35,11 +35,11 @@
                     <p class="text-muted mb-3">{{ $admin->email }}</p>
                     @if ($admin->type === 'superadmin')
                         <span class="badge bg-label-danger">
-                            <i class="ti ti-crown me-1"></i> Super Admin
+                            <i class="ti ti-crown me-1"></i> {{ __('admin.admins.super_admin') }}
                         </span>
                     @else
                         <span class="badge bg-label-primary">
-                            <i class="ti ti-user me-1"></i> Admin
+                            <i class="ti ti-user me-1"></i> {{ __('admin.admins.admin') }}
                         </span>
                     @endif
                 </div>
@@ -49,23 +49,23 @@
             <div class="card mt-3">
                 <div class="card-body">
                     <h6 class="mb-4">
-                        <i class="ti ti-info-circle me-2"></i> Statistik
+                        <i class="ti ti-info-circle me-2"></i> {{ __('admin.admins.statistics') }}
                     </h6>
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text-muted">Status Akun:</span>
+                        <span class="text-muted">{{ __('admin.admins.account_status') }}:</span>
                         @if ($admin->status === 'active')
-                            <span class="badge bg-success">Aktif</span>
+                            <span class="badge bg-success">{{ __('admin.admins.active') }}</span>
                         @else
-                            <span class="badge bg-secondary">Tidak Aktif</span>
+                            <span class="badge bg-secondary">{{ __('admin.admins.inactive') }}</span>
                         @endif
                     </div>
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text-muted">Tipe:</span>
-                        <strong>{{ $admin->type === 'superadmin' ? 'Super Admin' : 'Admin' }}</strong>
+                        <span class="text-muted">{{ __('admin.admins.type') }}:</span>
+                        <strong>{{ $admin->type === 'superadmin' ? __('admin.admins.super_admin') : __('admin.admins.admin') }}</strong>
                     </div>
                     @if($admin->last_login_at)
                     <div class="d-flex justify-content-between align-items-center">
-                        <span class="text-muted">Aktivitas Terakhir:</span>
+                        <span class="text-muted">{{ __('admin.admins.last_activity') }}:</span>
                         <small class="text-end">{{ $admin->last_login_at->diffForHumans() }}</small>
                     </div>
                     @endif
@@ -77,10 +77,10 @@
         <div class="col-md-8 mb-4">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Informasi Admin</h5>
+                    <h5 class="mb-0">{{ __('admin.admins.admin_info') }}</h5>
                     <div>
                         <a href="{{ route('admin.admins.edit', $admin->id) }}" class="btn btn-sm btn-primary">
-                            <i class="ti ti-edit me-1"></i> Edit
+                            <i class="ti ti-edit me-1"></i> {{ __('admin.admins.edit') }}
                         </a>
                     </div>
                 </div>
@@ -89,63 +89,63 @@
                         <table class="table table-borderless">
                             <tbody>
                                 <tr>
-                                    <td class="text-muted" style="width: 200px;">Nama Lengkap</td>
+                                    <td class="text-muted" style="width: 200px;">{{ __('admin.admins.full_name') }}</td>
                                     <td class="fw-medium">{{ $admin->name }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="text-muted">Email</td>
+                                    <td class="text-muted">{{ __('admin.admins.email') }}</td>
                                     <td class="fw-medium">{{ $admin->email }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="text-muted">Nomor Telepon</td>
+                                    <td class="text-muted">{{ __('admin.admins.phone_number') }}</td>
                                     <td class="fw-medium">{{ $admin->phone ?? '-' }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="text-muted">Tipe Admin</td>
+                                    <td class="text-muted">{{ __('admin.admins.admin_type') }}</td>
                                     <td>
                                         @if ($admin->type === 'superadmin')
                                             <span class="badge bg-label-danger">
-                                                <i class="ti ti-crown me-1"></i> Super Admin
+                                                <i class="ti ti-crown me-1"></i> {{ __('admin.admins.super_admin') }}
                                             </span>
                                         @else
                                             <span class="badge bg-label-primary">
-                                                <i class="ti ti-user me-1"></i> Admin
+                                                <i class="ti ti-user me-1"></i> {{ __('admin.admins.admin') }}
                                             </span>
                                         @endif
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="text-muted">Status</td>
+                                    <td class="text-muted">{{ __('admin.admins.status') }}</td>
                                     <td>
                                         @if ($admin->status === 'active')
-                                            <span class="badge bg-label-success">Aktif</span>
+                                            <span class="badge bg-label-success">{{ __('admin.admins.active') }}</span>
                                         @else
-                                            <span class="badge bg-label-secondary">Tidak Aktif</span>
+                                            <span class="badge bg-label-secondary">{{ __('admin.admins.inactive') }}</span>
                                         @endif
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="text-muted">Tanggal Dibuat</td>
+                                    <td class="text-muted">{{ __('admin.admins.date_created') }}</td>
                                     <td>
                                         {{ $admin->created_at->format('d F Y, H:i') }}
                                         <small class="text-muted d-block">({{ $admin->created_at->diffForHumans() }})</small>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="text-muted">Terakhir Diperbarui</td>
+                                    <td class="text-muted">{{ __('admin.admins.last_updated') }}</td>
                                     <td>
                                         {{ $admin->updated_at->format('d F Y, H:i') }}
                                         <small class="text-muted d-block">({{ $admin->updated_at->diffForHumans() }})</small>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="text-muted">Login Terakhir</td>
+                                    <td class="text-muted">{{ __('admin.admins.last_login') }}</td>
                                     <td>
                                         @if ($admin->last_login_at)
                                             {{ $admin->last_login_at->format('d F Y, H:i') }}
                                             <small class="text-muted d-block">({{ $admin->last_login_at->diffForHumans() }})</small>
                                         @else
-                                            <span class="text-muted">Belum pernah login</span>
+                                            <span class="text-muted">{{ __('admin.admins.never_logged_in') }}</span>
                                         @endif
                                     </td>
                                 </tr>
@@ -156,15 +156,15 @@
                 <div class="card-footer">
                     <div class="d-flex justify-content-between">
                         <a href="{{ route('admin.admins.index') }}" class="btn btn-outline-secondary">
-                            <i class="ti ti-arrow-left me-1"></i> Kembali
+                            <i class="ti ti-arrow-left me-1"></i> {{ __('admin.admins.back') }}
                         </a>
                         @if (auth('admin')->id() !== $admin->id)
                             <form action="{{ route('admin.admins.destroy', $admin->id) }}" method="POST"
-                                onsubmit="return confirm('Apakah Anda yakin ingin menghapus admin ini?')">
+                                onsubmit="return confirm('{{ __('admin.admins.confirm_delete') }}')">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger">
-                                    <i class="ti ti-trash me-1"></i> Hapus Admin
+                                    <i class="ti ti-trash me-1"></i> {{ __('admin.admins.delete_admin') }}
                                 </button>
                             </form>
                         @endif
