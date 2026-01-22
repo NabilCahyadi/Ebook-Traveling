@@ -15,7 +15,6 @@ echo "🚀 Starting deployment process..."
 echo "📥 Pulling latest changes from repository..."
 /usr/bin/git fetch --all    
 /usr/bin/git reset --hard origin/main
-$PHP_BIN artisan up
 
 # Install/Update dependencies
 echo "📦 Installing Composer dependencies..."
