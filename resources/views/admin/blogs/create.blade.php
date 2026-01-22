@@ -4,6 +4,7 @@
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.css" />
+    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
     <style>
         .ck-editor__editable {
             min-height: 500px;
@@ -106,6 +107,22 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                                 <div class="form-text">{{ __('admin.blogs.excerpt_help') }}</div>
+                            </div>
+
+                            <!-- Tags Input -->
+                            <div class="mb-3">
+                                <label class="form-label" for="tags">Tags <span class="text-muted">({{ __('admin.common.optional') }})</span></label>
+                                <input type="text" 
+                                    class="form-control @error('tags') is-invalid @enderror" 
+                                    id="tags" 
+                                    name="tags" 
+                                    value="{{ old('tags') }}"
+                                    placeholder="Type and press Enter to add tags..."
+                                    data-role="tagsinput">
+                                @error('tags')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <div class="form-text">Press Enter after each tag. Example: sejarah-indonesia, test-blog</div>
                             </div>
                         </div>
                     </div>
@@ -906,6 +923,27 @@
             statusSelect.addEventListener('change', toggleScheduledDate);
             // Run on page load
             toggleScheduledDate();
+        </script>
+
+        <!-- Tagify Script -->
+        <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+        <script>
+            // Initialize Tagify on tags input
+            const tagsInput = document.querySelector('input[name="tags"]');
+            const tagify = new Tagify(tagsInput, {
+                delimiters: ",",
+                maxTags: 10,
+                placeholder: "Type and press Enter...",
+                dropdown: {
+                    enabled: 0
+                }
+            });
+
+            // Convert tagify format to simple array for form submission
+            document.querySelector('form').addEventListener('submit', function(e) {
+                const tags = tagify.value.map(tag => tag.value);
+                tagsInput.value = JSON.stringify(tags);
+            });
         </script>
     @endpush
 @endsection
