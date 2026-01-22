@@ -4,6 +4,7 @@
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.css" />
+    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
     <style>
         .ck-editor__editable {
             min-height: 500px;
@@ -69,13 +70,29 @@
                                 @enderror
                             </div>
 
-                            <div class="mb-0">
+                            <div class="mb-3">
                                 <label class="form-label" for="excerpt">{{ __('admin.blogs.excerpt') }}</label>
                                 <textarea class="form-control @error('excerpt') is-invalid @enderror" id="excerpt" name="excerpt" rows="4"
                                     placeholder="Short description">{{ old('excerpt', $blog->excerpt) }}</textarea>
                                 @error('excerpt')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                            </div>
+
+                            <!-- Tags Input -->
+                            <div class="mb-0">
+                                <label class="form-label" for="tags">Tags <span class="text-muted">({{ __('admin.common.optional') }})</span></label>
+                                <input type="text" 
+                                    class="form-control @error('tags') is-invalid @enderror" 
+                                    id="tags" 
+                                    name="tags" 
+                                    value="{{ old('tags', is_array($blog->tags) ? json_encode($blog->tags) : $blog->tags) }}"
+                                    placeholder="Type and press Enter to add tags..."
+                                    data-role="tagsinput">
+                                @error('tags')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <div class="form-text">Press Enter after each tag. Example: sejarah-indonesia, test-blog</div>
                             </div>
                         </div>
                     </div>
@@ -741,6 +758,44 @@
             statusSelect.addEventListener('change', toggleScheduledDate);
             // Run on page load
             toggleScheduledDate();
+        </script>
+
+        <!-- Tagify Script -->
+        <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+        <script>
+            // Initialize Tagify on tags input
+            const tagsInput = document.querySelector('input[name="tags"]');
+            
+            // Parse existing tags if any
+            let existingTags = [];
+            try {
+                const tagsValue = tagsInput.value;
+                if (tagsValue) {
+                    existingTags = JSON.parse(tagsValue);
+                }
+            } catch (e) {
+                console.log('No existing tags or invalid format');
+            }
+
+            const tagify = new Tagify(tagsInput, {
+                delimiters: ",",
+                maxTags: 10,
+                placeholder: "Type and press Enter...",
+                dropdown: {
+                    enabled: 0
+                }
+            });
+
+            // Add existing tags
+            if (existingTags.length > 0) {
+                tagify.addTags(existingTags);
+            }
+
+            // Convert tagify format to simple array for form submission
+            document.querySelector('form').addEventListener('submit', function(e) {
+                const tags = tagify.value.map(tag => tag.value);
+                tagsInput.value = JSON.stringify(tags);
+            });
         </script>
     @endpush
 @endsection
