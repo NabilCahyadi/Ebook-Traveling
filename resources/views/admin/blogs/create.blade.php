@@ -53,6 +53,7 @@
     </style>
 @endpush
 
+
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -213,9 +214,20 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div id="imagePreview" class="mt-2" style="display: none; width: 100%; height: 500px; border: 2px solid #d9dee3; border-radius: 8px; overflow: hidden; padding: 10px; background-color: #f8f9fa;">
-                                <img src="" alt="Preview" style="width: 100%; height: 100%; object-fit: contain;">
+                            
+                            <!-- Preview Area with Frame -->
+                            <div id="imagePreview" class="mt-2" style="display: none;">
+                                <label class="form-label">{{ __('admin.ebooks.preview') }}</label>
+                                <div style="width: 100%; height: 450px; border: 2px solid #d9dee3; border-radius: 10px; padding: 10px; background-color: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                    <img id="previewImage" src="" alt="Preview" style="max-width: 100%; max-height: 100%; object-fit: cover; border-radius: 5px;">
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="resetImagePreview()">
+                                    <i class="bx bx-x me-1"></i> {{ __('admin.ebooks.remove') }}
+                                </button>
                             </div>
+                            
+                            <!-- Hidden input untuk menyimpan hasil kompres -->
+                            <input type="hidden" name="featured_image_compressed" id="compressedImageData">
                         </div>
                     </div>
 
@@ -669,19 +681,90 @@
                 }
             });
 
-            // Image preview
-            document.getElementById('featured_image').addEventListener('change', function(e) {
+            // Image preview with compression
+            const featuredImageInput = document.getElementById('featured_image');
+            const imagePreview = document.getElementById('imagePreview');
+            const previewImage = document.getElementById('previewImage');
+            const compressedImageData = document.getElementById('compressedImageData');
+            
+            featuredImageInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const preview = document.getElementById('imagePreview');
-                        preview.querySelector('img').src = e.target.result;
-                        preview.style.display = 'block';
-                    }
-                    reader.readAsDataURL(file);
+                if (!file) return;
+                
+                // Validate file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File terlalu besar. Maksimal 5MB.');
+                    featuredImageInput.value = '';
+                    return;
                 }
+                
+                // Validate file type
+                if (!file.type.match('image.*')) {
+                    alert('File harus berupa gambar (JPG, PNG, atau WEBP)');
+                    featuredImageInput.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.onload = function() {
+                        compressImage(img);
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
             });
+            
+            function compressImage(image) {
+                // Tentukan ukuran maksimal (1920x1080 untuk blog featured image)
+                const maxWidth = 1920;
+                const maxHeight = 1080;
+                let width = image.width;
+                let height = image.height;
+                
+                // Calculate new dimensions maintaining aspect ratio
+                if (width > maxWidth || height > maxHeight) {
+                    const ratio = Math.min(maxWidth / width, maxHeight / height);
+                    width = width * ratio;
+                    height = height * ratio;
+                }
+                
+                // Create canvas
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                
+                const ctx = canvas.getContext('2d');
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                
+                // Draw image
+                ctx.drawImage(image, 0, 0, width, height);
+                
+                // Convert to base64 with compression
+                canvas.toBlob(function(blob) {
+                    const reader = new FileReader();
+                    reader.onloadend = function() {
+                        const base64Data = reader.result;
+                        compressedImageData.value = base64Data;
+                        
+                        // Show preview
+                        previewImage.src = base64Data;
+                        imagePreview.style.display = 'block';
+                        
+                        console.log('Image compressed and saved');
+                    };
+                    reader.readAsDataURL(blob);
+                }, 'image/jpeg', 0.85); // 85% quality
+            }
+            
+            // Reset function
+            window.resetImagePreview = function() {
+                featuredImageInput.value = '';
+                compressedImageData.value = '';
+                imagePreview.style.display = 'none';
+            };
 
             // Author Autocomplete
             const authorSearch = $('#author_search');
