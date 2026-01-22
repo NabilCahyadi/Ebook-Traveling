@@ -197,7 +197,43 @@ class BlogService
         }
 
         // Handle featured image upload
-        if (isset($data['featured_image']) && $data['featured_image']) {
+        if (isset($data['featured_image_compressed']) && $data['featured_image_compressed']) {
+            // Handle base64 compressed image
+            $base64Image = $data['featured_image_compressed'];
+            
+            // Extract base64 data
+            if (preg_match('/^data:image\/(\w+);base64,/', $base64Image, $type)) {
+                $base64Image = substr($base64Image, strpos($base64Image, ',') + 1);
+                $type = strtolower($type[1]); // jpg, png, gif, webp
+                
+                // Decode base64
+                $imageData = base64_decode($base64Image);
+                
+                if ($imageData === false) {
+                    throw new \Exception('Failed to decode base64 image');
+                }
+                
+                // Generate filename
+                $filename = time() . '_' . Str::random(10) . '.' . $type;
+                
+                // Save to storage
+                Storage::disk('public')->put('blogs/' . $filename, $imageData);
+                
+                // Delete old image if updating
+                if ($id) {
+                    $blog = $this->getBlogById($id);
+                    if ($blog && $blog->featured_image) {
+                        Storage::disk('public')->delete($blog->featured_image);
+                    }
+                }
+                
+                $data['featured_image'] = 'blogs/' . $filename;
+            }
+            
+            // Remove the compressed data from array
+            unset($data['featured_image_compressed']);
+        } elseif (isset($data['featured_image']) && $data['featured_image']) {
+            // Handle normal file upload (fallback)
             $file = $data['featured_image'];
             $filename = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
             $path = $file->storeAs('blogs', $filename, 'public');
