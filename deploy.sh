@@ -30,7 +30,7 @@ $PHP_BIN artisan route:clear
 
 # Jalankan migrate:fresh dengan semua seeder
 echo "🗄️  Running fresh migrations with seeders..."
-$PHP_BIN artisan migrate:fresh --seed --force
+$PHP_BIN artisan migrate --force
 
 
 # Create storage symlink (PENTING untuk akses file dari public)
