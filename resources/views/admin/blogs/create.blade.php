@@ -209,17 +209,28 @@
                         <div class="card-body">
                             <div class="mb-3">
                                 <input type="file" class="form-control @error('featured_image') is-invalid @enderror"
-                                    id="featured_image" name="featured_image" accept="image/*">
+                                    id="featured_image" accept="image/*">
                                 @error('featured_image')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             
-                            <!-- Preview Area with Frame -->
-                            <div id="imagePreview" class="mt-2" style="display: none;">
-                                <label class="form-label">{{ __('admin.ebooks.preview') }}</label>
-                                <div style="width: 100%; height: 450px; border: 2px solid #d9dee3; border-radius: 10px; padding: 10px; background-color: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                                    <img id="previewImage" src="" alt="Preview" style="max-width: 100%; max-height: 100%; object-fit: cover; border-radius: 5px;">
+                            <!-- Preview Frame 1200x630 -->
+                            <div id="imagePreview" class="mt-3" style="display: none;">
+                                <!-- <label class="form-label">Preview (1200 × 630)</label> -->
+                                <div style="
+                                    width: 100%;
+                                    max-width: 420px;
+                                    aspect-ratio: 1200/630;
+                                    border: 2px dashed #d9dee3;
+                                    border-radius: 12px;
+                                    overflow: hidden;
+                                    background: #fff;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                ">
+                                    <img id="previewImage" style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
                                 <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="resetImagePreview()">
                                     <i class="bx bx-x me-1"></i> {{ __('admin.ebooks.remove') }}
@@ -681,7 +692,10 @@
                 }
             });
 
-            // Image preview with compression
+            /* ======================================================
+               FEATURED IMAGE — AUTO CROP 1200x630 (CENTER)
+            ====================================================== */
+            
             const featuredImageInput = document.getElementById('featured_image');
             const imagePreview = document.getElementById('imagePreview');
             const previewImage = document.getElementById('previewImage');
@@ -691,75 +705,85 @@
                 const file = e.target.files[0];
                 if (!file) return;
                 
-                // Validate file size (max 5MB)
-                if (file.size > 5 * 1024 * 1024) {
-                    alert('File terlalu besar. Maksimal 5MB.');
+                if (!file.type.startsWith('image/')) {
+                    alert('File harus berupa gambar');
                     featuredImageInput.value = '';
                     return;
                 }
                 
-                // Validate file type
-                if (!file.type.match('image.*')) {
-                    alert('File harus berupa gambar (JPG, PNG, atau WEBP)');
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Maksimal 5MB');
                     featuredImageInput.value = '';
                     return;
                 }
                 
                 const reader = new FileReader();
-                reader.onload = function(event) {
+                reader.onload = function(evt) {
                     const img = new Image();
                     img.onload = function() {
-                        compressImage(img);
+                        cropAndCompress(img);
                     };
-                    img.src = event.target.result;
+                    img.src = evt.target.result;
                 };
                 reader.readAsDataURL(file);
             });
             
-            function compressImage(image) {
-                // Tentukan ukuran maksimal (1920x1080 untuk blog featured image)
-                const maxWidth = 1920;
-                const maxHeight = 1080;
-                let width = image.width;
-                let height = image.height;
+            function cropAndCompress(image) {
                 
-                // Calculate new dimensions maintaining aspect ratio
-                if (width > maxWidth || height > maxHeight) {
-                    const ratio = Math.min(maxWidth / width, maxHeight / height);
-                    width = width * ratio;
-                    height = height * ratio;
+                const TARGET_W = 1200;
+                const TARGET_H = 630;
+                const TARGET_RATIO = TARGET_W / TARGET_H;
+                
+                const srcW = image.width;
+                const srcH = image.height;
+                const srcRatio = srcW / srcH;
+                
+                let cropW, cropH, offsetX, offsetY;
+                
+                // CENTER CROP
+                if (srcRatio > TARGET_RATIO) {
+                    cropH = srcH;
+                    cropW = srcH * TARGET_RATIO;
+                    offsetX = (srcW - cropW) / 2;
+                    offsetY = 0;
+                } else {
+                    cropW = srcW;
+                    cropH = srcW / TARGET_RATIO;
+                    offsetX = 0;
+                    offsetY = (srcH - cropH) / 2;
                 }
                 
-                // Create canvas
                 const canvas = document.createElement('canvas');
-                canvas.width = width;
-                canvas.height = height;
+                canvas.width = TARGET_W;
+                canvas.height = TARGET_H;
                 
                 const ctx = canvas.getContext('2d');
                 ctx.imageSmoothingEnabled = true;
                 ctx.imageSmoothingQuality = 'high';
                 
-                // Draw image
-                ctx.drawImage(image, 0, 0, width, height);
+                ctx.drawImage(
+                    image,
+                    offsetX,
+                    offsetY,
+                    cropW,
+                    cropH,
+                    0,
+                    0,
+                    TARGET_W,
+                    TARGET_H
+                );
                 
-                // Convert to base64 with compression
-                canvas.toBlob(function(blob) {
+                canvas.toBlob(blob => {
                     const reader = new FileReader();
-                    reader.onloadend = function() {
-                        const base64Data = reader.result;
-                        compressedImageData.value = base64Data;
-                        
-                        // Show preview
-                        previewImage.src = base64Data;
+                    reader.onloadend = () => {
+                        compressedImageData.value = reader.result;
+                        previewImage.src = reader.result;
                         imagePreview.style.display = 'block';
-                        
-                        console.log('Image compressed and saved');
                     };
                     reader.readAsDataURL(blob);
-                }, 'image/jpeg', 0.85); // 85% quality
+                }, 'image/jpeg', 0.85);
             }
             
-            // Reset function
             window.resetImagePreview = function() {
                 featuredImageInput.value = '';
                 compressedImageData.value = '';
