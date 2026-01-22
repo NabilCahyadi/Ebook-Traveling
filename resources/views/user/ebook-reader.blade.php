@@ -5,20 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    
+
     <!-- Prevent screenshot on some mobile browsers -->
     <meta name="screenshot" content="disabled">
     <meta name="screen-capture" content="disabled">
-    
+
     <!-- Prevent caching -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    
+
     <!-- Prevent iframe embedding -->
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none'">
-    
+
     <title>{{ $ebook->title }} - Ebook Reader</title>
 
     <!-- Fonts -->
@@ -118,17 +118,19 @@
             padding: 3rem;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            min-height: 70vh;
             font-size: 1.125rem;
             line-height: 1.8;
             color: #333;
-            /* Add watermark protection */
             position: relative;
+            /* ✅ TAMBAHKAN INI */
+            overflow: auto;
+            max-height: calc(100vh - 120px);
+            /* Sesuaikan dengan header */
         }
 
         /* Watermark overlay */
         .reader-content::before {
-            content: '{{ Auth::user()->email }} - {{ now()->format('Y-m-d H:i') }}';
+            content: '{{ Auth::user()->email }} - {{ now()->format(' Y-m-d H: i') }}';
             position: absolute;
             top: 50%;
             left: 50%;
@@ -231,6 +233,12 @@
 </head>
 
 <body>
+    <!-- Progress Indicator -->
+    <div class="progress mb-2" style="height:4px">
+        <div class="progress-bar bg-danger"
+            id="progressBar"
+            style="width:0%; background-color: #FF4C61;"></div>
+    </div>
     <!-- Protection Overlay -->
     <div class="protection-overlay" id="protectionOverlay"></div>
 
@@ -255,7 +263,7 @@
 
     <script>
         // Store session token
-        const ebookId = {{ $ebook->id }};
+        const ebookId = '{{ $ebook->id }}';
         const readerToken = '{{ Str::random(32) }}';
 
         // Save token to session
@@ -297,7 +305,7 @@
                 (e.ctrlKey && e.shiftKey && (e.key === 'K' || e.key === 'k')) ||
                 (e.metaKey && e.altKey && (e.key === 'I' || e.key === 'i')) || // Mac
                 (e.metaKey && e.altKey && (e.key === 'J' || e.key === 'j')) || // Mac
-                (e.metaKey && e.altKey && (e.key === 'C' || e.key === 'c'))    // Mac
+                (e.metaKey && e.altKey && (e.key === 'C' || e.key === 'c')) // Mac
             ) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -344,7 +352,7 @@
         // Detect screenshot attempts (when window loses focus)
         let lastFocusTime = Date.now();
         let screenshotAttempts = 0;
-        
+
         window.addEventListener('blur', function() {
             lastFocusTime = Date.now();
             // Hide content when window loses focus
@@ -355,12 +363,12 @@
             const blurDuration = Date.now() - lastFocusTime;
             // Restore content
             document.getElementById('readerContent').style.opacity = '1';
-            
+
             // If blur duration is very short, might be screenshot
             if (blurDuration < 100) {
                 screenshotAttempts++;
                 showWarning();
-                
+
                 // After 3 attempts, redirect
                 if (screenshotAttempts >= 3) {
                     alert('Multiple screenshot attempts detected. You will be redirected.');
@@ -375,7 +383,7 @@
                 navigator.clipboard.writeText('');
                 showWarning();
                 screenshotAttempts++;
-                
+
                 if (screenshotAttempts >= 3) {
                     alert('Multiple screenshot attempts detected. You will be redirected.');
                     window.location.href = '/dashboard';
@@ -396,7 +404,7 @@
                     document.getElementById('protectionOverlay').style.display = 'block';
                     document.getElementById('readerContent').style.filter = 'blur(10px)';
                     showWarning();
-                    
+
                     // Redirect after 3 seconds
                     setTimeout(() => {
                         window.location.href = '/dashboard';
@@ -446,7 +454,7 @@
             // Simulate content loading with protection
             setTimeout(() => {
                 const content = `
-                    <div class="content-text">
+                    <div class="content-text" id="content-text">
                         <h2>{{ $ebook->title }}</h2>
                         <p style="color: #666; margin: 1rem 0;">
                             <strong>Category:</strong> {{ $ebook->category->name ?? 'N/A' }} |
@@ -586,6 +594,90 @@
         // Cleanup on page unload
         window.addEventListener('beforeunload', function() {
             clearInterval(devToolsCheck);
+        });
+    </script>
+    <script>
+        // ✅ Ukur scroll dari container yang bisa discroll
+        const readerContent = document.getElementById('readerContent');
+        let scrollTimeout;
+
+        function calculateProgress() {
+            if (!readerContent) return {
+                page: 1,
+                percentage: 0
+            };
+
+            const scrollTop = readerContent.scrollTop;
+            const scrollHeight = readerContent.scrollHeight - readerContent.clientHeight;
+            const percentage = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+
+            // Estimasi halaman (lebih akurat: 1 halaman = 5% progress)
+            const totalPages = 20; // Asumsi ebook punya ~20 "halaman" virtual
+            const page = Math.max(1, Math.min(totalPages, Math.ceil((percentage / 100) * totalPages)));
+
+            return {
+                page: page,
+                percentage: Math.round(percentage)
+            };
+        }
+
+        function saveReadingProgress() {
+            const {
+                page,
+                percentage
+            } = calculateProgress();
+            console.log('Progress:', percentage + '%', 'Page:', page);
+
+            // ✅ Update visual
+            document.getElementById('progressBar').style.width = percentage + '%';
+
+            fetch(`/user/api/ebook/{{ $ebook->id }}/progress`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({
+                    ebook_id: '{{ $ebook->id }}',
+                    current_page: page
+                })
+            }).catch(err => console.error('Progress save failed:', err));
+        }
+
+        // Simpan saat scroll berhenti
+        if (readerContent) {
+            readerContent.addEventListener('scroll', () => {
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(saveReadingProgress, 500);
+            });
+
+            // Simpan tiap 10 detik
+            setInterval(saveReadingProgress, 10000);
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const targetPage = parseInt(urlParams.get('page')) || 1;
+            const totalPages = 20;
+            const percentage = Math.min(100, (targetPage / totalPages) * 100);
+
+            const readerContent = document.getElementById('readerContent');
+            if (readerContent) {
+                // Tunggu konten dimuat
+                const observer = new MutationObserver(() => {
+                    const scrollHeight = readerContent.scrollHeight;
+                    if (scrollHeight > 0) {
+                        const scrollPos = (percentage / 100) * (scrollHeight - readerContent.clientHeight);
+                        readerContent.scrollTop = scrollPos;
+                        observer.disconnect();
+                    }
+                });
+                observer.observe(readerContent, {
+                    childList: true,
+                    subtree: true
+                });
+            }
         });
     </script>
 </body>

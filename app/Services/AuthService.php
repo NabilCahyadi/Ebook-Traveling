@@ -24,6 +24,13 @@ class AuthService
     {
         DB::beginTransaction();
         try {
+            // Check if user with email already exists (including soft deleted)
+            $existingUser = User::withTrashed()->where('email', $data['email'])->first();
+            
+            if ($existingUser && $existingUser->trashed()) {
+                throw new \Exception('This email was previously registered but the account has been deactivated. Please <a href="/contact" style="color: #FF416C; text-decoration: underline;">contact support</a>.');
+            }
+            
             $user = $this->userRepository->create([
                 'name' => $data['name'],
                 'email' => $data['email'],
@@ -55,6 +62,13 @@ class AuthService
     {
         DB::beginTransaction();
         try {
+            // Check if user with email already exists (including soft deleted)
+            $existingUser = User::withTrashed()->where('email', $googleData['email'])->first();
+            
+            if ($existingUser && $existingUser->trashed()) {
+                throw new \Exception('This email was previously registered but the account has been deactivated. Please <a href="/contact" style="color: #FF416C; text-decoration: underline;">contact support</a>.');
+            }
+            
             $user = $this->userRepository->create([
                 'name' => $data['name'],
                 'email' => $googleData['email'],
@@ -120,7 +134,11 @@ class AuthService
      */
     public function handleGoogleCallback($googleUser): array
     {
+        // Check for active user
         $user = $this->userRepository->findByEmail($googleUser->getEmail());
+        
+        // Also check for soft deleted user
+        $deletedUser = User::withTrashed()->where('email', $googleUser->getEmail())->first();
 
         if ($user) {
             // Update Google ID if not set
@@ -132,6 +150,16 @@ class AuthService
             }
 
             return ['exists' => true, 'user' => $user];
+        }
+        
+        // If user is soft deleted, return with flag
+        if ($deletedUser && $deletedUser->trashed()) {
+            return [
+                'exists' => true,
+                'soft_deleted' => true,
+                'user' => $deletedUser,
+                'message' => 'Your account has been deactivated. Please <a href="/contact" style="color: #FF416C; text-decoration: underline;">contact support</a>.'
+            ];
         }
 
         // User doesn't exist, return Google data for registration

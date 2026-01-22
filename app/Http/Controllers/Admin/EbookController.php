@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\EbookService;
+use App\Exports\EbooksExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use Smalot\PdfParser\Parser as PdfParser;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EbookController extends Controller
 {
@@ -25,8 +28,8 @@ class EbookController extends Controller
      */
     public function index(Request $request)
     {
-        // Default 8 for card view
-        $perPage = $request->get('per_page', 8);
+        // Default 10 items per page, user can select 10, 20, 30, 40, 50, 100
+        $perPage = $request->get('per_page', 10);
         $sortBy = $request->get('sort_by', 'created_at');
         $sortOrder = $request->get('sort_order', 'desc');
         $search = $request->get('search');
@@ -67,7 +70,8 @@ class EbookController extends Controller
                 'description' => 'required|string',
                 'cover_image_cropped' => 'nullable|string', // base64 dari auto crop
                 'pdf_file' => 'nullable|file|mimes:pdf|max:10240',
-                'status' => 'required|in:draft,published,unpublished,archived',
+                'status' => 'required|in:draft,published,scheduled,unpublished',
+                'published_at' => 'nullable|date|after:now',
             ], [
                 'category_ids.required' => 'Kategori ebook wajib dipilih minimal 1.',
                 'category_ids.array' => 'Format kategori tidak valid.',
@@ -83,7 +87,13 @@ class EbookController extends Controller
                 'pdf_file.max' => 'Ukuran file PDF maksimal 10MB.',
                 'status.required' => 'Status publikasi wajib dipilih.',
                 'status.in' => 'Status publikasi tidak valid.',
+                'published_at.after' => 'Tanggal publish harus di masa depan.',
             ]);
+
+            // Require published_at for scheduled status
+            if ($validated['status'] === 'scheduled' && empty($validated['published_at'])) {
+                return back()->withErrors(['published_at' => 'Tanggal publish wajib diisi untuk status Scheduled.'])->withInput();
+            }
 
             // Check if user is admin (using admin guard)
             $admin = Auth::guard('admin')->user();
@@ -103,7 +113,14 @@ class EbookController extends Controller
 
             // Handle PDF file upload
             if ($request->hasFile('pdf_file')) {
-                $validated['pdf_file'] = $this->savePdfFile($request->file('pdf_file'));
+                $pdfPath = $this->savePdfFile($request->file('pdf_file'));
+                $validated['pdf_file'] = $pdfPath;
+                
+                // Auto detect total pages from PDF
+                $totalPages = $this->getPdfPageCount($pdfPath);
+                if ($totalPages !== null) {
+                    $validated['total_pages'] = $totalPages;
+                }
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Ebook Validation Error:', [
@@ -268,6 +285,40 @@ class EbookController extends Controller
     }
 
     /**
+     * Get total pages from PDF file
+     */
+    private function getPdfPageCount($pdfPath)
+    {
+        try {
+            // Get full path to PDF file
+            $fullPath = storage_path('app/public/' . $pdfPath);
+            
+            if (!file_exists($fullPath)) {
+                Log::warning('PDF file not found for page count', ['path' => $fullPath]);
+                return null;
+            }
+
+            // Parse PDF and get page count
+            $parser = new PdfParser();
+            $pdf = $parser->parseFile($fullPath);
+            $pages = count($pdf->getPages());
+            
+            Log::info('PDF page count detected', [
+                'path' => $pdfPath,
+                'total_pages' => $pages
+            ]);
+            
+            return $pages;
+        } catch (\Exception $e) {
+            Log::error('Error reading PDF page count', [
+                'path' => $pdfPath,
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
+    }
+
+    /**
      * Display the specified ebook.
      */
     public function show($id)
@@ -302,7 +353,8 @@ class EbookController extends Controller
             'description' => 'required|string',
             'cover_image_cropped' => 'nullable|string', // base64 dari auto crop
             'pdf_file' => 'nullable|file|mimes:pdf|max:10240',
-            'status' => 'required|in:draft,published,unpublished,archived',
+            'status' => 'required|in:draft,published,scheduled,unpublished',
+            'published_at' => 'nullable|date',
         ], [
             'category_ids.required' => 'Kategori ebook wajib dipilih minimal 1.',
             'category_ids.array' => 'Format kategori tidak valid.',
@@ -319,6 +371,11 @@ class EbookController extends Controller
             'status.required' => 'Status publikasi wajib dipilih.',
             'status.in' => 'Status publikasi tidak valid.',
         ]);
+
+        // Require published_at for scheduled status
+        if ($validated['status'] === 'scheduled' && empty($validated['published_at'])) {
+            return back()->withErrors(['published_at' => 'Tanggal publish wajib diisi untuk status Scheduled.'])->withInput();
+        }
 
         try {
             // Extract category_ids for pivot table sync
@@ -338,7 +395,14 @@ class EbookController extends Controller
                 if ($ebook->pdf_file && Storage::disk('public')->exists($ebook->pdf_file)) {
                     Storage::disk('public')->delete($ebook->pdf_file);
                 }
-                $validated['pdf_file'] = $this->savePdfFile($request->file('pdf_file'));
+                $pdfPath = $this->savePdfFile($request->file('pdf_file'));
+                $validated['pdf_file'] = $pdfPath;
+                
+                // Auto detect total pages from PDF
+                $totalPages = $this->getPdfPageCount($pdfPath);
+                if ($totalPages !== null) {
+                    $validated['total_pages'] = $totalPages;
+                }
             }
 
             $this->ebookService->updateEbook($id, $validated);
@@ -413,11 +477,12 @@ class EbookController extends Controller
     /**
      * Display trashed ebooks.
      */
-    public function trashed()
+    public function trash(Request $request)
     {
         try {
-            $ebooks = $this->ebookService->getTrashedEbooks(15);
-            return view('admin.ebooks.trashed', compact('ebooks'));
+            $perPage = $request->get('per_page', 10);
+            $ebooks = $this->ebookService->getTrashedEbooks($perPage);
+            return view('admin.ebooks.trash', compact('ebooks'));
         } catch (\Exception $e) {
             return redirect()->route('admin.ebooks.index')
                 ->with('error', 'Failed to load trashed ebooks: ' . $e->getMessage());
@@ -431,7 +496,7 @@ class EbookController extends Controller
     {
         try {
             $this->ebookService->restoreEbook($id);
-            return redirect()->route('admin.ebooks.trashed')
+            return redirect()->route('admin.ebooks.trash')
                 ->with('success', 'Ebook restored successfully!');
         } catch (\Exception $e) {
             return redirect()->back()
@@ -446,7 +511,7 @@ class EbookController extends Controller
     {
         try {
             $this->ebookService->forceDeleteEbook($id);
-            return redirect()->route('admin.ebooks.trashed')
+            return redirect()->route('admin.ebooks.trash')
                 ->with('success', 'Ebook permanently deleted!');
         } catch (\Exception $e) {
             return redirect()->back()
@@ -545,6 +610,78 @@ class EbookController extends Controller
                 'success' => false,
                 'message' => 'Gagal mengubah setting: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    /**
+     * Export ebooks to Excel.
+     */
+    public function export(Request $request)
+    {
+        $filters = [
+            'search' => $request->get('search'),
+            'category_id' => $request->get('category_id'),
+            'is_active' => $request->get('is_active'),
+            'date_from' => $request->get('date_from'),
+            'date_to' => $request->get('date_to'),
+        ];
+
+        $filename = 'ebooks_' . now()->format('Y-m-d_His') . '.xlsx';
+        
+        return Excel::download(new EbooksExport($filters), $filename);
+    }
+
+    /**
+     * Bulk action for changing status
+     */
+    public function bulkAction(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'required|string',
+            'action' => 'required|in:draft,published,scheduled,unpublished',
+        ]);
+
+        try {
+            $updateData = [
+                'status' => $validated['action'],
+            ];
+            
+            // Set published_at based on action
+            if ($validated['action'] === 'published') {
+                $updateData['published_at'] = now();
+            }
+
+            $count = \App\Models\Ebook::whereIn('id', $validated['ids'])
+                ->update($updateData);
+
+            $statusLabel = ucfirst($validated['action']);
+            return redirect()->back()
+                ->with('success', "{$count} ebook(s) status changed to {$statusLabel}!");
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to perform bulk action: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Bulk delete (soft delete)
+     */
+    public function bulkDelete(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'required|string',
+        ]);
+
+        try {
+            $count = \App\Models\Ebook::whereIn('id', $validated['ids'])->delete();
+
+            return redirect()->back()
+                ->with('success', "{$count} ebook(s) moved to trash!");
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to delete ebooks: ' . $e->getMessage());
         }
     }
 }

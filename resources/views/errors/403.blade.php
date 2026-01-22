@@ -3,10 +3,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>Access Forbidden - {{ config('app.name') }}</title>
+    <title>Access Denied - {{ config('app.name') }}</title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('assets/admin/img/favicon/favicon.ico') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('images/only-logoo.png') }}" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,20 +23,18 @@
     <!-- Content -->
     <div class="container-xxl container-p-y">
         <div class="misc-wrapper">
-            <div class="text-content">
-                <h1 class="mb-2" style="font-size: 6rem; line-height: 6rem;">403</h1>
-                <h4 class="mb-2">Akses Ditolak! 🔐</h4>
-                <p class="mb-4">Anda tidak memiliki permission untuk mengakses halaman ini.</p>
-                <a href="{{ route('admin.dashboard') }}" class="btn btn-primary waves-effect waves-light">
-                    Kembali ke Dashboard
-                </a>
-            </div>
-            <div class="image-content">
-                <img src="{{ asset('assets/admin/img/illustrations/girl-unlock-password-light.png') }}"
-                    alt="girl-unlock-password-light"
-                    width="350"
+            <h1 class="mb-2 mx-2 text-primary" style="font-size: 6rem; line-height: 6rem;">403</h1>
+            <h4 class="mb-2">Akses Ditolak!</h4>
+            <p class="mb-6 mx-2">Anda tidak memiliki izin untuk mengakses halaman ini.</p>
+            <a href="{{ route('admin.dashboard') }}" class="btn btn-primary mb-6 waves-effect waves-light">
+                Kembali ke Dashboard
+            </a>
+            <!-- <div class="mt-12">
+                <img src="{{ asset('assets/admin/img/illustrations/page-misc-error-light.png') }}"
+                    alt="page-misc-error-light"
+                    width="250"
                     class="img-fluid">
-            </div>
+            </div> -->
         </div>
     </div>
     <!-- / Content -->
@@ -44,59 +42,33 @@
     <style>
         body {
             background-color: #f8f9fa;
-            margin: 0;
-            padding: 0;
-        }
-        .container-xxl {
-            padding: 0 !important;
         }
         .misc-wrapper {
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 4rem;
             min-height: 100vh;
+            text-align: center;
             padding: 2rem;
-            margin-top: -4rem;
-        }
-        
-        .text-content {
-            text-align: left;
-            max-width: 500px;
-        }
-        
-        .image-content {
-            flex-shrink: 0;
         }
         
         .misc-wrapper h1 {
             font-weight: 700;
-            color: #7367f0;
+            color: #e7174b;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 1rem;
         }
         
         .misc-wrapper h4 {
             font-weight: 600;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
             color: #5e5873;
         }
         
         .misc-wrapper p {
             color: #6e6b7b;
             font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        @media (max-width: 768px) {
-            .misc-wrapper {
-                flex-direction: column;
-                text-align: center;
-            }
-            .text-content {
-                text-align: center;
-            }
+            max-width: 500px;
         }
     </style>
 </body>

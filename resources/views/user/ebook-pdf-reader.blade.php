@@ -1,23 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    
+
     <!-- Prevent screenshot on some mobile browsers -->
     <meta name="screenshot" content="disabled">
     <meta name="screen-capture" content="disabled">
-    
+
     <!-- Prevent caching -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    
+
     <!-- Prevent iframe embedding -->
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none'">
-    
+
     <title>{{ $ebook->title }} - PDF Reader</title>
 
     <!-- PDF.js Library -->
@@ -82,9 +83,19 @@
         }
 
         @keyframes shake {
-            0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
-            25% { transform: translate(-50%, -50%) rotate(-5deg); }
-            75% { transform: translate(-50%, -50%) rotate(5deg); }
+
+            0%,
+            100% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            25% {
+                transform: translate(-50%, -50%) rotate(-5deg);
+            }
+
+            75% {
+                transform: translate(-50%, -50%) rotate(5deg);
+            }
         }
 
         /* Header */
@@ -222,10 +233,13 @@
         }
 
         @media print {
-            body { display: none !important; }
+            body {
+                display: none !important;
+            }
         }
     </style>
 </head>
+
 <body>
     <!-- Protection Overlay -->
     <div class="protection-overlay" id="protectionOverlay">
@@ -280,7 +294,11 @@
         let isRendering = false;
 
         // Session token for security
-        const ebookId = {{ $ebook->id }};
+        const ebookId = {
+            {
+                $ebook - > id
+            }
+        };
         const pdfToken = '{{ Str::random(32) }}';
 
         // Save token to session
@@ -337,7 +355,7 @@
             }
 
             // Ctrl+S (Save), Ctrl+P (Print)
-            if ((e.ctrlKey && (e.key === 's' || e.key === 'S')) || 
+            if ((e.ctrlKey && (e.key === 's' || e.key === 'S')) ||
                 (e.ctrlKey && (e.key === 'p' || e.key === 'P'))) {
                 e.preventDefault();
                 showWarning();
@@ -345,9 +363,9 @@
             }
 
             // Ctrl+A, Ctrl+C, Ctrl+X (Select, Copy, Cut)
-            if (e.ctrlKey && ((e.key === 'a' || e.key === 'A') || 
-                              (e.key === 'c' || e.key === 'C') || 
-                              (e.key === 'x' || e.key === 'X'))) {
+            if (e.ctrlKey && ((e.key === 'a' || e.key === 'A') ||
+                    (e.key === 'c' || e.key === 'C') ||
+                    (e.key === 'x' || e.key === 'X'))) {
                 e.preventDefault();
                 showWarning();
                 return false;
@@ -410,8 +428,12 @@
         }
 
         // Disable drag
-        document.ondragstart = function() { return false; };
-        document.onselectstart = function() { return false; };
+        document.ondragstart = function() {
+            return false;
+        };
+        document.onselectstart = function() {
+            return false;
+        };
 
         // Clear console periodically
         setInterval(() => console.clear(), 100);
@@ -434,7 +456,7 @@
             document.getElementById('loading').style.display = 'none';
             renderPage(currentPage);
         }).catch(function(error) {
-            document.getElementById('loading').innerHTML = 
+            document.getElementById('loading').innerHTML =
                 '<div style="color: #e74c3c;">Failed to load PDF. Please refresh the page.</div>';
             console.error('Error loading PDF:', error);
         });
@@ -447,7 +469,9 @@
             pdfDoc.getPage(pageNum).then(function(page) {
                 const canvas = document.getElementById('pdf-canvas');
                 const context = canvas.getContext('2d');
-                const viewport = page.getViewport({ scale: scale });
+                const viewport = page.getViewport({
+                    scale: scale
+                });
 
                 canvas.height = viewport.height;
                 canvas.width = viewport.width;
@@ -499,5 +523,42 @@
             clearInterval(devToolsCheck);
         });
     </script>
+    <script>
+        // ✅ Ambil ebook ID dari data attribute atau server-side
+        const ebookId = '{{ $ebook->id }}';
+
+        // ✅ Simpan progress saat page berubah (PDF.js event)
+        function savePdfProgress(pageNum) {
+            const totalPages = pdfViewer.pagesCount;
+            const progress = Math.min(100, (pageNum / totalPages) * 100);
+
+            fetch(`/user/api/ebook/${ebookId}/progress`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({
+                    ebook_id: ebookId,
+                    current_page: pageNum
+                })
+            }).catch(err => console.error('PDF progress save failed:', err));
+        }
+
+        // ✅ Hook ke PDF.js event (sesuaikan dengan PDF.js versimu)
+        document.addEventListener('pagechange', function(e) {
+            savePdfProgress(e.detail.pageNumber);
+        });
+
+        // ✅ Atau jika pakai PDF.js v2+:
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfViewer.pdfViewer._pages.forEach(pageView => {
+                pageView.textLayer.on('page-rendered', () => {
+                    savePdfProgress(pageView.id + 1);
+                });
+            });
+        }
+    </script>
 </body>
+
 </html>

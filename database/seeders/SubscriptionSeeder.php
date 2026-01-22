@@ -5,62 +5,79 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
 
 class SubscriptionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     * Uses updateOrCreate to be safe for production deployment
      */
     public function run(): void
     {
-        // Ambil semua user dengan role 'member'
-        $members = User::whereHas('roles', function ($query) {
-            $query->where('name', 'member');
-        })->get();
+        // Ambil semua user dengan user_type 'member' (premium subscription status)
+        $members = User::where('user_type', 'member')->get();
+
+        if ($members->isEmpty()) {
+            $this->command->warn('⚠️  No users with user_type "member" found. Skipping subscription seeding.');
+            return;
+        }
 
         // Ambil semua paket berlangganan yang aktif
         $plans = SubscriptionPlan::where('is_active', true)->get();
 
-        $subscriptionsToInsert = [];
+        if ($plans->isEmpty()) {
+            $this->command->warn('⚠️  No active subscription plans found. Please run SubscriptionPlanSeeder first.');
+            return;
+        }
 
-        // Buat 15 data berlangganan acak untuk para member
-        for ($i = 0; $i < 15; $i++) {
-            $member = $members->random();
+        $createdCount = 0;
+        $updatedCount = 0;
+
+        // Untuk setiap member, buat atau update subscription
+        foreach ($members as $member) {
+            // Check if user already has any subscription (active or expired)
+            $existingSubscription = Subscription::where('user_id', $member->id)->first();
+            
+            // Pilih random plan (atau bisa disesuaikan dengan logic bisnis)
             $plan = $plans->random();
 
-            // Hindari membuat duplikat subscription untuk user yang sama
-            if (DB::table('subscriptions')->where('user_id', $member->id)->exists()) {
-                continue;
-            }
-
-            $startDate = now()->subDays(rand(5, 60));
+            // Hitung tanggal subscription
+            $startDate = now()->subDays(rand(1, 30));
             $endDate = (clone $startDate)->addDays($plan->duration_days);
             $status = $endDate->isFuture() ? 'active' : 'expired';
 
-            $subscriptionsToInsert[] = [
-                'id' => Str::uuid(),
-                'user_id' => $member->id,
-                'subscription_plan_id' => $plan->id,
-                'payment_id' => null, // Bisa diisi dengan ID payment jika ada
-                'subscription_code' => 'SUB-' . strtoupper(Str::random(10)),
-                'start_date' => $startDate->toDateString(),
-                'end_date' => $endDate->toDateString(),
-                'status' => $status,
-                'auto_renew' => rand(0, 1), // 50% kemungkinan auto-renew
-                'total_amount' => $plan->price,
-                'created_at' => $startDate,
-                'updated_at' => $startDate,
-            ];
+            // Generate subscription code yang unique
+            $subscriptionCode = $existingSubscription 
+                ? $existingSubscription->subscription_code 
+                : 'SUB-' . strtoupper(Str::random(10));
+
+            // UpdateOrCreate berdasarkan user_id
+            $subscription = Subscription::updateOrCreate(
+                ['user_id' => $member->id],
+                [
+                    'subscription_plan_id' => $plan->id,
+                    'subscription_code' => $subscriptionCode,
+                    'start_date' => $startDate,
+                    'end_date' => $endDate,
+                    'status' => $status,
+                    'auto_renew' => (bool) rand(0, 1),
+                    'total_amount' => $plan->price,
+                ]
+            );
+
+            if ($subscription->wasRecentlyCreated) {
+                $createdCount++;
+            } else {
+                $updatedCount++;
+            }
         }
 
-        if (!empty($subscriptionsToInsert)) {
-            DB::table('subscriptions')->insert($subscriptionsToInsert);
-            $this->command->info(count($subscriptionsToInsert) . ' Subscriptions created successfully!');
-        } else {
-            $this->command->info('No new subscriptions to create.');
-        }
+        $this->command->info('✅ Subscription seeding completed!');
+        $this->command->info("   📝 Created: {$createdCount} subscriptions");
+        $this->command->info("   🔄 Updated: {$updatedCount} subscriptions");
+        $this->command->info("   👥 Total members processed: {$members->count()}");
     }
 }

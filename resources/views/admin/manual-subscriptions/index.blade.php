@@ -29,23 +29,29 @@
 
         <div class="card">
             <div class="card-header">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
+                <div class="row align-items-center g-3">
+                    <div class="col-12 col-md-6">
                         <h5 class="mb-0">{{ __('admin.manual_subscription.all_subscriptions') }}</h5>
                     </div>
-                    <div class="col-md-6">
-                        <form method="GET" action="{{ route('admin.manual-subscriptions.index') }}">
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="ti ti-search"></i></span>
-                                <input type="text" class="form-control" name="search"
-                                    placeholder="{{ __('admin.manual_subscription.search_placeholder') }}" value="{{ $search ?? '' }}">
-                                <button type="submit" class="btn btn-primary">{{ __('admin.common.search') }}</button>
-                                @if ($search)
-                                    <a href="{{ route('admin.manual-subscriptions.index') }}"
-                                        class="btn btn-outline-secondary">{{ __('admin.common.clear') }}</a>
-                                @endif
-                            </div>
-                        </form>
+                    <div class="col-12 col-md-6">
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a href="{{ route('admin.manual-subscriptions.export', request()->all()) }}" class="btn btn-success btn-sm">
+                                <i class="ti ti-download me-1"></i>
+                                {{ __('admin.common.export') }}
+                            </a>
+                            <form method="GET" action="{{ route('admin.manual-subscriptions.index') }}" class="flex-grow-1" style="max-width: 400px;">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text"><i class="ti ti-search"></i></span>
+                                    <input type="text" class="form-control" name="search"
+                                        placeholder="{{ __('admin.manual_subscription.search_placeholder') }}" value="{{ $search ?? '' }}">
+                                    <button type="submit" class="btn btn-primary">{{ __('admin.common.search') }}</button>
+                                    @if ($search)
+                                        <a href="{{ route('admin.manual-subscriptions.index') }}"
+                                            class="btn btn-outline-secondary">{{ __('admin.common.clear') }}</a>
+                                    @endif
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

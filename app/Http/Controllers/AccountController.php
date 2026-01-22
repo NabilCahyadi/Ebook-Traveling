@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
+use App\Models\City;
+use App\Models\EbookRating;
 
 
 class AccountController extends Controller
@@ -25,8 +27,30 @@ class AccountController extends Controller
      */
     public function index(Request $request)
     {
-        // $accountData = $this->userService->getAccountData(Auth::id());
-        $accountData = $this->userService->getAccountData(Auth::id(), $request);
+        // ✅ 1. AMBIL USER BARU DARI DATABASE
+        $user = auth()->user()->fresh();
+
+        // ✅ 2. LOAD SEMUA RELASI YANG DIBUTUHKAN
+        $user->load([
+            'currentSubscription.plan',
+            'subscriptions.plan',
+            'payments.plan',
+            'payments.subscription.plan',
+        ]);
+
+        // ✅ 3. GANTI SESSION USER DENGAN YANG BARU
+        auth()->setUser($user);
+
+        // Lanjutkan seperti biasa
+        $accountData = $this->userService->getAccountData($user->id, $request);
+        $accountData['user'] = $user;
+
+        $citiesHeader = City::where('is_active', true)
+            ->orderBy('order_index')
+            ->orderBy('name')
+            ->get();
+
+        $accountData['citiesHeader'] = $citiesHeader;
 
         return view('page-account', $accountData);
     }
@@ -56,9 +80,6 @@ class AccountController extends Controller
             ->with('error', 'Profile update failed: ' . $result['error']);
     }
 
-    /**
-     * Update user password
-     */
     /**
      * Update user password
      */
@@ -118,5 +139,23 @@ class AccountController extends Controller
         }
 
         return back()->with('success', 'Profile photo updated successfully!');
+    }
+
+    // AccountController.php
+    public function updateReview(Request $request, string $ratingId)
+    {
+        $rating = EbookRating::where('id', $ratingId)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        $request->validate([
+            'review_text' => 'required|string|max:2000',
+            'rating' => 'required|integer|between:1,5',
+        ]);
+
+        $rating->update($request->only(['review_text', 'rating']));
+
+        return redirect()->route('page-account', ['tab' => 'reviews'])
+            ->with('success', 'Review updated successfully!');
     }
 }

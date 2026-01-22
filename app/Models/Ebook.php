@@ -36,7 +36,7 @@ class Ebook extends Model
         'pdf_file',
         'content_text',
         'preview_content',
-        'page_count',
+        'total_pages',
         'language',
         'is_featured',
         'is_free',
@@ -49,6 +49,7 @@ class Ebook extends Model
         'is_active' => 'boolean',
         'id' => 'string',
         'published_at' => 'datetime',
+        'total_pages' => 'integer',
     ];
 
     /**
@@ -172,14 +173,6 @@ class Ebook extends Model
     }
 
     /**
-     * Get the sections for the ebook.
-     */
-    public function sections(): HasMany
-    {
-        return $this->hasMany(EbookSection::class, 'ebook_id');
-    }
-
-    /**
      * Get the ratings for the ebook.
      */
     public function ratings(): HasMany
@@ -224,5 +217,15 @@ class Ebook extends Model
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class, 'ebook_id');
+    }
+
+    public function readings()
+    {
+        return $this->hasMany(UserReading::class, 'ebook_id');
+    }
+
+    public function savedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'user_saved_books', 'ebook_id', 'user_id');
     }
 }

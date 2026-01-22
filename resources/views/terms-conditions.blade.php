@@ -112,81 +112,35 @@
             <div class="col-lg-10">
                 <div class="terms-content">
                     <!-- JUDUL UTAMA -->
-                    <h1 class="terms-title">
-                        Terms & Conditions and Refund Policy
-                    </h1>
-                    <div class="last-updated">
-                        Last updated: 25 November 2025
-                    </div>
+                    <h1 class="terms-title">Terms & Conditions and Refund Policy</h1>
+                    <div class="last-updated">Last updated : 25 November 2025</div>
 
-                    <!-- SEKSI 1: SYARAT & KETENTUAN -->
-                    <h2 class="section-title">
-                        1. Terms and Conditions for Ebook Service Usage
-                    </h2>
-                    <p class="paragraph">
-                        Welcome to our ebook service. By accessing or using this Service, you agree to be bound by these Terms and Conditions. Please read them carefully before using our Service.
-                    </p>
+                    <!-- Konten dinamis -->
+                    @foreach($sections as $sectionTitle => $items)
+                    <h2 class="section-title">{{ $sectionTitle }}</h2>
 
-                    <!-- Sub Judul 1: Akun Pengguna -->
-                    <h3 class="subsection-title">
-                        1.1. User Account
-                    </h3>
-                    <p class="paragraph">
-                        To access certain features of the Service, you may be required to register an account. You are responsible for maintaining the confidentiality of your password and for all activities that occur under your account.
-                    </p>
+                    @foreach($items as $item)
+                    @if($item->subsection_title)
+                    <h3 class="subsection-title">{{ $item->subsection_title }}</h3>
+                    @endif
+
+                    @if(str_contains($item->content, "\n"))
                     <ul class="policy-list">
-                        <li>You must be at least 18 years old, or have legal permission from a parent/guardian to use this Service.</li>
-                        <li>You are prohibited from sharing your account login details with any other party.</li>
+                        @foreach(explode("\n", trim($item->content)) as $line)
+                        @if(trim($line))
+                        <li>{!! preg_replace('/^-\s*/', '', e($line)) !!}</li>
+                        @endif
+                        @endforeach
                     </ul>
-
-                    <!-- Sub Judul 2: Lisensi dan Hak Cipta Ebook -->
-                    <h3 class="subsection-title">
-                        1.2. Ebook License and Copyright
-                    </h3>
-                    <p class="paragraph">
-                        All ebooks provided within the Service are the property of their respective authors, publishers, or content providers and are protected by copyright laws.
-                    </p>
-                    <ul class="policy-list">
-                        <li>You are granted a limited, non-exclusive, and non-transferable license to access and read the content for personal, non-commercial use.</li>
-                        <li>You are prohibited from copying, distributing, selling, or modifying ebook content without written permission.</li>
-                    </ul>
-
-                    <!-- SEKSI 2: KEBIJAKAN PENGEMBALIAN DANA -->
-                    <h2 class="section-title">
-                        2. Refund Policy
-                    </h2>
-                    <p class="paragraph">
-                        We are committed to providing the best content and service. However, due to the digital nature of our products, our refund policy has certain limitations.
-                    </p>
-
-                    <!-- Sub Judul 1: Syarat Umum Pengembalian Dana -->
-                    <h3 class="subsection-title">
-                        2.1. General Refund Conditions
-                    </h3>
-                    <p class="paragraph">
-                        Refund requests can only be processed if they meet one of the following conditions:
-                    </p>
-                    <ul class="policy-list">
-                        <li>The purchase was made less than 7 days ago.</li>
-                        <li>The purchased ebook content is proven to be damaged, incomplete, or inaccessible due to technical issues on our side.</li>
-                        <li>The user has not downloaded or accessed more than 5% of the total ebook content.</li>
-                    </ul>
-
-                    <!-- Sub Judul 2: Proses Pengembalian Dana -->
-                    <h3 class="subsection-title">
-                        2.2. Refund Process
-                    </h3>
-                    <p class="paragraph">
-                        To submit a refund request, please contact our customer support team with the following details: order number, ebook title, and reason for the refund.
-                    </p>
-                    <ul class="policy-list">
-                        <li>Requests will be reviewed within 5 business days.</li>
-                        <li>If approved, the funds will be returned to the original payment method within 7-14 business days, depending on your bank's policy.</li>
-                        <li>We reserve the right to reject refund requests if policy abuse is found.</li>
-                    </ul>
+                    @else
+                    <p class="paragraph">{{ $item->content }}</p>
+                    @endif
+                    @endforeach
+                    @endforeach
 
                     <div class="contact-footer">
                         <p>For further questions, please contact our customer service.</p>
+                        <p>&copy; 2025 MeatMap. All Rights Reserved.</p>
                     </div>
                 </div>
             </div>

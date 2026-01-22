@@ -120,4 +120,70 @@ class ContactInfoController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Update all contacts at once
+     */
+    public function updateAll(Request $request)
+    {
+        // Custom validation untuk link - hanya validasi jika tidak kosong dan bukan '#'
+        $validatedData = $request->validate([
+            'contacts' => 'required|array',
+            'contacts.*.id' => 'required|exists:contact_infos,id',
+            'contacts.*.title' => 'required|string|max:255',
+            'contacts.*.icon_class' => 'nullable|string|max:100',
+            'contacts.*.description' => 'nullable|string',
+            'contacts.*.link' => 'nullable|string|max:500',
+        ], [
+            'contacts.required' => 'Data contact tidak ditemukan.',
+            'contacts.*.title.required' => 'Judul wajib diisi.',
+        ]);
+
+        try {
+            foreach ($request->contacts as $contactData) {
+                $contact = ContactInfo::find($contactData['id']);
+                if ($contact) {
+                    // Clean link - jika kosong atau '#' set ke null
+                    $link = $contactData['link'] ?? null;
+                    
+                    // Validasi link jika ada
+                    if ($link && $link !== '#') {
+                        // Cek apakah valid URL atau URI scheme (tel:, mailto:, https:, http:, etc)
+                        $validSchemes = ['tel:', 'mailto:', 'http://', 'https://', 'whatsapp:', 'sms:'];
+                        $isValidScheme = false;
+                        
+                        foreach ($validSchemes as $scheme) {
+                            if (stripos($link, $scheme) === 0) {
+                                $isValidScheme = true;
+                                break;
+                            }
+                        }
+                        
+                        // Jika tidak menggunakan scheme yang valid, cek apakah valid URL
+                        if (!$isValidScheme && !filter_var($link, FILTER_VALIDATE_URL)) {
+                            return redirect()->back()
+                                ->withInput()
+                                ->with('error', "Format link tidak valid untuk {$contactData['title']}. Gunakan URL lengkap (https://...) atau URI scheme (tel:, mailto:, dll)");
+                        }
+                    }
+                    
+                    $contact->update([
+                        'title' => $contactData['title'],
+                        'icon_class' => $contactData['icon_class'] ?? null,
+                        'description' => $contactData['description'] ?? null,
+                        'link' => ($link && $link !== '#') ? $link : null,
+                        'is_active' => isset($contactData['is_active']) ? 1 : 0,
+                        'show_in_contact_page' => isset($contactData['show_in_contact_page']) ? 1 : 0,
+                    ]);
+                }
+            }
+
+            return redirect()->route('admin.contact-info.index')
+                ->with('success', 'Semua contact info berhasil diupdate.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal mengupdate contact info: ' . $e->getMessage());
+        }
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\PromoService;
+use App\Models\City;
 
 class PromoDetailController extends Controller
 {
@@ -21,6 +22,10 @@ class PromoDetailController extends Controller
     {
         // Ambil data promo berdasarkan slug
         $promo = $this->promoService->getPromoBySlug($slug);
+        $citiesHeader = City::where('is_active', true)
+            ->orderBy('order_index')
+            ->orderBy('name')
+            ->get();
 
         // Jika promo tidak ditemukan, tampilkan 404
         if (!$promo) {
@@ -28,6 +33,6 @@ class PromoDetailController extends Controller
         }
 
         // Kirim data ke view
-        return view('web.promos.detail', compact('promo'));
+        return view('web.promos.detail', compact('promo', 'citiesHeader'));
     }
 }

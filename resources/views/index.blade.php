@@ -468,7 +468,8 @@ $collections = collect();
     .product-img {
         position: relative;
         width: 100%;
-        padding-top: 140%; /* Rasio 5:7 (tinggi 140% dari lebar) untuk cover buku */
+        padding-top: 140%;
+        /* Rasio 5:7 (tinggi 140% dari lebar) untuk cover buku */
         overflow: hidden;
         border-radius: 15px;
         background-color: #f5f5f5;
@@ -485,8 +486,8 @@ $collections = collect();
     }
 
     /* Make columns flex to support equal height cards */
-    .product-grid-4 > [class*="col-"],
-    .scroll-wrapper > [class*="col-"] {
+    .product-grid-4>[class*="col-"],
+    .scroll-wrapper>[class*="col-"] {
         display: flex;
         flex-direction: column;
     }
@@ -522,36 +523,152 @@ $collections = collect();
         line-height: 1.2;
     }
 </style>
+<style>
+    .single-hero-slider {
+        background-repeat: no-repeat !important;
+        background-position: center center !important;
+        background-size: cover !important;
+        /* Tetap cover untuk desktop */
+        height: 500px;
+    }
+
+    /* Tablet */
+    @media (max-width: 992px) {
+        .slider-content {
+            padding: 60px 40px;
+            max-width: 500px;
+        }
+
+        .slider-title {
+            font-size: 2rem !important;
+        }
+
+        .slider-description {
+            font-size: 1rem !important;
+        }
+
+        .single-hero-slider {
+            background-size: cover !important;
+            height: 400px;
+        }
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+        .single-hero-slider {
+            background-size: contain !important;
+            background-position: center center !important;
+            height: auto !important;
+            min-height: 200px;
+            padding: 10px 0;
+            font-size: 0.2rem !important;
+        }
+
+        /* Overlay gelap tetap aktif untuk teks lebih terbaca */
+        .single-hero-slider::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .slider-content {
+            z-index: 2;
+            position: relative;
+            padding: 30px 20px;
+        }
+
+        .slider-title {
+            font-size: 0.5rem !important;
+            line-height: 1.3 !important;
+            margin-bottom: 15px !important;
+        }
+
+        .slider-description {
+            font-size: 0.85rem !important;
+            line-height: 1.5 !important;
+            margin-bottom: 20px !important;
+        }
+
+        .home-slider {
+            margin-bottom: -400px !important;
+        }
+    }
+
+    /* Mobile sangat kecil */
+    @media (max-width: 480px) {
+        .single-hero-slider {
+            min-height: 180px;
+            margin-top: -30px !important;
+        }
+
+        .slider-title {
+            font-size: 0.75rem !important;
+            margin-top: 2.5rem !important;
+            margin-left: -20px !important;
+        }
+
+        .slider-description {
+            font-size: 0.45rem !important;
+            margin-top: -0.50rem !important;
+            margin-left: -20px !important;
+        }
+
+        .hero-slider-1 .slick-dots {
+            display: none !important;
+        }
+
+        .home-slider {
+            margin-bottom: -400px !important;
+        }
+
+        .title h1 {
+            font-size: 0.5rem !important;
+        }
+
+        .title h2 {
+            font-size: 1.25rem !important;
+        }
+
+        .title h3 {
+            font-size: 0.5rem !important;
+        }
+    }
+</style>
 <div class="container mx-auto p-6">
     <section class="home-slider position-relative mb-30">
         <div class="container">
             <div class="home-slide-cover mt-30">
                 <div class="hero-slider-1 style-4 dot-style-1 dot-style-1-position-1 temp-hidden">
-
+                    @foreach($homeSliders as $slider)
                     {{-- FALLBACK SOLUTION --}}
                     @php
-                    // Jika $homeSliders tidak ada, buat data default
-                    if (!isset($homeSliders)) {
-                    $homeSliders = collect([
-                    (object)[
-                    'image' => '/images/slider-1.webp',
-                    'title' => "Get My Essential Travel Guide",
-                    'description' => 'Access insider tips and verified travel itineraries.',
-                    'target_url' => '/pricing'
-                    ],
-                    (object)[
-                    'image' => '/images/slider-2.webp',
-                    'title' => "Start Your Plan Claim Your Promo",
-                    'description' => 'Save up to 50% off on your first order',
-                    'target_url' => '/promo'
-                    ]
-                    ]);
+                    // Ambil path gambar dari database
+                    $imagePath = ltrim($slider->image, '/');
+
+                    // Cek apakah file ada di public folder
+                    $imageExists = file_exists(public_path($imagePath));
+
+                    // Jika tidak ada, gunakan fallback
+                    if (!$imageExists) {
+                    $fallbackImages = [
+                    'images/slider-1.webp',
+                    'images/slider-2.webp',
+                    'images/slider-3.webp'
+                    ];
+                    $imagePath = $fallbackImages[$loop->index % count($fallbackImages)];
+                    }
+
+                    // Pastikan gambar benar-benar ada (fallback akhir)
+                    if (!file_exists(public_path($imagePath))) {
+                    $imagePath = 'images/slider-1.webp';
                     }
                     @endphp
-
-                    @foreach($homeSliders as $slider)
-                    <div class="single-hero-slider single-animation-wrap" style="background-image: url({{ asset('storage/' . $slider->image) }})">
-                        <a href="{{ $slider->target_url }}" style="display: block; height: 100%; text-decoration: none;">
+                    <div class="single-hero-slider single-animation-wrap" style="background-image: url({{ asset($imagePath) }})">
+                        <a href="{{ $slider->target_url ?? '#' }}" style="display: block; height: 100%; text-decoration: none;">
                             <div class="slider-content">
                                 <h1 class="slider-title mb-40">
                                     {{-- Pisahkan judul setiap 23 karakter --}}
@@ -598,31 +715,75 @@ $collections = collect();
                                         {{ $line }}@if(!$loop->last)<br>@endif
                                         @endforeach
                                 </h1>
-                                <p class="slider-description mb-65">{{ $slider->description }}</p>
+                                <!-- <p class="slider-description mb-65">{{ $slider->description }}</p> -->
+                                {{-- Logika untuk memecah deskripsi --}}
+                                @php
+                                $description = $slider->description;
+                                $words = explode(' ', $description);
+                                $currentLine = '';
+                                $lines = [];
+
+                                foreach ($words as $word) {
+                                // Jika panjang line + kata berikutnya <= 55 karakter
+                                    if (strlen($currentLine . ' ' . $word) <=55) {
+                                    $currentLine .=($currentLine ? ' ' : '' ) . $word;
+                                    } else {
+                                    // Simpan line saat ini dan mulai line baru
+                                    if ($currentLine) {
+                                    $lines[]=$currentLine;
+                                    }
+                                    $currentLine=$word;
+                                    }
+                                    }
+
+                                    // Tambahkan line terakhir
+                                    if ($currentLine) {
+                                    $lines[]=$currentLine;
+                                    }
+
+                                    // Jika hanya 1 line, coba split di tengah
+                                    if (count($lines)===1 && strlen($description)> 55) {
+                                    $midPoint = floor(strlen($description) / 2);
+                                    $spacePos = strpos($description, ' ', $midPoint);
+
+                                    if ($spacePos !== false) {
+                                    $lines = [
+                                    substr($description, 0, $spacePos),
+                                    substr($description, $spacePos + 1)
+                                    ];
+                                    }
+                                    }
+                                    @endphp
+
+                                    <p class="slider-description mb-65">
+                                        {{-- Tampilkan deskripsi dengan line break --}}
+                                        @foreach($lines as $line)
+                                        {{ $line }}@if(!$loop->last)<br>@endif
+                                        @endforeach
+                                    </p>
                             </div>
                         </a>
                     </div>
                     @endforeach
-
                 </div>
                 <div class="slider-arrow hero-slider-1-arrow"></div>
             </div>
         </div>
     </section>
     <!-- top 10 ibu kota di indonesia -->
-    <section class="popular-categories section-padding">
+    <section class="popular-categories section-padding" style="margin-bottom:20px !important;">
         <div class="container wow animate__animated animate__fadeIn">
-            <div class="section-title style-2 flex-container-custom">
+            <div class="section-title style-2 section-title style-2 d-flex justify-content-between align-items-center">
                 <div class="title">
-                    <h3>Top 10 City Guides</h3>
+                    <h3 class="d-block d-md-none" style="font-size: 0.80rem !important; line-height: 1.2 !important; margin-top:5px;">Top 10 City Guides</h3>
+                    <h3 class="d-none d-md-block" style="font-size: 1.5rem !important; line-height: 1.3 !important;">Top 10 City Guides</h3>
                 </div>
-                <a href="/destinations" class="show-all">View All</a>
+                <a href="/destinations" class="show-all d-block d-md-none text-end" style="font-size: 0.70rem !important; margin-top:5px;">View All</a>
+                <a href="/destinations" class="show-all d-none d-md-inline text-end">View All</a>
             </div>
             <div class="slider-arrow slider-arrow-2 flex carausel-10-columns-arrow"></div>
             <div class="carausel-10-columns-cover position-relative">
                 <div class="carausel-10-columns" id="carausel-10-columns">
-
-                    {{-- SEKARANG LEBIH SEDERHANA - Fallback sudah di Service --}}
                     @foreach($topCities as $index => $city)
                     <div class="card-2 bg-12 wow animate__animated animate__fadeInUp" data-wow-delay="{{ ($index + 1) * 0.1 }}s">
                         <figure class="img-hover-scale overflow-hidden" style="width: 100px; height: 120px; margin: 0 auto 10px; border-radius: 8px;">
@@ -637,21 +798,22 @@ $collections = collect();
                         </h6>
                     </div>
                     @endforeach
-
                 </div>
             </div>
         </div>
     </section>
     <!-- 3 subscriprion plans -->
     <!-- Subscription Plans -->
-    <section class="banners mb-25">
+    <section class="banners" style="margin-top: -30px; margin-bottom:65px !important;">
         <div class="container">
             <div class="row">
-                <div class="section-title style-2">
+                <div class="section-title style-2 section-title style-2 d-flex justify-content-between align-items-center">
                     <div class="title">
-                        <h3>Subscription Plans</h3>
+                        <h3 class="d-block d-md-none" style="font-size: 0.80rem !important; line-height: 1.2 !important; margin-top:5px;">Subscription Plans</h3>
+                        <h3 class="d-none d-md-block" style="font-size: 1.5rem !important; line-height: 1.3 !important;">Subscription Plans</h3>
                     </div>
-                    <a href="{{ route('pricing') }}#pricing-plans" class="show-all">View All</a>
+                    <a href="{{ route('pricing') }}#pricing-plans" class="show-all d-block d-md-none text-end" style="font-size: 0.70rem !important; margin-top:5px;">View All</a>
+                    <a href="{{ route('pricing') }}#pricing-plans" class="show-all d-none d-md-inline text-end">View All</a>
                 </div>
 
                 @php
@@ -691,12 +853,14 @@ $collections = collect();
     <!-- collection -->
     @if($collections->isNotEmpty())
     @foreach($collections as $collection)
-    <section class="product-tabs section-padding position-relative">
+    <section class="product-tabs section-padding position-relative" style="margin-top: -50px">
         <div class="container">
             {{-- ... Bagian Judul Koleksi dan Tombol Navigasi Tetap Sama ... --}}
-            <div class="section-title style-2 wow animate__animated animate__fadeIn">
-                <h3>{{ $collection->name }}</h3>
-                <a href="/collections/{{ $collection->slug }}" class="show-all">View All</a>
+            <div class="section-title style-2 wow animate__animated animate__fadeIn section-title style-2 d-flex justify-content-between align-items-center">
+                <h3 class="d-block d-md-none" style="font-size: 0.80rem !important; line-height: 1.2 !important; margin-top:5px;">{{ $collection->name }}</h3>
+                <h3 class="d-none d-md-block" style="font-size: 1.5rem !important; line-height: 1.3 !important;">{{ $collection->name }}</h3>
+                <a href="/collections/{{ $collection->slug }}" class="show-all d-block d-md-none text-end" style="font-size: 0.70rem !important; margin-top:5px;">View All</a>
+                <a href="/collections/{{ $collection->slug }}" class="show-all d-none d-md-inline text-end">View All</a>
             </div>
             <button class="scroll-btn scroll-left"><i class="fi-rs-angle-left"></i></button>
             <button class="scroll-btn scroll-right"><i class="fi-rs-angle-right"></i></button>
@@ -716,9 +880,9 @@ $collections = collect();
                                         <div class="product-img product-img-zoom">
                                             <a href="/ebooks/{{ $ebook->slug }}">
                                                 @php
-                                                    $coverImage = $ebook->external_cover_url 
-                                                        ? $ebook->external_cover_url 
-                                                        : ($ebook->cover_image_url ?? 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg');
+                                                $coverImage = $ebook->external_cover_url
+                                                ? $ebook->external_cover_url
+                                                : ($ebook->cover_image_url ?? 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg');
                                                 @endphp
                                                 <img class="default-img" src="{{ $coverImage }}" alt="{{ $ebook->title }}" />
                                             </a>
@@ -789,12 +953,12 @@ $collections = collect();
 
                                             {{-- LOGIKA HANYA PADA TOMBOL AKSI --}}
                                             @if(auth()->check() && auth()->user()->hasActiveSubscription())
-                                            <a href="/reader/{{ $ebook->slug }}" class="action-btn btn-read-now">
+                                            <a href="{{ route('user.ebook.read', $ebook->slug) }}" class="action-btn btn-read-now">
                                                 <i class="fi-rs-book-open"></i>
                                                 <span>Read Now</span>
                                             </a>
                                             @else
-                                            <a href="/pricing" class="action-btn btn-subscribe-now">
+                                            <a href="/pricing#pricing-plans" class="action-btn btn-subscribe-now">
                                                 <i class="fi-rs-lock"></i>
                                                 <span>Subscribe to Read</span>
                                             </a>
@@ -819,13 +983,16 @@ $collections = collect();
     @endforeach
     @endif
     <!-- blogs -->
-    <section class="section-padding pb-5">
+    <section class="section-padding pb-5" style="margin-top: -50px">
         <div class="container mb-30">
-            <div class="section-title style-2 flex-container-custom">
+            <div class="section-title style-2 section-title style-2 d-flex justify-content-between align-items-center">
                 <div class="title">
-                    <h3>Latest Blog</h3>
+                    <h3 class="d-block d-md-none" style="font-size: 0.80rem !important; line-height: 1.2 !important;">Latest Blog</h3>
+                    <h3 class="d-none d-md-block" style="font-size: 1.5rem !important; line-height: 1.3 !important;">Latest Blog</h3>
                 </div>
-                <a href="{{ route('blogs.index') }}" class="show-all">View All</a>
+                <a href="" class="show-all">View All</a>
+                <a href="{{ route('blogs.index') }}" class="show-all d-block d-md-none text-end" style="font-size: 0.70rem !important; margin-top:5px;">View All</a>
+                <a href="{{ route('blogs.index') }}" class="show-all d-none d-md-inline text-end">View All</a>
             </div>
             <div class="loop-grid">
                 <div class="row">
@@ -833,7 +1000,7 @@ $collections = collect();
                     <article class="col-xl-3 col-lg-4 col-md-6 text-center hover-up mb-30 animated">
                         <div class="post-thumb">
                             <a href="{{ route('blogs.show', $blog->slug) }}">
-                                <img class="border-radius-15" src="@if($blog->featured_image && filter_var($blog->featured_image, FILTER_VALIDATE_URL)){{ $blog->featured_image }}@elseif($blog->featured_image){{ asset('storage/' . $blog->featured_image) }}@else{{ asset('images/blog-placeholder.webp') }}@endif" alt="{{ $blog->title }}" />
+                                <img class="border-radius-15" src="{{ $blog->featured_image_url }}" alt="{{ $blog->title }}" />
                             </a>
                         </div>
                         <div class="entry-content-2">

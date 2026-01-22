@@ -165,13 +165,13 @@ class User extends Authenticatable
         return $this->roles()->whereIn('name', $roles)->exists();
     }
 
-    /**
-     * Get the saved books (wishlist) for the user.
-     */
-    public function savedBooks()
-    {
-        return $this->hasMany(UserSavedBook::class);
-    }
+    // /**
+    //  * Get the saved books (wishlist) for the user.
+    //  */
+    // public function savedBooks()
+    // {
+    //     return $this->hasMany(UserSavedBook::class);
+    // }
 
     /**
      * Get the orders for the user.
@@ -218,7 +218,7 @@ class User extends Authenticatable
      */
     public function payments()
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasMany(Payment::class)->orderBy('created_at', 'desc');
     }
 
     /**
@@ -284,7 +284,7 @@ class User extends Authenticatable
      */
     public function scopeCreators($query)
     {
-        return $query->whereHas('roles', function($q) {
+        return $query->whereHas('roles', function ($q) {
             $q->where('name', 'Creator')->orWhere('slug', 'creator');
         });
     }
@@ -294,9 +294,9 @@ class User extends Authenticatable
      */
     public function scopeAdmins($query)
     {
-        return $query->whereHas('roles', function($q) {
+        return $query->whereHas('roles', function ($q) {
             $q->whereIn('slug', ['admin', 'superadmin'])
-              ->orWhereIn('name', ['Admin', 'Super Admin']);
+                ->orWhereIn('name', ['Admin', 'Super Admin']);
         });
     }
 
@@ -342,17 +342,6 @@ class User extends Authenticatable
     public function isCreator()
     {
         return $this->hasRole('Creator') || $this->hasRole('creator');
-    }
-
-    /**
-     * Check if user has active subscription.
-     */
-    public function hasActiveSubscription()
-    {
-        return $this->subscriptions()
-            ->where('status', 'active')
-            ->where('end_date', '>=', now())
-            ->exists();
     }
 
     /**
@@ -463,5 +452,55 @@ class User extends Authenticatable
     public function canAccessAdmin(): bool
     {
         return $this->canAccessPanel();
+    }
+
+    public function hasActiveSubscription(): bool
+    {
+        return $this->subscriptions()
+            ->where('status', 'active')
+            ->where('end_date', '>=', now())
+            ->exists();
+    }
+
+    // ✅ ACCESSOR: ambil subscription aktif terakhir
+    public function getCurrentSubscriptionAttribute()
+    {
+        return $this->latestActiveSubscription()->first();
+    }
+
+    // ✅ ACCESSOR: ambil plan aktif
+    public function getCurrentPlanAttribute()
+    {
+        return $this->currentSubscription?->plan;
+    }
+
+    // ✅ RELATIONSHIP (tanpa () → untuk eager load)
+    public function activeSubscriptions()
+    {
+        return $this->hasMany(Subscription::class)
+            ->where('status', 'active')
+            ->where('end_date', '>=', now());
+    }
+
+    // ✅ RELATIONSHIP untuk subscription terbaru (bisa dipakai di with())
+    public function latestActiveSubscription()
+    {
+        return $this->hasOne(Subscription::class)
+            ->where('status', 'active')
+            ->where('end_date', '>=', now())
+            ->orderBy('end_date', 'desc');
+    }
+
+    public function savedBooks()
+    {
+        return $this->belongsToMany(Ebook::class, 'user_saved_books', 'user_id', 'ebook_id'); // Pastikan created_at diisi
+    }
+
+    public function currentSubscription()
+    {
+        return $this->hasOne(Subscription::class)
+            ->where('status', 'active')
+            ->where('end_date', '>=', now())
+            ->orderBy('end_date', 'desc');
     }
 }

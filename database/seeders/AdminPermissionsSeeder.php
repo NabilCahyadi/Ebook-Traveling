@@ -599,6 +599,342 @@ class AdminPermissionsSeeder extends Seeder
                 'group' => 'website_management',
                 'sort_order' => 50,
             ],
+            
+            // ============================================
+            // REPORTS (sort_order: 60)
+            // ============================================
+            // Revenue Reports
+            [
+                'name' => 'reports.revenue.view',
+                'display_name' => 'View',
+                'description' => 'View revenue reports',
+                'module' => 'Reports',
+                'sub_module' => 'Revenue',
+                'group' => 'reports',
+                'sort_order' => 60,
+            ],
+            [
+                'name' => 'reports.revenue.export',
+                'display_name' => 'Export',
+                'description' => 'Export revenue reports',
+                'module' => 'Reports',
+                'sub_module' => 'Revenue',
+                'group' => 'reports',
+                'sort_order' => 60,
+            ],
+            
+            // Ebook Performance Reports
+            [
+                'name' => 'reports.ebook-performance.view',
+                'display_name' => 'View',
+                'description' => 'View ebook performance reports',
+                'module' => 'Reports',
+                'sub_module' => 'Ebook Performance',
+                'group' => 'reports',
+                'sort_order' => 60,
+            ],
+            [
+                'name' => 'reports.ebook-performance.export',
+                'display_name' => 'Export',
+                'description' => 'Export ebook performance reports',
+                'module' => 'Reports',
+                'sub_module' => 'Ebook Performance',
+                'group' => 'reports',
+                'sort_order' => 60,
+            ],
+            
+            // User Analytics Reports
+            [
+                'name' => 'reports.user-analytics.view',
+                'display_name' => 'View',
+                'description' => 'View user analytics reports',
+                'module' => 'Reports',
+                'sub_module' => 'User Analytics',
+                'group' => 'reports',
+                'sort_order' => 60,
+            ],
+            [
+                'name' => 'reports.user-analytics.export',
+                'display_name' => 'Export',
+                'description' => 'Export user analytics reports',
+                'module' => 'Reports',
+                'sub_module' => 'User Analytics',
+                'group' => 'reports',
+                'sort_order' => 60,
+            ],
+            
+            // Subscription Analytics Reports
+            [
+                'name' => 'reports.subscription-analytics.view',
+                'display_name' => 'View',
+                'description' => 'View subscription analytics reports',
+                'module' => 'Reports',
+                'sub_module' => 'Subscription Analytics',
+                'group' => 'reports',
+                'sort_order' => 60,
+            ],
+            [
+                'name' => 'reports.subscription-analytics.export',
+                'display_name' => 'Export',
+                'description' => 'Export subscription analytics reports',
+                'module' => 'Reports',
+                'sub_module' => 'Subscription Analytics',
+                'group' => 'reports',
+                'sort_order' => 60,
+            ],
+            
+            // ============================================
+            // ORDERS (sort_order: 45)
+            // ============================================
+            [
+                'name' => 'orders.view',
+                'display_name' => 'View',
+                'description' => 'View orders list',
+                'module' => 'Subscription Management',
+                'sub_module' => 'Orders',
+                'group' => 'subscription_management',
+                'sort_order' => 45,
+            ],
+            [
+                'name' => 'orders.manage',
+                'display_name' => 'Manage',
+                'description' => 'Update order status',
+                'module' => 'Subscription Management',
+                'sub_module' => 'Orders',
+                'group' => 'subscription_management',
+                'sort_order' => 45,
+            ],
+            
+            // ============================================
+            // FAQ MANAGEMENT (sort_order: 55)
+            // ============================================
+            // FAQ Content
+            [
+                'name' => 'faqs.content.view',
+                'display_name' => 'View',
+                'description' => 'View FAQ content',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Content',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
+            [
+                'name' => 'faqs.content.create',
+                'display_name' => 'Create',
+                'description' => 'Add new FAQ content',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Content',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
+            [
+                'name' => 'faqs.content.edit',
+                'display_name' => 'Edit',
+                'description' => 'Edit FAQ content',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Content',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
+            [
+                'name' => 'faqs.content.delete',
+                'display_name' => 'Delete',
+                'description' => 'Delete FAQ content',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Content',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
+            
+            // FAQ Pricing
+            [
+                'name' => 'faqs.pricing.view',
+                'display_name' => 'View',
+                'description' => 'View FAQ pricing',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Pricing',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
+            [
+                'name' => 'faqs.pricing.create',
+                'display_name' => 'Create',
+                'description' => 'Add new FAQ pricing',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Pricing',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
+            [
+                'name' => 'faqs.pricing.edit',
+                'display_name' => 'Edit',
+                'description' => 'Edit FAQ pricing',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Pricing',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
+            [
+                'name' => 'faqs.pricing.delete',
+                'display_name' => 'Delete',
+                'description' => 'Delete FAQ pricing',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Pricing',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
+            
+            // FAQ Payment
+            [
+                'name' => 'faqs.payment.view',
+                'display_name' => 'View',
+                'description' => 'View FAQ payment',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Payment',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
+            [
+                'name' => 'faqs.payment.create',
+                'display_name' => 'Create',
+                'description' => 'Add new FAQ payment',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Payment',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
+            [
+                'name' => 'faqs.payment.edit',
+                'display_name' => 'Edit',
+                'description' => 'Edit FAQ payment',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Payment',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
+            [
+                'name' => 'faqs.payment.delete',
+                'display_name' => 'Delete',
+                'description' => 'Delete FAQ payment',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Payment',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
+            
+            // FAQ Subscription
+            [
+                'name' => 'faqs.subscription.view',
+                'display_name' => 'View',
+                'description' => 'View FAQ subscription',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Subscription',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
+            [
+                'name' => 'faqs.subscription.create',
+                'display_name' => 'Create',
+                'description' => 'Add new FAQ subscription',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Subscription',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
+            [
+                'name' => 'faqs.subscription.edit',
+                'display_name' => 'Edit',
+                'description' => 'Edit FAQ subscription',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Subscription',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
+            [
+                'name' => 'faqs.subscription.delete',
+                'display_name' => 'Delete',
+                'description' => 'Delete FAQ subscription',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Subscription',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
+            
+            // FAQ Ebook Access
+            [
+                'name' => 'faqs.ebook-access.view',
+                'display_name' => 'View',
+                'description' => 'View FAQ ebook access',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Ebook Access',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
+            [
+                'name' => 'faqs.ebook-access.create',
+                'display_name' => 'Create',
+                'description' => 'Add new FAQ ebook access',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Ebook Access',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
+            [
+                'name' => 'faqs.ebook-access.edit',
+                'display_name' => 'Edit',
+                'description' => 'Edit FAQ ebook access',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Ebook Access',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
+            [
+                'name' => 'faqs.ebook-access.delete',
+                'display_name' => 'Delete',
+                'description' => 'Delete FAQ ebook access',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Ebook Access',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
+            
+            // FAQ Support
+            [
+                'name' => 'faqs.support.view',
+                'display_name' => 'View',
+                'description' => 'View FAQ support',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Support',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
+            [
+                'name' => 'faqs.support.create',
+                'display_name' => 'Create',
+                'description' => 'Add new FAQ support',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Support',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
+            [
+                'name' => 'faqs.support.edit',
+                'display_name' => 'Edit',
+                'description' => 'Edit FAQ support',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Support',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
+            [
+                'name' => 'faqs.support.delete',
+                'display_name' => 'Delete',
+                'description' => 'Delete FAQ support',
+                'module' => 'Website Management',
+                'sub_module' => 'FAQ Support',
+                'group' => 'website_management',
+                'sort_order' => 55,
+            ],
         ];
 
         // Get all permission names that should exist

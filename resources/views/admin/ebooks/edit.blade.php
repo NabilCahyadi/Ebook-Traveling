@@ -52,11 +52,11 @@
         font-size: 0.875rem !important;
         font-weight: 500 !important;
         line-height: 1.5 !important;
-        color: #7367f0 !important;
-        background-color: #f8f7ff !important;
-        border: 2px solid #7367f0 !important;
+        color: #000000 !important;
+        background-color: #ffe0f0 !important;
+        border: 2px solid #ff7eb3 !important;
         border-radius: 0.5rem !important;
-        box-shadow: 0 2px 6px rgba(115, 103, 240, 0.15) !important;
+        box-shadow: 0 2px 6px rgba(255, 126, 179, 0.15) !important;
     }
     
     .remove-category {
@@ -65,7 +65,7 @@
         font-size: 1rem !important;
         line-height: 1 !important;
         opacity: 0.8 !important;
-        color: #7367f0 !important;
+        color: #000000 !important;
     }
     
     .remove-category:hover {
@@ -204,16 +204,31 @@
                                     <option value="published"
                                         {{ old('status', $ebook->status) == 'published' ? 'selected' : '' }}>{{ __('admin.ebooks.published') }}
                                     </option>
+                                    <option value="scheduled"
+                                        {{ old('status', $ebook->status) == 'scheduled' ? 'selected' : '' }}>Scheduled
+                                    </option>
                                     <option value="unpublished"
                                         {{ old('status', $ebook->status) == 'unpublished' ? 'selected' : '' }}>{{ __('admin.ebooks.unpublished') }}
-                                    </option>
-                                    <option value="archived"
-                                        {{ old('status', $ebook->status) == 'archived' ? 'selected' : '' }}>{{ __('admin.ebooks.archived') }}
                                     </option>
                                 </select>
                                 @error('status')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                            </div>
+                        </div>
+
+                        <!-- Scheduled Publishing Date/Time -->
+                        <div class="row" id="scheduledDateContainer" style="{{ old('status', $ebook->status) == 'scheduled' ? '' : 'display: none;' }}">
+                            <div class="col-md-12 mb-3">
+                                <label for="published_at" class="form-label"><i class="ti ti-calendar-time me-1"></i> Publish Date & Time <span class="text-danger">*</span></label>
+                                <input type="datetime-local" class="form-control @error('published_at') is-invalid @enderror" 
+                                    id="published_at" name="published_at" 
+                                    value="{{ old('published_at', $ebook->published_at ? $ebook->published_at->format('Y-m-d\TH:i') : '') }}"
+                                    min="{{ now()->format('Y-m-d\TH:i') }}">
+                                @error('published_at')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <div class="form-text">Set the date and time when this ebook will be automatically published</div>
                             </div>
                         </div>
                     </div>
@@ -294,13 +309,28 @@
                             </div>
                         @endif
 
-                        <div class="mb-0">
+                        <div class="mb-3">
                             <input type="file" class="form-control @error('pdf_file') is-invalid @enderror"
                                 id="pdf_file" name="pdf_file" accept=".pdf">
                             <small class="text-muted">{{ __('admin.ebooks.pdf_hint') }}</small>
                             @error('pdf_file')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                        </div>
+
+                        <!-- Total Pages (Read-only) -->
+                        <div class="mb-0">
+                            <label for="total_pages" class="form-label">{{ __('admin.ebooks.total_pages') }}</label>
+                            <input type="number" class="form-control bg-lighter" id="total_pages" 
+                                name="total_pages" value="{{ old('total_pages', $ebook->total_pages) }}" readonly 
+                                placeholder="{{ __('admin.ebooks.total_pages_placeholder') }}">
+                            <small class="text-muted">
+                                @if($ebook->total_pages)
+                                    {{ __('admin.ebooks.total_pages_current', ['count' => $ebook->total_pages]) }}
+                                @else
+                                    {{ __('admin.ebooks.total_pages_auto_update') }}
+                                @endif
+                            </small>
                         </div>
                     </div>
                 </div>
@@ -585,8 +615,13 @@
     </script>
 
     <!-- PDF validation script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
         const pdfInput = document.getElementById('pdf_file');
+        const totalPagesInput = document.getElementById('total_pages');
+
         if (pdfInput) {
             pdfInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
@@ -603,6 +638,26 @@
                     pdfInput.value = '';
                     return;
                 }
+
+                // Read PDF page count
+                const fileReader = new FileReader();
+                fileReader.onload = function() {
+                    const typedArray = new Uint8Array(this.result);
+                    
+                    pdfjsLib.getDocument(typedArray).promise.then(function(pdf) {
+                        const numPages = pdf.numPages;
+                        
+                        // Update total pages field
+                        if (totalPagesInput) {
+                            totalPagesInput.value = numPages;
+                        }
+                    }).catch(function(error) {
+                        console.error('Error reading PDF:', error);
+                        alert('Gagal membaca PDF. Pastikan file valid.');
+                    });
+                };
+                
+                fileReader.readAsArrayBuffer(file);
             });
         }
 
@@ -741,7 +796,7 @@
             creatorSuggestions.hide().empty();
             
             selectedCreatorDiv.html(`
-                <div class="alert alert-info d-flex justify-content-between align-items-center py-2 mb-0">
+                <div class="alert d-flex justify-content-between align-items-center py-2 mb-0" style="background-color: #ffe0f0; border: 1px solid #ff7eb3; color: #d63384;">
                     <div>
                         <i class="ti ti-user me-1"></i>
                         <strong>${creator.name}</strong>
@@ -776,5 +831,24 @@
                 creatorSuggestions.hide();
             }
         });
+
+        // Toggle scheduled date container based on status selection
+        const statusSelect = document.getElementById('status');
+        const scheduledContainer = document.getElementById('scheduledDateContainer');
+        const publishedAtInput = document.getElementById('published_at');
+        
+        function toggleScheduledDate() {
+            if (statusSelect.value === 'scheduled') {
+                scheduledContainer.style.display = 'flex';
+                publishedAtInput.required = true;
+            } else {
+                scheduledContainer.style.display = 'none';
+                publishedAtInput.required = false;
+            }
+        }
+        
+        statusSelect.addEventListener('change', toggleScheduledDate);
+        // Run on page load
+        toggleScheduledDate();
     </script>
 @endpush

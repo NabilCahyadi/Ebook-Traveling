@@ -23,12 +23,44 @@ class UserService
     /**
      * Get all users with pagination.
      */
-    public function getAllUsers(int $perPage = 10, ?string $search = null, bool $withTrashed = false)
+    public function getAllUsers(int $perPage = 10, ?string $search = null, bool $withTrashed = false, ?string $userType = null, ?string $googleId = null, ?string $registered = null)
     {
         $query = User::with('roles');
 
         if ($withTrashed) {
             $query->withTrashed();
+        }
+
+        if ($userType) {
+            $query->where('user_type', $userType);
+        }
+
+        // Filter by Google ID
+        if ($googleId) {
+            if ($googleId === 'linked') {
+                $query->whereNotNull('google_id');
+            } elseif ($googleId === 'regular') {
+                $query->whereNull('google_id');
+            }
+        }
+
+        // Filter by registered time
+        if ($registered) {
+            switch ($registered) {
+                case 'today':
+                    $query->whereDate('created_at', today());
+                    break;
+                case 'week':
+                    $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+                    break;
+                case 'month':
+                    $query->whereMonth('created_at', now()->month)
+                          ->whereYear('created_at', now()->year);
+                    break;
+                case 'year':
+                    $query->whereYear('created_at', now()->year);
+                    break;
+            }
         }
 
         if ($search) {
@@ -45,7 +77,7 @@ class UserService
     /**
      * Get users by role slug with pagination.
      */
-    public function getUsersByRole(string $roleSlug, int $perPage = 10, ?string $search = null, bool $withTrashed = false)
+    public function getUsersByRole(string $roleSlug, int $perPage = 10, ?string $search = null, bool $withTrashed = false, ?string $userType = null, ?string $googleId = null, ?string $registered = null)
     {
         $query = User::where(function ($query) use ($roleSlug) {
             // Check if user has role in user_roles table
@@ -58,6 +90,38 @@ class UserService
 
         if ($withTrashed) {
             $query->withTrashed();
+        }
+
+        if ($userType) {
+            $query->where('user_type', $userType);
+        }
+
+        // Filter by Google ID
+        if ($googleId) {
+            if ($googleId === 'linked') {
+                $query->whereNotNull('google_id');
+            } elseif ($googleId === 'regular') {
+                $query->whereNull('google_id');
+            }
+        }
+
+        // Filter by registered time
+        if ($registered) {
+            switch ($registered) {
+                case 'today':
+                    $query->whereDate('created_at', today());
+                    break;
+                case 'week':
+                    $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+                    break;
+                case 'month':
+                    $query->whereMonth('created_at', now()->month)
+                          ->whereYear('created_at', now()->year);
+                    break;
+                case 'year':
+                    $query->whereYear('created_at', now()->year);
+                    break;
+            }
         }
 
         if ($search) {
@@ -309,19 +373,16 @@ class UserService
     /**
      * Get user account data for dashboard (NEW METHOD)
      */
-    // Di dalam file app/Services/UserService.php
-
-    // Di dalam file app/Services/UserService.php
 
     public function getAccountData(string $userId, Request $request): array
     {
         $user = User::with([
             'profile',
             'orders.items.ebook.categories',
-            'savedBooks.ebook.categories',
-            'readings.ebook',
+            'savedBooks.categories',
+            'readings.ebook.city',
             'subscriptions.plan',
-            'ratings.ebook',
+            'ratings.ebook.city',
             'createdEbooks.categories',
             'blogs'
         ])->findOrFail($userId);
@@ -331,13 +392,11 @@ class UserService
 
         // 2. JIKA USER PREMIUM, jalankan logika query dan filter
         if ($user->hasActiveSubscription()) {
-            // 1. Buat query dasar dengan JOIN
-            // 1. Buat query dasar dengan JOIN ke tabel yang dibutuhkan
+            // Query untuk My Library
             $query = Ebook::leftJoin('creators', 'ebooks.creator_id', '=', 'creators.id')
                 ->leftJoin('users', 'creators.user_id', '=', 'users.id')
-                ->leftJoin('cities', 'ebooks.city_id', '=', 'cities.id'); // <-- JOIN ke tabel cities
+                ->leftJoin('cities', 'ebooks.city_id', '=', 'cities.id');
 
-            // 2. Terapkan filter pencarian jika ada
             if ($request->filled('search')) {
                 $searchTerm = '%' . $request->search . '%';
                 $query->where(function ($q) use ($searchTerm) {
@@ -348,20 +407,15 @@ class UserService
                 });
             }
 
-            // 3. Terapkan filter status
             $query->where('ebooks.status', 'published');
 
-            // 4. Terapkan filter kota (INI YANG DIPERBAIKI)
             if ($request->filled('city_slug')) {
-                // Filter berdasarkan slug dari tabel 'cities' yang sudah di-join
                 $query->where('cities.slug', $request->city_slug);
             }
 
-            // 5. Pastikan SoftDeletes tetap berjalan
             $query->whereNull('ebooks.deleted_at');
+            $allEbooks = $query->select('ebooks.*')->distinct()->get();
 
-            // 6. Ambil hasil query
-            $allEbooks = $query->select('ebooks.*')->distinct()->get(); // Tambahkan distinct() untuk keamanan
             // Data premium lainnya
             $data['activeSubscription'] = $user->subscriptions()
                 ->where('status', 'active')
@@ -388,7 +442,35 @@ class UserService
         // 3. Ambil semua kota untuk dropdown filter (selalu diambil)
         $cities = City::orderBy('name')->get();
 
-        // 4. Kompilasi semua data ke dalam array
+        // === FILTER UNTUK READING HISTORY ===
+        $readingHistoryQuery = $user->readings()->with('ebook.city', 'ebook.creator');
+        if ($request->filled('search')) {
+            $readingHistoryQuery->whereHas('ebook', function ($q) use ($request) {
+                $q->where('title', 'like', '%' . $request->search . '%');
+            });
+        }
+        if ($request->filled('city_slug')) {
+            $readingHistoryQuery->whereHas('ebook.city', function ($q) use ($request) {
+                $q->where('slug', $request->city_slug);
+            });
+        }
+        $readingHistory = $readingHistoryQuery->latest('last_read_at')->get();
+
+        // === FILTER UNTUK USER RATINGS ===
+        $ratingsQuery = $user->ratings()->with('ebook.city');
+        if ($request->filled('search')) {
+            $ratingsQuery->whereHas('ebook', function ($q) use ($request) {
+                $q->where('title', 'like', '%' . $request->search . '%');
+            });
+        }
+        if ($request->filled('city_slug')) {
+            $ratingsQuery->whereHas('ebook.city', function ($q) use ($request) {
+                $q->where('slug', $request->city_slug);
+            });
+        }
+        $userRatings = $ratingsQuery->latest()->get();
+
+        // 4. Kompilasi semua data
         $data = [
             'user' => $user,
             'allEbooks' => $allEbooks,
@@ -397,14 +479,10 @@ class UserService
             'wishlistCount' => $user->savedBooks->count(),
             'wishlistItems' => $user->savedBooks,
             'orders' => $user->orders()->latest()->get(),
-
-            // Ini untuk progress di tab My Library (tetap seperti ini)
-            'userReadings' => $user->readings()->pluck('progress_percentage', 'ebook_id'),
-
-            // TAMBAHKAN BARIS INI: Variabel baru untuk tabel Reading History
-            'readingHistory' => $user->readings()->with('ebook.creator')->latest('last_read_at')->get(),
-
-            'userRatings' => $user->ratings()->with('ebook')->latest()->get(),
+            'ebooks' => $allEbooks,
+            'userReadings' => $user->readings()->with('ebook')->get()->keyBy('ebook_id'),
+            'readingHistory' => $readingHistory,
+            'userRatings' => $userRatings,
             'createdEbooks' => $user->createdEbooks()->with('categories')->get(),
         ];
 

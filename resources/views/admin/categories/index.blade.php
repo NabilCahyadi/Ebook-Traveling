@@ -21,10 +21,10 @@
         @endif
 
         <!-- Page Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
             <div>
                 <h4 class="fw-bold py-3 mb-2">
-                    <span class="text-muted fw-light">Master Data /</span> {{ __('admin.menu.categories') }}
+                    <span class="text-muted fw-light">{{ __('admin.menu.master_data') }} /</span> {{ __('admin.menu.categories') }}
                 </h4>
             </div>
             <div>
@@ -39,37 +39,36 @@
             <div class="card-body">
                 <form action="{{ route('admin.categories.index') }}" method="GET">
                     <div class="row g-3">
-                        <div class="col-md-5">
+                        <div class="col-12 col-md-5">
                             <label for="search" class="form-label">{{ __('admin.common.search') }}</label>
                             <input type="text" class="form-control" id="search" name="search"
-                                value="{{ request('search') }}" placeholder="Search by category name or slug...">
+                                value="{{ request('search') }}" placeholder="{{ __('admin.common.search') }}...">
                         </div>
-                        <div class="col-md-3">
-                            <label for="sort_by" class="form-label">{{ __('admin.common.sort') }} By</label>
+                        <div class="col-6 col-md-3">
+                            <label for="sort_by" class="form-label">{{ __('admin.cities.sort_by') }}</label>
                             <select class="form-select" id="sort_by" name="sort_by">
-                                <option value="created_at" {{ request('sort_by') == 'created_at' ? 'selected' : '' }}>{{ __('admin.common.date') }}
-                                    Created</option>
+                                <option value="created_at" {{ request('sort_by') == 'created_at' ? 'selected' : '' }}>{{ __('admin.common.date_created') }}</option>
                                 <option value="name" {{ request('sort_by') == 'name' ? 'selected' : '' }}>{{ __('admin.form.name') }}</option>
                                 <option value="ebooks_count" {{ request('sort_by') == 'ebooks_count' ? 'selected' : '' }}>
-                                    Ebooks Count</option>
+                                    {{ __('admin.categories.ebooks_count') }}</option>
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <label for="sort_order" class="form-label">{{ __('admin.form.order') }}</label>
+                        <div class="col-6 col-md-2">
+                            <label for="sort_order" class="form-label">{{ __('admin.cities.order') }}</label>
                             <select class="form-select" id="sort_order" name="sort_order">
-                                <option value="asc" {{ request('sort_order') == 'asc' ? 'selected' : '' }}>Ascending
+                                <option value="asc" {{ request('sort_order') == 'asc' ? 'selected' : '' }}>{{ __('admin.common.ascending') }}
                                 </option>
-                                <option value="desc" {{ request('sort_order') == 'desc' ? 'selected' : '' }}>Descending
+                                <option value="desc" {{ request('sort_order') == 'desc' ? 'selected' : '' }}>{{ __('admin.common.descending') }}
                                 </option>
                             </select>
                         </div>
-                        <div class="col-md-2 d-flex align-items-end gap-2">
+                        <div class="col-12 col-md-2 d-flex align-items-end gap-2">
                             <button type="submit" class="btn btn-primary flex-grow-1">
                                 <i class="ti ti-search"></i>
                             </button>
                             @if (request()->hasAny(['search', 'sort_by', 'sort_order']))
                                 <a href="{{ route('admin.categories.index') }}" class="btn btn-label-secondary"
-                                    title="Clear Filters">
+                                    title="{{ __('admin.common.clear_filters') }}">
                                     <i class="ti ti-x"></i>
                                 </a>
                             @endif
@@ -81,9 +80,9 @@
 
         <!-- Categories Table -->
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
                 <h5 class="mb-0">{{ __('admin.menu.categories') }}</h5>
-                <div class="text-muted">Total: {{ $categories->total() }} {{ __('admin.menu.categories') }}</div>
+                <div class="text-muted">{{ __('admin.common.total') }}: {{ $categories->total() }} {{ __('admin.menu.categories') }}</div>
             </div>
             <div class="card-body">
                 @if ($categories->count() > 0)
@@ -93,9 +92,9 @@
                                 <tr>
                                     <th>{{ __('admin.form.image') }}</th>
                                     <th>{{ __('admin.form.name') }}</th>
-                                    <th>Total Ebooks</th>
-                                    <th>{{ __('admin.common.created_at') }}</th>
-                                    <th>{{ __('admin.users.actions') }}</th>
+                                    <th class="d-none d-md-table-cell">{{ __('admin.categories.ebooks_count') }}</th>
+                                    <th class="d-none d-lg-table-cell">{{ __('admin.common.date_created') }}</th>
+                                    <th>{{ __('admin.common.actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -107,10 +106,10 @@
                                         <td>
                                             <div class="fw-medium">{{ $category->name }}</div>
                                         </td>
-                                        <td>
-                                            <span class="badge bg-label-info">{{ $category->ebooks_count }} ebooks</span>
+                                        <td class="d-none d-md-table-cell">
+                                            <span class="badge bg-label-info">{{ $category->ebooks_count }} {{ __('admin.common.ebooks') }}</span>
                                         </td>
-                                        <td>
+                                        <td class="d-none d-lg-table-cell">
                                             <small class="text-muted">{{ $category->created_at->format('d M Y') }}</small>
                                         </td>
                                         <td>
@@ -128,7 +127,7 @@
                                                     </a>
                                                     <div class="dropdown-divider"></div>
                                                     <a class="dropdown-item text-danger" href="javascript:void(0);"
-                                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this category?')) document.getElementById('delete-category-{{ $category->id }}').submit();">
+                                                        onclick="event.preventDefault(); if(confirm('{{ __('admin.categories.delete_confirm') }}')) document.getElementById('delete-category-{{ $category->id }}').submit();">
                                                         <i class="ti ti-trash me-2"></i>
                                                         <span>{{ __('admin.actions.delete') }}</span>
                                                     </a>
@@ -155,7 +154,7 @@
                     <div class="text-center py-5">
                         <i class="ti ti-folder-off ti-xl text-muted mb-3"></i>
                         <h5 class="text-muted">{{ __('admin.categories.no_categories') }}</h5>
-                        <p class="text-muted">Start by creating your first category</p>
+                        <p class="text-muted">{{ __('admin.categories.no_categories_desc') }}</p>
                         <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal"
                             data-bs-target="#createModal">
                             <i class="ti ti-plus me-1"></i> {{ __('admin.categories.add_category') }}
@@ -181,8 +180,8 @@
                             <label for="name" class="form-label">{{ __('admin.categories.category_name') }} <span
                                     class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
-                                name="name" value="{{ old('name') }}" placeholder="e.g. Travel Guide" required>
-                            <small class="text-muted">Slug will be auto-generated</small>
+                                name="name" value="{{ old('name') }}" placeholder="{{ __('admin.categories.name_placeholder') }}" required>
+                            <small class="text-muted">{{ __('admin.categories.slug_auto') }}</small>
                             @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -191,7 +190,7 @@
                             <label for="image" class="form-label">{{ __('admin.categories.image') }}</label>
                             <input type="file" class="form-control @error('image') is-invalid @enderror" id="image"
                                 name="image" accept="image/*">
-                            <small class="text-muted">Recommended size: 200x200px (JPG, PNG, max 2MB)</small>
+                            <small class="text-muted">{{ __('admin.categories.image_hint') }}</small>
                             @error('image')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -225,15 +224,15 @@
                             <label for="edit_name" class="form-label">{{ __('admin.categories.category_name') }} <span
                                     class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="edit_name" name="name"
-                                placeholder="e.g. Travel Guide" required>
-                            <small class="text-muted">Slug will be auto-generated</small>
+                                placeholder="{{ __('admin.categories.name_placeholder') }}" required>
+                            <small class="text-muted">{{ __('admin.categories.slug_auto') }}</small>
                         </div>
                         <div class="mb-3">
                             <label for="edit_image" class="form-label">{{ __('admin.categories.image') }}</label>
                             <div id="currentImagePreview" class="mb-2"></div>
                             <input type="file" class="form-control" id="edit_image"
                                 name="image" accept="image/*">
-                            <small class="text-muted">Leave empty to keep current image. Recommended size: 200x200px (JPG, PNG, max 2MB)</small>
+                            <small class="text-muted">{{ __('admin.categories.edit_image_hint') }}</small>
                             <div class="mt-2" id="editImagePreview"></div>
                         </div>
                     </div>
@@ -259,14 +258,14 @@
                 if (image) {
                     currentImagePreview.innerHTML = `
                         <div class="mb-2">
-                            <label class="form-label text-muted">Current Image:</label>
+                            <label class="form-label text-muted">{{ __('admin.categories.current_image') }}:</label>
                             <div>
                                 <img src="${image}" alt="${name}" class="rounded" style="width: 100px; height: 100px; object-fit: cover;">
                             </div>
                         </div>
                     `;
                 } else {
-                    currentImagePreview.innerHTML = '<small class="text-muted">No image uploaded</small>';
+                    currentImagePreview.innerHTML = '<small class="text-muted">{{ __('admin.categories.no_image') }}</small>';
                 }
                 
                 new bootstrap.Modal(document.getElementById('editModal')).show();

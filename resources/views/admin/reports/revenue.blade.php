@@ -42,7 +42,7 @@
                         <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
                     </div>
                     <div class="col-md-3 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary me-2">
+                        <button type="submit" class="btn btn-primary me-2 mt-2">
                             <i class="ti ti-filter me-1"></i> {{ __('admin.reports.apply_filter') }}
                         </button>
                         <a href="{{ route('admin.reports.revenue') }}" class="btn btn-outline-secondary">

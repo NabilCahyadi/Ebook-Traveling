@@ -138,6 +138,7 @@
         line-height: 1.4;
         margin-bottom: 0.5rem;
         min-height: 3.2em;
+        margin-top: 8px;
     }
 
     .product-cart-wrap .product-description {
@@ -192,7 +193,8 @@
     .product-img {
         position: relative;
         width: 100%;
-        padding-top: 140%; /* Rasio 5:7 (tinggi 140% dari lebar) untuk cover buku */
+        padding-top: 140%;
+        /* Rasio 5:7 (tinggi 140% dari lebar) untuk cover buku */
         overflow: hidden;
         border-radius: 15px;
         background-color: #f5f5f5;
@@ -322,13 +324,171 @@
         line-height: 1.2;
     }
 </style>
+<style>
+    .nav-link {
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .nav-link:hover {
+        background-color: rgba(0, 0, 0, 0.03) !important;
+        color: var(--bs-body-color) !important;
+    }
+
+    .nav-link.active {
+        color: #ffffffff !important;
+        background-color: #FF416C !important;
+        font-weight: 600;
+    }
+
+    .js-submenu {
+        overflow: hidden;
+    }
+
+    .js-submenu li:last-child {
+        margin-bottom: 0.5rem;
+    }
+
+    .transition-transform {
+        transition: transform 0.3s ease;
+    }
+
+    .rotated .transition-transform {
+        transform: rotate(180deg);
+    }
+
+    .nav-item {
+        margin: 0 1.5rem 0 0;
+    }
+</style>
+<style>
+    .custom-button {
+        padding: 7px 17px !important;
+        border: none !important;
+        border-radius: 50px !important;
+        font-size: 0.7rem !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        letter-spacing: 1px !important;
+        text-decoration: none !important;
+        text-align: center !important;
+        display: inline-block !important;
+    }
+
+    .custom-button--primary {
+        background-color: #FF4C61 !important;
+        color: #fff !important;
+    }
+
+    .pricing-card--featured .custom-button--primary {
+        background-color: var(--primary-color);
+        box-shadow: 0 5px 15px rgba(255, 76, 97, 0.3);
+    }
+
+    .custom-button--primary:hover {
+        background-color: #FF416C !important;
+        transform: translateY(-3px) !important;
+    }
+
+    /* untuk progresss subscription */
+    .progress-bar {
+        transition: width 0.5s ease;
+    }
+</style>
+<style>
+    /* Hover underline untuk judul */
+    .hover-underline:hover {
+        text-decoration: underline;
+        text-decoration-color: #FF4C61;
+    }
+
+    /* Button ungu sesuai tema */
+    .btn-gradient-purple {
+        background: linear-gradient(135deg, #6A4C93, #FF4C61);
+        border: none;
+    }
+
+    .btn-gradient-purple:hover {
+        background: linear-gradient(135deg, #7B5DA4, #FF6B81);
+        transform: translateY(-2px);
+    }
+</style>
+<style>
+    .hover-lift {
+        transition: all 0.2s ease;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .bg-light-primary {
+        background-color: rgba(255, 65, 108, 0.1);
+    }
+
+    .bg-light-info {
+        background-color: rgba(23, 162, 184, 0.1);
+    }
+
+    .bg-light-success {
+        background-color: rgba(40, 167, 69, 0.1);
+    }
+</style>
+<style>
+    .btn-no-style {
+        padding: 5px 10px !important;
+        border: none !important;
+        border-radius: 50px !important;
+        font-size: 0.7rem !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        letter-spacing: 1px !important;
+        text-decoration: none !important;
+        text-align: center !important;
+        display: inline-block !important;
+        background-color: #FF4C61 !important;
+        color: #fff !important;
+    }
+
+    .btn-no-style:hover {
+        background-color: #FF416C !important;
+        transform: translateY(-3px) !important;
+    }
+</style>
+<style>
+    /* ✅ Style khusus untuk tombol di modal edit review */
+    .btn-edit-review {
+        padding: 5px 13px !important;
+        border: none !important;
+        border-radius: 50px !important;
+        font-size: 0.7rem !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        letter-spacing: 1px !important;
+        text-decoration: none !important;
+        text-align: center !important;
+        display: inline-block !important;
+        background-color: #FF4C61 !important;
+        color: white !important;
+    }
+
+    .btn-edit-review:hover {
+        background-color: #FF416C !important;
+        transform: translateY(-3px) !important;
+    }
+</style>
 <main class="main pages">
     <div class="page-header mt-30 mb-30">
         <div class="container">
             <div class="archive-header">
                 <div class="row align-items-center">
                     <div class="col-xl-3">
-                        <h1 class="mb-15">My Account</h1>
+                        <h3 class="mb-15">My Account</h3>
                         <div class="breadcrumb">
                             <a href="/" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
                             <span></span> My Account
@@ -343,89 +503,123 @@
             <div class="row">
                 <!-- sidebar mini -->
                 <div class="col-md-3">
-                    <div class="dashboard-menu">
+                    <div class="dashboard-menu" style="position: sticky; top: 80px;">
                         <ul class="nav flex-column" role="tablist">
-                            <!-- ========== MENU KHUSUS PREMIUM MEMBER ========== -->
+                            <!-- ========== DASHBOARD ========== -->
+                            <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab', 'dashboard') == 'dashboard' ? 'active bg-light-subtle' : 'text-body' }}"
+                                    href="{{ route('page-account') }}?tab=dashboard">
+                                    <i class="fi-rs-settings-sliders me-3 fs-5"></i>
+                                    <span>
+                                        @if(auth()->check() && auth()->user()->hasActiveSubscription())
+                                        Dashboard Member
+                                        @else
+                                        Dashboard
+                                        @endif
+                                    </span>
+                                </a>
+                            </li>
+
+                            <!-- ========== WISHLIST ========== -->
+                            <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'wishlist' ? 'active bg-light-subtle' : 'text-body' }}"
+                                    href="{{ route('page-account') }}?tab=wishlist">
+                                    <i class="fi-rs-heart me-3 fs-5 mt-1 {{ request('tab') == 'wishlist' ? 'text-white' : 'text-danger' }}"></i>
+                                    <span>Wishlist</span>
+                                    <!-- @if($wishlistCount > 0)
+                                            <span class="badge bg-primary rounded-pill ms-auto">{{ $wishlistCount }}</span>
+                                            @endif -->
+                                </a>
+                            </li>
+
+                            <!-- ========== MY READING AREA (Premium Only) ========== -->
                             @if(auth()->user()->hasActiveSubscription())
                             <li class="nav-item">
-                                <a class="nav-link {{ request('tab') == 'library' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=library">
-                                    <i class="fi-rs-book mr-10"></i>My Library
+                                <a class="nav-link d-flex justify-content-between align-items-center px-3 py-2 text-body"
+                                    data-target="contentMenu" href="#" onclick="toggleMenu(event, 'contentMenu')">
+                                    <span class="d-flex align-items-center">
+                                        <i class="fi-rs-book me-3 fs-5 text-primary"></i>
+                                        <span>Reading Area</span>
+                                    </span>
+                                    <i class="fi-rs-angle-small-down fs-4 transition-transform"></i>
                                 </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link {{ request('tab') == 'reading-history' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=reading-history">
-                                    <i class="bi-clock-history mr-10"></i>Reading History
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link {{ request('tab') == 'reviews' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=reviews">
-                                    <i class="fi-rs-star mr-10"></i>My Reviews
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link {{ request('tab') == 'subscription' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=subscription">
-                                    <i class="fi-rs-crown mr-10"></i>My Subscription
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link {{ request('tab') == 'help' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=help">
-                                    <i class="fi-rs-interactive mr-10"></i>Help Center
-                                </a>
+                                <ul class="nav flex-column ms-4 mt-1 js-submenu" id="contentMenu"
+                                    style="display: {{ in_array(request('tab'), ['library', 'reading-history', 'wishlist']) ? 'block' : 'none' }};">
+                                    <li class="nav-item">
+                                        <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'library' ? 'active bg-light-subtle' : 'text-muted' }}"
+                                            href="{{ route('page-account') }}?tab=library">
+                                            <span><i class="bi bi-collection mr-10"></i>My Library</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'reading-history' ? 'active bg-light-subtle' : 'text-muted' }}"
+                                            href="{{ route('page-account') }}?tab=reading-history">
+                                            <span><i class="bi-clock-history mr-10"></i>Reading History</span>
+                                        </a>
+                                    </li>
+                                    @if(auth()->user()->hasActiveSubscription())
+                                    <li class="nav-item">
+                                        <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'reviews' ? 'active bg-light-subtle' : 'text-muted' }}"
+                                            href="{{ route('page-account') }}?tab=reviews">
+                                            <span><i class="fi-rs-star mr-10"></i>My Reviews</span>
+                                        </a>
+                                    </li>
+                                    @endif
+                                </ul>
                             </li>
                             @endif
 
-                            <!-- ========== MENU UNTUK SEMUA USER (DILUAR IF-ELSE) ========== -->
+                            <!-- ========== ACCOUNT SETTINGS ========== -->
                             <li class="nav-item">
-                                <a class="nav-link {{ request('tab', 'dashboard') == 'dashboard' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=dashboard">
-                                    <i class="fi-rs-settings-sliders mr-10"></i>Dashboard Member
+                                <a class="nav-link d-flex justify-content-between align-items-center px-3 py-2 text-body"
+                                    data-target="settingMenu" href="#" onclick="toggleMenu(event, 'settingMenu')">
+                                    <span class="d-flex align-items-center">
+                                        <i class="fi-rs-user me-3 fs-5 text-info"></i>
+                                        <span>Account Settings</span>
+                                    </span>
+                                    <i class="fi-rs-angle-small-down fs-4 transition-transform"></i>
                                 </a>
-                            </li>
-                            
-                            <li class="nav-item">
-                                <a class="nav-link {{ request('tab') == 'wishlist' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=wishlist">
-                                    <i class="fi fi-rs-heart mr-10"></i>Wishlist
-                                    @if($wishlistCount > 0)
-                                    <span class="badge bg-primary ms-1">{{ $wishlistCount }}</span>
+                                <ul class="nav flex-column ms-4 mt-1 js-submenu" id="settingMenu"
+                                    style="display: {{ in_array(request('tab'), ['account-detail', 'subscription', 'payment', 'help']) ? 'block' : 'none' }};">
+                                    <li class="nav-item">
+                                        <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'account-detail' ? 'active bg-light-subtle' : 'text-muted' }}"
+                                            href="{{ route('page-account') }}?tab=account-detail">
+                                            <span><i class="fi-rs-user mr-10"></i>Profile Details</span>
+                                        </a>
+                                    </li>
+                                    @if(auth()->user()->hasActiveSubscription())
+                                    <li class="nav-item">
+                                        <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'subscription' ? 'active bg-light-subtle' : 'text-muted' }}"
+                                            href="{{ route('page-account') }}?tab=subscription">
+                                            <span><i class="fi-rs-crown mr-10"></i>My Subscription</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'help' ? 'active bg-light-subtle' : 'text-muted' }}"
+                                            href="{{ route('page-account') }}?tab=help">
+                                            <span><i class="fi-rs-interactive mr-10"></i>Help Center</span>
+                                        </a>
+                                    </li>
+                                    @else
+                                    <li class="nav-item">
+                                        <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'payment' ? 'active bg-light-subtle' : 'text-muted' }}"
+                                            href="{{ route('page-account') }}?tab=payment">
+                                            <span><i class="fi-rs-credit-card mr-10"></i>Payment History</span>
+                                            <!-- @if($ordersCount > 0)
+                                            <span class="badge bg-success rounded-pill ms-auto">{{ $ordersCount }}</span>
+                                            @endif -->
+                                        </a>
+                                    </li>
                                     @endif
-                                </a>
+                                </ul>
                             </li>
 
-                            <li class="nav-item">
-                                <a class="nav-link {{ request('tab') == 'creator' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=creator">
-                                    <i class="fi-rs-edit mr-10"></i>Creator
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link {{ request('tab') == 'account-detail' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=account-detail">
-                                    <i class="fi-rs-user mr-10"></i>Profile Settings
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link {{ request('tab') == 'payment' ? 'active' : '' }}"
-                                    href="{{ route('page-account') }}?tab=payment">
-                                    <i class="fi-rs-credit-card mr-10"></i>Payment History
-                                    @if($ordersCount > 0)
-                                    <span class="badge bg-success ms-1">{{ $ordersCount }}</span>
-                                    @endif
-                                </a>
-                            </li>
-
-                            <!-- ========== LOGOUT (SEMUA USER) ========== -->
-                            <li class="nav-item mt-auto">
-                                <a class="nav-link text-danger" href="#"
-                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                    <i class="fi-rs-sign-out mr-10"></i>Logout
+                            <!-- ========== LOGOUT ========== -->
+                            <li class="nav-item border-top">
+                                <a class="nav-link d-flex align-items-center px-3 py-2 text-danger"
+                                    href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i class="fi-rs-sign-out me-3 fs-5"></i>
+                                    <span>Logout</span>
                                 </a>
                                 <form id="logout-form" action="{{ route('user.logout') }}" method="POST" class="d-none">
                                     @csrf
@@ -436,6 +630,7 @@
                 </div>
                 <div class="col-md-9">
                     <div class="tab-content account dashboard-content pl-50">
+
                         <!-- DASHBOARD TAB -->
                         <div class="tab-pane fade {{ request('tab', 'dashboard') == 'dashboard' ? 'active show' : '' }}"
                             id="dashboard" role="tabpanel">
@@ -443,9 +638,23 @@
                             <!-- TAMPILAN UNTUK USER PREMIUM -->
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="mb-0">Hello {{ auth()->user()->name }}!</h3>
+                                    <h4 class="mb-0">Hello {{ auth()->user()->name }}!</h4>
                                     <small>Premium Member since {{ auth()->user()->created_at->format('M Y') }}</small>
                                 </div>
+                                @if(auth()->user()->hasActiveSubscription())
+                                <!-- PREMIUM USER -->
+                                <div class="card-body p-4">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <i class="fi-rs-crown mt-1" style="font-size: 1.5rem; color: #FF416C;"></i>
+                                        <div>
+                                            <h5 class="fw-bold mb-2" style="color: #333;">Welcome back, Premium Member!</h5>
+                                            <p class="text-muted mb-0">
+                                                You have full access to all travel eBooks and exclusive features.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
                             </div>
                             @else
                             <!-- TAMPILAN UNTUK USER NON-PREMIUM -->
@@ -473,8 +682,7 @@
                         </div>
 
                         <!-- WISHLIST TAB -->
-                        <div class="tab-pane fade {{ request('tab') == 'orders' ? 'active show' : '' }}" id="orders"
-                            role="tabpanel">
+                        <div class="tab-pane fade {{ request('tab') == 'wishlist' ? 'active show' : '' }}" id="wishlist" role="tabpanel">
                             <div class="card">
                                 <div class="card-header">
                                     <h5 class="mb-0">Your Wishlist</h5>
@@ -482,47 +690,72 @@
                                 <div class="card-body">
                                     @if($wishlistItems->count() > 0)
                                     <div class="table-responsive">
-                                        <table class="table">
+                                        <table class="table align-middle">
                                             <thead>
                                                 <tr>
+                                                    <th style="width: 80px;">Cover</th>
                                                     <th>Ebook</th>
                                                     <th>Category</th>
-                                                    <th>Price</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($wishlistItems as $item)
+                                                @foreach($wishlistItems as $ebook)
                                                 <tr>
-                                                    <td>{{ $item->ebook->title ?? 'Unknown Book' }}</td>
+                                                    <!--  FOTO COVER -->
                                                     <td>
-                                                        @if(isset($item->ebook->categories) &&
-                                                        $item->ebook->categories->count() > 0)
-                                                        @foreach($item->ebook->categories as $category)
-                                                        <span class="badge bg-secondary">{{ $category->name }}</span>
+                                                        <div class="bg-light rounded" style="width: 60px; height: 80px;">
+                                                            @if($ebook->cover_image_url)
+                                                            <img src="{{ $ebook->cover_image_url }}"
+                                                                alt="{{ $ebook->title }}"
+                                                                class="img-fluid rounded"
+                                                                style="width: 60px; height: 80px; object-fit: cover;">
+                                                            @else
+                                                            <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+                                                                <i class="fi-rs-book"></i>
+                                                            </div>
+                                                            @endif
+                                                        </div>
+                                                    </td>
+
+                                                    <!--  JUDUL -->
+                                                    <td>
+                                                        <div class="fw-bold">{{ $ebook->title ?? 'Unknown Book' }}</div>
+                                                        @if($ebook->creator)
+                                                        <small class="text-muted">by {{ $ebook->creator->name }}</small>
+                                                        @endif
+                                                    </td>
+
+                                                    <!--  KATEGORI -->
+                                                    <td>
+                                                        @if($ebook->categories && $ebook->categories->count() > 0)
+                                                        @foreach($ebook->categories as $category)
+                                                        <span class="badge bg-light text-dark border me-1">{{ $category->name }}</span>
                                                         @endforeach
                                                         @else
-                                                        <span class="text-muted">No category</span>
+                                                        <span class="text-muted">—</span>
                                                         @endif
                                                     </td>
-                                                    <td>
-                                                        @if(isset($item->ebook->price))
-                                                        @if($item->ebook->price == 0)
-                                                        <span class="text-success">Free</span>
+
+                                                    <!--  ACTION -->
+                                                    <td>@if(auth()->check() && auth()->user()->hasActiveSubscription())
+                                                        <a href="{{ route('user.ebook.read', $ebook->slug) }}" class="custom-button custom-button--primary text-white px-4">
+                                                            <i class="fi-rs-book-open"></i>
+                                                            <span>Read Now</span>
+                                                        </a>
                                                         @else
-                                                        ${{ number_format($item->ebook->price, 2) }}
-                                                        @endif
-                                                        @else
-                                                        <span class="text-muted">N/A</span>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @if(isset($item->ebook->price) && $item->ebook->price == 0)
-                                                        <a href="#" class="btn-small d-block">Read Now</a>
-                                                        @else
-                                                        <a href="#" class="btn-small d-block">Buy Now</a>
+                                                        <a href="/pricing" class="custom-button custom-button--primary text-white px-4">
+                                                            <i class="fi-rs-lock"></i>
+                                                            <span>Subscribe to Read</span>
+                                                        </a>
                                                         @endif
                                                     </td>
+                                                    <!-- <td>
+                                                        <a href="{{ route('ebooks.show', $ebook->slug) }}"
+                                                            class="custom-button custom-button--primary text-white px-4">
+                                                            View
+                                                        </a>
+                                                    </td> -->
                                                 </tr>
                                                 @endforeach
                                             </tbody>
@@ -530,11 +763,11 @@
                                     </div>
                                     @else
                                     <div class="text-center py-4">
-                                        <i class="fi fi-rs-heart text-muted" style="font-size: 48px;"></i>
+                                        <i class="fi-rs-heart text-muted" style="font-size: 48px;"></i>
                                         <h5 class="mt-3">No saved books yet</h5>
                                         <p class="text-muted">Start exploring our ebooks and add them to your wishlist!
                                         </p>
-                                        <a href="{{ route('destinations') }}" class="btn btn-custom">Browse
+                                        <a href="{{ route('destinations') }}" class="custom-button custom-button--primary text-white px-4 mt-2">Browse
                                             Ebooks</a>
                                     </div>
                                     @endif
@@ -586,7 +819,7 @@
                                             </div>
                                             <div class="col-md-9">
                                                 <p class="mb-2">Upload a new profile photo. Supported formats: JPEG, PNG, JPG, GIF. Maximum size: 2MB.</p>
-                                                <button type="submit" class="btn">
+                                                <button type="submit" class="custom-button custom-button--primary text-white px-4">
                                                     <i class="fi-rs-camera mr-5"></i> Update Picture
                                                 </button>
                                             </div>
@@ -661,19 +894,14 @@
                                             </div>
 
                                             <!-- BUTTONS ROW -->
-                                            <div class="col-md-12 mt-4">
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <button type="submit" class="btn px-4 py-2"
-                                                        style="background: linear-gradient(135deg, #FF4C61 0%, #FF416C 100%); border: none; border-radius: 8px;">
-                                                        Save Changes
-                                                    </button>
+                                            <div class="modal-footer border-0 pt-0 pb-4 px-4">
+                                                <button type="button" class="btn-no-style" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                                                    Change Password
+                                                </button>
 
-                                                    <button type="button" class="btn btn-outline-primary px-4 py-2"
-                                                        data-bs-toggle="modal" data-bs-target="#changePasswordModal"
-                                                        style="border: 2px solid #FF4C61; color: #FF4C61; border-radius: 8px; background: white;">
-                                                        Change Password
-                                                    </button>
-                                                </div>
+                                                <button type="submit" class="btn-no-style">
+                                                    Save Changes
+                                                </button>
                                             </div>
                                         </div>
                                     </form>
@@ -681,56 +909,439 @@
                             </div>
                         </div>
 
-                        <!-- PAYMENT HISTORY TAB -->
-                        <div class="tab-pane fade {{ request('tab') == 'payment' ? 'active show' : '' }}" id="payment"
-                            role="tabpanel">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5>Payment History</h5>
+                        <!-- MY SUBSCRIPTION TAB -->
+                        <div class="tab-pane fade {{ request('tab') == 'subscription' ? 'active show' : '' }}" id="subscription" role="tabpanel">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
+                                    <h5 class="mb-0 fw-bold text-dark">My Subscription</h5>
+                                    @if($user->hasActiveSubscription())
+                                    <span class="badge bg-success rounded-pill px-3 py-2">Active</span>
+                                    @else
+                                    <span class="badge bg-warning text-dark rounded-pill px-3 py-2">Expired</span>
+                                    @endif
                                 </div>
+
                                 <div class="card-body">
-                                    @if($orders->count() > 0)
+                                    @if($user->hasActiveSubscription())
+                                    @php
+                                    $sub = $user->currentSubscription;
+                                    $plan = $sub->plan;
+                                    $now = now();
+                                    $start = $sub->start_date;
+                                    $end = $sub->end_date;
+
+                                    $totalSeconds = $start->diffInSeconds($end);
+                                    $elapsedSeconds = $start->diffInSeconds($now->min($end));
+
+                                    $progress = $totalSeconds > 0
+                                    ? min(100, max(0, ($elapsedSeconds / $totalSeconds) * 100))
+                                    : 0;
+                                    @endphp
+
+                                    <div class="row mb-4">
+                                        <!-- Plan Info -->
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <h6 class="text-muted fw-normal mb-1">Plan</h6>
+                                                <p class="h5 mb-0">{{ $plan->name }}</p>
+                                            </div>
+                                            <div class="mb-3">
+                                                <h6 class="text-muted fw-normal mb-1">Period</h6>
+                                                <p class="mb-0">{{ $sub->start_date->format('d M Y H:i:s') }} – {{ $sub->end_date->format('d M Y H:i:s') }}</p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Financial Info -->
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <h6 class="text-muted fw-normal mb-1">Payment Method</h6>
+                                                <p class="mb-0">Mayar.id (QRIS / E-Wallet)</p>
+                                            </div>
+                                            <div class="mb-3">
+                                                <h6 class="text-muted fw-normal mb-1">Total Paid</h6>
+                                                <p class="h5 mb-0 text-success">Rp {{ number_format($sub->total_amount, 0, ',', '.') }}</p>
+                                            </div>
+                                            @php
+                                            $historyLines = $sub->notes
+                                            ? array_filter(explode("\n", trim($sub->notes)))
+                                            : [];
+                                            @endphp
+
+                                            @if(count($historyLines) > 0)
+                                            <div class="mb-3">
+                                                <h6 class="text-muted fw-normal mb-2">History</h6>
+                                                <div class="small text-muted" style="max-height: 80px; overflow-y: auto;">
+                                                    @foreach($historyLines as $line)
+                                                    <div>• {{ trim($line) }}</div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <!-- Progress Bar -->
+                                    <div class="mb-4">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <small class="text-muted">Subscription Progress</small>
+                                            <small class="fw-medium">{{ round($progress) }}%</small>
+                                        </div>
+                                        <div class="progress rounded-pill" style="height: 8px;">
+                                            <div class="progress-bar bg-success rounded-pill" role="progressbar"
+                                                style="width: {{ $progress }}%"
+                                                aria-valuenow="{{ $progress }}"
+                                                aria-valuemin="0"
+                                                aria-valuemax="100">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Action Buttons -->
+                                    <div class="d-grid gap-2 d-md-flex mb-5">
+                                        <a href="{{ route('pricing') }}" class="custom-button custom-button--primary text-white px-4">
+                                            Renew Subscription
+                                        </a>
+
+                                        <button type="button" class="custom-button custom-button--primary text-white px-4" onclick="downloadInvoice()">
+                                            <i class="fi-rs-file-invoice me-1"></i> Download Invoice
+                                        </button>
+                                    </div>
+
+                                    @else
+                                    <!-- No Active Subscription -->
+                                    <div class="text-center py-5">
+                                        <div class="bg-light-subtle rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 72px; height: 72px;">
+                                            <i class="fi-rs-lock fs-1 text-muted"></i>
+                                        </div>
+                                        <h5 class="mb-2">No Active Subscription</h5>
+                                        <p class="text-muted mb-4">Get unlimited access to all premium ebooks</p>
+                                        <a href="{{ route('pricing') }}" class="custom-button custom-button--primary text-white px-4 mt-2">
+                                            <i class="fi-rs-shopping-cart me-1"></i> Choose a Plan
+                                        </a>
+                                    </div>
+                                    @endif
+
+                                    <!-- Payment History -->
+                                    @if($user->payments()->exists())
+                                    <hr class="my-4">
+                                    <h6 class="fw-bold mb-3">Payment History</h6>
                                     <div class="table-responsive">
-                                        <table class="table">
-                                            <thead>
+                                        <table class="table table-hover align-middle">
+                                            <thead class="table-light px-3">
                                                 <tr>
-                                                    <th>Order ID</th>
-                                                    <th>Date</th>
-                                                    <th>Amount</th>
-                                                    <th>Status</th>
-                                                    <th>Action</th>
+                                                    <th scope="col" class="ps-3 py-3">Date</th>
+                                                    <th scope="col" class="py-3">Plan</th>
+                                                    <th scope="col" class="py-3">Period</th>
+                                                    <th scope="col" class="py-3">Amount</th>
+                                                    <th scope="col" class="py-3">Method</th>
+                                                    <th scope="col" class="py-3 text-center">Status</th>
+                                                    <th scope="col" class="text-end pe-3 py-3">Action</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                @foreach($orders as $order)
-                                                <tr>
-                                                    <td>#{{ $order->order_code ?? $order->id }}</td>
-                                                    <td>{{ $order->created_at->format('M d, Y') }}</td>
-                                                    <td>${{ number_format($order->total_amount, 2) }}</td>
-                                                    <td>
-                                                        @if($order->status == 'completed')
-                                                        <span class="badge bg-success">Paid</span>
-                                                        @elseif($order->status == 'pending')
-                                                        <span class="badge bg-warning">Pending</span>
-                                                        @else
-                                                        <span
-                                                            class="badge bg-secondary">{{ ucfirst($order->status) }}</span>
-                                                        @endif
-                                                    </td>
-                                                    <td><a href="#" class="btn-small d-block">View Details</a></td>
-                                                </tr>
-                                                @endforeach
+                                            <tbody class="px-3">
+                                                @foreach($user->payments()->with(['plan', 'subscription'])->latest()->get() as $payment)
+                                                @php
+                                                $sub = $payment->subscription; // Sudah di-load di controller
+                                                $now = now();
+                                                $status = 'Expired';
+                                                $badgeClass = 'bg-danger-subtle text-danger';
+
+                                                if ($sub) {
+                                                if ($sub->status === 'active') {
+                                                $hoursRemaining = $now->diffInHours($sub->end_date, false);
+
+                                                if ($hoursRemaining > 0) {
+                                                $status = 'Active';
+                                                $badgeClass = 'bg-success-subtle text-success';
+
+                                                // Expires Soon: hanya jika >0 jam dan ≤24 jam
+                                                if ($hoursRemaining <= 24) {
+                                                    $status='Expires Soon' ;
+                                                    $badgeClass='bg-warning-subtle text-warning' ;
+                                                    }
+                                                    } else {
+                                                    $status='Expired' ;
+                                                    $badgeClass='bg-danger-subtle text-danger' ;
+                                                    }
+                                                    } else {
+                                                    $status=ucfirst($sub->status);
+                                                    $badgeClass = 'bg-secondary-subtle text-secondary';
+                                                    }
+                                                    }
+                                                    @endphp
+                                                    <tr>
+                                                        <td class="ps-3 py-3">{{ $payment->created_at->format('d M Y') }}</td>
+                                                        <td class="py-3">{{ $payment->plan?->name ?? '-' }}</td>
+                                                        <td class="py-3">
+                                                            @if($payment->subscription)
+                                                            <small>
+                                                                {{ $loop->index === 0 
+                                                                ? $payment->subscription->start_date->format('d M Y H:i') . ' – ' . $payment->subscription->end_date->format('d M Y H:i')
+                                                                : 'Renewal on ' . $payment->created_at->format('d M Y') }}
+                                                            </small>
+                                                            @else
+                                                            <span class="text-muted">—</span>
+                                                            @endif
+                                                        </td>
+                                                        <td class="py-3 fw-medium">Rp {{ number_format($payment->amount, 0, ',', '.') }}</td>
+                                                        <td class="py-3">{{ ucfirst($payment->payment_method ?? '—') }}</td>
+                                                        <td class="py-3">
+                                                            @if($payment->status === 'success')
+                                                            <span class="badge bg-success-subtle text-success rounded-pill px-3 py-1">Paid</span>
+                                                            @else
+                                                            <span class="badge bg-warning-subtle text-warning rounded-pill px-3 py-1">Pending</span>
+                                                            @endif
+
+                                                            <span class="badge {{ $badgeClass }} rounded-pill py-1">
+                                                                {{ $status }}
+                                                            </span>
+                                                        </td>
+                                                        <td class="py-3 text-center">
+                                                            <button type="button"
+                                                                class="px-2 py-1"
+                                                                style="background-color:#FF416C; border-radius:100px; color:white; border:none;"
+                                                                title="Download Invoice"
+                                                                onclick="downloadInvoice('{{ $payment->id }}')">
+                                                                <i class="fi-rs-download"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
                                             </tbody>
                                         </table>
                                     </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HELP CENTER TAB -->
+                        <div class="tab-pane fade {{ request('tab') == 'help' ? 'active show' : '' }}" id="help" role="tabpanel">
+                            <div class="card border-0 shadow-sm rounded-3">
+                                <div class="card-header bg-white border-0 py-3">
+                                    <h5 class="mb-0 fw-bold text-dark">Help & Support</h5>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row g-4">
+                                        <!-- CARD 1: Help Center -->
+                                        <div class="col-lg-4 col-md-6">
+                                            <a href="{{ route('help-center') }}" class="text-decoration-none">
+                                                <div class="card h-100 border-0 shadow-sm hover-card transition-all"
+                                                    style="border-top: 3px solid #FF416C;">
+                                                    <div class="card-body text-center p-4">
+                                                        <div class="bg-light-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                                                            style="width: 56px; height: 56px;">
+                                                            <i class="fi-rs-book" style="font-size: 24px; color: #FF416C;"></i>
+                                                        </div>
+                                                        <h6 class="fw-bold mb-2">Help Center</h6>
+                                                        <p class="text-muted small mb-0">
+                                                            Step-by-step guides and tutorials
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+
+                                        <!-- CARD 2: FAQs -->
+                                        <div class="col-lg-4 col-md-6">
+                                            <a href="{{ route('faq') }}" class="text-decoration-none">
+                                                <div class="card h-100 border-0 shadow-sm hover-card transition-all"
+                                                    style="border-top: 3px solid #FF416C;">
+                                                    <div class="card-body text-center p-4">
+                                                        <div class="bg-light-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                                                            style="width: 56px; height: 56px;">
+                                                            <i class="bi bi-question-circle" style="font-size: 24px; color: #FF416C;"></i>
+                                                        </div>
+                                                        <h6 class="fw-bold mb-2">FAQs</h6>
+                                                        <p class="text-muted small mb-0">
+                                                            Quick answers to common questions
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+
+                                        <!-- CARD 3: Contact Us -->
+                                        <div class="col-lg-4 col-md-6">
+                                            <a href="{{ route('contact') }}" class="text-decoration-none">
+                                                <div class="card h-100 border-0 shadow-sm hover-card transition-all"
+                                                    style="border-top: 3px solid #FF416C;">
+                                                    <div class="card-body text-center p-4">
+                                                        <div class="bg-light-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                                                            style="width: 56px; height: 56px;">
+                                                            <i class="fi-rs-headset" style="font-size: 24px; color: #FF416C;"></i>
+                                                        </div>
+                                                        <h6 class="fw-bold mb-2">Contact Us</h6>
+                                                        <p class="text-muted small mb-0">
+                                                            Get direct support from our team
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PAYMENT HISTORY TAB untuk NOT MEMBER -->
+                        <div class="tab-pane fade {{ request('tab') == 'payment' ? 'active show' : '' }}" id="payment" role="tabpanel">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-white border-0 py-3">
+                                    <h5 class="mb-0 fw-bold text-dark">Payment History</h5>
+                                </div>
+                                <div class="card-body">
+                                    @if($orders->count() > 0 || $user->subscriptions->count() > 0)
+                                    <div class="row g-4">
+                                        <!--  SUBSCRIPTION HISTORY -->
+                                        @foreach($user->subscriptions as $subscription)
+                                        <div class="col-12">
+                                            <div class="card h-100 border-0 shadow-sm transition-all"
+                                                style="border-left: 4px solid {{ $user->hasActiveSubscription() ? '#28a745' : '#6c757d' }};">
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between align-items-start">
+                                                        <div>
+                                                            <div class="d-flex align-items-center mb-2">
+                                                                <span class="badge bg-light text-dark me-2"
+                                                                    style="border: 1px solid {{ $user->hasActiveSubscription() ? '#28a745' : '#6c757d' }};">
+                                                                    SUBSCRIPTION
+                                                                </span>
+                                                                <h6 class="mb-0 fw-bold">{{ $subscription->plan->name ?? 'Basic Plan' }}</h6>
+                                                            </div>
+                                                            <p class="mb-2">
+                                                                <i class="fi-rs-calendar me-1"></i>
+                                                                {{ $subscription->start_date?->format('d F Y') }} -
+                                                                {{ $subscription->end_date?->format('d F Y') }}
+                                                                @if(!$user->hasActiveSubscription() && $subscription->is_active)
+                                                                <span class="badge bg-warning text-dark ms-2">Expired</span>
+                                                                @endif
+                                                            </p>
+                                                        </div>
+                                                        <div class="text-end">
+                                                            <!--  HARGA LEBIH KECIL -->
+                                                            <div class="fw-bold text-dark mb-1" style="font-size: 1.1rem; color: #FF416C;">
+                                                                Rp{{ number_format($subscription->plan->price, 0, ',', '.') }}
+                                                            </div>
+                                                            <!--  STATUS BENERAN -->
+                                                            @if($user->hasActiveSubscription())
+                                                            <span class="badge bg-success">Active</span>
+                                                            @else
+                                                            <span class="badge bg-secondary">Expired</span>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mt-3">
+                                                        <div class="col-md-6">
+                                                            <small class="d-block mb-1">Payment Method</small>
+                                                            <span class="fw-medium">
+                                                                {{ $subscription->payment_method ?? 'Not specified' }}
+                                                            </span>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <small class="d-block mb-1">Transaction ID</small>
+                                                            <span class="fw-medium text-break">
+                                                                {{ $subscription->transaction_id ?? '-' }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <!--  BUTTON SUBSCRIBE AGAIN -->
+                                                    @if(!$user->hasActiveSubscription())
+                                                    <div class="mt-3 pt-3 border-top d-flex justify-content-end">
+                                                        <a href="{{ route('pricing') }}"
+                                                            class="custom-button custom-button--primary px-4 py-2">
+                                                            Subscribe Again
+                                                        </a>
+                                                    </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endforeach
+
+                                        <!--  ORDER HISTORY -->
+                                        @foreach($orders as $order)
+                                        <div class="col-12">
+                                            <div class="card h-100 border-0 shadow-sm transition-all"
+                                                style="border-left: 4px solid {{ $order->status == 'completed' ? '#28a745' : ($order->status == 'pending' ? '#FFC107' : '#6c757d') }};">
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between align-items-start">
+                                                        <div>
+                                                            <div class="d-flex align-items-center mb-2">
+                                                                <span class="badge bg-light text-dark me-2"
+                                                                    style="border: 1px solid {{ $order->status == 'completed' ? '#28a745' : ($order->status == 'pending' ? '#FFC107' : '#6c757d') }};">
+                                                                    ORDER
+                                                                </span>
+                                                                <h6 class="mb-0 fw-bold">Order #{{ $order->order_code ?? $order->id }}</h6>
+                                                            </div>
+                                                            <p class="text-muted mb-2">
+                                                                <i class="fi-rs-calendar me-1"></i>
+                                                                {{ $order->created_at->format('d F Y') }}
+                                                            </p>
+                                                        </div>
+                                                        <div class="text-end">
+                                                            <!--  HARGA LEBIH KECIL -->
+                                                            <div class="fw-bold text-dark mb-1" style="font-size: 1.1rem; color: #FF416C;">
+                                                                Rp{{ number_format($order->total_amount, 0, ',', '.') }}
+                                                            </div>
+                                                            <span class="badge 
+                                            {{ $order->status == 'completed' ? 'bg-success' : 
+                                               ($order->status == 'pending' ? 'bg-warning text-dark' : 'bg-secondary') }}">
+                                                                {{ ucfirst($order->status) }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mt-3">
+                                                        <small class="text-muted d-block mb-2">Items :</small>
+                                                        <div class="row g-2">
+                                                            @foreach($order->items as $item)
+                                                            <div class="col-md-6">
+                                                                <div class="d-flex align-items-center">
+                                                                    <img src="{{ $item->ebook->cover_image ?: asset('assets/imgs/shop/product-1-1.jpg') }}"
+                                                                        alt="{{ $item->ebook->title }}"
+                                                                        class="rounded"
+                                                                        style="width: 40px; height: 40px; object-fit: cover;">
+                                                                    <div class="ms-2">
+                                                                        <div class="fw-medium">{{ Str::limit($item->ebook->title, 25) }}</div>
+                                                                        <small class="text-muted">x{{ $item->quantity }}</small>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="d-flex justify-content-between mt-3">
+                                                        <a href="#" class="btn btn-sm btn-outline-secondary">
+                                                            <i class="fi-rs-file-invoice me-1"></i> View Details
+                                                        </a>
+                                                        <!--  BUTTON SUBSCRIBE AGAIN -->
+                                                        @if(!$user->hasActiveSubscription())
+                                                        <a href="{{ route('pricing') }}"
+                                                            class="btn btn-sm"
+                                                            style="background: #FF416C; color: white; border-radius: 6px;">
+                                                            <i class="fi-rs-star me-1"></i> Subscribe Again
+                                                        </a>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endforeach
+                                    </div>
                                     @else
-                                    <div class="text-center py-4">
-                                        <i class="fi-rs-credit-card text-muted" style="font-size: 48px;"></i>
-                                        <h5 class="mt-3">No payment history yet</h5>
-                                        <p class="text-muted">Your payment history will appear here after you make a
-                                            purchase.</p>
-                                        <a href="{{ route('destinations') }}" class="btn btn-custom">Browse
-                                            Ebooks</a>
+                                    <div class="text-center py-5">
+                                        <i class="fi-rs-credit-card" style="font-size: 64px; color: #FF416C;"></i>
+                                        <h5 class="mt-4 fw-bold text-dark">No Payment History</h5>
+                                        <p class="text-muted mb-4">Your payment history will appear here after you make a purchase or subscription.</p>
+                                        <div class="d-flex justify-content-center gap-3">
+                                            <a href="{{ route('pricing') }}#pricing-plans"
+                                                class="custom-button custom-button--primary text-white px-4 py-2">
+                                                <i class="fi-rs-star me-1"></i> Subscribe Now
+                                            </a>
+                                        </div>
                                     </div>
                                     @endif
                                 </div>
@@ -744,8 +1355,6 @@
                                     <h5 class="mb-0">My Library ({{ $allEbooks->count() }} ebooks)</h5>
                                 </div>
                                 <div class="card-body">
-                                    <!-- resources/views/page-account.blade.php -->
-
                                     <form method="GET" action="{{ route('page-account') }}" class="mb-4">
                                         <input type="hidden" name="tab" value="library">
                                         <div class="row g-3 align-items-end"> <!-- Tambahkan align-items-end di row untuk meratakan semua elemen di bawah -->
@@ -766,7 +1375,7 @@
                                             </div>
                                             <div class="col-md-2">
                                                 <!-- <label for="submit-search" class="form-label d-block invisible">&nbsp;</label> -->
-                                                <button type="submit" id="submit-search" class="btn px-4 py-2">
+                                                <button type="submit" id="submit-search" class="btn-read-now text-white px-4 py-2 mt-2">
                                                     <i class="fi-rs-search me-2"></i>Search
                                                 </button>
                                             </div>
@@ -782,9 +1391,9 @@
                                                     <div class="product-img product-img-zoom">
                                                         <a href="/ebooks/{{ $ebook->slug }}">
                                                             @php
-                                                                $coverImage = $ebook->external_cover_url 
-                                                                    ? $ebook->external_cover_url 
-                                                                    : ($ebook->cover_image_url ?? 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg');
+                                                            $coverImage = $ebook->external_cover_url
+                                                            ? $ebook->external_cover_url
+                                                            : ($ebook->cover_image_url ?? 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg');
                                                             @endphp
                                                             <img class="default-img"
                                                                 src="{{ $coverImage }}"
@@ -844,22 +1453,30 @@
 
                                                         <!-- PROGRESS BAR (jika sedang dibaca) -->
                                                         @php
-                                                        $reading = $userReadings->get($ebook->id); // Lebih efisien menggunakan get()
+                                                        $reading = $userReadings[$ebook->id] ?? null;
+                                                        $progress = $reading ? $reading->progress_percentage : 0;
                                                         @endphp
-                                                        @if($reading && $reading > 0)
+                                                        @if($progress > 0)
                                                         <div class="progress mb-2" style="height: 6px;">
                                                             <div class="progress-bar bg-success" role="progressbar"
-                                                                style="width: {{ $reading }}%">
+                                                                style="width: {{ $progress }}%">
                                                             </div>
                                                         </div>
-                                                        <small class="text-success">✓ {{ $reading }}% Complete</small>
+                                                        <small class="text-success">{{ number_format($progress, 0) }}% Complete</small>
                                                         @endif
 
-                                                        <!-- TOMBOL AKSI -->
-                                                        <a href="/reader/{{ $ebook->slug }}" class="action-btn btn-read-now w-100 mt-2">
-                                                            <i class="fi-rs-book-open"></i>
-                                                            <span>{{ $reading ? 'Continue Reading' : 'Read Now' }}</span>
-                                                        </a>
+                                                        @php
+                                                        $userReading = $userReadings[$ebook->id] ?? null;
+                                                        $lastPage = $userReading ? $userReading->last_page : 1;
+                                                        $progress = $userReading ? $userReading->progress_percentage : 0;
+                                                        $isReading = $progress > 0 && $progress < 100;
+                                                            @endphp
+                                                            <!-- TOMBOL AKSI -->
+                                                            <a href="{{ route('user.ebook.read', $ebook->slug) }}"
+                                                                class="action-btn btn-read-now w-100 mt-2">
+                                                                <i class="fi-rs-book-open"></i>
+                                                                <span>{{ $isReading ? 'Continue Reading' : 'Read Now' }}</span>
+                                                            </a>
                                                 </div>
                                             </div>
                                         </div>
@@ -878,7 +1495,7 @@
                                             <br>Try searching for "<strong>{{ request('search') }}</strong>" with different keywords.
                                             @endif
                                         </p>
-                                        <a href="{{ route('page-account', ['tab' => 'library']) }}" class="btn mt-2">
+                                        <a href="{{ route('page-account', ['tab' => 'library']) }}" class="custom-button custom-button--primary text-white px-4 mt-2">
                                             Clear Search
                                         </a>
                                     </div>
@@ -888,7 +1505,7 @@
                                         <i class="fi-rs-book text-muted" style="font-size: 64px;"></i>
                                         <h4 class="mt-3">Your Library is Empty</h4>
                                         <p class="text-muted">You have access to all ebooks — start exploring!</p>
-                                        <a href="{{ route('destinations') }}" class="btn btn-primary mt-2">
+                                        <a href="{{ route('destinations') }}" class="custom-button custom-button--primary text-white px-4 mt-2">
                                             <i class="fi-rs-search"></i> Browse All Ebooks
                                         </a>
                                     </div>
@@ -900,6 +1517,33 @@
 
                         <!-- READING HISTORY TAB -->
                         <div class="tab-pane fade {{ request('tab') == 'reading-history' ? 'active show' : '' }}" id="reading-history" role="tabpanel">
+                            <!-- FORM SEARCH & FILTER -->
+                            <form method="GET" action="{{ route('page-account') }}" class="mb-4">
+                                <input type="hidden" name="tab" value="reading-history">
+                                <div class="row g-3 align-items-end">
+                                    <div class="col-md-6">
+                                        <label for="search" class="form-label">Search by Title</label>
+                                        <input type="text" class="form-control h-100" name="search" id="search"
+                                            placeholder="e.g., Yogyakarta" value="{{ request('search') }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="city_slug" class="form-label">Filter by City</label>
+                                        <select name="city_slug" id="city_slug" class="form-select form-select-md">
+                                            <option value="">All Cities</option>
+                                            @foreach($cities as $city)
+                                            <option value="{{ $city->slug }}" {{ request('city_slug') == $city->slug ? 'selected' : '' }}>
+                                                {{ $city->name }}
+                                            </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="submit" class="btn-read-now text-white px-4 py-2 mt-2">
+                                            <i class="fi-rs-search me-2"></i>Search
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
                             <div class="card">
                                 <div class="card-header">
                                     <h5 class="mb-0">Reading History</h5>
@@ -919,38 +1563,44 @@
                                             </thead>
                                             <tbody>
                                                 @foreach($readingHistory as $reading)
+                                                @php
+                                                // Ambil langsung dari database (tidak hitung ulang)
+                                                $progress = $reading->progress_percentage ?? 0;
+                                                $lastPage = $reading->last_page ?? 1;
+                                                $ebook = $reading->ebook;
+                                                @endphp
                                                 <tr>
                                                     <td>
-                                                        @if($reading->ebook)
-                                                        <strong>{{ $reading->ebook->title }}</strong><br>
+                                                        @if($ebook)
+                                                        <strong>{{ $ebook->title }}</strong><br>
                                                         <small class="text-muted">by
-                                                            @if($reading->ebook->creator)
-                                                            {{ $reading->ebook->creator->creator->pen_name ?? $reading->ebook->creator->name }}
-                                                            @else
-                                                            Unknown Author
-                                                            @endif
+                                                            {{ $ebook->creator?->pen_name ?? $ebook->creator?->user?->name ?? 'Unknown' }}
                                                         </small>
                                                         @else
-                                                        <strong class="text-muted">E-book has been deleted</strong>
+                                                        <strong class="text-muted">E-book deleted</strong>
                                                         @endif
                                                     </td>
-                                                    <td>{{ $reading->last_read_at ? $reading->last_read_at->format('M d, Y H:i') : '-' }}</td>
+                                                    <td>{{ $reading->last_read_at?->format('d M Y H:i') ?? '-' }}</td>
+                                                    @php
+                                                    $ebook = $reading->ebook;
+                                                    $progress = $reading->progress_percentage ?? 0;
+                                                    $lastPage = $reading->last_page ?? 1;
+                                                    @endphp
                                                     <td>
                                                         <div class="d-flex align-items-center">
-                                                            <div class="progress" style="height: 8px; width: 80px;">
-                                                                <div class="progress-bar bg-success" role="progressbar"
-                                                                    style="width: {{ $reading->progress_percentage }}%">
-                                                                </div>
+                                                            <div class="progress" style="height:8px;width:80px">
+                                                                <div class="progress-bar" style="width:{{ $progress }}%; background-color: #FF4C61;"></div>
                                                             </div>
-                                                            <small class="ms-2">{{ number_format($reading->progress_percentage, 1) }}%</small>
+                                                            <small class="ms-2">{{ number_format($progress, 0) }}%</small>
                                                         </div>
                                                     </td>
-                                                    <td>Page {{ $reading->last_page }}</td>
+                                                    <td>Page {{ $lastPage }}</td>
                                                     <td>
-                                                        @if($reading->ebook)
-                                                        <a href="/reader/{{ $reading->ebook->slug }}" class="btn btn-sm">Continue</a>
-                                                        @else
-                                                        <span class="text-muted">-</span>
+                                                        @if($ebook)
+                                                        <a href="{{ route('user.ebook.read', $ebook->slug) }}"
+                                                            class="custom-button custom-button--primary text-white px-4">
+                                                            Continue
+                                                        </a>
                                                         @endif
                                                     </td>
                                                 </tr>
@@ -963,7 +1613,7 @@
                                         <i class="fi-rs-history text-muted" style="font-size: 64px;"></i>
                                         <h4 class="mt-3">No Reading History Yet</h4>
                                         <p class="text-muted">Start reading ebooks to build your reading history</p>
-                                        <a href="{{ route('page-account', ['tab' => 'library']) }}" class="btn mt-2">Start Reading</a>
+                                        <a href="{{ route('page-account', ['tab' => 'library']) }}" class="custom-button custom-button--primary text-white px-4 mt-2">Start Reading</a>
                                     </div>
                                     @endif
                                 </div>
@@ -971,105 +1621,193 @@
                         </div>
 
                         <!-- MY REVIEWS TAB -->
-                        <div class="tab-pane fade {{ request('tab') == 'reviews' ? 'active show' : '' }}" id="reviews"
-                            role="tabpanel">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5 class="mb-0">My Reviews</h5>
+                        <div class="tab-pane fade {{ request('tab') == 'reviews' ? 'active show' : '' }}" id="reviews" role="tabpanel">
+                            <!-- FORM SEARCH & FILTER -->
+                            <form method="GET" action="{{ route('page-account') }}" class="mb-4">
+                                <input type="hidden" name="tab" value="reviews">
+                                <div class="row g-3 align-items-end">
+                                    <div class="col-md-6">
+                                        <label for="search" class="form-label">Search by Title</label>
+                                        <input type="text" class="form-control h-100" name="search" id="search"
+                                            placeholder="e.g., Bali Travel Guide" value="{{ request('search') }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="city_slug" class="form-label">Filter by City</label>
+                                        <select name="city_slug" id="city_slug" class="form-select form-select-md">
+                                            <option value="">All Cities</option>
+                                            @foreach($cities as $city)
+                                            <option value="{{ $city->slug }}" {{ request('city_slug') == $city->slug ? 'selected' : '' }}>
+                                                {{ $city->name }}
+                                            </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="submit" class="btn-read-now text-white px-4 py-2 mt-2">
+                                            <i class="fi-rs-search me-2"></i>Search
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-white border-0 py-3">
+                                    <h5 class="mb-0 fw-bold text-dark">My Reviews</h5>
                                 </div>
                                 <div class="card-body">
                                     @if($userRatings->count() > 0)
-                                    <div class="row">
+                                    <div class="row g-4">
                                         @foreach($userRatings as $rating)
-                                        <div class="col-md-6 mb-4">
-                                            <div class="card h-100">
-                                                <div class="card-body">
-                                                    <div class="d-flex justify-content-between align-items-start mb-2">
-                                                        <h6 class="card-title mb-0">
-                                                            {{ $rating->ebook->title ?? 'Unknown Book' }}
-                                                        </h6>
-                                                        <div class="rating">
-                                                            @for($i = 1; $i <= 5; $i++) <i
-                                                                class="fi-rs-star{{ $i <= $rating->rating ? ' text-warning' : '' }}">
-                                                                </i>
-                                                                @endfor
+                                        <div class="col-12">
+                                            <div class="card h-100 border-0 shadow-sm transition-all"
+                                                style="border-left: 4px solid #FF416C;">
+                                                <div class="row g-0 align-items-center">
+                                                    <!--  COVER EBOOK DI KIRI -->
+                                                    <div class="col-md-2 col-lg-1">
+                                                        <a href="{{ route('ebooks.show', $rating->ebook->slug) }}" class="d-block">
+                                                            <img src="{{ $rating->ebook->cover_image ?: asset('assets/imgs/shop/product-1-1.jpg') }}"
+                                                                alt="{{ $rating->ebook->title }}"
+                                                                class="img-fluid rounded"
+                                                                style="aspect-ratio: 2/3; object-fit: cover; border: 1px solid #e0e0e0;">
+                                                        </a>
+                                                    </div>
+
+                                                    <div class="col-md-10 col-lg-11">
+                                                        <div class="card-body">
+                                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                                <div>
+                                                                    <h6 class="card-title mb-1">
+                                                                        <a href="{{ route('ebooks.show', $rating->ebook->slug) }}"
+                                                                            class="text-decoration-none text-dark hover-underline"
+                                                                            style="color: #222;">
+                                                                            {{ Str::limit($rating->ebook->title, 60) }}
+                                                                        </a>
+                                                                    </h6>
+                                                                    <p class="mb-2 small">
+                                                                        <i class="fi-rs-user me-1"></i>
+                                                                        {{ $rating->ebook->author ?? 'Unknown Author' }} •
+                                                                        {{ strtoupper($rating->ebook->language ?? 'ID') }}
+                                                                    </p>
+                                                                </div>
+                                                                <div class="d-flex align-items-center gap-2">
+
+                                                                    <!-- RATING -->
+                                                                    <div class="rating">
+                                                                        @for($i = 1; $i <= 5; $i++)
+                                                                            <i class="fi-rs-star{{ $i <= $rating->rating ? ' text-danger' : ' text-muted' }}"
+                                                                            style="color: {{ $i <= $rating->rating ? '#FF416C' : '#ccc' }};"></i>
+                                                                            @endfor
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            @if($rating->review_title)
+                                                            <h6 class="text-dark mb-2">{{ $rating->review_title }}</h6>
+                                                            @endif
+
+                                                            <p class="card-text mb-3">{{ Str::limit($rating->review_text, 200) }}</p>
+
+                                                            <div class="d-flex justify-content-between align-items-center">
+                                                                <!--  TANGGAL + STATUS EDITED -->
+                                                                <small>
+                                                                    <i class="fi-rs-calendar me-1"></i>
+                                                                    {{ $rating->created_at->translatedFormat('d F Y') }}
+                                                                    @if($rating->updated_at && $rating->updated_at->gt($rating->created_at))
+                                                                    <span class="text-muted">(edited {{ $rating->updated_at->format('d M') }})</span>
+                                                                    @endif
+                                                                </small>
+
+                                                                <!--  ACTION BUTTONS -->
+                                                                <div class="d-flex gap-2">
+                                                                    <button
+                                                                        class="custom-button custom-button--primary text-white px-3 py-1 mt-1"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#editReviewModal-{{ $rating->id }}"
+                                                                        title="Edit review">
+                                                                        Edit
+                                                                    </button>
+                                                                    <a href="{{ route('ebooks.show', $rating->ebook->slug) }}"
+                                                                        class="custom-button custom-button--primary text-white px-4 mt-1">
+                                                                        <i class="fi-rs-book-open me-1"></i> View Book
+                                                                    </a>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <p class="card-text small text-muted">by
-                                                        {{ $rating->ebook->author ?? 'Unknown Author' }}
-                                                    </p>
-                                                    @if($rating->review_title)
-                                                    <h6 class="text-dark">{{ $rating->review_title }}</h6>
-                                                    @endif
-                                                    <p class="card-text">{{ $rating->review_text }}</p>
-                                                    <small class="text-muted">Reviewed on
-                                                        {{ $rating->created_at->format('M d, Y') }}</small>
                                                 </div>
-                                                <div class="card-footer bg-transparent">
-                                                    <div class="d-flex gap-2">
-                                                        <button class="btn btn-outline-primary btn-sm">Edit</button>
-                                                        <button class="btn btn-outline-danger btn-sm">Delete</button>
+                                            </div>
+
+                                            <!--  MODAL EDIT REVIEW -->
+                                            <!-- MODAL EDIT REVIEW (FORM BIASA) -->
+                                            <div class="modal fade" id="editReviewModal-{{ $rating->id }}" tabindex="-1">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content border-0 shadow-sm rounded-3">
+                                                        <div class="modal-header border-0 pb-0">
+                                                            <h5 class="modal-title fw-bold">Edit Review</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                        </div>
+
+                                                        <!-- ✅ FORM BIASA (TANPA AJAX) -->
+                                                        <form method="POST" action="{{ route('user.account.reviews.update', $rating->id) }}">
+                                                            @csrf
+                                                            @method('PUT')
+
+                                                            <div class="modal-body p-4">
+                                                                <!-- Rating (Dropdown) -->
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-medium">Your Rating</label>
+                                                                    <select name="rating" class="form-select">
+                                                                        <option value="5" {{ $rating->rating == 5 ? 'selected' : '' }}>5 - Excellent</option>
+                                                                        <option value="4" {{ $rating->rating == 4 ? 'selected' : '' }}>4 - Very Good</option>
+                                                                        <option value="3" {{ $rating->rating == 3 ? 'selected' : '' }}>3 - Average</option>
+                                                                        <option value="2" {{ $rating->rating == 2 ? 'selected' : '' }}>2 - Poor</option>
+                                                                        <option value="1" {{ $rating->rating == 1 ? 'selected' : '' }}>1 - Terrible</option>
+                                                                    </select>
+                                                                </div>
+
+                                                                <!-- Review Text -->
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Your Review</label>
+                                                                    <textarea class="form-control"
+                                                                        name="review_text"
+                                                                        rows="4"
+                                                                        required>{{ $rating->review_text }}</textarea>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="modal-footer border-0 pt-0 pb-4 px-4">
+                                                                <button type="button" class="btn-edit-review" data-bs-dismiss="modal">
+                                                                    Cancel
+                                                                </button>
+                                                                <button type="submit" class="btn-edit-review">
+                                                                    Save Changes
+                                                                </button>
+                                                            </div>
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        @endforeach
                                     </div>
-                                    @else
-                                    <div class="text-center py-4">
-                                        <i class="fi-rs-star text-muted" style="font-size: 48px;"></i>
-                                        <h5 class="mt-3">No Reviews Yet</h5>
-                                        <p class="text-muted">Share your thoughts by reviewing ebooks you've read</p>
-                                        <a href="{{ route('destinations') }}" class="btn">Browse Ebooks</a>
-                                    </div>
-                                    @endif
+                                    @endforeach
                                 </div>
+                                @else
+                                <div class="text-center py-5">
+                                    <i class="fi-rs-star text-muted" style="font-size: 64px; color: #FF416C;"></i>
+                                    <h5 class="mt-4 fw-bold text-dark">No Reviews Yet</h5>
+                                    <p class="text-muted mb-4">Share your thoughts by reviewing ebooks you've read</p>
+                                    <a href="{{ route('page-account') }}?tab=library"
+                                        class="custom-button custom-button--primary text-white px-4">
+                                        Browse Ebooks
+                                    </a>
+                                </div>
+                                @endif
                             </div>
                         </div>
 
-                        <!-- MY SUBSCRIPTION TAB -->
-                        <div class="tab-pane fade {{ request('tab') == 'subscription' ? 'active show' : '' }}"
-                            id="subscription" role="tabpanel">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5 class="mb-0">My Subscription</h5>
-                                </div>
-                                <div class="card-body">
-                                    @if(isset($activeSubscription) && $activeSubscription)
-                                    <div class="alert alert-success">
-                                        <h6>🎉 Premium Member</h6>
-                                        <p class="mb-1">
-                                            You are subscribed to
-                                            <strong>{{ $activeSubscription->plan->name ?? 'Premium Plan' }}</strong>
-                                        </p>
-                                        <p class="mb-0">
-                                            @if($activeSubscription->end_date)
-                                            Next billing date : {{ $activeSubscription->end_date->format('M d, Y') }}
-                                            @else
-                                            Subscription is active
-                                            @endif
-                                        </p>
-                                    </div>
 
-                                    <div class="mt-4">
-                                        <button class="btn">Cancel Subscription</button>
-                                        <button class="btn">Upgrade Plan</button>
-                                    </div>
-                                    @else
-                                    <div class="alert alert-warning">
-                                        <h6>No Active Subscription</h6>
-                                        <p>You don't have an active subscription. Upgrade to unlock premium features.
-                                        </p>
-                                    </div>
-                                    <a href="{{ route('page-account') }}?tab=dashboard" class="btn">View
-                                        Subscription Plans</a>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
 
                         <!-- CREATOR TAB -->
-                        <div class="tab-pane fade {{ request('tab') == 'creator' ? 'active show' : '' }}" id="creator"
+                        <!-- <div class="tab-pane fade {{ request('tab') == 'creator' ? 'active show' : '' }}" id="creator"
                             role="tabpanel">
                             <div class="card">
                                 <div class="card-header">
@@ -1120,7 +1858,7 @@
                                                     </p>
                                                     <div class="mb-2">
                                                         @foreach($ebook->categories as $category)
-                                                        <span class="badge bg-secondary">{{ $category->name }}</span>
+                                                        <span>{{ $category->name }}</span>
                                                         @endforeach
                                                     </div>
                                                     <div class="d-flex justify-content-between small text-muted">
@@ -1132,7 +1870,7 @@
                                                 <div class="card-footer bg-transparent">
                                                     <div class="d-flex gap-2">
                                                         <button class="btn btn-sm">Edit</button>
-                                                        <button class="btn btn-outline-primary btn-sm">Stats</button>
+                                                        <button class="custom-button custom-button--primary text-white px-4">Stats</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1144,7 +1882,7 @@
                                         <i class="fi-rs-edit text-muted" style="font-size: 48px;"></i>
                                         <h5 class="mt-3">No Published Ebooks Yet</h5>
                                         <p class="text-muted">Start creating and publishing your ebooks</p>
-                                        <button class="btn">Create Your First Ebook</button>
+                                        <button class="custom-button custom-button--primary text-white px-4">Create Your First Ebook</button>
                                     </div>
                                     @endif
                                     @else
@@ -1152,61 +1890,12 @@
                                         <i class="fi-rs-edit text-muted" style="font-size: 48px;"></i>
                                         <h5 class="mt-3">Become a Creator</h5>
                                         <p class="text-muted">Start sharing your knowledge by creating ebooks</p>
-                                        <button class="btn">Apply as Creator</button>
+                                        <button class="custom-button custom-button--primary text-white px-4">Apply as Creator</button>
                                     </div>
                                     @endif
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- HELP CENTER TAB -->
-                        <div class="tab-pane fade {{ request('tab') == 'help' ? 'active show' : '' }}" id="help"
-                            role="tabpanel">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5 class="mb-0">Help Center</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="text-center py-4">
-                                        <i class="fi-rs-interactive text-muted" style="font-size: 48px;"></i>
-                                        <h5 class="mt-3">How Can We Help You?</h5>
-                                        <p class="text-muted">Find answers to common questions and get support</p>
-
-                                        <div class="row mt-4">
-                                            <div class="col-md-4 mb-3">
-                                                <div class="card border-0 shadow-sm">
-                                                    <div class="card-body text-center">
-                                                        <i class="fi-rs-book text-primary" style="font-size: 32px;"></i>
-                                                        <h6 class="mt-2">Reading Guide</h6>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4 mb-3">
-                                                <div class="card border-0 shadow-sm">
-                                                    <div class="card-body text-center">
-                                                        <i class="fi-rs-credit-card text-success"
-                                                            style="font-size: 32px;"></i>
-                                                        <h6 class="mt-2">Billing Help</h6>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4 mb-3">
-                                                <div class="card border-0 shadow-sm">
-                                                    <div class="card-body text-center">
-                                                        <i class="fi-rs-user text-info" style="font-size: 32px;"></i>
-                                                        <h6 class="mt-2">Account Help</h6>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <p class="">Need more help? Visit our full
-                                    <a href="{{ route('help-center') }}" class="text-primary font-weight-bold">Help
-                                        Center</a>.
-                                </p>
-                            </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -1255,10 +1944,10 @@
                     </div>
                 </div>
                 <div class="modal-footer border-top-0 px-4 pb-4 pt-0">
-                    <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
+                    <button type="button" class="custom-button custom-button--primary text-white px-4 mt-2" data-bs-dismiss="modal">
                         Cancel
                     </button>
-                    <button type="submit" class="btn btn-outline-secondary px-4">
+                    <button type="submit" class="custom-button custom-button--primary text-white px-4 mt-2">
                         Update Password
                     </button>
                 </div>
@@ -1329,6 +2018,93 @@
             .catch(error => {
                 console.log('Logout error, redirecting to login', error);
                 window.location.href = '/login';
+            });
+    }
+</script>
+<script>
+    function downloadInvoice(paymentId = null) {
+        // 📝 Replace with actual PDF generation later
+        alert('Invoice download will be implemented.\nPayment ID: ' + (paymentId || 'latest'));
+    }
+</script>
+<script>
+    function toggleMenu(e, targetId) {
+        e.preventDefault();
+        const target = document.getElementById(targetId);
+        const btn = e.currentTarget;
+        btn.classList.toggle('rotated');
+        target.style.display = target.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // Auto-buka menu aktif
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.js-submenu').forEach(menu => {
+            if (menu.querySelector('.active')) {
+                const btn = menu.previousElementSibling;
+                if (btn) {
+                    btn.classList.add('rotated');
+                    menu.style.display = 'block';
+                }
+            }
+        });
+    });
+</script>
+<script>
+    function updateReview(event, ratingId) {
+        event.preventDefault();
+
+        const form = document.getElementById(`editReviewForm-${ratingId}`);
+        const saveBtn = document.getElementById(`saveBtn-${ratingId}`);
+        const originalText = saveBtn.innerHTML;
+
+        // Ambil nilai
+        const reviewText = form.querySelector('[name="review_text"]').value;
+        const rating = form.querySelector('[name="rating"]').value;
+
+        // Validasi
+        if (!reviewText.trim()) {
+            alert('Review text is required');
+            return;
+        }
+
+        // Ambil CSRF token dengan aman
+        const csrfToken = document.querySelector('meta[name="csrf-token"]');
+        if (!csrfToken) {
+            alert('CSRF token missing. Please refresh the page.');
+            return;
+        }
+
+        saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
+        saveBtn.disabled = true;
+
+        fetch(`/account/reviews/${ratingId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken.content
+                },
+                body: JSON.stringify({
+                    review_text: reviewText,
+                    rating: rating
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    bootstrap.Modal.getInstance(document.getElementById(`editReviewModal-${ratingId}`)).hide();
+                    alert('Review updated successfully!');
+                    location.reload();
+                } else {
+                    throw new Error(data.message || 'Update failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to update review. Please try again.');
+            })
+            .finally(() => {
+                saveBtn.innerHTML = originalText;
+                saveBtn.disabled = false;
             });
     }
 </script>

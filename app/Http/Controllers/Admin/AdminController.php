@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Exports\AdminsExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AdminController extends Controller
 {
@@ -73,10 +75,10 @@ class AdminController extends Controller
 
         $validated['password'] = Hash::make($validated['password']);
 
-        Admin::create($validated);
+        $admin = Admin::create($validated);
 
-        return redirect()->route('admin.admins.index')
-            ->with('success', 'Admin berhasil ditambahkan!');
+        return redirect()->route('admin.admins.permissions.edit', $admin->id)
+            ->with('success', 'Admin berhasil ditambahkan! Silakan atur permission untuk admin ini.');
     }
 
     /**
@@ -147,5 +149,24 @@ class AdminController extends Controller
 
         return redirect()->route('admin.admins.index')
             ->with('success', 'Admin berhasil dihapus!');
+    }
+
+    /**
+     * Export admins to Excel.
+     */
+    public function export(Request $request)
+    {
+        $this->checkSuperAdmin();
+
+        $filters = [
+            'search' => $request->get('search'),
+            'is_active' => $request->get('is_active'),
+            'date_from' => $request->get('date_from'),
+            'date_to' => $request->get('date_to'),
+        ];
+
+        $filename = 'admins_' . now()->format('Y-m-d_His') . '.xlsx';
+        
+        return Excel::download(new AdminsExport($filters), $filename);
     }
 }

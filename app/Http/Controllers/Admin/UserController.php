@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\UserService;
+use App\Exports\UsersExport;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -21,16 +23,28 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $roleSlug = $request->get('role');
+        $userType = $request->get('user_type');
         $search = $request->get('search');
         $showTrashed = $request->get('show_trashed', false);
+        $googleId = $request->get('google_id');
+        $registered = $request->get('registered');
 
+        // Get all roles for filter dropdown
+        $roles = \App\Models\Role::all();
+
+        // Validate role exists if provided
         if ($roleSlug && $roleSlug !== 'all') {
-            $users = $this->userService->getUsersByRole($roleSlug, 10, $search, $showTrashed);
+            $roleExists = \App\Models\Role::where('slug', $roleSlug)->exists();
+            if (!$roleExists) {
+                return redirect()->route('admin.users.index')
+                    ->with('error', 'Role "' . $roleSlug . '" not found! Please select a valid role.');
+            }
+            $users = $this->userService->getUsersByRole($roleSlug, 10, $search, $showTrashed, $userType, $googleId, $registered);
         } else {
-            $users = $this->userService->getAllUsers(10, $search, $showTrashed);
+            $users = $this->userService->getAllUsers(10, $search, $showTrashed, $userType, $googleId, $registered);
         }
 
-        return view('admin.users.index', compact('users', 'roleSlug', 'search', 'showTrashed'));
+        return view('admin.users.index', compact('users', 'roleSlug', 'userType', 'search', 'showTrashed', 'roles', 'googleId', 'registered'));
     }
 
     /**
@@ -38,8 +52,23 @@ class UserController extends Controller
      */
     public function create(Request $request)
     {
-        $roleSlug = $request->get('role');
-        return view('admin.users.create', compact('roleSlug'));
+        try {
+            $roleSlug = $request->get('role');
+            
+            // Validate role exists if provided
+            if ($roleSlug && $roleSlug !== '' && $roleSlug !== 'all') {
+                $role = \App\Models\Role::where('slug', $roleSlug)->first();
+                if (!$role) {
+                    return redirect()->route('admin.users.index')
+                        ->with('error', 'Role not found! Please select a valid role.');
+                }
+            }
+            
+            return view('admin.users.create', compact('roleSlug'));
+        } catch (\Exception $e) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'Failed to load create form: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -210,5 +239,23 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
+    }
+
+    /**
+     * Export users to Excel.
+     */
+    public function export(Request $request)
+    {
+        $filters = [
+            'search' => $request->get('search'),
+            'city_id' => $request->get('city_id'),
+            'is_active' => $request->get('is_active'),
+            'date_from' => $request->get('date_from'),
+            'date_to' => $request->get('date_to'),
+        ];
+
+        $filename = 'users_' . now()->format('Y-m-d_His') . '.xlsx';
+        
+        return Excel::download(new UsersExport($filters), $filename);
     }
 }

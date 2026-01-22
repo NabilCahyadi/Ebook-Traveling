@@ -10,18 +10,19 @@ class EbookRating extends Model
 {
     use HasFactory, HasUuids;
 
+    protected $table = 'ebook_ratings';
+
     protected $fillable = [
         'ebook_id',
         'user_id',
         'rating',
-        'review',
-        'is_verified_purchase',
+        'review_title',
+        'review_text',
         'is_approved',
     ];
 
     protected $casts = [
         'rating' => 'integer',
-        'is_verified_purchase' => 'boolean',
         'is_approved' => 'boolean',
     ];
 
