@@ -311,10 +311,10 @@
         <!-- JS Anda membutuhkan tombol dengan class .next dan .prev -->
         <div class="slider-button">
             <button class="prev">
-                <i class="fi-rs-arrow-left"></i>
+                <i class="fi fi-rs-arrow-left"></i>
             </button>
             <button class="next">
-                <i class="fi-rs-arrow-right"></i>
+                <i class="fi fi-rs-arrow-right"></i>
             </button>
         </div>
     </div>

@@ -490,7 +490,7 @@
                     <div class="col-xl-3">
                         <h3 class="mb-15">My Account</h3>
                         <div class="breadcrumb">
-                            <a href="/" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
+                            <a href="/" rel="nofollow"><i class="fi fi-rs-home mr-5"></i>Home</a>
                             <span></span> My Account
                         </div>
                     </div>
@@ -509,7 +509,7 @@
                             <li class="nav-item">
                                 <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab', 'dashboard') == 'dashboard' ? 'active bg-light-subtle' : 'text-body' }}"
                                     href="{{ route('page-account') }}?tab=dashboard">
-                                    <i class="fi-rs-settings-sliders me-3 fs-5"></i>
+                                    <i class="fi fi-rs-settings-sliders me-3 fs-5"></i>
                                     <span>
                                         @if(auth()->check() && auth()->user()->hasActiveSubscription())
                                         Dashboard Member
@@ -524,7 +524,7 @@
                             <li class="nav-item">
                                 <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'wishlist' ? 'active bg-light-subtle' : 'text-body' }}"
                                     href="{{ route('page-account') }}?tab=wishlist">
-                                    <i class="fi-rs-heart me-3 fs-5 mt-1 {{ request('tab') == 'wishlist' ? 'text-white' : 'text-danger' }}"></i>
+                                    <i class="fi fi-rs-heart me-3 fs-5 mt-1 {{ request('tab') == 'wishlist' ? 'text-white' : 'text-danger' }}"></i>
                                     <span>Wishlist</span>
                                     <!-- @if($wishlistCount > 0)
                                             <span class="badge bg-primary rounded-pill ms-auto">{{ $wishlistCount }}</span>
@@ -538,10 +538,10 @@
                                 <a class="nav-link d-flex justify-content-between align-items-center px-3 py-2 text-body"
                                     data-target="contentMenu" href="#" onclick="toggleMenu(event, 'contentMenu')">
                                     <span class="d-flex align-items-center">
-                                        <i class="fi-rs-book me-3 fs-5 text-primary"></i>
+                                        <i class="fi fi-rs-book me-3 fs-5 text-primary"></i>
                                         <span>Reading Area</span>
                                     </span>
-                                    <i class="fi-rs-angle-small-down fs-4 transition-transform"></i>
+                                    <i class="fi fi-rs-angle-small-down fs-4 transition-transform"></i>
                                 </a>
                                 <ul class="nav flex-column ms-4 mt-1 js-submenu" id="contentMenu"
                                     style="display: {{ in_array(request('tab'), ['library', 'reading-history', 'wishlist']) ? 'block' : 'none' }};">
@@ -561,7 +561,7 @@
                                     <li class="nav-item">
                                         <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'reviews' ? 'active bg-light-subtle' : 'text-muted' }}"
                                             href="{{ route('page-account') }}?tab=reviews">
-                                            <span><i class="fi-rs-star mr-10"></i>My Reviews</span>
+                                            <span><i class="fi fi-rs-star mr-10"></i>My Reviews</span>
                                         </a>
                                     </li>
                                     @endif
@@ -574,37 +574,37 @@
                                 <a class="nav-link d-flex justify-content-between align-items-center px-3 py-2 text-body"
                                     data-target="settingMenu" href="#" onclick="toggleMenu(event, 'settingMenu')">
                                     <span class="d-flex align-items-center">
-                                        <i class="fi-rs-user me-3 fs-5 text-info"></i>
+                                        <i class="fi fi-rs-user me-3 fs-5 text-info"></i>
                                         <span>Account Settings</span>
                                     </span>
-                                    <i class="fi-rs-angle-small-down fs-4 transition-transform"></i>
+                                    <i class="fi fi-rs-angle-small-down fs-4 transition-transform"></i>
                                 </a>
                                 <ul class="nav flex-column ms-4 mt-1 js-submenu" id="settingMenu"
                                     style="display: {{ in_array(request('tab'), ['account-detail', 'subscription', 'payment', 'help']) ? 'block' : 'none' }};">
                                     <li class="nav-item">
                                         <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'account-detail' ? 'active bg-light-subtle' : 'text-muted' }}"
                                             href="{{ route('page-account') }}?tab=account-detail">
-                                            <span><i class="fi-rs-user mr-10"></i>Profile Details</span>
+                                            <span><i class="fi fi-rs-user mr-10"></i>Profile Details</span>
                                         </a>
                                     </li>
                                     @if(auth()->user()->hasActiveSubscription())
                                     <li class="nav-item">
                                         <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'subscription' ? 'active bg-light-subtle' : 'text-muted' }}"
                                             href="{{ route('page-account') }}?tab=subscription">
-                                            <span><i class="fi-rs-crown mr-10"></i>My Subscription</span>
+                                            <span><i class="fi fi-rs-crown mr-10"></i>My Subscription</span>
                                         </a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'help' ? 'active bg-light-subtle' : 'text-muted' }}"
                                             href="{{ route('page-account') }}?tab=help">
-                                            <span><i class="fi-rs-interactive mr-10"></i>Help Center</span>
+                                            <span><i class="fi fi-rs-interactive mr-10"></i>Help Center</span>
                                         </a>
                                     </li>
                                     @else
                                     <li class="nav-item">
                                         <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'payment' ? 'active bg-light-subtle' : 'text-muted' }}"
                                             href="{{ route('page-account') }}?tab=payment">
-                                            <span><i class="fi-rs-credit-card mr-10"></i>Payment History</span>
+                                            <span><i class="fi fi-rs-credit-card mr-10"></i>Payment History</span>
                                             <!-- @if($ordersCount > 0)
                                             <span class="badge bg-success rounded-pill ms-auto">{{ $ordersCount }}</span>
                                             @endif -->
@@ -618,7 +618,7 @@
                             <li class="nav-item border-top">
                                 <a class="nav-link d-flex align-items-center px-3 py-2 text-danger"
                                     href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                    <i class="fi-rs-sign-out me-3 fs-5"></i>
+                                    <i class="fi fi-rs-sign-out me-3 fs-5"></i>
                                     <span>Logout</span>
                                 </a>
                                 <form id="logout-form" action="{{ route('user.logout') }}" method="POST" class="d-none">
@@ -645,7 +645,7 @@
                                 <!-- PREMIUM USER -->
                                 <div class="card-body p-4">
                                     <div class="d-flex align-items-start gap-3">
-                                        <i class="fi-rs-crown mt-1" style="font-size: 1.5rem; color: #FF416C;"></i>
+                                        <i class="fi fi-rs-crown mt-1" style="font-size: 1.5rem; color: #FF416C;"></i>
                                         <div>
                                             <h5 class="fw-bold mb-2" style="color: #333;">Welcome back, Premium Member!</h5>
                                             <p class="text-muted mb-0">
@@ -712,7 +712,7 @@
                                                                 style="width: 60px; height: 80px; object-fit: cover;">
                                                             @else
                                                             <div class="d-flex align-items-center justify-content-center h-100 text-muted">
-                                                                <i class="fi-rs-book"></i>
+                                                                <i class="fi fi-rs-book"></i>
                                                             </div>
                                                             @endif
                                                         </div>
@@ -740,12 +740,12 @@
                                                     <!--  ACTION -->
                                                     <td>@if(auth()->check() && auth()->user()->hasActiveSubscription())
                                                         <a href="{{ route('user.ebook.read', $ebook->slug) }}" class="custom-button custom-button--primary text-white px-4">
-                                                            <i class="fi-rs-book-open"></i>
+                                                            <i class="fi fi-rs-book-open"></i>
                                                             <span>Read Now</span>
                                                         </a>
                                                         @else
                                                         <a href="/pricing" class="custom-button custom-button--primary text-white px-4">
-                                                            <i class="fi-rs-lock"></i>
+                                                            <i class="fi fi-rs-lock"></i>
                                                             <span>Subscribe to Read</span>
                                                         </a>
                                                         @endif
@@ -763,7 +763,7 @@
                                     </div>
                                     @else
                                     <div class="text-center py-4">
-                                        <i class="fi-rs-heart text-muted" style="font-size: 48px;"></i>
+                                        <i class="fi fi-rs-heart text-muted" style="font-size: 48px;"></i>
                                         <h5 class="mt-3">No saved books yet</h5>
                                         <p class="text-muted">Start exploring our ebooks and add them to your wishlist!
                                         </p>
@@ -820,7 +820,7 @@
                                             <div class="col-md-9">
                                                 <p class="mb-2">Upload a new profile photo. Supported formats: JPEG, PNG, JPG, GIF. Maximum size: 2MB.</p>
                                                 <button type="submit" class="custom-button custom-button--primary text-white px-4">
-                                                    <i class="fi-rs-camera mr-5"></i> Update Picture
+                                                    <i class="fi fi-rs-camera mr-5"></i> Update Picture
                                                 </button>
                                             </div>
                                         </div>
@@ -1003,7 +1003,7 @@
                                         </a>
 
                                         <button type="button" class="custom-button custom-button--primary text-white px-4" onclick="downloadInvoice()">
-                                            <i class="fi-rs-file-invoice me-1"></i> Download Invoice
+                                            <i class="fi fi-rs-file-invoice me-1"></i> Download Invoice
                                         </button>
                                     </div>
 
@@ -1011,12 +1011,12 @@
                                     <!-- No Active Subscription -->
                                     <div class="text-center py-5">
                                         <div class="bg-light-subtle rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 72px; height: 72px;">
-                                            <i class="fi-rs-lock fs-1 text-muted"></i>
+                                            <i class="fi fi-rs-lock fs-1 text-muted"></i>
                                         </div>
                                         <h5 class="mb-2">No Active Subscription</h5>
                                         <p class="text-muted mb-4">Get unlimited access to all premium ebooks</p>
                                         <a href="{{ route('pricing') }}" class="custom-button custom-button--primary text-white px-4 mt-2">
-                                            <i class="fi-rs-shopping-cart me-1"></i> Choose a Plan
+                                            <i class="fi fi-rs-shopping-cart me-1"></i> Choose a Plan
                                         </a>
                                     </div>
                                     @endif
@@ -1102,7 +1102,7 @@
                                                                 style="background-color:#FF416C; border-radius:100px; color:white; border:none;"
                                                                 title="Download Invoice"
                                                                 onclick="downloadInvoice('{{ $payment->id }}')">
-                                                                <i class="fi-rs-download"></i>
+                                                                <i class="fi fi-rs-download"></i>
                                                             </button>
                                                         </td>
                                                     </tr>
@@ -1131,7 +1131,7 @@
                                                     <div class="card-body text-center p-4">
                                                         <div class="bg-light-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
                                                             style="width: 56px; height: 56px;">
-                                                            <i class="fi-rs-book" style="font-size: 24px; color: #FF416C;"></i>
+                                                            <i class="fi fi-rs-book" style="font-size: 24px; color: #FF416C;"></i>
                                                         </div>
                                                         <h6 class="fw-bold mb-2">Help Center</h6>
                                                         <p class="text-muted small mb-0">
@@ -1169,7 +1169,7 @@
                                                     <div class="card-body text-center p-4">
                                                         <div class="bg-light-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
                                                             style="width: 56px; height: 56px;">
-                                                            <i class="fi-rs-headset" style="font-size: 24px; color: #FF416C;"></i>
+                                                            <i class="fi fi-rs-headset" style="font-size: 24px; color: #FF416C;"></i>
                                                         </div>
                                                         <h6 class="fw-bold mb-2">Contact Us</h6>
                                                         <p class="text-muted small mb-0">
@@ -1209,7 +1209,7 @@
                                                                 <h6 class="mb-0 fw-bold">{{ $subscription->plan->name ?? 'Basic Plan' }}</h6>
                                                             </div>
                                                             <p class="mb-2">
-                                                                <i class="fi-rs-calendar me-1"></i>
+                                                                <i class="fi fi-rs-calendar me-1"></i>
                                                                 {{ $subscription->start_date?->format('d F Y') }} -
                                                                 {{ $subscription->end_date?->format('d F Y') }}
                                                                 @if(!$user->hasActiveSubscription() && $subscription->is_active)
@@ -1276,7 +1276,7 @@
                                                                 <h6 class="mb-0 fw-bold">Order #{{ $order->order_code ?? $order->id }}</h6>
                                                             </div>
                                                             <p class="text-muted mb-2">
-                                                                <i class="fi-rs-calendar me-1"></i>
+                                                                <i class="fi fi-rs-calendar me-1"></i>
                                                                 {{ $order->created_at->format('d F Y') }}
                                                             </p>
                                                         </div>
@@ -1315,14 +1315,14 @@
 
                                                     <div class="d-flex justify-content-between mt-3">
                                                         <a href="#" class="btn btn-sm btn-outline-secondary">
-                                                            <i class="fi-rs-file-invoice me-1"></i> View Details
+                                                            <i class="fi fi-rs-file-invoice me-1"></i> View Details
                                                         </a>
                                                         <!--  BUTTON SUBSCRIBE AGAIN -->
                                                         @if(!$user->hasActiveSubscription())
                                                         <a href="{{ route('pricing') }}"
                                                             class="btn btn-sm"
                                                             style="background: #FF416C; color: white; border-radius: 6px;">
-                                                            <i class="fi-rs-star me-1"></i> Subscribe Again
+                                                            <i class="fi fi-rs-star me-1"></i> Subscribe Again
                                                         </a>
                                                         @endif
                                                     </div>
@@ -1333,13 +1333,13 @@
                                     </div>
                                     @else
                                     <div class="text-center py-5">
-                                        <i class="fi-rs-credit-card" style="font-size: 64px; color: #FF416C;"></i>
+                                        <i class="fi fi-rs-credit-card" style="font-size: 64px; color: #FF416C;"></i>
                                         <h5 class="mt-4 fw-bold text-dark">No Payment History</h5>
                                         <p class="text-muted mb-4">Your payment history will appear here after you make a purchase or subscription.</p>
                                         <div class="d-flex justify-content-center gap-3">
                                             <a href="{{ route('pricing') }}#pricing-plans"
                                                 class="custom-button custom-button--primary text-white px-4 py-2">
-                                                <i class="fi-rs-star me-1"></i> Subscribe Now
+                                                <i class="fi fi-rs-star me-1"></i> Subscribe Now
                                             </a>
                                         </div>
                                     </div>
@@ -1376,7 +1376,7 @@
                                             <div class="col-md-2">
                                                 <!-- <label for="submit-search" class="form-label d-block invisible">&nbsp;</label> -->
                                                 <button type="submit" id="submit-search" class="btn-read-now text-white px-4 py-2 mt-2">
-                                                    <i class="fi-rs-search me-2"></i>Search
+                                                    <i class="fi fi-rs-search me-2"></i>Search
                                                 </button>
                                             </div>
                                         </div>
@@ -1432,7 +1432,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="read-count">
-                                                            <i class="fi-rs-eye align-middle"></i>
+                                                            <i class="fi fi-rs-eye align-middle"></i>
                                                             <span class="post-on">
                                                                 @php
                                                                 $views = $ebook->view_count;
@@ -1474,7 +1474,7 @@
                                                             <!-- TOMBOL AKSI -->
                                                             <a href="{{ route('user.ebook.read', $ebook->slug) }}"
                                                                 class="action-btn btn-read-now w-100 mt-2">
-                                                                <i class="fi-rs-book-open"></i>
+                                                                <i class="fi fi-rs-book-open"></i>
                                                                 <span>{{ $isReading ? 'Continue Reading' : 'Read Now' }}</span>
                                                             </a>
                                                 </div>
@@ -1487,7 +1487,7 @@
                                     @if(request()->filled('search') || request()->filled('city_slug'))
                                     <!-- Jika ya, tampilkan pesan "Tidak Ditemukan" -->
                                     <div class="text-center py-5">
-                                        <i class="fi-rs-search text-muted" style="font-size: 64px;"></i>
+                                        <i class="fi fi-rs-search text-muted" style="font-size: 64px;"></i>
                                         <h4 class="mt-3">No E-books Found</h4>
                                         <p class="text-muted">
                                             We couldn't find any e-books matching your criteria.
@@ -1502,11 +1502,11 @@
                                     @else
                                     <!-- Jika tidak, tampilkan pesan "Perpustakaan Kosong" -->
                                     <div class="text-center py-5">
-                                        <i class="fi-rs-book text-muted" style="font-size: 64px;"></i>
+                                        <i class="fi fi-rs-book text-muted" style="font-size: 64px;"></i>
                                         <h4 class="mt-3">Your Library is Empty</h4>
                                         <p class="text-muted">You have access to all ebooks — start exploring!</p>
                                         <a href="{{ route('destinations') }}" class="custom-button custom-button--primary text-white px-4 mt-2">
-                                            <i class="fi-rs-search"></i> Browse All Ebooks
+                                            <i class="fi fi-rs-search"></i> Browse All Ebooks
                                         </a>
                                     </div>
                                     @endif
@@ -1539,7 +1539,7 @@
                                     </div>
                                     <div class="col-md-2">
                                         <button type="submit" class="btn-read-now text-white px-4 py-2 mt-2">
-                                            <i class="fi-rs-search me-2"></i>Search
+                                            <i class="fi fi-rs-search me-2"></i>Search
                                         </button>
                                     </div>
                                 </div>
@@ -1610,7 +1610,7 @@
                                     </div>
                                     @else
                                     <div class="text-center py-5">
-                                        <i class="fi-rs-history text-muted" style="font-size: 64px;"></i>
+                                        <i class="fi fi-rs-history text-muted" style="font-size: 64px;"></i>
                                         <h4 class="mt-3">No Reading History Yet</h4>
                                         <p class="text-muted">Start reading ebooks to build your reading history</p>
                                         <a href="{{ route('page-account', ['tab' => 'library']) }}" class="custom-button custom-button--primary text-white px-4 mt-2">Start Reading</a>
@@ -1644,7 +1644,7 @@
                                     </div>
                                     <div class="col-md-2">
                                         <button type="submit" class="btn-read-now text-white px-4 py-2 mt-2">
-                                            <i class="fi-rs-search me-2"></i>Search
+                                            <i class="fi fi-rs-search me-2"></i>Search
                                         </button>
                                     </div>
                                 </div>
@@ -1683,7 +1683,7 @@
                                                                         </a>
                                                                     </h6>
                                                                     <p class="mb-2 small">
-                                                                        <i class="fi-rs-user me-1"></i>
+                                                                        <i class="fi fi-rs-user me-1"></i>
                                                                         {{ $rating->ebook->author ?? 'Unknown Author' }} •
                                                                         {{ strtoupper($rating->ebook->language ?? 'ID') }}
                                                                     </p>
@@ -1693,7 +1693,7 @@
                                                                     <!-- RATING -->
                                                                     <div class="rating">
                                                                         @for($i = 1; $i <= 5; $i++)
-                                                                            <i class="fi-rs-star{{ $i <= $rating->rating ? ' text-danger' : ' text-muted' }}"
+                                                                            <i class="fi fi-rs-star{{ $i <= $rating->rating ? ' text-danger' : ' text-muted' }}"
                                                                             style="color: {{ $i <= $rating->rating ? '#FF416C' : '#ccc' }};"></i>
                                                                             @endfor
                                                                     </div>
@@ -1709,7 +1709,7 @@
                                                             <div class="d-flex justify-content-between align-items-center">
                                                                 <!--  TANGGAL + STATUS EDITED -->
                                                                 <small>
-                                                                    <i class="fi-rs-calendar me-1"></i>
+                                                                    <i class="fi fi-rs-calendar me-1"></i>
                                                                     {{ $rating->created_at->translatedFormat('d F Y') }}
                                                                     @if($rating->updated_at && $rating->updated_at->gt($rating->created_at))
                                                                     <span class="text-muted">(edited {{ $rating->updated_at->format('d M') }})</span>
@@ -1727,7 +1727,7 @@
                                                                     </button>
                                                                     <a href="{{ route('ebooks.show', $rating->ebook->slug) }}"
                                                                         class="custom-button custom-button--primary text-white px-4 mt-1">
-                                                                        <i class="fi-rs-book-open me-1"></i> View Book
+                                                                        <i class="fi fi-rs-book-open me-1"></i> View Book
                                                                     </a>
                                                                 </div>
                                                             </div>
@@ -1792,7 +1792,7 @@
                                 </div>
                                 @else
                                 <div class="text-center py-5">
-                                    <i class="fi-rs-star text-muted" style="font-size: 64px; color: #FF416C;"></i>
+                                    <i class="fi fi-rs-star text-muted" style="font-size: 64px; color: #FF416C;"></i>
                                     <h5 class="mt-4 fw-bold text-dark">No Reviews Yet</h5>
                                     <p class="text-muted mb-4">Share your thoughts by reviewing ebooks you've read</p>
                                     <a href="{{ route('page-account') }}?tab=library"
@@ -1879,7 +1879,7 @@
                                     </div>
                                     @else
                                     <div class="text-center py-4">
-                                        <i class="fi-rs-edit text-muted" style="font-size: 48px;"></i>
+                                        <i class="fi fi-rs-edit text-muted" style="font-size: 48px;"></i>
                                         <h5 class="mt-3">No Published Ebooks Yet</h5>
                                         <p class="text-muted">Start creating and publishing your ebooks</p>
                                         <button class="custom-button custom-button--primary text-white px-4">Create Your First Ebook</button>
@@ -1887,7 +1887,7 @@
                                     @endif
                                     @else
                                     <div class="text-center py-4">
-                                        <i class="fi-rs-edit text-muted" style="font-size: 48px;"></i>
+                                        <i class="fi fi-rs-edit text-muted" style="font-size: 48px;"></i>
                                         <h5 class="mt-3">Become a Creator</h5>
                                         <p class="text-muted">Start sharing your knowledge by creating ebooks</p>
                                         <button class="custom-button custom-button--primary text-white px-4">Apply as Creator</button>

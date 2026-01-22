@@ -147,7 +147,7 @@
     <div class="page-header breadcrumb-wrap">
         <div class="container">
             <div class="breadcrumb">
-                <a href="{{ route('home') }}" rel="nofollow"><i class="fi-rs-home mr-5"></i></a>
+                <a href="{{ route('home') }}" rel="nofollow"><i class="fi fi-rs-home mr-5"></i></a>
                 <span></span>
                 <a href="{{ route('blogs.index') }}">Blog & News</a>
                 <span class="active"> {{ $blog->title }}</span>
@@ -230,7 +230,7 @@
                                     <div class="search-form">
                                         <form action="#">
                                             <input type="text" placeholder="Search…" />
-                                            <button type="submit"><i class="fi-rs-search"></i></button>
+                                            <button type="submit"><i class="fi fi-rs-search"></i></button>
                                         </form>
                                     </div>
                                 </div>

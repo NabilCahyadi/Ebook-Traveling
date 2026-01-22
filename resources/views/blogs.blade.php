@@ -9,17 +9,40 @@
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ url()->current() }}">
 
+    {{-- Open Graph / Facebook --}}
     <meta property="og:type" content="website">
     <meta property="og:title" content="Blog & Travel Guides - MeatMap">
     <meta property="og:description" content="Explore travel guides and destination tips from MeatMap.">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:site_name" content="MeatMap">
     <meta property="og:image" content="{{ asset('images/only-logoo.png') }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
 
+    {{-- Twitter Card --}}
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Blog & Travel Guides - MeatMap">
     <meta name="twitter:description" content="Explore travel guides and destination tips from MeatMap.">
     <meta name="twitter:image" content="{{ asset('images/only-logoo.png') }}">
+
+    {{-- Schema.org structured data for Blog --}}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Blog",
+        "name": "MeatMap Blog",
+        "description": "Travel guides, destination tips, and inspiring stories",
+        "url": "{{ url()->current() }}",
+        "publisher": {
+            "@type": "Organization",
+            "name": "MeatMap",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "{{ asset('images/only-logoo.png') }}"
+            }
+        }
+    }
+    </script>
 @endsection
 
 @section('content')
@@ -256,7 +279,7 @@
                     <div class="col-xl-3">
                         <h3 class="mb-15">Blog & News</h3>
                         <div class="breadcrumb">
-                            <a href="/" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
+                            <a href="/" rel="nofollow"><i class="fi fi-rs-home mr-5"></i>Home</a>
                             <span></span> Blog & News
                         </div>
                     </div>
@@ -280,10 +303,10 @@
                             <div class="sort-by-cover mr-10">
                                 <div class="sort-by-product-wrap">
                                     <div class="sort-by">
-                                        <span><i class="fi-rs-apps"></i>Show :</span>
+                                        <span><i class="fi fi-rs-apps"></i>Show :</span>
                                     </div>
                                     <div class="sort-by-dropdown-wrap">
-                                        <span> 50 <i class="fi-rs-angle-small-down"></i></span>
+                                        <span> 50 <i class="fi fi-rs-angle-small-down"></i></span>
                                     </div>
                                 </div>
                                 <div class="sort-by-dropdown">
@@ -299,10 +322,10 @@
                             <div class="sort-by-cover">
                                 <div class="sort-by-product-wrap">
                                     <div class="sort-by">
-                                        <span><i class="fi-rs-apps-sort"></i>Sort :</span>
+                                        <span><i class="fi fi-rs-apps-sort"></i>Sort :</span>
                                     </div>
                                     <div class="sort-by-dropdown-wrap">
-                                        <span>Featured <i class="fi-rs-angle-small-down"></i></span>
+                                        <span>Featured <i class="fi fi-rs-angle-small-down"></i></span>
                                     </div>
                                 </div>
                                 <div class="sort-by-dropdown">

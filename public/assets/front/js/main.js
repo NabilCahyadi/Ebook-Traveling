@@ -26,7 +26,7 @@
 
     /*------ ScrollUp -------- */
     $.scrollUp({
-        scrollText: '<i class="fi-rs-arrow-small-up"></i>',
+        scrollText: '<i class="fi fi-rs-arrow-small-up"></i>',
         easingType: "linear",
         scrollSpeed: 900,
         animation: "fade"
@@ -79,8 +79,8 @@
         loop: true,
         dots: true,
         arrows: true,
-        prevArrow: '<span class="slider-btn slider-prev"><i class="fi-rs-angle-left"></i></span>',
-        nextArrow: '<span class="slider-btn slider-next"><i class="fi-rs-angle-right"></i></span>',
+        prevArrow: '<span class="slider-btn slider-prev"><i class="fi fi-rs-angle-left"></i></span>',
+        nextArrow: '<span class="slider-btn slider-next"><i class="fi fi-rs-angle-right"></i></span>',
         appendArrows: ".hero-slider-1-arrow",
         autoplay: true
     });
@@ -124,8 +124,8 @@
                     }
                 }
             ],
-            prevArrow: '<span class="slider-btn slider-prev"><i class="fi-rs-arrow-small-left"></i></span>',
-            nextArrow: '<span class="slider-btn slider-next"><i class="fi-rs-arrow-small-right"></i></span>',
+            prevArrow: '<span class="slider-btn slider-prev"><i class="fi fi-rs-arrow-small-left"></i></span>',
+            nextArrow: '<span class="slider-btn slider-next"><i class="fi fi-rs-arrow-small-right"></i></span>',
             appendArrows: appendArrowsClassName
         });
     });
@@ -169,8 +169,8 @@
                     }
                 }
             ],
-            prevArrow: '<span class="slider-btn slider-prev"><i class="fi-rs-arrow-small-left"></i></span>',
-            nextArrow: '<span class="slider-btn slider-next"><i class="fi-rs-arrow-small-right"></i></span>',
+            prevArrow: '<span class="slider-btn slider-prev"><i class="fi fi-rs-arrow-small-left"></i></span>',
+            nextArrow: '<span class="slider-btn slider-next"><i class="fi fi-rs-arrow-small-right"></i></span>',
             appendArrows: appendArrowsClassName
         });
     });
@@ -207,8 +207,8 @@
                     }
                 }
             ],
-            prevArrow: '<span class="slider-btn slider-prev"><i class="fi-rs-arrow-small-left"></i></span>',
-            nextArrow: '<span class="slider-btn slider-next"><i class="fi-rs-arrow-small-right"></i></span>',
+            prevArrow: '<span class="slider-btn slider-prev"><i class="fi fi-rs-arrow-small-left"></i></span>',
+            nextArrow: '<span class="slider-btn slider-next"><i class="fi fi-rs-arrow-small-right"></i></span>',
             appendArrows: appendArrowsClassName
         });
     });
@@ -244,8 +244,8 @@
                     }
                 }
             ],
-            prevArrow: '<span class="slider-btn slider-prev"><i class="fi-rs-arrow-small-left"></i></span>',
-            nextArrow: '<span class="slider-btn slider-next"><i class="fi-rs-arrow-small-right"></i></span>',
+            prevArrow: '<span class="slider-btn slider-prev"><i class="fi fi-rs-arrow-small-left"></i></span>',
+            nextArrow: '<span class="slider-btn slider-next"><i class="fi fi-rs-arrow-small-right"></i></span>',
             appendArrows: appendArrowsClassName
         });
     });
@@ -275,8 +275,8 @@
         loop: true,
         dots: false,
         arrows: true,
-        prevArrow: '<span class="pro-icon-1-prev"><i class="fi-rs-angle-small-left"></i></span>',
-        nextArrow: '<span class="pro-icon-1-next"><i class="fi-rs-angle-small-right"></i></span>',
+        prevArrow: '<span class="pro-icon-1-prev"><i class="fi fi-rs-angle-small-left"></i></span>',
+        nextArrow: '<span class="pro-icon-1-next"><i class="fi fi-rs-angle-small-right"></i></span>',
         responsive: [
             {
                 breakpoint: 1199,
@@ -313,8 +313,8 @@
         loop: true,
         dots: false,
         arrows: true,
-        prevArrow: '<span class="pro-icon-1-prev"><i class="fi-rs-angle-small-left"></i></span>',
-        nextArrow: '<span class="pro-icon-1-next"><i class="fi-rs-angle-small-right"></i></span>',
+        prevArrow: '<span class="pro-icon-1-prev"><i class="fi fi-rs-angle-small-left"></i></span>',
+        nextArrow: '<span class="pro-icon-1-next"><i class="fi fi-rs-angle-small-right"></i></span>',
         responsive: [
             {
                 breakpoint: 1199,
@@ -651,7 +651,7 @@
         $offCanvasNavSubMenu = $offCanvasNav.find(".dropdown");
 
     /*Add Toggle Button With Off Canvas Sub Menu*/
-    $offCanvasNavSubMenu.parent().prepend('<span class="menu-expand"><i class="fi-rs-angle-small-down"></i></span>');
+    $offCanvasNavSubMenu.parent().prepend('<span class="menu-expand"><i class="fi fi-rs-angle-small-down"></i></span>');
 
     /*Close Off Canvas Sub Menu*/
     $offCanvasNavSubMenu.slideUp();
@@ -729,4 +729,5 @@
         showItems: 1
     });
 })(jQuery);
+
 
