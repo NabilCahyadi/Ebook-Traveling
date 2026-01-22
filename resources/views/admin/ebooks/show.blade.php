@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'View Ebook')
+@section('title', __('admin.ebooks.ebook_details'))
 
 @push('styles')
     <style>
@@ -42,21 +42,21 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
                 <div>
-                    <h4 class="fw-bold mb-1">Ebook Details</h4>
+                    <h4 class="fw-bold mb-1">{{ __('admin.ebooks.ebook_details') }}</h4>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0">
                             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('admin.ebooks.index') }}">Ebooks</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('admin.ebooks.index') }}">{{ __('admin.ebooks.title') }}</a></li>
                             <li class="breadcrumb-item active">{{ Str::limit($ebook->title, 30) }}</li>
                         </ol>
                     </nav>
                 </div>
                 <div class="d-flex gap-2">
                     <a href="{{ route('admin.ebooks.edit', $ebook->id) }}" class="btn btn-primary">
-                        <i class="bx bx-edit-alt me-1"></i> Edit
+                        <i class="bx bx-edit-alt me-1"></i> {{ __('admin.ebooks.edit') }}
                     </a>
                     <a href="{{ route('admin.ebooks.index') }}" class="btn btn-secondary">
-                        <i class="bx bx-arrow-back me-1"></i> Back
+                        <i class="bx bx-arrow-back me-1"></i> {{ __('admin.ebooks.back') }}
                     </a>
                 </div>
             </div>
@@ -72,28 +72,28 @@
                         <div>
                             <h3 class="card-title mb-2">{{ $ebook->title }}</h3>
                             <p class="text-muted mb-0">
-                                <i class="bx bx-user me-1"></i> {{ $ebook->author ?? 'Unknown Author' }}
+                                <i class="bx bx-user me-1"></i> {{ $ebook->author ?? __('admin.ebooks.unknown_author') }}
                             </p>
                         </div>
                         <div>
                             @if ($ebook->status === 'published')
                                 <span class="badge bg-success">
-                                    <i class="bx bx-check-circle"></i> Published
+                                    <i class="bx bx-check-circle"></i> {{ __('admin.ebooks.published') }}
                                 </span>
                             @elseif($ebook->status === 'draft')
                                 <span class="badge bg-warning">
-                                    <i class="bx bx-time"></i> Draft
+                                    <i class="bx bx-time"></i> {{ __('admin.ebooks.draft') }}
                                 </span>
                             @elseif($ebook->status === 'scheduled')
                                 <span class="badge bg-info">
-                                    <i class="ti ti-clock"></i> Scheduled
+                                    <i class="ti ti-clock"></i> {{ __('admin.ebooks.scheduled') }}
                                     @if($ebook->published_at)
                                         <small class="ms-1">({{ $ebook->published_at->format('d M Y, H:i') }})</small>
                                     @endif
                                 </span>
                             @elseif($ebook->status === 'unpublished')
                                 <span class="badge bg-secondary">
-                                    <i class="bx bx-eye-off"></i> Unpublished
+                                    <i class="bx bx-eye-off"></i> {{ __('admin.ebooks.unpublished') }}
                                 </span>
                             @else
                                 <span class="badge bg-secondary">
@@ -129,12 +129,12 @@
             <div class="card">
                 <div class="card-header d-flex align-items-center">
                     <i class="bx bx-bar-chart-alt-2 me-2"></i>
-                    <h5 class="mb-0">Statistics</h5>
+                    <h5 class="mb-0">{{ __('admin.ebooks.statistics') }}</h5>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
                         <div class="d-flex align-items-center justify-content-between">
-                            <span class="text-muted"><i class="bx bx-show me-1"></i> Views</span>
+                            <span class="text-muted"><i class="bx bx-show me-1"></i> {{ __('admin.ebooks.views') }}</span>
                             <strong>{{ number_format($ebook->view_count ?? 0) }}</strong>
                         </div>
                     </div>
@@ -172,12 +172,12 @@
             <div class="card mb-3">
                 <div class="card-header d-flex align-items-center">
                     <i class="bx bx-info-circle me-2"></i>
-                    <h5 class="mb-0">Ebook Information</h5>
+                    <h5 class="mb-0">{{ __('admin.ebooks.ebook_info') }}</h5>
                 </div>
                 <div class="card-body">
                     <table class="table table-borderless">
                         <tr>
-                            <td class="fw-semibold" style="width: 200px;">Category</td>
+                            <td class="fw-semibold" style="width: 200px;">{{ __('admin.ebooks.category') }}</td>
                             <td>
                                 @if ($ebook->category)
                                     <span class="badge bg-label-info">{{ $ebook->category->name }}</span>
@@ -187,7 +187,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="fw-semibold">City</td>
+                            <td class="fw-semibold">{{ __('admin.ebooks.city') }}</td>
                             <td>
                                 @if ($ebook->city)
                                     <span class="badge bg-label-primary">
@@ -199,11 +199,11 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="fw-semibold">Total Pages (PDF)</td>
+                            <td class="fw-semibold">{{ __('admin.ebooks.total_pages') }} (PDF)</td>
                             <td>
                                 @if($ebook->total_pages)
                                     <span class="badge bg-label-success">
-                                        <i class="bx bx-file-blank me-1"></i>{{ $ebook->total_pages }} halaman
+                                        <i class="bx bx-file-blank me-1"></i>{{ $ebook->total_pages }} {{ __('admin.ebooks.pages') }}
                                     </span>
                                 @else
                                     <span class="text-muted">-</span>
@@ -213,11 +213,11 @@
                         <tr>
                             <td class="fw-semibold">Page Count</td>
                             <td>
-                                <i class="bx bx-file me-1"></i>{{ $ebook->page_count ?? '-' }} pages
+                                <i class="bx bx-file me-1"></i>{{ $ebook->page_count ?? '-' }} {{ __('admin.ebooks.pages') }}
                             </td>
                         </tr>
                         <tr>
-                            <td class="fw-semibold">Creator</td>
+                            <td class="fw-semibold">{{ __('admin.ebooks.creator') }}</td>
                             <td>
                                 <i class="bx bx-user me-1"></i>{{ $ebook->creator->name ?? '-' }}
                             </td>
@@ -230,13 +230,13 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="fw-semibold">Created At</td>
+                            <td class="fw-semibold">{{ __('admin.ebooks.created_date') }}</td>
                             <td>
                                 <i class="bx bx-time me-1"></i>{{ $ebook->created_at->format('d M Y, H:i') }}
                             </td>
                         </tr>
                         <tr>
-                            <td class="fw-semibold">Last Updated</td>
+                            <td class="fw-semibold">{{ __('admin.ebooks.last_update') }}</td>
                             <td>
                                 <i class="bx bx-refresh me-1"></i>{{ $ebook->updated_at->format('d M Y, H:i') }}
                             </td>
@@ -249,11 +249,11 @@
             <div class="card mb-3">
                 <div class="card-header d-flex align-items-center">
                     <i class="bx bx-detail me-2"></i>
-                    <h5 class="mb-0">Description</h5>
+                    <h5 class="mb-0">{{ __('admin.ebooks.description') }}</h5>
                 </div>
                 <div class="card-body">
                     <div class="mb-0">
-                        {!! $ebook->description ?? '<p class="text-muted">No description available for this ebook.</p>' !!}
+                        {!! $ebook->description ?? '<p class="text-muted">' . __('admin.ebooks.no_data') . '</p>' !!}
                     </div>
                 </div>
             </div>
@@ -263,14 +263,14 @@
                 <div class="card">
                     <div class="card-header d-flex align-items-center">
                         <i class="bx bx-file me-2"></i>
-                        <h5 class="mb-0">Ebook File</h5>
+                        <h5 class="mb-0">{{ __('admin.ebooks.file_pdf') }}</h5>
                     </div>
                     <div class="card-body text-center">
                         <i class="bx bxs-file-pdf text-danger mb-2" style="font-size: 48px;"></i>
                         <h6 class="fw-bold mb-1">{{ basename($ebook->file_url) }}</h6>
                         <p class="text-muted mb-3">PDF Document</p>
                         <a href="{{ asset('storage/' . $ebook->file_url) }}" target="_blank" class="btn btn-primary">
-                            <i class="bx bx-download me-1"></i> Download File
+                            <i class="bx bx-download me-1"></i> {{ __('admin.ebooks.download') }}
                         </a>
                     </div>
                 </div>

@@ -76,13 +76,16 @@ class BlogRepository implements BlogRepositoryInterface
             $query->where('category', $filters['category']);
         }
 
-        // Search
+        // Search - search in title, content, excerpt, and author name
         if (isset($filters['search']) && $filters['search']) {
             $search = $filters['search'];
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
                     ->orWhere('content', 'like', "%{$search}%")
-                    ->orWhere('excerpt', 'like', "%{$search}%");
+                    ->orWhere('excerpt', 'like', "%{$search}%")
+                    ->orWhereHas('author', function ($authorQuery) use ($search) {
+                        $authorQuery->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 

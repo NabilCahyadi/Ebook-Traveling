@@ -841,9 +841,12 @@
             if (statusSelect.value === 'scheduled') {
                 scheduledContainer.style.display = 'flex';
                 publishedAtInput.required = true;
+                publishedAtInput.disabled = false;
             } else {
                 scheduledContainer.style.display = 'none';
                 publishedAtInput.required = false;
+                publishedAtInput.disabled = true;
+                publishedAtInput.value = ''; // Clear value when hidden
             }
         }
         

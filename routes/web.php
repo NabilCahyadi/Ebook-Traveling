@@ -35,12 +35,12 @@ require __DIR__ . '/modules/creator.php';
 // Load Admin Routes
 require __DIR__ . '/modules/admin.php';
 
-Route::get('/test-500', function () {
-    return response()->view('errors.500', [], 500);
-});
-Route::get('/test-404', function () {
-    return response()->view('errors.404', [], 404);
-});
-Route::get('/test-403', function () {
-    return response()->view('errors.403', [], 403);
-});
+// Route::get('/test-500', function () {
+//     return response()->view('errors.500', [], 500);
+// });
+// Route::get('/test-404', function () {
+//     return response()->view('errors.404', [], 404);
+// });
+// Route::get('/test-403', function () {
+//     return response()->view('errors.403', [], 403);
+// });

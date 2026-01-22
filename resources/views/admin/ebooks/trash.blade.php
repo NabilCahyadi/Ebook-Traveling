@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Trash - Ebooks')
+@section('title', __('admin.ebooks.trash') . ' - ' . __('admin.ebooks.title'))
 
 @php
     use Illuminate\Support\Facades\Storage;
@@ -10,11 +10,11 @@
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="fw-bold py-3 mb-0">
-                <span class="text-muted fw-light">Admin / Ebooks /</span> Trash
+                <span class="text-muted fw-light">Admin / {{ __('admin.ebooks.title') }} /</span> {{ __('admin.ebooks.trash') }}
             </h4>
             <div class="d-flex gap-2">
                 <a href="{{ route('admin.ebooks.index') }}" class="btn btn-outline-secondary">
-                    <i class="ti ti-arrow-left me-1"></i> Back to All Ebooks
+                    <i class="ti ti-arrow-left me-1"></i> {{ __('admin.ebooks.back_to_all') }}
                 </a>
             </div>
         </div>
@@ -37,8 +37,8 @@
             <div class="card-header">
                 <div class="row align-items-center">
                     <div class="col-md-3">
-                        <h5 class="mb-0"><i class="ti ti-trash me-2"></i>Trash Ebooks</h5>
-                        <small class="text-muted">Ebooks can be restored or deleted</small>
+                        <h5 class="mb-0"><i class="ti ti-trash me-2"></i>{{ __('admin.ebooks.trash_ebooks') }}</h5>
+                        <small class="text-muted">{{ __('admin.ebooks.trash_description') }}</small>
                     </div>
                     <div class="col-md-9">
                         <div class="d-flex gap-2 justify-content-end align-items-center flex-wrap">
@@ -46,7 +46,7 @@
                             <div class="d-flex gap-2 flex-wrap">
                                 <!-- Filter Category -->
                                 <select class="form-select form-select-sm" id="filterCategory" style="width: 150px;">
-                                    <option value="">All Categories</option>
+                                    <option value="">{{ __('admin.ebooks.all_categories') }}</option>
                                     @foreach(\App\Models\Category::orderBy('name')->get() as $category)
                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach
@@ -54,7 +54,7 @@
 
                                 <!-- Filter City -->
                                 <select class="form-select form-select-sm" id="filterCity" style="width: 140px;">
-                                    <option value="">All Cities</option>
+                                    <option value="">{{ __('admin.ebooks.all_cities') }}</option>
                                     @foreach(\App\Models\City::orderBy('name')->get() as $city)
                                         <option value="{{ $city->id }}">{{ $city->name }}</option>
                                     @endforeach
@@ -81,7 +81,7 @@
                     <div class="col-md-12">
                         <div class="input-group">
                             <span class="input-group-text"><i class="ti ti-search"></i></span>
-                            <input type="text" class="form-control" placeholder="Search ebook in trash..." id="searchEbook">
+                            <input type="text" class="form-control" placeholder="{{ __('admin.ebooks.search_trash') }}" id="searchEbook">
                         </div>
                     </div>
                 </div>
@@ -92,12 +92,12 @@
                 <table class="table table-hover align-middle">
                     <thead style="background-color: #fff; border-bottom: 2px solid #dee2e6;">
                         <tr>
-                            <th style="width: 60px; color: #566a7f; font-weight: 600;">Cover</th>
-                            <th style="width: 35%; color: #566a7f; font-weight: 600;">Title</th>
-                            <th style="width: 15%; color: #566a7f; font-weight: 600;">Creator</th>
-                            <th style="width: 15%; color: #566a7f; font-weight: 600;">Deleted At</th>
+                            <th style="width: 60px; color: #566a7f; font-weight: 600;">{{ __('admin.ebooks.cover') }}</th>
+                            <th style="width: 35%; color: #566a7f; font-weight: 600;">{{ __('admin.ebooks.title') }}</th>
+                            <th style="width: 15%; color: #566a7f; font-weight: 600;">{{ __('admin.ebooks.creator') }}</th>
+                            <th style="width: 15%; color: #566a7f; font-weight: 600;">{{ __('admin.ebooks.deleted_at') }}</th>
                             <!-- <th style="width: 12%; color: #566a7f; font-weight: 600;">Status</th> -->
-                            <th style="width: 80px; text-align: center; color: #566a7f; font-weight: 600;">Actions</th>
+                            <th style="width: 80px; text-align: center; color: #566a7f; font-weight: 600;">{{ __('admin.ebooks.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
@@ -151,8 +151,8 @@
                                                 @csrf
                                                 @method('PATCH')
                                                 <button type="submit" class="dropdown-item" 
-                                                    onclick="return confirm('Restore this ebook?')">
-                                                    <i class="ti ti-refresh me-2"></i> Restore
+                                                    onclick="return confirm('{{ __('admin.ebooks.restore_confirm') }}')">
+                                                    <i class="ti ti-refresh me-2"></i> {{ __('admin.ebooks.restore') }}
                                                 </button>
                                             </form>
                                             <div class="dropdown-divider"></div>
@@ -160,8 +160,8 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="dropdown-item text-danger" 
-                                                    onclick="return confirm('Permanently delete this ebook? This action cannot be undone!')">
-                                                    <i class="ti ti-trash-x me-2"></i> Delete Permanently
+                                                    onclick="return confirm('{{ __('admin.ebooks.delete_permanent_confirm') }}')">
+                                                    <i class="ti ti-trash-x me-2"></i> {{ __('admin.ebooks.delete_permanent') }}
                                                 </button>
                                             </form>
                                         </div>
@@ -172,7 +172,7 @@
                             <tr>
                                 <td colspan="6" class="text-center py-5">
                                     <i class="ti ti-trash" style="font-size: 48px; color: #ddd;"></i>
-                                    <p class="mt-2 text-muted">Trash is empty</p>
+                                    <p class="mt-2 text-muted">{{ __('admin.ebooks.trash_empty') }}</p>
                                 </td>
                             </tr>
                         @endforelse
@@ -200,8 +200,8 @@
                                                 @csrf
                                                 @method('PATCH')
                                                 <button type="submit" class="dropdown-item" 
-                                                    onclick="return confirm('Restore this ebook?')">
-                                                    <i class="ti ti-refresh me-2"></i> Restore
+                                                    onclick="return confirm('{{ __('admin.ebooks.restore_confirm') }}')">
+                                                    <i class="ti ti-refresh me-2"></i> {{ __('admin.ebooks.restore') }}
                                                 </button>
                                             </form>
                                             <div class="dropdown-divider"></div>
@@ -209,8 +209,8 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="dropdown-item text-danger" 
-                                                    onclick="return confirm('Permanently delete this ebook? This action cannot be undone!')">
-                                                    <i class="ti ti-trash-x me-2"></i> Delete Permanently
+                                                    onclick="return confirm('{{ __('admin.ebooks.delete_permanent_confirm') }}')">
+                                                    <i class="ti ti-trash-x me-2"></i> {{ __('admin.ebooks.delete_permanent') }}
                                                 </button>
                                             </form>
                                         </div>
@@ -238,7 +238,7 @@
                                 <div class="card-body d-flex flex-column">
                                     <div class="mb-2">
                                         <h5 class="card-title mb-1">{{ Str::limit($ebook->title, 30) }}</h5>
-                                        <span class="badge bg-danger">Trashed</span>
+                                        <span class="badge bg-danger">{{ __('admin.ebooks.trashed') }}</span>
                                     </div>
                                     <p class="card-text small text-muted mb-3"
                                         style="flex-grow: 1; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">
@@ -259,7 +259,7 @@
                     @empty
                         <div class="col-12 text-center py-5">
                             <i class="ti ti-trash" style="font-size: 48px; color: #ddd;"></i>
-                            <p class="mt-2 text-muted">Trash is empty</p>
+                            <p class="mt-2 text-muted">{{ __('admin.ebooks.trash_empty') }}</p>
                         </div>
                     @endforelse
                 </div>

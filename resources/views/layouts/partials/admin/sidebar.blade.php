@@ -338,12 +338,33 @@
                 'website.faqs-content.view',
                 'website.faqs-content.create',
                 'website.faqs-content.edit',
-                'website.faqs-content.delete'
+                'website.faqs-content.delete',
+                // Policy permissions
+                'website.policies-help.view',
+                'website.policies-help.create',
+                'website.policies-help.edit',
+                'website.policies-help.delete',
+                'website.policies-privacy.view',
+                'website.policies-privacy.create',
+                'website.policies-privacy.edit',
+                'website.policies-privacy.delete',
+                'website.policies-terms.view',
+                'website.policies-terms.create',
+                'website.policies-terms.edit',
+                'website.policies-terms.delete',
+                'website.policies-shopping.view',
+                'website.policies-shopping.create',
+                'website.policies-shopping.edit',
+                'website.policies-shopping.delete',
+                'website.policies-payment.view',
+                'website.policies-payment.create',
+                'website.policies-payment.edit',
+                'website.policies-payment.delete'
             ];
         @endphp
         @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission($websitePermissions))
             <li
-                class="menu-item {{ Request::is('admin/collection-order*') || Request::is('admin/banners*') || Request::is('admin/collections*') || Request::is('admin/landing-page-content*') || Request::is('admin/about-us*') || Request::is('admin/contact-info*') || Request::is('admin/site-settings*') || Request::is('admin/faqs*') ? 'active open' : '' }}">
+                class="menu-item {{ Request::is('admin/collection-order*') || Request::is('admin/banners*') || Request::is('admin/collections*') || Request::is('admin/landing-page-content*') || Request::is('admin/about-us*') || Request::is('admin/contact-info*') || Request::is('admin/site-settings*') || Request::is('admin/faqs*') || Request::is('admin/policies*') ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons ti ti-settings"></i>
                     <div data-i18n="Website Management">{{ __('admin.menu.website_setting') }}</div>
@@ -475,6 +496,81 @@
                                     <li class="menu-item {{ Request::is('admin/faqs/content*') ? 'active' : '' }}">
                                         <a href="{{ route('admin.faqs.content.index') }}" class="menu-link">
                                             <div data-i18n="Content">Content & Features</div>
+                                        </a>
+                                    </li>
+                                @endif
+                            </ul>
+                        </li>
+                    @endif
+
+                    <!-- Policy Management (Nested) -->
+                    @php
+                        $policyPermissions = [
+                            'website.policies-help.view',
+                            'website.policies-help.create',
+                            'website.policies-help.edit',
+                            'website.policies-help.delete',
+                            'website.policies-privacy.view',
+                            'website.policies-privacy.create',
+                            'website.policies-privacy.edit',
+                            'website.policies-privacy.delete',
+                            'website.policies-terms.view',
+                            'website.policies-terms.create',
+                            'website.policies-terms.edit',
+                            'website.policies-terms.delete',
+                            'website.policies-shopping.view',
+                            'website.policies-shopping.create',
+                            'website.policies-shopping.edit',
+                            'website.policies-shopping.delete',
+                            'website.policies-payment.view',
+                            'website.policies-payment.create',
+                            'website.policies-payment.edit',
+                            'website.policies-payment.delete'
+                        ];
+                    @endphp
+                    @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission($policyPermissions))
+                        <li class="menu-item {{ Request::is('admin/policies*') ? 'active open' : '' }}">
+                            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                                <i class="menu-icon tf-icons ti ti-file-text"></i>
+                                <div data-i18n="Policy">Policy</div>
+                            </a>
+                            <ul class="menu-sub">
+                                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.policies-help.view', 'website.policies-help.create', 'website.policies-help.edit', 'website.policies-help.delete']))
+                                    <li class="menu-item {{ Request::is('admin/policies/help*') ? 'active' : '' }}">
+                                        <a href="{{ route('admin.policies.help.index') }}" class="menu-link">
+                                            <div data-i18n="HelpCenter">Help Center</div>
+                                        </a>
+                                    </li>
+                                @endif
+
+                                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.policies-privacy.view', 'website.policies-privacy.create', 'website.policies-privacy.edit', 'website.policies-privacy.delete']))
+                                    <li class="menu-item {{ Request::is('admin/policies/privacy*') ? 'active' : '' }}">
+                                        <a href="{{ route('admin.policies.privacy.index') }}" class="menu-link">
+                                            <div data-i18n="PrivacyPolicy">Privacy Policy</div>
+                                        </a>
+                                    </li>
+                                @endif
+
+                                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.policies-terms.view', 'website.policies-terms.create', 'website.policies-terms.edit', 'website.policies-terms.delete']))
+                                    <li class="menu-item {{ Request::is('admin/policies/terms*') ? 'active' : '' }}">
+                                        <a href="{{ route('admin.policies.terms.index') }}" class="menu-link">
+                                            <div data-i18n="TermsConditions">Terms & Conditions</div>
+                                        </a>
+                                    </li>
+                                @endif
+
+                                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.policies-shopping.view', 'website.policies-shopping.create', 'website.policies-shopping.edit', 'website.policies-shopping.delete']))
+                                    <li class="menu-item {{ Request::is('admin/policies/shopping*') ? 'active' : '' }}">
+                                        <a href="{{ route('admin.policies.shopping.index') }}" class="menu-link">
+                                            <div data-i18n="ShoppingPolicy">Shopping Policy</div>
+                                        </a>
+                                    </li>
+                                @endif
+
+                                @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.policies-payment.view', 'website.policies-payment.create', 'website.policies-payment.edit', 'website.policies-payment.delete']))
+                                    <li class="menu-item {{ Request::is('admin/policies/payment*') ? 'active' : '' }}">
+                                        <a href="{{ route('admin.policies.payment.index') }}" class="menu-link">
+                                            <div data-i18n="PaymentPolicy">Payment Policy</div>
                                         </a>
                                     </li>
                                 @endif

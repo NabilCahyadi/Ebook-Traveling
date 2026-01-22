@@ -425,6 +425,37 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
         Route::delete('collections/{collection}', [\App\Http\Controllers\Admin\CollectionController::class, 'destroy'])->name('collections.destroy');
     });
 
+    // Policy Page Management - All Types (help, privacy, terms, shopping, payment)
+    $policyTypes = [
+        'help' => 'help',
+        'privacy' => 'privacy',
+        'terms' => 'terms',
+        'shopping' => 'shopping',
+        'payment' => 'payment'
+    ];
+
+    foreach ($policyTypes as $slug => $methodSuffix) {
+        Route::middleware(["admin.permission:website.policies-{$slug}.view"])->group(function () use ($slug, $methodSuffix) {
+            Route::get("policies/{$slug}", [\App\Http\Controllers\Admin\PolicyController::class, 'index' . ucfirst($methodSuffix)])->name("policies.{$slug}.index");
+        });
+        
+        Route::middleware(["admin.permission:website.policies-{$slug}.create"])->group(function () use ($slug, $methodSuffix) {
+            Route::get("policies/{$slug}/create", [\App\Http\Controllers\Admin\PolicyController::class, 'create' . ucfirst($methodSuffix)])->name("policies.{$slug}.create");
+            Route::post("policies/{$slug}", [\App\Http\Controllers\Admin\PolicyController::class, 'store' . ucfirst($methodSuffix)])->name("policies.{$slug}.store");
+        });
+        
+        Route::middleware(["admin.permission:website.policies-{$slug}.edit"])->group(function () use ($slug, $methodSuffix) {
+            Route::get("policies/{$slug}/{id}/edit", [\App\Http\Controllers\Admin\PolicyController::class, 'edit' . ucfirst($methodSuffix)])->name("policies.{$slug}.edit");
+            Route::put("policies/{$slug}/{id}", [\App\Http\Controllers\Admin\PolicyController::class, 'update' . ucfirst($methodSuffix)])->name("policies.{$slug}.update");
+            Route::post("policies/{$slug}/update-order", [\App\Http\Controllers\Admin\PolicyController::class, 'updateOrder' . ucfirst($methodSuffix)])->name("policies.{$slug}.update-order");
+        });
+        
+        Route::middleware(["admin.permission:website.policies-{$slug}.delete"])->group(function () use ($slug, $methodSuffix) {
+            Route::delete("policies/{$slug}/{id}", [\App\Http\Controllers\Admin\PolicyController::class, 'destroy' . ucfirst($methodSuffix)])->name("policies.{$slug}.destroy");
+            Route::post("policies/{$slug}/bulk-delete", [\App\Http\Controllers\Admin\PolicyController::class, 'bulkDelete' . ucfirst($methodSuffix)])->name("policies.{$slug}.bulk-delete");
+        });
+    }
+
     // FAQ Management - All Categories
     $faqCategories = [
         'pricing' => 'pricing',
