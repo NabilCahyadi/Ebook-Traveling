@@ -31,13 +31,6 @@ $PHP_BIN artisan route:clear
 echo "🗄️  Running fresh migrations with seeders..."
 $PHP_BIN artisan migrate --force
 
-$PHP_BIN artisan db:seed --class=AboutUsSectionsSeeder --force || true
-$PHP_BIN artisan db:seed --class=ContactInfoSeeder --force || true
-$PHP_BIN artisan db:seed --class=FaqSeeder --force || true
-$PHP_BIN artisan db:seed --class=SiteSettingsSeeder --force || true
-$PHP_BIN artisan db:seed --class=FaqPageSeeder --force || true
-$PHP_BIN artisan db:seed --class=PolicyPageSeeder --force || true
-$PHP_BIN artisan db:seed --class=PaymentSeeder --force || true
 
 # Create storage symlink (PENTING untuk akses file dari public)
 echo "🔗 Creating storage symbolic link..."
