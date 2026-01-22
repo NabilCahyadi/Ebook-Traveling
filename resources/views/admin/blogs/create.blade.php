@@ -111,18 +111,18 @@
 
                             <!-- Tags Input -->
                             <div class="mb-3">
-                                <label class="form-label" for="tags">Tags <span class="text-muted">({{ __('admin.common.optional') }})</span></label>
+                                <label class="form-label" for="tags">{{ __('admin.blogs.tags') }} <span class="text-muted">({{ __('admin.common.optional') }})</span></label>
                                 <input type="text" 
                                     class="form-control @error('tags') is-invalid @enderror" 
                                     id="tags" 
                                     name="tags" 
                                     value="{{ old('tags') }}"
-                                    placeholder="Type and press Enter to add tags..."
+                                    placeholder="{{ __('admin.blogs.tags_placeholder') }}"
                                     data-role="tagsinput">
                                 @error('tags')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                <div class="form-text">Press Enter after each tag. Example: sejarah-indonesia, test-blog</div>
+                                <div class="form-text">{{ __('admin.blogs.tags_help') }}</div>
                             </div>
                         </div>
                     </div>
@@ -139,7 +139,7 @@
                                 <input type="text" 
                                     class="form-control @error('author_id') is-invalid @enderror" 
                                     id="author_search" 
-                                    placeholder="Type to search author..."
+                                    placeholder="{{ __('admin.blogs.search_author_placeholder') }}"
                                     autocomplete="off">
                                 <input type="hidden" name="author_id" id="author_id" value="{{ old('author_id') }}">
                                 
@@ -154,7 +154,7 @@
                                 @enderror
                                 <div class="form-text text-info">
                                     <i class="ti ti-info-circle me-1"></i>
-                                    Biarkan kosong jika blog ini dibuat oleh <strong>MeatMap Team</strong>
+                                    {!! __('admin.blogs.leave_empty_for_team') !!}
                                 </div>
                             </div>
                             
@@ -213,8 +213,8 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div id="imagePreview" class="mt-2" style="display: none;">
-                                <img src="" alt="Preview" class="img-fluid rounded">
+                            <div id="imagePreview" class="mt-2" style="display: none; width: 100%; height: 500px; border: 2px solid #d9dee3; border-radius: 8px; overflow: hidden; padding: 10px; background-color: #f8f9fa;">
+                                <img src="" alt="Preview" style="width: 100%; height: 100%; object-fit: contain;">
                             </div>
                         </div>
                     </div>
@@ -259,70 +259,70 @@
                 <div class="col-12">
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h5 class="mb-0"><i class="bx bx-search-alt me-2"></i>SEO Settings</h5>
+                            <h5 class="mb-0"><i class="bx bx-search-alt me-2"></i>{{ __('admin.blogs.seo_settings') }}</h5>
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-12 mb-3">
-                                    <label class="form-label" for="meta_title">Meta Title</label>
+                                    <label class="form-label" for="meta_title">{{ __('admin.blogs.meta_title') }}</label>
                                     <input type="text" 
                                         class="form-control @error('meta_title') is-invalid @enderror" 
                                         id="meta_title" 
                                         name="meta_title" 
                                         value="{{ old('meta_title') }}"
                                         maxlength="500"
-                                        placeholder="SEO title for search engines (leave empty to use blog title)">
+                                        placeholder="{{ __('admin.blogs.meta_title_placeholder') }}">
                                     @error('meta_title')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                     <div class="form-text">
-                                        <span id="meta_title_count">0</span>/500 characters. Optimal: 50-60 characters.
+                                        <span id="meta_title_count">0</span>/500 {{ __('admin.blogs.meta_title_count') }}
                                     </div>
                                 </div>
                                 
                                 <div class="col-md-12 mb-3">
-                                    <label class="form-label" for="meta_description">Meta Description</label>
+                                    <label class="form-label" for="meta_description">{{ __('admin.blogs.meta_description') }}</label>
                                     <textarea 
                                         class="form-control @error('meta_description') is-invalid @enderror" 
                                         id="meta_description" 
                                         name="meta_description" 
                                         rows="3"
                                         maxlength="1000"
-                                        placeholder="SEO description for search engines (leave empty to use excerpt)">{{ old('meta_description') }}</textarea>
+                                        placeholder="{{ __('admin.blogs.meta_description_placeholder') }}">{{ old('meta_description') }}</textarea>
                                     @error('meta_description')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                     <div class="form-text">
-                                        <span id="meta_description_count">0</span>/1000 characters. Optimal: 150-160 characters.
+                                        <span id="meta_description_count">0</span>/1000 {{ __('admin.blogs.meta_description_count') }}
                                     </div>
                                 </div>
                                 
                                 <div class="col-md-12 mb-3">
-                                    <label class="form-label" for="meta_keywords">Meta Keywords</label>
+                                    <label class="form-label" for="meta_keywords">{{ __('admin.blogs.meta_keywords') }}</label>
                                     <input type="text" 
                                         class="form-control @error('meta_keywords') is-invalid @enderror" 
                                         id="meta_keywords" 
                                         name="meta_keywords" 
                                         value="{{ old('meta_keywords') }}"
                                         maxlength="500"
-                                        placeholder="Separate keywords with commas (e.g., travel, ebook, indonesia)">
+                                        placeholder="{{ __('admin.blogs.meta_keywords_placeholder') }}">
                                     @error('meta_keywords')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                     <div class="form-text">
-                                        <span id="meta_keywords_count">0</span>/500 characters. Recommended: 5-10 keywords.
+                                        <span id="meta_keywords_count">0</span>/500 {{ __('admin.blogs.meta_keywords_count') }}
                                     </div>
                                 </div>
                             </div>
                             
                             <div class="alert alert-info mb-0">
                                 <i class="bx bx-info-circle me-2"></i>
-                                <strong>SEO Tips:</strong>
+                                <strong>{{ __('admin.blogs.seo_tips') }}</strong>
                                 <ul class="mb-0 mt-2">
-                                    <li>Meta Title: Use relevant keywords and keep it under 60 characters</li>
-                                    <li>Meta Description: Write compelling descriptions that encourage clicks (150-160 characters)</li>
-                                    <li>Meta Keywords: Use relevant, specific keywords related to your content</li>
-                                    <li>If left empty, the system will use the blog title and excerpt automatically</li>
+                                    <li>{{ __('admin.blogs.seo_tip_1') }}</li>
+                                    <li>{{ __('admin.blogs.seo_tip_2') }}</li>
+                                    <li>{{ __('admin.blogs.seo_tip_3') }}</li>
+                                    <li>{{ __('admin.blogs.seo_tip_4') }}</li>
                                 </ul>
                             </div>
                         </div>
@@ -335,31 +335,31 @@
                 <div class="col-12">
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h5 class="mb-0">Related Ebooks</h5>
+                            <h5 class="mb-0">{{ __('admin.blogs.related_ebooks') }}</h5>
                         </div>
                         <div class="card-body">
                             <!-- Filters -->
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <label class="form-label">Search</label>
+                                    <label class="form-label">{{ __('admin.blogs.search') }}</label>
                                     <input type="text" 
                                         class="form-control" 
                                         id="ebook_search" 
-                                        placeholder="Search ebooks...">
+                                        placeholder="{{ __('admin.blogs.search_ebooks') }}">
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label">Filter by City</label>
+                                    <label class="form-label">{{ __('admin.blogs.filter_by_city') }}</label>
                                     <select class="form-select" id="city_filter">
-                                        <option value="">All Cities</option>
+                                        <option value="">{{ __('admin.blogs.all_cities') }}</option>
                                         @foreach($cities as $city)
                                             <option value="{{ $city->id }}">{{ $city->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label">Filter by Category</label>
+                                    <label class="form-label">{{ __('admin.blogs.filter_by_category') }}</label>
                                     <select class="form-select" id="category_filter">
-                                        <option value="">All Categories</option>
+                                        <option value="">{{ __('admin.blogs.all_categories') }}</option>
                                         @foreach($ebookCategories as $category)
                                             <option value="{{ $category->id }}">{{ $category->name }}</option>
                                         @endforeach
@@ -375,11 +375,11 @@
                                             <th style="width: 50px;">
                                                 <input type="checkbox" class="form-check-input" id="select_all">
                                             </th>
-                                            <th style="width: 100px;">Cover</th>
-                                            <th>Title</th>
-                                            <th style="width: 150px;">Creator</th>
-                                            <th style="width: 150px;">City</th>
-                                            <th style="width: 200px;">Categories</th>
+                                            <th style="width: 100px;">{{ __('admin.blogs.cover') }}</th>
+                                            <th>{{ __('admin.blogs.title') }}</th>
+                                            <th style="width: 150px;">{{ __('admin.blogs.creator') }}</th>
+                                            <th style="width: 150px;">{{ __('admin.blogs.city') }}</th>
+                                            <th style="width: 200px;">{{ __('admin.blogs.categories') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody id="ebooks_table_body">
@@ -428,7 +428,7 @@
                                             @endforeach
                                         @else
                                             <tr>
-                                                <td colspan="6" class="text-center text-muted">No ebooks available</td>
+                                                <td colspan="6" class="text-center text-muted">{{ __('admin.blogs.no_ebooks_available') }}</td>
                                             </tr>
                                         @endif
                                     </tbody>
@@ -439,7 +439,7 @@
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                             <div class="form-text mt-2">
-                                <span id="selected_count">0</span> ebook(s) selected
+                                <span id="selected_count">0</span> {{ __('admin.blogs.ebooks_selected') }}
                             </div>
                         </div>
                     </div>
