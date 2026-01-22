@@ -1,49 +1,103 @@
 @extends('layouts_lp.app')
+
 @section('title', 'Blog & Travel Guides - MeatMap')
 
 @section('meta')
-    {{-- Basic Meta Tags --}}
-    <meta name="description" content="Explore the latest travel guides, destination tips, and inspiring stories from MeatMap. Discover hidden gems, local cuisine, and travel insights.">
-    <meta name="keywords" content="travel blog, travel guides, destination tips, travel stories, meatmap blog, travel inspiration, indonesia travel">
+    <meta name="description" content="Explore the latest travel guides, destination tips, and inspiring stories from MeatMap.">
+    <meta name="keywords" content="travel blog, travel guides, destination tips, meatmap blog">
     <meta name="author" content="MeatMap Team">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ url()->current() }}">
-    
-    {{-- Open Graph / Facebook --}}
+
     <meta property="og:type" content="website">
     <meta property="og:title" content="Blog & Travel Guides - MeatMap">
-    <meta property="og:description" content="Explore the latest travel guides, destination tips, and inspiring stories from MeatMap. Discover hidden gems and travel insights.">
+    <meta property="og:description" content="Explore travel guides and destination tips from MeatMap.">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:site_name" content="MeatMap">
     <meta property="og:image" content="{{ asset('images/only-logoo.png') }}">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    
-    {{-- Twitter Card --}}
+
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Blog & Travel Guides - MeatMap">
-    <meta name="twitter:description" content="Explore the latest travel guides, destination tips, and inspiring stories from MeatMap.">
+    <meta name="twitter:description" content="Explore travel guides and destination tips from MeatMap.">
     <meta name="twitter:image" content="{{ asset('images/only-logoo.png') }}">
-    
-    {{-- Schema.org structured data for Blog --}}
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "Blog",
-        "name": "MeatMap Blog",
-        "description": "Travel guides, destination tips, and inspiring stories",
-        "url": "{{ url()->current() }}",
-        "publisher": {
-            "@type": "Organization",
-            "name": "MeatMap",
-            "logo": {
-                "@type": "ImageObject",
-                "url": "{{ asset('images/only-logoo.png') }}"
-            }
-        }
-    }
-    </script>
 @endsection
+
+@section('content')
+
+<main class="main">
+    <div class="page-header mt-30 mb-30">
+        <div class="container">
+            <h3>Blog & News</h3>
+        </div>
+    </div>
+
+    <div class="page-content mb-50">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-lg-12">
+                    <div class="row">
+
+                        @forelse ($blogs as $blog)
+                            <article class="col-xl-3 col-lg-4 col-md-6 mb-30 text-center hover-up">
+
+                                <div class="post-thumb">
+                                    <a href="{{ route('blogs.show', $blog->slug) }}">
+                                        <img
+                                            src="{{ $blog->featured_image_url }}"
+                                            alt="{{ $blog->title }}"
+                                            style="width:100%;height:250px;object-fit:cover;border-radius:15px;"
+                                        >
+                                    </a>
+                                </div>
+
+                                <div class="entry-content-2 mt-15">
+                                    <h6 class="text-muted">{{ $blog->category }}</h6>
+
+                                    <h5 class="post-title mt-10">
+                                        <a href="{{ route('blogs.show', $blog->slug) }}">
+                                            {{ Str::limit($blog->title, 60) }}
+                                        </a>
+                                    </h5>
+
+                                    <div class="entry-meta font-xs mt-10 text-muted">
+                                        <span>{{ $blog->published_at->format('d F Y') }}</span>
+                                        <span class="ml-10 has-dot">
+                                            {{
+                                                $blog->view_count >= 1000000000
+                                                    ? number_format($blog->view_count / 1000000000, 1) . 'B'
+                                                    : ($blog->view_count >= 1000000
+                                                        ? number_format($blog->view_count / 1000000, 1) . 'M'
+                                                        : ($blog->view_count >= 1000
+                                                            ? number_format($blog->view_count / 1000, 1) . 'k'
+                                                            : $blog->view_count))
+                                            }}
+                                            Views
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </article>
+                        @empty
+                            <div class="col-12 text-center py-5">
+                                <p class="text-muted">No blog posts available.</p>
+                            </div>
+                        @endforelse
+
+                    </div>
+
+                    <div class="pagination-area mt-30">
+                        {{ $blogs->links() }}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+@endsection
+
 
 @section('content')
 <style>
@@ -275,35 +329,39 @@
                                                 // Check if image is external URL or local storage
                                                 $imageUrl = $blog->featured_image_url;
                                             @endphp
-                                            <img class="border-radius-15" src="{{ $imageUrl }}" alt="{{ $blog->title }}" />
+                                            <img class="border-radius-15" src="{{ $imageUrl }}"
+                                                alt="{{ $blog->title }}" />
                                         </a>
                                     </div>
                                 </div>
                                 <div class="entry-content-2">
-                                    <h6 class="mb-10 font-sm"><a class="entry-meta text-muted" href="#">{{ $blog->category }}</a></h6>
+                                    <h6 class="mb-10 font-sm"><a class="entry-meta text-muted"
+                                            href="#">{{ $blog->category }}</a></h6>
                                     <h5 class="post-title mb-15">
-                                        <a href="{{ route('blogs.show', $blog->slug) }}">{{ Str::limit($blog->title, 60) }}</a>
+                                        <a
+                                            href="{{ route('blogs.show', $blog->slug) }}">{{ Str::limit($blog->title, 60) }}</a>
                                     </h5>
                                     <div class="entry-meta font-xs color-grey mt-10 pb-10">
                                         <div>
-                                            <span class="post-on mr-10">{{ $blog->published_at->format('d F Y') }}</span>
+                                            <span
+                                                class="post-on mr-10">{{ $blog->published_at->format('d F Y') }}</span>
                                             <span class="post-on has-dot">
-                                                @php
-                                                $views = $blog->view_count;
-                                                if ($views >= 1000000000) { // 1 Miliar
-                                                $formattedViews = number_format($views / 1000000000, 1) . 'B';
-                                                } elseif ($views >= 1000000) { // 1 Juta
-                                                $formattedViews = number_format($views / 1000000, 1) . 'M';
-                                                } elseif ($views >= 1000) { // 1 Ribu
-                                                $formattedViews = number_format($views / 1000, 1) . 'k';
-                                                } else {
-                                                $formattedViews = $views;
-                                                }
-                                                @endphp
-                                                {{ $formattedViews }} Views
+                                                @php($views = $blog->view_count)
+
+                                                @if ($views >= 1000000000)
+                                                    {{ number_format($views / 1000000000, 1) }}B
+                                                @elseif ($views >= 1000000)
+                                                    {{ number_format($views / 1000000, 1) }}M
+                                                @elseif ($views >= 1000)
+                                                    {{ number_format($views / 1000, 1) }}k
+                                                @else
+                                                    {{ $views }}
+                                                @endif
+                                                Views
                                             </span>
                                             {{-- Jika Anda menambah kolom read_time (dalam menit) --}}
-                                            {{--<span class="hit-count has-dot">{{ $blog->read_time ?? 5 }} mins read</span>--}}
+                                            {{--<span class="hit-count has-dot">{{ $blog->read_time ?? 5 }} mins
+                                                read</span>--}}
                                         </div>
                                     </div>
                                 </div>
