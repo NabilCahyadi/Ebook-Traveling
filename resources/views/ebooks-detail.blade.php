@@ -391,7 +391,7 @@
     <div class="page-header breadcrumb-wrap">
         <div class="container">
             <div class="breadcrumb">
-                <a href="{{ route('home') }}" rel="nofollow"><i class="fi-rs-home mr-5"></i></a>
+                <a href="{{ route('home') }}" rel="nofollow"><i class="fi fi-rs-home mr-5"></i></a>
                 <span></span>
                 <a href="/">E-Books</a>
                 <span class="active">‎ ‎ {{ $ebook->title }}</span>
@@ -451,12 +451,12 @@
                                         <li class="d-flex align-items-center gap-2">
                                             @if(auth()->check() && auth()->user()->hasActiveSubscription())
                                             <a href="{{ route('user.ebook.read', $ebook->slug) }}" class="action-btn btn-read-now">
-                                                <i class="fi-rs-book-open"></i>
+                                                <i class="fi fi-rs-book-open"></i>
                                                 <span>Read Now</span>
                                             </a>
                                             @else
                                             <a href="/pricing" class="action-btn btn-subscribe-now">
-                                                <i class="fi-rs-lock"></i>
+                                                <i class="fi fi-rs-lock"></i>
                                                 <span>Subscribe to Read</span>
                                             </a>
                                             @endif
@@ -723,7 +723,7 @@
                                                 </div>
                                             </div>
                                             <div class="read-count">
-                                                <i class="fi-rs-eye align-middle"></i>
+                                                <i class="fi fi-rs-eye align-middle"></i>
                                                 <span class="post-on">
                                                     @php
                                                     $views = $ebook->view_count;
@@ -747,12 +747,12 @@
                                         {{-- LOGIKA HANYA PADA TOMBOL AKSI --}}
                                         @if(auth()->check() && auth()->user()->hasActiveSubscription())
                                         <a href="{{ route('user.ebook.read', $ebook->slug) }}" class="action-btn btn-read-now">
-                                            <i class="fi-rs-book-open"></i>
+                                            <i class="fi fi-rs-book-open"></i>
                                             <span>Read Now</span>
                                         </a>
                                         @else
                                         <a href="/pricing" class="action-btn btn-subscribe-now">
-                                            <i class="fi-rs-lock"></i>
+                                            <i class="fi fi-rs-lock"></i>
                                             <span>Subscribe to Read</span>
                                         </a>
                                         @endif

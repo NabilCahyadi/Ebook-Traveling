@@ -155,7 +155,7 @@
                 <div class="col-xl-12">
                     <h3 class="mb-15">Search Results</h3>
                     <div class="breadcrumb">
-                        <a href="/" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
+                        <a href="/" rel="nofollow"><i class="fi fi-rs-home mr-5"></i>Home</a>
                         <span></span> Search Results
                     </div>
                 </div>
@@ -179,7 +179,7 @@
                 <form action="{{ route('search') }}" method="GET" class="d-inline-flex gap-2 w-100">
                     <input type="text" name="q" value="{{ $query }}" class="form-control" placeholder="Try another search...">
                     <button type="submit" class="btn btn-brand" style="white-space: nowrap;">
-                        <i class="fi-rs-search"></i> Search
+                        <i class="fi fi-rs-search"></i> Search
                     </button>
                 </form>
             </div>
@@ -229,7 +229,7 @@
                             </div>
                         </div>
                         <div class="read-count">
-                            <i class="fi-rs-eye align-middle"></i>
+                            <i class="fi fi-rs-eye align-middle"></i>
                             <span class="post-on">
                                 @php
                                 $views = $ebook->view_count;
@@ -254,18 +254,18 @@
                     @auth
                     @if(auth()->user()->hasActiveSubscription() || $ebook->is_free)
                     <a href="{{ route('reader.show', $ebook->slug) }}" class="action-btn btn-read-now">
-                        <i class="fi-rs-book"></i>
+                        <i class="fi fi-rs-book"></i>
                         <span>Read Now</span>
                     </a>
                     @else
                     <a href="{{ route('pricing') }}" class="action-btn btn-subscribe-now">
-                        <i class="fi-rs-crown"></i>
+                        <i class="fi fi-rs-crown"></i>
                         <span>Subscribe to Read</span>
                     </a>
                     @endif
                     @else
                     <a href="{{ route('pricing') }}" class="action-btn btn-subscribe-now">
-                        <i class="fi-rs-crown"></i>
+                        <i class="fi fi-rs-crown"></i>
                         <span>Subscribe to Read</span>
                     </a>
                     @endauth

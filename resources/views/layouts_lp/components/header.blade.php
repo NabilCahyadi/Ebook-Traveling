@@ -228,7 +228,7 @@
                         <ul>
                             <li>Need help ? Visit<strong>‎ <a href="{{route('help-center')}}" class="text-brand">Help Center</a></strong></li>
                             <!-- <li>
-                                <a class="language-dropdown-active" href="#">English <i class="fi-rs-angle-small-down"></i></a>
+                                <a class="language-dropdown-active" href="#">English <i class="fi fi-rs-angle-small-down"></i></a>
                                 <ul class="language-dropdown">
                                     <li>
                                         <a href="#">Indonesian</a>
@@ -236,7 +236,7 @@
                                 </ul>
                             </li> -->
                             <!-- <li>
-                                <a class="language-dropdown-active" href="#">USD <i class="fi-rs-angle-small-down"></i></a>
+                                <a class="language-dropdown-active" href="#">USD <i class="fi fi-rs-angle-small-down"></i></a>
                                 <ul class="language-dropdown">
                                     <li>
                                         <a href="#"><img src="assets-nest/nest-fe/imgs/theme/flag-fr.png" alt="" />INR</a>
@@ -315,7 +315,7 @@
                                                 <span class="notification-time">2 hours ago</span>
                                             </div>
                                             <div class="notification-delete">
-                                                <a href="#"><i class="fi-rs-cross-small"></i></a>
+                                                <a href="#"><i class="fi fi-rs-cross-small"></i></a>
                                             </div>
                                         </li>
                                         <li class="notification-item">
@@ -328,7 +328,7 @@
                                                 <span class="notification-time">1 day ago</span>
                                             </div>
                                             <div class="notification-delete">
-                                                <a href="#"><i class="fi-rs-cross-small"></i></a>
+                                                <a href="#"><i class="fi fi-rs-cross-small"></i></a>
                                             </div>
                                         </li>
                                         <li class="notification-item">
@@ -341,7 +341,7 @@
                                                 <span class="notification-time">2 days ago</span>
                                             </div>
                                             <div class="notification-delete">
-                                                <a href="#"><i class="fi-rs-cross-small"></i></a>
+                                                <a href="#"><i class="fi fi-rs-cross-small"></i></a>
                                             </div>
                                         </li>
                                     </ul>
@@ -416,8 +416,8 @@
                 <div class="header-nav d-none d-lg-flex">
                     <div class="main-categori-wrap d-none d-lg-block">
                         <a class="categories-button-active" href="#">
-                            <span class="fi-rs-apps"></span>Category
-                            <i class="fi-rs-angle-down"></i>
+                            <span class="fi fi-rs-apps"></span>Category
+                            <i class="fi fi-rs-angle-down"></i>
                         </a>
                         <div id="categories-dropdown-inner" class="categories-dropdown-wrap categories-dropdown-active-large font-heading">
                             <div class="categori-dropdown-inner-new">
