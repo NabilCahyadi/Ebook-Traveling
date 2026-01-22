@@ -22,13 +22,16 @@ class EbookRepository implements EbookRepositoryInterface
         ?string $cityId = null,
         ?string $statusExclude = null
     ): mixed {
-        $query = Ebook::with(['category', 'city']);
+        $query = Ebook::with(['category', 'city', 'creator']);
 
-        // Apply search filter
+        // Apply search filter - search in title, description, and creator name
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'LIKE', "%{$search}%")
-                    ->orWhere('description', 'LIKE', "%{$search}%");
+                    ->orWhere('description', 'LIKE', "%{$search}%")
+                    ->orWhereHas('creator', function ($creatorQuery) use ($search) {
+                        $creatorQuery->where('name', 'LIKE', "%{$search}%");
+                    });
             });
         }
 

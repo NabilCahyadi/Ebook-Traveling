@@ -307,42 +307,6 @@
                                                 </a>
                                             </div>
                                         </div>
-                                        <span class="badge bg-warning" style="font-size: 0.8125rem;">{{ __('admin.ebooks.draft') }}</span>
-                                    @else
-                                        <span class="badge bg-secondary" style="font-size: 0.8125rem;">Archived</span>
-                                    @endif
-                                </td>
-                                <td style="display: none;">
-                                    <span class="text-muted d-flex align-items-center" style="font-size: 0.875rem;">
-                                        <i class="ti ti-eye me-1"></i> {{ number_format($ebook->view_count ?? 0) }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="dropdown">
-                                        <button type="button"
-                                            class="btn btn-sm btn-icon btn-text-secondary rounded-pill dropdown-toggle hide-arrow"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="ti ti-dots-vertical"></i>
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-end">
-                                            <a class="dropdown-item" href="{{ route('admin.ebooks.show', $ebook->id) }}">
-                                                <i class="ti ti-eye me-2"></i> {{ __('admin.actions.view_details') }}
-                                            </a>
-                                            <a class="dropdown-item" href="{{ route('admin.ebooks.edit', $ebook->id) }}">
-                                                <i class="ti ti-pencil me-2"></i> {{ __('admin.actions.edit') }}
-                                            </a>
-                                            <div class="dropdown-divider"></div>
-                                            <form action="{{ route('admin.ebooks.destroy', $ebook->id) }}" method="POST"
-                                                style="display: none;" id="delete-ebook-{{ $ebook->id }}">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
-                                            <a class="dropdown-item text-danger" href="javascript:void(0);"
-                                                onclick="if(confirm('{{ __('admin.actions.delete_confirm') }}')) document.getElementById('delete-ebook-{{ $ebook->id }}').submit();">
-                                                <i class="ti ti-trash me-2"></i> {{ __('admin.actions.delete') }}
-                                            </a>
-                                        </div>
-                                    </div>
                                 </td>
                             </tr>
                             @endif
