@@ -1,37 +1,27 @@
-#!/bin/bash
+PROJECT="/home/u778058510/domains/mappy.id/ebook_traveling_core"
+PHP="/usr/bin/php"
 
-# Path ke project
-PROJECT_PATH="/home/u778058510/domains/mappy.id/ebook_traveling_core"
+cd "$PROJECT" || exit 1
 
-# Path ke PHP (ubah jika hosting berbeda)
-PHP_BIN="/usr/bin/php"
+echo "🚀 Deploy started: $(date)"
 
-# Masuk ke folder project
-cd $PROJECT_PATH
+$PHP artisan down || true
 
-# Update repo dari GitHub
-/usr/bin/git fetch --all
-/usr/bin/git reset --hard origin/main
+git fetch origin
+git reset --hard origin/main
 
-# Install/Update dependencies (optional, uncomment jika perlu)
-# composer install --no-dev --optimize-autoloader
+composer install --no-dev --optimize-autoloader --no-interaction
 
-# Jalankan migrate (HANYA untuk setup awal, ganti setelah ada data production!)
-$PHP_BIN artisan migrate --force
+$PHP artisan optimize:clear
 
+$PHP artisan migrate --force
 
-# Create storage symlink (PENTING untuk akses file dari public)
-$PHP_BIN artisan storage:link
+$PHP artisan storage:link || true
 
-
-# Set permissions untuk storage dan cache
 chmod -R 775 storage bootstrap/cache
-chown -R $USER:$USER storage bootstrap/cache
 
-# Clear optimize (cache, config, view, route, dll)
-$PHP_BIN artisan optimize:clear
+$PHP artisan optimize
 
-# Cache config dan routes untuk performance
-$PHP_BIN artisan config:cache
-$PHP_BIN artisan route:cache
-$PHP_BIN artisan view:cache
+$PHP artisan up
+
+echo "✅ Deploy finished: $(date)"
