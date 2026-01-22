@@ -86,7 +86,7 @@
             <h4 class="fw-bold py-3 mb-2"><span class="text-muted fw-light">{{ __('admin.menu.ebooks') }} /</span> {{ __('admin.ebooks.create_new_ebook') }}</h4>
         </div>
         <div>
-            <a href="{{ route('admin.ebooks.index') }}" class="btn btn-secondary"><i class="ti ti-arrow-left me-1"></i>
+            <a href="{{ route('admin.ebooks.index') }}" class="btn" style="background-color: #ea5455; color: white;"><i class="ti ti-arrow-left me-1"></i>
                 {{ __('admin.ebooks.back') }}</a>
         </div>
     </div>

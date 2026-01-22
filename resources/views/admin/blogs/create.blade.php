@@ -58,7 +58,7 @@
             <h4 class="fw-bold py-3 mb-0">
                 <span class="text-muted fw-light">Admin / Blogs /</span> {{ __('admin.blogs.create_new') }}
             </h4>
-            <a href="{{ route('admin.blogs.index') }}" class="btn btn-secondary">
+            <a href="{{ route('admin.blogs.index') }}" class="btn" style="background-color: #ea5455; color: white;">
                 <i class="bx bx-arrow-back me-1"></i> {{ __('admin.blogs.back') }}
             </a>
         </div>
@@ -177,7 +177,7 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="bx bx-save me-1"></i> {{ __('admin.blogs.create_blog') }}
                                 </button>
-                                <a href="{{ route('admin.blogs.index') }}" class="btn btn-secondary">
+                                <a href="{{ route('admin.blogs.index') }}" class="btn" style="background-color: #ea5455; color: white;">
                                     {{ __('admin.blogs.cancel') }}
                                 </a>
                             </div>
