@@ -56,7 +56,7 @@
                     <div class="col-xl-3">
                         <h3 class="mb-15">Tags Blog</h3>
                         <div class="breadcrumb">
-                            <a href="{{ route('home') }}" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
+                            <a href="{{ route('home') }}" rel="nofollow"><i class="fi fi-rs-home mr-5"></i>Home</a>
                             <span></span> <a href="{{ route('blogs.index') }}">Blog & News</a>
                             <span></span> Tags
                         </div>
@@ -113,10 +113,10 @@
                             <div class="sort-by-cover mr-10">
                                 <div class="sort-by-product-wrap">
                                     <div class="sort-by">
-                                        <span><i class="fi-rs-apps"></i>Show :</span>
+                                        <span><i class="fi fi-rs-apps"></i>Show :</span>
                                     </div>
                                     <div class="sort-by-dropdown-wrap">
-                                        <span>{{ $perPageOptions[$perPage] ?? '10' }} <i class="fi-rs-angle-small-down"></i></span>
+                                        <span>{{ $perPageOptions[$perPage] ?? '10' }} <i class="fi fi-rs-angle-small-down"></i></span>
                                     </div>
                                 </div>
                                 <div class="sort-by-dropdown">
@@ -135,10 +135,10 @@
                             <div class="sort-by-cover">
                                 <div class="sort-by-product-wrap">
                                     <div class="sort-by">
-                                        <span><i class="fi-rs-apps-sort"></i>Sort :</span>
+                                        <span><i class="fi fi-rs-apps-sort"></i>Sort :</span>
                                     </div>
                                     <div class="sort-by-dropdown-wrap">
-                                        <span>{{ $sortOptions[$sortBy] ?? 'Newest' }} <i class="fi-rs-angle-small-down"></i></span>
+                                        <span>{{ $sortOptions[$sortBy] ?? 'Newest' }} <i class="fi fi-rs-angle-small-down"></i></span>
                                     </div>
                                 </div>
                                 <div class="sort-by-dropdown">
@@ -168,7 +168,7 @@
                             @endphp
                             <div class="post-thumb" style="background-image: url({{ $imageUrl }})">
                                 <!-- <div class="entry-meta">
-                                    <a class="entry-meta meta-2" href="{{ route('blogs.show', $blog->slug) }}"><i class="fi-rs-bookmark"></i></a>
+                                    <a class="entry-meta meta-2" href="{{ route('blogs.show', $blog->slug) }}"><i class="fi fi-rs-bookmark"></i></a>
                                 </div> -->
                             </div>
                             @endif
@@ -191,7 +191,7 @@
                                             {{ $formattedViews }} Views
                                         </span>
                                     </div>
-                                    <a href="{{ route('blogs.show', $blog->slug) }}" class="text-brand font-heading font-weight-bold">Read more <i class="fi-rs-arrow-right"></i></a>
+                                    <a href="{{ route('blogs.show', $blog->slug) }}" class="text-brand font-heading font-weight-bold">Read more <i class="fi fi-rs-arrow-right"></i></a>
                                 </div>
 
                                 {{-- Komponen Tags --}}
@@ -223,7 +223,7 @@
                             <div class="search-form">
                                 <form action="{{ route('blogs.index') }}" method="GET">
                                     <input type="text" name="search" placeholder="Search…" value="{{ request('search') }}" />
-                                    <button type="submit"><i class="fi-rs-search"></i></button>
+                                    <button type="submit"><i class="fi fi-rs-search"></i></button>
                                 </form>
                             </div>
                         </div>
@@ -235,7 +235,7 @@
                                 {{-- GANTI $allTags MENJADI $popularTags --}}
                                 @forelse ($popularTags as $tag)
                                 <li class="hover-up">
-                                    <a href="{{ route('blogs.by.tag', $tag) }}"><i class="fi-rs-cross mr-10"></i>{{ $tag }}</a>
+                                    <a href="{{ route('blogs.by.tag', $tag) }}"><i class="fi fi-rs-cross mr-10"></i>{{ $tag }}</a>
                                 </li>
                                 @empty
                                 <li>Belum ada tag populer.</li> {{-- Ubah pesan sedikit --}}

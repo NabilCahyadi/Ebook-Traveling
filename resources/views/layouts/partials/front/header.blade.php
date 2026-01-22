@@ -152,7 +152,7 @@
             <div class="mobile-search search-style-3 mobile-header-border">
                 <form action="{{ route('shop.search') }}" method="GET">
                     <input type="text" name="q" placeholder="Search by E-book Title or Author..." />
-                    <button type="submit"><i class="fi-rs-search"></i></button>
+                    <button type="submit"><i class="fi fi-rs-search"></i></button>
                 </form>
             </div>
             <div class="mobile-menu-wrap mobile-header-border">
@@ -172,3 +172,4 @@
         </div>
     </div>
 </div>
+

@@ -862,8 +862,8 @@ $collections = collect();
                 <a href="/collections/{{ $collection->slug }}" class="show-all d-block d-md-none text-end" style="font-size: 0.70rem !important; margin-top:5px;">View All</a>
                 <a href="/collections/{{ $collection->slug }}" class="show-all d-none d-md-inline text-end">View All</a>
             </div>
-            <button class="scroll-btn scroll-left"><i class="fi-rs-angle-left"></i></button>
-            <button class="scroll-btn scroll-right"><i class="fi-rs-angle-right"></i></button>
+            <button class="scroll-btn scroll-left"><i class="fi fi-rs-angle-left"></i></button>
+            <button class="scroll-btn scroll-right"><i class="fi fi-rs-angle-right"></i></button>
 
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="{{ $collection->slug }}" role="tabpanel">
@@ -919,7 +919,7 @@ $collections = collect();
                                                 </div>
                                             </div>
                                             <div class="read-count">
-                                                <i class="fi-rs-eye align-middle"></i><!--  {{ number_format($ebook->view_count) }} -->
+                                                <i class="fi fi-rs-eye align-middle"></i><!--  {{ number_format($ebook->view_count) }} -->
                                                 <span class="post-on">
                                                     @php
                                                     $views = $ebook->view_count;
@@ -954,12 +954,12 @@ $collections = collect();
                                             {{-- LOGIKA HANYA PADA TOMBOL AKSI --}}
                                             @if(auth()->check() && auth()->user()->hasActiveSubscription())
                                             <a href="{{ route('user.ebook.read', $ebook->slug) }}" class="action-btn btn-read-now">
-                                                <i class="fi-rs-book-open"></i>
+                                                <i class="fi fi-rs-book-open"></i>
                                                 <span>Read Now</span>
                                             </a>
                                             @else
                                             <a href="/pricing#pricing-plans" class="action-btn btn-subscribe-now">
-                                                <i class="fi-rs-lock"></i>
+                                                <i class="fi fi-rs-lock"></i>
                                                 <span>Subscribe to Read</span>
                                             </a>
                                             @endif
@@ -990,7 +990,6 @@ $collections = collect();
                     <h3 class="d-block d-md-none" style="font-size: 0.80rem !important; line-height: 1.2 !important;">Latest Blog</h3>
                     <h3 class="d-none d-md-block" style="font-size: 1.5rem !important; line-height: 1.3 !important;">Latest Blog</h3>
                 </div>
-                <a href="" class="show-all">View All</a>
                 <a href="{{ route('blogs.index') }}" class="show-all d-block d-md-none text-end" style="font-size: 0.70rem !important; margin-top:5px;">View All</a>
                 <a href="{{ route('blogs.index') }}" class="show-all d-none d-md-inline text-end">View All</a>
             </div>

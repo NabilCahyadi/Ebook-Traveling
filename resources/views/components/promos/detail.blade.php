@@ -21,7 +21,7 @@
     @if($promo)
     <div class="container my-4">
         <div class="breadcrumb">
-            <a href="{{ route('home') }}" rel="nofollow"><i class="fi-rs-home mr-5"></i></a>
+            <a href="{{ route('home') }}" rel="nofollow"><i class="fi fi-rs-home mr-5"></i></a>
             <span></span>
             <a href="{{ route('promo') }}">Promo</a>
             <span class="active">‎ ‎ {{ $promo->name }}</span>

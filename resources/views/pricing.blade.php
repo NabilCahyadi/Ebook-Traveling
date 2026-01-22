@@ -603,7 +603,7 @@
                                     <div class="modal-header bg-gradient-success text-white p-4">
                                         <div>
                                             <h5 class="modal-title fw-bold">
-                                                <i class="fi-rs-refresh me-2"></i> Renew {{ $plan->name }}
+                                                <i class="fi fi-rs-refresh me-2"></i> Renew {{ $plan->name }}
                                             </h5>
                                             <small class="opacity-75">+{{ $plan->duration_days }} days access</small>
                                         </div>
@@ -613,7 +613,7 @@
                                         <div class="alert alert-light border-0 bg-light-subtle mb-4">
                                             <div class="d-flex align-items-center">
                                                 <div class="bg-success bg-opacity-10 p-2 rounded">
-                                                    <i class="fi-rs-calendar-check text-success fs-4"></i>
+                                                    <i class="fi fi-rs-calendar-check text-success fs-4"></i>
                                                 </div>
                                                 <div class="ms-3">
                                                     <div class="fw-bold">Current Expiry</div>
@@ -645,7 +645,7 @@
                                             @csrf
                                             <input type="hidden" name="plan_id" value="{{ $plan->id }}">
                                             <button type="submit" class="pricing-button pricing-button--primary w-100 text-white">
-                                                <i class="fi-rs-clock-six me-1"></i> Renew Now
+                                                <i class="fi fi-rs-clock-six me-1"></i> Renew Now
                                             </button>
                                         </form>
                                     </div>
@@ -680,7 +680,7 @@
                                                 </div>
                                             </div>
                                             <div class="px-3 text-muted">
-                                                <i class="fi-rs-arrow-right"></i>
+                                                <i class="fi fi-rs-arrow-right"></i>
                                             </div>
                                             <div class="text-center flex-grow-1">
                                                 <div class="text-primary small fw-medium mb-1">NEW PLAN</div>
@@ -700,7 +700,7 @@
                                             <ul class="list-unstyled mb-0">
                                                 @foreach($plan->features as $feature)
                                                 <li class="mb-2 d-flex align-items-center">
-                                                    <i class="fi-rs-check-circle text-success me-2 fs-6"></i>
+                                                    <i class="fi fi-rs-check-circle text-success me-2 fs-6"></i>
                                                     <span>{{ $feature }}</span>
                                                 </li>
                                                 @endforeach
@@ -727,7 +727,7 @@
                                                 @csrf
                                                 <input type="hidden" name="plan_id" value="{{ $plan->id }}">
                                                 <button type="submit" class="custom-button custom-button--primary px-4">
-                                                    <i class="fi-rs-arrow-up me-2"></i> Upgrade Now
+                                                    <i class="fi fi-rs-arrow-up me-2"></i> Upgrade Now
                                                 </button>
                                             </form>
                                         </div>

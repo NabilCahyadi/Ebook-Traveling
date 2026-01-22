@@ -17,8 +17,8 @@
             dots: false,
             focusOnSelect: true,
             
-            prevArrow: '<button type="button" class="slick-prev"><i class="fi-rs-arrow-small-left"></i></button>',
-            nextArrow: '<button type="button" class="slick-next"><i class="fi-rs-arrow-small-right"></i></button>'
+            prevArrow: '<button type="button" class="slick-prev"><i class="fi fi-rs-arrow-small-left"></i></button>',
+            nextArrow: '<button type="button" class="slick-next"><i class="fi fi-rs-arrow-small-right"></i></button>'
         });
 
         // Remove active class from all thumbnail slides
