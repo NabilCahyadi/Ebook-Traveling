@@ -58,7 +58,7 @@
             <h4 class="fw-bold py-3 mb-0">
                 <span class="text-muted fw-light">Admin / Blogs /</span> {{ __('admin.blogs.create_new') }}
             </h4>
-            <a href="{{ route('admin.blogs.index') }}" class="btn btn-secondary">
+            <a href="{{ route('admin.blogs.index') }}" class="btn" style="background-color: #ea5455; color: white;">
                 <i class="bx bx-arrow-back me-1"></i> {{ __('admin.blogs.back') }}
             </a>
         </div>
@@ -118,7 +118,7 @@
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label class="form-label" for="author_search">{{ __('admin.blogs.author') }} <span class="text-danger">*</span></label>
+                                <label class="form-label" for="author_search">{{ __('admin.blogs.author') }} <span class="text-muted">({{ __('admin.common.optional') }})</span></label>
                                 <input type="text" 
                                     class="form-control @error('author_id') is-invalid @enderror" 
                                     id="author_search" 
@@ -135,7 +135,10 @@
                                 @error('author_id')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
-                                <div class="form-text">Select the blog author</div>
+                                <div class="form-text text-info">
+                                    <i class="ti ti-info-circle me-1"></i>
+                                    Biarkan kosong jika blog ini dibuat oleh <strong>MeatMap Team</strong>
+                                </div>
                             </div>
                             
                             <div class="mb-3">
@@ -174,7 +177,7 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="bx bx-save me-1"></i> {{ __('admin.blogs.create_blog') }}
                                 </button>
-                                <a href="{{ route('admin.blogs.index') }}" class="btn btn-secondary">
+                                <a href="{{ route('admin.blogs.index') }}" class="btn" style="background-color: #ea5455; color: white;">
                                     {{ __('admin.blogs.cancel') }}
                                 </a>
                             </div>

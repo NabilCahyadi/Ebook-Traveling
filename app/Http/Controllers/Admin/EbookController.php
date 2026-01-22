@@ -65,7 +65,7 @@ class EbookController extends Controller
                 'category_ids' => 'required|array|min:1',
                 'category_ids.*' => 'exists:categories,id',
                 'city_id' => 'nullable|exists:cities,id',
-                'creator_id' => 'required|exists:users,id',
+                'creator_id' => 'nullable|exists:users,id',
                 'title' => 'required|string|max:255',
                 'description' => 'required|string',
                 'cover_image_cropped' => 'nullable|string', // base64 dari auto crop
@@ -78,7 +78,6 @@ class EbookController extends Controller
                 'category_ids.min' => 'Pilih minimal 1 kategori untuk ebook.',
                 'category_ids.*.exists' => 'Kategori yang dipilih tidak valid.',
                 'city_id.exists' => 'Kota/destinasi yang dipilih tidak valid.',
-                'creator_id.required' => 'Pembuat ebook wajib dipilih.',
                 'creator_id.exists' => 'Pembuat ebook tidak ditemukan.',
                 'title.required' => 'Judul ebook wajib diisi.',
                 'title.max' => 'Judul ebook maksimal 255 karakter.',
@@ -98,22 +97,9 @@ class EbookController extends Controller
 
             // Check if user is admin (using admin guard)
             $admin = Auth::guard('admin')->user();
-            $isAdmin = $admin ? true : false;
-
-            // Get current authenticated user (try both guards)
-            $user = Auth::guard('admin')->user() ?? Auth::user();
             
-            // If user is not admin and tries to publish, change to waiting_approval
-            if (!$isAdmin && $validated['status'] === 'published') {
-                $validated['status'] = 'waiting_approval';
-            }
-
-            // Set creator_id - if not admin, force use logged in user
-            // If admin, use the selected creator from form
-            if (!$isAdmin && $user) {
-                $validated['creator_id'] = $user->id;
-            }
-            // Admin harus sudah input creator_id di form (sudah divalidasi required)
+            // creator_id is optional - if null, it means "MeatMap Team"
+            // No need to force creator_id, it's already nullable in validation
 
             // Extract category_ids for pivot table attachment
             $categoryIds = $validated['category_ids'];
@@ -162,12 +148,7 @@ class EbookController extends Controller
 
             Log::info('Ebook created successfully:', ['id' => $ebook->id]);
 
-            $message = 'Ebook created successfully!';
-            if (!$isAdmin && $validated['status'] === 'waiting_approval') {
-                $message = 'Ebook submitted for approval. Admin will review it soon.';
-            }
-
-            return redirect()->route('admin.ebooks.index')->with('success', $message);
+            return redirect()->route('admin.ebooks.index')->with('success', 'Ebook created successfully!');
         } catch (\Exception $e) {
             Log::error('Ebook Creation Error:', [
                 'message' => $e->getMessage(),
@@ -367,7 +348,7 @@ class EbookController extends Controller
             'category_ids' => 'required|array|min:1',
             'category_ids.*' => 'exists:categories,id',
             'city_id' => 'nullable|exists:cities,id',
-            'creator_id' => 'required|exists:users,id',
+            'creator_id' => 'nullable|exists:users,id',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'cover_image_cropped' => 'nullable|string', // base64 dari auto crop
@@ -380,7 +361,6 @@ class EbookController extends Controller
             'category_ids.min' => 'Pilih minimal 1 kategori untuk ebook.',
             'category_ids.*.exists' => 'Kategori yang dipilih tidak valid.',
             'city_id.exists' => 'Kota/destinasi yang dipilih tidak valid.',
-            'creator_id.required' => 'Pembuat ebook wajib dipilih.',
             'creator_id.exists' => 'Pembuat ebook tidak ditemukan.',
             'title.required' => 'Judul ebook wajib diisi.',
             'title.max' => 'Judul ebook maksimal 255 karakter.',

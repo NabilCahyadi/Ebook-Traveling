@@ -23,4 +23,10 @@ interface BlogRepositoryInterface
     public function incrementViewCount(string $id);
 
     public function getLatestPublished(int $limit = 4);
+
+    public function getFiltered(array $filters, int $perPage = 15);
+
+    public function getArchived(?string $search = null, int $perPage = 15);
+
+    public function getAllCategories();
 }

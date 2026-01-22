@@ -84,7 +84,7 @@
             <h4 class="fw-bold py-3 mb-2"><span class="text-muted fw-light">{{ __('admin.menu.ebooks') }} /</span> {{ __('admin.ebooks.edit_ebook') }}</h4>
         </div>
         <div>
-            <a href="{{ route('admin.ebooks.index') }}" class="btn btn-secondary"><i class="ti ti-arrow-left me-1"></i>
+            <a href="{{ route('admin.ebooks.index') }}" class="btn" style="background-color: #ea5455; color: white;"><i class="ti ti-arrow-left me-1"></i>
                 {{ __('admin.ebooks.back') }}</a>
         </div>
     </div>
@@ -112,7 +112,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="creator_search" class="form-label">{{ __('admin.ebooks.creator') }} <span class="text-danger">*</span></label>
+                            <label for="creator_search" class="form-label">{{ __('admin.ebooks.creator') }} <span class="text-muted">({{ __('admin.common.optional') }})</span></label>
                             <input type="text" 
                                 class="form-control @error('creator_id') is-invalid @enderror" 
                                 id="creator_search" 
@@ -125,6 +125,11 @@
                             
                             <!-- Selected creator display -->
                             <div id="selected_creator" class="mt-2"></div>
+                            
+                            <div class="form-text text-info">
+                                <i class="ti ti-info-circle me-1"></i>
+                                Biarkan kosong jika ebook ini dibuat oleh <strong>MeatMap Team</strong>
+                            </div>
                             
                             @error('creator_id')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>

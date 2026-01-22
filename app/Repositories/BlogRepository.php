@@ -109,4 +109,20 @@ class BlogRepository implements BlogRepositoryInterface
             ->limit($limit)
             ->get();
     }
+
+    public function getArchived(?string $search = null, int $perPage = 15)
+    {
+        $query = $this->model->onlyTrashed()->with('author');
+
+        // Add search functionality
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('content', 'like', "%{$search}%")
+                    ->orWhere('excerpt', 'like', "%{$search}%");
+            });
+        }
+
+        return $query->latest('deleted_at')->paginate($perPage);
+    }
 }
