@@ -124,7 +124,13 @@
                                             </div>
                                             <small class="text-muted">{{ Str::limit($blog->slug, 35) }}</small>
                                         </td>
-                                        <td>{{ $blog->author->name ?? __('admin.blogs.unknown') }}</td>
+                                        <td>
+                                            @if($blog->author)
+                                                {{ $blog->author->name }}
+                                            @else
+                                                <span class="badge bg-primary">MeatMap Team</span>
+                                            @endif
+                                        </td>
                                         <td>
                                             @if ($blog->category)
                                                 <span class="badge bg-label-info">{{ $blog->category }}</span>

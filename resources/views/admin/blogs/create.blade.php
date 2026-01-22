@@ -107,7 +107,7 @@
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label class="form-label" for="author_search">{{ __('admin.blogs.author') }} <span class="text-danger">*</span></label>
+                                <label class="form-label" for="author_search">{{ __('admin.blogs.author') }} <span class="text-muted">({{ __('admin.common.optional') }})</span></label>
                                 <input type="text" 
                                     class="form-control @error('author_id') is-invalid @enderror" 
                                     id="author_search" 
@@ -124,7 +124,10 @@
                                 @error('author_id')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
-                                <div class="form-text">Select the blog author</div>
+                                <div class="form-text text-info">
+                                    <i class="ti ti-info-circle me-1"></i>
+                                    Biarkan kosong jika blog ini dibuat oleh <strong>MeatMap Team</strong>
+                                </div>
                             </div>
                             
                             <div class="mb-3">

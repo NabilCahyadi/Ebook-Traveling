@@ -1,8 +1,6 @@
-@extends('layouts.admin')
+<?php $__env->startSection('title', __('admin.ebooks.create_new_ebook')); ?>
 
-@section('title', __('admin.ebooks.create_new_ebook'))
-
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.css" />
 <style>
     .ck-editor__editable {
@@ -75,76 +73,100 @@
         cursor: default;
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <!-- (form, left/right columns, preview, modal) -->
     <!-- I will keep your form exactly as before; only ids/classes matter to JS -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h4 class="fw-bold py-3 mb-2"><span class="text-muted fw-light">{{ __('admin.menu.ebooks') }} /</span> {{ __('admin.ebooks.create_new_ebook') }}</h4>
+            <h4 class="fw-bold py-3 mb-2"><span class="text-muted fw-light"><?php echo e(__('admin.menu.ebooks')); ?> /</span> <?php echo e(__('admin.ebooks.create_new_ebook')); ?></h4>
         </div>
         <div>
-            <a href="{{ route('admin.ebooks.index') }}" class="btn btn-secondary"><i class="ti ti-arrow-left me-1"></i>
-                {{ __('admin.ebooks.back') }}</a>
+            <a href="<?php echo e(route('admin.ebooks.index')); ?>" class="btn btn-secondary"><i class="ti ti-arrow-left me-1"></i>
+                <?php echo e(__('admin.ebooks.back')); ?></a>
         </div>
     </div>
 
-    @if (session('success'))
+    <?php if(session('success')): ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Success!</strong> {{ session('success') }}
+            <strong>Success!</strong> <?php echo e(session('success')); ?>
+
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-    @endif
+    <?php endif; ?>
 
-    @if (session('error'))
+    <?php if(session('error')): ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Error!</strong> {{ session('error') }}
+            <strong>Error!</strong> <?php echo e(session('error')); ?>
+
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-    @endif
+    <?php endif; ?>
 
-    @if ($errors->any())
+    <?php if($errors->any()): ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <strong>Validation Error!</strong>
             <ul class="mb-0">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
+                <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <li><?php echo e($error); ?></li>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </ul>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-    @endif
+    <?php endif; ?>
 
-    <form action="{{ route('admin.ebooks.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
+    <form action="<?php echo e(route('admin.ebooks.store')); ?>" method="POST" enctype="multipart/form-data">
+        <?php echo csrf_field(); ?>
         <div class="row">
             <!-- Left Column - Main Information -->
             <div class="col-md-8">
                 <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="card-title mb-4">
-                            <i class="ti ti-book"></i> {{ __('admin.ebooks.ebook_info') }}
+                            <i class="ti ti-book"></i> <?php echo e(__('admin.ebooks.ebook_info')); ?>
+
                         </h5>
 
                         <div class="mb-3">
-                            <label for="title" class="form-label">{{ __('admin.ebooks.title_field') }} <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('title') is-invalid @enderror" id="title"
-                                name="title" value="{{ old('title') }}" placeholder="{{ __('admin.ebooks.title_placeholder') }}" required>
-                            @error('title')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <label for="title" class="form-label"><?php echo e(__('admin.ebooks.title_field')); ?> <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control <?php $__errorArgs = ['title'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="title"
+                                name="title" value="<?php echo e(old('title')); ?>" placeholder="<?php echo e(__('admin.ebooks.title_placeholder')); ?>" required>
+                            <?php $__errorArgs = ['title'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="invalid-feedback"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
 
                         <div class="mb-3">
-                            <label for="creator_search" class="form-label">{{ __('admin.ebooks.creator') }} <span class="text-muted">({{ __('admin.common.optional') }})</span></label>
+                            <label for="creator_search" class="form-label"><?php echo e(__('admin.ebooks.creator')); ?> <span class="text-muted">(<?php echo e(__('admin.common.optional')); ?>)</span></label>
                             <input type="text" 
-                                class="form-control @error('creator_id') is-invalid @enderror" 
+                                class="form-control <?php $__errorArgs = ['creator_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                 id="creator_search" 
-                                placeholder="{{ __('admin.ebooks.creator_search_placeholder') }}"
+                                placeholder="<?php echo e(__('admin.ebooks.creator_search_placeholder')); ?>"
                                 autocomplete="off">
-                            <input type="hidden" name="creator_id" id="creator_id" value="{{ old('creator_id') }}">
+                            <input type="hidden" name="creator_id" id="creator_id" value="<?php echo e(old('creator_id')); ?>">
                             
                             <!-- Autocomplete dropdown -->
                             <div id="creator_suggestions" class="list-group position-absolute w-100" style="z-index: 1000; display: none; max-height: 250px; overflow-y: auto;"></div>
@@ -157,25 +179,40 @@
                                 Biarkan kosong jika ebook ini dibuat oleh <strong>MeatMap Team</strong>
                             </div>
                             
-                            @error('creator_id')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['creator_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="invalid-feedback d-block"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="category_selector" class="form-label">{{ __('admin.ebooks.category') }} <span
+                                <label for="category_selector" class="form-label"><?php echo e(__('admin.ebooks.category')); ?> <span
                                         class="text-danger">*</span></label>
-                                <select class="form-select @error('category_ids') is-invalid @enderror" 
+                                <select class="form-select <?php $__errorArgs = ['category_ids'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                     id="category_selector">
-                                    <option value="">{{ __('admin.ebooks.select_category') }}</option>
-                                    @if (isset($categories))
-                                        @foreach ($categories as $category)
-                                            <option value="{{ $category->id }}" data-name="{{ $category->name }}">
-                                                {{ $category->name }}
+                                    <option value=""><?php echo e(__('admin.ebooks.select_category')); ?></option>
+                                    <?php if(isset($categories)): ?>
+                                        <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($category->id); ?>" data-name="<?php echo e($category->name); ?>">
+                                                <?php echo e($category->name); ?>
+
                                             </option>
-                                        @endforeach
-                                    @endif
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php endif; ?>
                                 </select>
                                 
                                 <!-- Selected Categories Display -->
@@ -186,62 +223,121 @@
                                 <!-- Hidden inputs for form submission -->
                                 <div id="category-inputs"></div>
                                 
-                                @error('category_ids')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                                @error('category_ids.*')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['category_ids'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback d-block"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                <?php $__errorArgs = ['category_ids.*'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback d-block"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label for="city_id" class="form-label">{{ __('admin.ebooks.city') }}</label>
-                                <select class="form-select @error('city_id') is-invalid @enderror" id="city_id"
+                                <label for="city_id" class="form-label"><?php echo e(__('admin.ebooks.city')); ?></label>
+                                <select class="form-select <?php $__errorArgs = ['city_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="city_id"
                                     name="city_id">
-                                    <option value="">{{ __('admin.ebooks.select_city') }}</option>
-                                    @if (isset($cities))
-                                        @foreach ($cities as $city)
-                                            <option value="{{ $city->id }}"
-                                                {{ old('city_id') == $city->id ? 'selected' : '' }}>
-                                                {{ $city->name }}
+                                    <option value=""><?php echo e(__('admin.ebooks.select_city')); ?></option>
+                                    <?php if(isset($cities)): ?>
+                                        <?php $__currentLoopData = $cities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $city): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($city->id); ?>"
+                                                <?php echo e(old('city_id') == $city->id ? 'selected' : ''); ?>>
+                                                <?php echo e($city->name); ?>
+
                                             </option>
-                                        @endforeach
-                                    @endif
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php endif; ?>
                                 </select>
-                                @error('city_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['city_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="description" class="form-label">{{ __('admin.ebooks.description') }} <span
+                            <label for="description" class="form-label"><?php echo e(__('admin.ebooks.description')); ?> <span
                                     class="text-danger">*</span></label>
-                            <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
-                                rows="5" placeholder="{{ __('admin.ebooks.description_placeholder') }}">{{ old('description') }}</textarea>
-                            @error('description')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <textarea class="form-control <?php $__errorArgs = ['description'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="description" name="description"
+                                rows="5" placeholder="<?php echo e(__('admin.ebooks.description_placeholder')); ?>"><?php echo e(old('description')); ?></textarea>
+                            <?php $__errorArgs = ['description'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="invalid-feedback"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
 
                         <div class="row">
                             <div class="col-md-12 mb-3">
-                                <label for="status" class="form-label">{{ __('admin.ebooks.status') }} <span class="text-danger">*</span></label>
-                                <select class="form-select @error('status') is-invalid @enderror" id="status"
+                                <label for="status" class="form-label"><?php echo e(__('admin.ebooks.status')); ?> <span class="text-danger">*</span></label>
+                                <select class="form-select <?php $__errorArgs = ['status'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="status"
                                     name="status" required>
-                                    <option value="draft" {{ old('status', 'draft') == 'draft' ? 'selected' : '' }}>{{ __('admin.ebooks.draft') }}
+                                    <option value="draft" <?php echo e(old('status', 'draft') == 'draft' ? 'selected' : ''); ?>><?php echo e(__('admin.ebooks.draft')); ?>
+
                                     </option>
-                                    <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>
-                                        {{ __('admin.ebooks.published') }}</option>
-                                    <option value="unpublished" {{ old('status') == 'unpublished' ? 'selected' : '' }}>
-                                        {{ __('admin.ebooks.unpublished') }}</option>
-                                    <option value="archived" {{ old('status') == 'archived' ? 'selected' : '' }}>{{ __('admin.ebooks.archived') }}
+                                    <option value="published" <?php echo e(old('status') == 'published' ? 'selected' : ''); ?>>
+                                        <?php echo e(__('admin.ebooks.published')); ?></option>
+                                    <option value="unpublished" <?php echo e(old('status') == 'unpublished' ? 'selected' : ''); ?>>
+                                        <?php echo e(__('admin.ebooks.unpublished')); ?></option>
+                                    <option value="archived" <?php echo e(old('status') == 'archived' ? 'selected' : ''); ?>><?php echo e(__('admin.ebooks.archived')); ?>
+
                                     </option>
                                 </select>
                                 <!-- <small class="text-muted">Admin dapat langsung publish tanpa approval</small> -->
-                                @error('status')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['status'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </div>
                         </div>
                     </div>
@@ -254,29 +350,45 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="card-title mb-3">
-                            <i class="ti ti-photo"></i> {{ __('admin.ebooks.cover_image') }}
+                            <i class="ti ti-photo"></i> <?php echo e(__('admin.ebooks.cover_image')); ?>
+
                         </h5>
 
                         <div class="mb-3">
-                            <label class="form-label">{{ __('admin.ebooks.cover_image_ratio') }}</label>
-                            <input type="file" class="form-control @error('cover_image') is-invalid @enderror"
+                            <label class="form-label"><?php echo e(__('admin.ebooks.cover_image_ratio')); ?></label>
+                            <input type="file" class="form-control <?php $__errorArgs = ['cover_image'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                                 id="coverImageInput" name="cover_image" accept="image/*">
                             <!-- <small class="text-muted">Rasio 1:1.6 (contoh: 650x965px). 
                                 <strong>File besar akan otomatis dikompresi.</strong></small> -->
-                            @error('cover_image')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['cover_image'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="invalid-feedback"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
 
                         <!-- Preview Area -->
                         <div id="previewArea" style="display: none;" class="mt-3">
-                            <label class="form-label">{{ __('admin.ebooks.preview') }}</label>
+                            <label class="form-label"><?php echo e(__('admin.ebooks.preview')); ?></label>
                             <div style="max-width: 200px;">
                                 <img id="previewImage" src="" alt="Preview"
                                     style="width: 100%; border: 2px solid #ddd; border-radius: 8px;">
                             </div>
                             <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="resetCrop()">
-                                <i class="ti ti-x me-1"></i> {{ __('admin.ebooks.remove') }}
+                                <i class="ti ti-x me-1"></i> <?php echo e(__('admin.ebooks.remove')); ?>
+
                             </button>
                         </div>
 
@@ -288,11 +400,18 @@
                 <!-- File and submit same as original -->
                 <div class="card mb-4">
                     <div class="card-body">
-                        <h5 class="card-title mb-3">{{ __('admin.ebooks.pdf_file') }}</h5>
+                        <h5 class="card-title mb-3"><?php echo e(__('admin.ebooks.pdf_file')); ?></h5>
                         <div class="mb-0">
-                            <input type="file" class="form-control @error('pdf_file') is-invalid @enderror"
+                            <input type="file" class="form-control <?php $__errorArgs = ['pdf_file'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                                 id="pdf_file" name="pdf_file" accept=".pdf">
-                            <small class="text-muted">{{ __('admin.ebooks.pdf_hint') }}</small>
+                            <small class="text-muted"><?php echo e(__('admin.ebooks.pdf_hint')); ?></small>
                             <div id="pdfLoadingInfo" class="mt-2" style="display: none;">
                                 <small class="text-info">
                                     <i class="ti ti-loader ti-spin me-1"></i> Membaca jumlah halaman...
@@ -304,9 +423,16 @@
                                     <span id="pdfPageCount"></span> halaman terdeteksi
                                 </small>
                             </div>
-                            @error('pdf_file')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['pdf_file'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="invalid-feedback"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
                 </div>
@@ -314,19 +440,21 @@
                 <div class="card">
                     <div class="card-body">
                         <button type="submit" class="btn btn-primary w-100 mb-2">
-                            <i class="ti ti-check me-1"></i> {{ __('admin.ebooks.create_ebook') }}
+                            <i class="ti ti-check me-1"></i> <?php echo e(__('admin.ebooks.create_ebook')); ?>
+
                         </button>
-                        <a href="{{ route('admin.ebooks.index') }}" class="btn btn-label-secondary w-100">
-                            <i class="ti ti-x me-1"></i> {{ __('admin.ebooks.cancel') }}
+                        <a href="<?php echo e(route('admin.ebooks.index')); ?>" class="btn btn-label-secondary w-100">
+                            <i class="ti ti-x me-1"></i> <?php echo e(__('admin.ebooks.cancel')); ?>
+
                         </a>
                     </div>
                 </div>
             </div>
         </div>
     </form>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script type="importmap">
 {
     "imports": {
@@ -464,9 +592,9 @@
             });
     });
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
     <script>
         (function() {
             // Configuration untuk auto crop
@@ -622,8 +750,8 @@
             const inputsContainer = $('#category-inputs');
             
             // Load old values if validation failed
-            @if(old('category_ids'))
-                const oldCategories = @json(old('category_ids'));
+            <?php if(old('category_ids')): ?>
+                const oldCategories = <?php echo json_encode(old('category_ids'), 15, 512) ?>;
                 categorySelector.find('option').each(function() {
                     const optionValue = $(this).val();
                     const optionName = $(this).data('name');
@@ -632,7 +760,7 @@
                     }
                 });
                 updateDisplay();
-            @endif
+            <?php endif; ?>
             
             // Handle category selection
             categorySelector.on('change', function() {
@@ -685,9 +813,9 @@
         let allCreators = []; // Cache all creators
 
         // Load selected creator if edit mode
-        @if(old('creator_id'))
-            loadSelectedCreator('{{ old('creator_id') }}');
-        @endif
+        <?php if(old('creator_id')): ?>
+            loadSelectedCreator('<?php echo e(old('creator_id')); ?>');
+        <?php endif; ?>
 
         // Load all creators on focus
         creatorSearch.on('focus', function() {
@@ -726,7 +854,7 @@
             creatorSuggestions.html('<div class="list-group-item text-muted"><i class="ti ti-loader ti-spin me-1"></i> Searching...</div>').show();
             
             $.ajax({
-                url: '{{ route('admin.ebooks.search-creators') }}',
+                url: '<?php echo e(route('admin.ebooks.search-creators')); ?>',
                 method: 'GET',
                 data: { q: query },
                 success: function(data) {
@@ -744,7 +872,7 @@
             creatorSuggestions.html('<div class="list-group-item text-muted"><i class="ti ti-loader ti-spin me-1"></i> Loading creators...</div>').show();
             
             $.ajax({
-                url: '{{ route('admin.ebooks.search-creators') }}',
+                url: '<?php echo e(route('admin.ebooks.search-creators')); ?>',
                 method: 'GET',
                 data: { q: '' }, // Empty query to get all
                 success: function(data) {
@@ -808,7 +936,7 @@
 
         function loadSelectedCreator(creatorId) {
             $.ajax({
-                url: '{{ route('admin.ebooks.search-creators') }}',
+                url: '<?php echo e(route('admin.ebooks.search-creators')); ?>',
                 method: 'GET',
                 data: { q: '' },
                 success: function(data) {
@@ -833,4 +961,6 @@
             }
         });
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\ebook_traveling\resources\views/admin/ebooks/create.blade.php ENDPATH**/ ?>

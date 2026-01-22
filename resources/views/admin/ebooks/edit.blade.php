@@ -112,7 +112,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="creator_search" class="form-label">{{ __('admin.ebooks.creator') }} <span class="text-danger">*</span></label>
+                            <label for="creator_search" class="form-label">{{ __('admin.ebooks.creator') }} <span class="text-muted">({{ __('admin.common.optional') }})</span></label>
                             <input type="text" 
                                 class="form-control @error('creator_id') is-invalid @enderror" 
                                 id="creator_search" 
@@ -125,6 +125,11 @@
                             
                             <!-- Selected creator display -->
                             <div id="selected_creator" class="mt-2"></div>
+                            
+                            <div class="form-text text-info">
+                                <i class="ti ti-info-circle me-1"></i>
+                                Biarkan kosong jika ebook ini dibuat oleh <strong>MeatMap Team</strong>
+                            </div>
                             
                             @error('creator_id')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>

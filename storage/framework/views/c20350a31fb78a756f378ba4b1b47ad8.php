@@ -1,12 +1,10 @@
-@extends('layouts.admin')
+<?php $__env->startSection('title', __('admin.ebooks.title')); ?>
 
-@section('title', __('admin.ebooks.title'))
-
-@php
+<?php
     use Illuminate\Support\Facades\Storage;
-@endphp
+?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 
     <style>
         .btn .bx-dots-vertical-rounded {
@@ -17,29 +15,33 @@
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="fw-bold py-3 mb-0">
-                <span class="text-muted fw-light">Admin /</span> {{ __('admin.menu.ebooks') }}
+                <span class="text-muted fw-light">Admin /</span> <?php echo e(__('admin.menu.ebooks')); ?>
+
             </h4>
             <div class="d-flex gap-2">
                 <!-- Toggle Enable Download -->
-                @php
+                <?php
                     $downloadEnabled = \App\Models\SystemSetting::get('enable_ebook_download', '1');
-                @endphp
+                ?>
                 <div class="d-flex align-items-center gap-2 px-3 py-2 bg-light rounded">
-                    <i class="ti ti-download {{ $downloadEnabled == '1' ? 'text-success' : 'text-danger' }}"></i>
-                    <span class="small fw-semibold">{{ __('admin.ebooks.download') }}:</span>
+                    <i class="ti ti-download <?php echo e($downloadEnabled == '1' ? 'text-success' : 'text-danger'); ?>"></i>
+                    <span class="small fw-semibold"><?php echo e(__('admin.ebooks.download')); ?>:</span>
                     <div class="form-check form-switch mb-0">
                         <input class="form-check-input" type="checkbox" id="toggleDownload" 
-                            {{ $downloadEnabled == '1' ? 'checked' : '' }}
+                            <?php echo e($downloadEnabled == '1' ? 'checked' : ''); ?>
+
                             onchange="toggleEbookDownload(this)">
                         <label class="form-check-label" for="toggleDownload">
-                            <span id="downloadStatus" class="badge bg-{{ $downloadEnabled == '1' ? 'success' : 'danger' }}">
-                                {{ $downloadEnabled == '1' ? __('admin.ebooks.enabled') : __('admin.ebooks.disabled') }}
+                            <span id="downloadStatus" class="badge bg-<?php echo e($downloadEnabled == '1' ? 'success' : 'danger'); ?>">
+                                <?php echo e($downloadEnabled == '1' ? __('admin.ebooks.enabled') : __('admin.ebooks.disabled')); ?>
+
                             </span>
                         </label>
                     </div>
                 </div>
-                <a href="{{ route('admin.ebooks.create') }}" class="btn btn-primary">
-                    <i class="ti ti-plus me-1"></i> {{ __('admin.ebooks.add_new') }}
+                <a href="<?php echo e(route('admin.ebooks.create')); ?>" class="btn btn-primary">
+                    <i class="ti ti-plus me-1"></i> <?php echo e(__('admin.ebooks.add_new')); ?>
+
                 </a>
             </div>
         </div>
@@ -48,7 +50,7 @@
             <div class="card-header">
                 <div class="row align-items-center">
                     <div class="col-md-3">
-                        <h5 class="mb-0">{{ __('admin.ebooks.all_ebooks') }}</h5>
+                        <h5 class="mb-0"><?php echo e(__('admin.ebooks.all_ebooks')); ?></h5>
                     </div>
                     <div class="col-md-9">
                         <div class="d-flex gap-2 justify-content-end align-items-center flex-wrap">
@@ -57,48 +59,50 @@
                                 <!-- Filter Category -->
                                 <select class="form-select form-select-sm" id="filterCategory" onchange="applyFilters()" style="width: 150px;">
                                     <option value="">All Categories</option>
-                                    @foreach($categories as $category)
-                                        <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
-                                            {{ $category->name }}
+                                    <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($category->id); ?>" <?php echo e(request('category_id') == $category->id ? 'selected' : ''); ?>>
+                                            <?php echo e($category->name); ?>
+
                                         </option>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
 
                                 <!-- Filter City -->
                                 <select class="form-select form-select-sm" id="filterCity" onchange="applyFilters()" style="width: 140px;">
                                     <option value="">All Cities</option>
-                                    <option value="null" {{ request('city_id') == 'null' ? 'selected' : '' }}>No City</option>
-                                    @foreach($cities as $city)
-                                        <option value="{{ $city->id }}" {{ request('city_id') == $city->id ? 'selected' : '' }}>
-                                            {{ $city->name }}
+                                    <option value="null" <?php echo e(request('city_id') == 'null' ? 'selected' : ''); ?>>No City</option>
+                                    <?php $__currentLoopData = $cities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $city): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($city->id); ?>" <?php echo e(request('city_id') == $city->id ? 'selected' : ''); ?>>
+                                            <?php echo e($city->name); ?>
+
                                         </option>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
 
                                 <!-- Filter Status -->
                                 <select class="form-select form-select-sm" id="filterStatus" onchange="applyFilters()" style="width: 130px;">
-                                    <option value="">{{ __('admin.ebooks.all_status') }}</option>
-                                    <option value="published" {{ request('status') == 'published' ? 'selected' : '' }}>{{ __('admin.ebooks.published') }}</option>
-                                    <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>{{ __('admin.ebooks.draft') }}</option>
-                                    <option value="archived" {{ request('status') == 'archived' ? 'selected' : '' }}>Archived</option>
+                                    <option value=""><?php echo e(__('admin.ebooks.all_status')); ?></option>
+                                    <option value="published" <?php echo e(request('status') == 'published' ? 'selected' : ''); ?>><?php echo e(__('admin.ebooks.published')); ?></option>
+                                    <option value="draft" <?php echo e(request('status') == 'draft' ? 'selected' : ''); ?>><?php echo e(__('admin.ebooks.draft')); ?></option>
+                                    <option value="archived" <?php echo e(request('status') == 'archived' ? 'selected' : ''); ?>>Archived</option>
                                 </select>
 
                                 <!-- Sort By -->
                                 <select class="form-select form-select-sm" id="sortBy" onchange="applySorting()" style="width: 160px;">
                                     <option value="created_at_desc"
-                                        {{ request('sort_by') == 'created_at' && request('sort_order') == 'desc' ? 'selected' : '' }}>
+                                        <?php echo e(request('sort_by') == 'created_at' && request('sort_order') == 'desc' ? 'selected' : ''); ?>>
                                         Terbaru</option>
                                     <option value="view_count_desc"
-                                        {{ request('sort_by') == 'view_count' && request('sort_order') == 'desc' ? 'selected' : '' }}>
+                                        <?php echo e(request('sort_by') == 'view_count' && request('sort_order') == 'desc' ? 'selected' : ''); ?>>
                                         Views Terbanyak</option>
                                     <option value="view_count_asc"
-                                        {{ request('sort_by') == 'view_count' && request('sort_order') == 'asc' ? 'selected' : '' }}>
+                                        <?php echo e(request('sort_by') == 'view_count' && request('sort_order') == 'asc' ? 'selected' : ''); ?>>
                                         Views Tersedikit</option>
                                     <option value="page_count_desc"
-                                        {{ request('sort_by') == 'page_count' && request('sort_order') == 'desc' ? 'selected' : '' }}>
+                                        <?php echo e(request('sort_by') == 'page_count' && request('sort_order') == 'desc' ? 'selected' : ''); ?>>
                                         Pages Terbanyak</option>
                                     <option value="page_count_asc"
-                                        {{ request('sort_by') == 'page_count' && request('sort_order') == 'asc' ? 'selected' : '' }}>
+                                        <?php echo e(request('sort_by') == 'page_count' && request('sort_order') == 'asc' ? 'selected' : ''); ?>>
                                         Pages Tersedikit</option>
                                 </select>
                             </div>
@@ -123,8 +127,8 @@
                     <div class="col-md-12">
                         <div class="input-group">
                             <span class="input-group-text"><i class="ti ti-search"></i></span>
-                            <input type="text" class="form-control" placeholder="{{ __('admin.ebooks.search_placeholder') }}" id="searchEbook" 
-                                value="{{ request('search') }}">
+                            <input type="text" class="form-control" placeholder="<?php echo e(__('admin.ebooks.search_placeholder')); ?>" id="searchEbook" 
+                                value="<?php echo e(request('search')); ?>">
                         </div>
                     </div>
                 </div>
@@ -135,65 +139,67 @@
                 <table class="table table-hover align-middle">
                     <thead>
                         <tr>
-                            <th style="width: 80px;">{{ __('admin.ebooks.cover') }}</th>
-                            <th style="width: 35%;">{{ __('admin.ebooks.title') }}</th>
-                            <th style="width: 20%;">{{ __('admin.ebooks.creator') }}</th>
-                            <th style="width: 12%;">{{ __('admin.ebooks.status') }}</th>
-                            <th style="width: 12%; display: none;">{{ __('admin.ebooks.views') }}</th>
-                            <th style="width: 100px;">{{ __('admin.ebooks.actions') }}</th>
+                            <th style="width: 80px;"><?php echo e(__('admin.ebooks.cover')); ?></th>
+                            <th style="width: 35%;"><?php echo e(__('admin.ebooks.title')); ?></th>
+                            <th style="width: 20%;"><?php echo e(__('admin.ebooks.creator')); ?></th>
+                            <th style="width: 12%;"><?php echo e(__('admin.ebooks.status')); ?></th>
+                            <th style="width: 12%; display: none;"><?php echo e(__('admin.ebooks.views')); ?></th>
+                            <th style="width: 100px;"><?php echo e(__('admin.ebooks.actions')); ?></th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0" id="ebookTableBody">
-                        @forelse($ebooks as $ebook)
-                            <tr data-status="{{ $ebook->status }}">
+                        <?php $__empty_1 = true; $__currentLoopData = $ebooks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ebook): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                            <tr data-status="<?php echo e($ebook->status); ?>">
                                 <td>
-                                    @if ($ebook->cover_image_url)
-                                        <img src="{{ $ebook->cover_image_url }}" alt="{{ $ebook->title }}"
+                                    <?php if($ebook->cover_image_url): ?>
+                                        <img src="<?php echo e($ebook->cover_image_url); ?>" alt="<?php echo e($ebook->title); ?>"
                                             class="rounded" style="width: 50px; height: 70px; object-fit: cover;"
                                             onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                         <div class="bg-label-secondary rounded align-items-center justify-content-center"
                                             style="width: 50px; height: 70px; display: none;">
                                             <i class="ti ti-book" style="font-size: 24px;"></i>
                                         </div>
-                                    @else
+                                    <?php else: ?>
                                         <div class="bg-label-secondary rounded d-flex align-items-center justify-content-center"
                                             style="width: 50px; height: 70px;">
                                             <i class="ti ti-book" style="font-size: 24px;"></i>
                                         </div>
-                                    @endif
+                                    <?php endif; ?>
                                 </td>
                                 <td>
                                     <div style="max-width: 300px;">
                                         <strong class="d-block mb-1"
                                             style="font-size: 0.9375rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
-                                            title="{{ $ebook->title }}">{{ $ebook->title }}</strong>
+                                            title="<?php echo e($ebook->title); ?>"><?php echo e($ebook->title); ?></strong>
                                         <small class="text-muted d-block"
                                             style="font-size: 0.8125rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
-                                            title="{{ strip_tags($ebook->description) }}">{{ strip_tags($ebook->description) }}</small>
+                                            title="<?php echo e(strip_tags($ebook->description)); ?>"><?php echo e(strip_tags($ebook->description)); ?></small>
                                     </div>
                                 </td>
                                 <td>
                                     <div style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.875rem;"
-                                        title="{{ $ebook->creator->name ?? 'MeatMap Team' }}">
-                                        @if($ebook->creator)
-                                            {{ $ebook->creator->name }}
-                                        @else
+                                        title="<?php echo e($ebook->creator->name ?? 'MeatMap Team'); ?>">
+                                        <?php if($ebook->creator): ?>
+                                            <?php echo e($ebook->creator->name); ?>
+
+                                        <?php else: ?>
                                             <span class="badge bg-primary">MeatMap Team</span>
-                                        @endif
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                                 <td>
-                                    @if ($ebook->status === 'published')
-                                        <span class="badge bg-success" style="font-size: 0.8125rem;">{{ __('admin.ebooks.published') }}</span>
-                                    @elseif($ebook->status === 'draft')
-                                        <span class="badge bg-warning" style="font-size: 0.8125rem;">{{ __('admin.ebooks.draft') }}</span>
-                                    @else
+                                    <?php if($ebook->status === 'published'): ?>
+                                        <span class="badge bg-success" style="font-size: 0.8125rem;"><?php echo e(__('admin.ebooks.published')); ?></span>
+                                    <?php elseif($ebook->status === 'draft'): ?>
+                                        <span class="badge bg-warning" style="font-size: 0.8125rem;"><?php echo e(__('admin.ebooks.draft')); ?></span>
+                                    <?php else: ?>
                                         <span class="badge bg-secondary" style="font-size: 0.8125rem;">Archived</span>
-                                    @endif
+                                    <?php endif; ?>
                                 </td>
                                 <td style="display: none;">
                                     <span class="text-muted d-flex align-items-center" style="font-size: 0.875rem;">
-                                        <i class="ti ti-eye me-1"></i> {{ number_format($ebook->view_count ?? 0) }}
+                                        <i class="ti ti-eye me-1"></i> <?php echo e(number_format($ebook->view_count ?? 0)); ?>
+
                                     </span>
                                 </td>
                                 <td>
@@ -204,35 +210,38 @@
                                             <i class="ti ti-dots-vertical"></i>
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-end">
-                                            <a class="dropdown-item" href="{{ route('admin.ebooks.show', $ebook->id) }}">
-                                                <i class="ti ti-eye me-2"></i> {{ __('admin.actions.view_details') }}
+                                            <a class="dropdown-item" href="<?php echo e(route('admin.ebooks.show', $ebook->id)); ?>">
+                                                <i class="ti ti-eye me-2"></i> <?php echo e(__('admin.actions.view_details')); ?>
+
                                             </a>
-                                            <a class="dropdown-item" href="{{ route('admin.ebooks.edit', $ebook->id) }}">
-                                                <i class="ti ti-pencil me-2"></i> {{ __('admin.actions.edit') }}
+                                            <a class="dropdown-item" href="<?php echo e(route('admin.ebooks.edit', $ebook->id)); ?>">
+                                                <i class="ti ti-pencil me-2"></i> <?php echo e(__('admin.actions.edit')); ?>
+
                                             </a>
                                             <div class="dropdown-divider"></div>
-                                            <form action="{{ route('admin.ebooks.destroy', $ebook->id) }}" method="POST"
-                                                style="display: none;" id="delete-ebook-{{ $ebook->id }}">
-                                                @csrf
-                                                @method('DELETE')
+                                            <form action="<?php echo e(route('admin.ebooks.destroy', $ebook->id)); ?>" method="POST"
+                                                style="display: none;" id="delete-ebook-<?php echo e($ebook->id); ?>">
+                                                <?php echo csrf_field(); ?>
+                                                <?php echo method_field('DELETE'); ?>
                                             </form>
                                             <a class="dropdown-item text-danger" href="javascript:void(0);"
-                                                onclick="if(confirm('{{ __('admin.actions.delete_confirm') }}')) document.getElementById('delete-ebook-{{ $ebook->id }}').submit();">
-                                                <i class="ti ti-trash me-2"></i> {{ __('admin.actions.delete') }}
+                                                onclick="if(confirm('<?php echo e(__('admin.actions.delete_confirm')); ?>')) document.getElementById('delete-ebook-<?php echo e($ebook->id); ?>').submit();">
+                                                <i class="ti ti-trash me-2"></i> <?php echo e(__('admin.actions.delete')); ?>
+
                                             </a>
                                         </div>
                                     </div>
                                 </td>
                             </tr>
-                        @empty
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <tr id="noDataRow">
                                 <td colspan="5" class="text-center py-5">
                                     <i class="ti ti-book" style="font-size: 48px; color: #ddd;"></i>
-                                    <p class="mt-2 text-muted">{{ __('admin.ebooks.no_data') }}</p>
-                                    <a href="{{ route('admin.ebooks.create') }}" class="btn btn-sm btn-primary">{{ __('admin.ebooks.add_new') }}</a>
+                                    <p class="mt-2 text-muted"><?php echo e(__('admin.ebooks.no_data')); ?></p>
+                                    <a href="<?php echo e(route('admin.ebooks.create')); ?>" class="btn btn-sm btn-primary"><?php echo e(__('admin.ebooks.add_new')); ?></a>
                                 </td>
                             </tr>
-                        @endforelse
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -240,27 +249,27 @@
             <!-- Card View -->
             <div id="cardView" class="card-body" style="display: none;">
                 <div class="row g-4" id="ebookCardBody">
-                    @forelse($ebooks as $ebook)
-                        <div class="col-md-6 col-lg-4 col-xl-3 ebook-card" data-status="{{ $ebook->status }}">
+                    <?php $__empty_1 = true; $__currentLoopData = $ebooks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ebook): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <div class="col-md-6 col-lg-4 col-xl-3 ebook-card" data-status="<?php echo e($ebook->status); ?>">
                             <div class="card h-100 shadow-sm d-flex flex-column">
-                                @if ($ebook->cover_image_url)
-                                    <img src="{{ $ebook->cover_image_url }}" class="card-img-top"
-                                        alt="{{ $ebook->title }}" style="height: 250px; object-fit: cover;"
+                                <?php if($ebook->cover_image_url): ?>
+                                    <img src="<?php echo e($ebook->cover_image_url); ?>" class="card-img-top"
+                                        alt="<?php echo e($ebook->title); ?>" style="height: 250px; object-fit: cover;"
                                         onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                     <div class="bg-label-secondary align-items-center justify-content-center"
                                         style="height: 250px; display: none;">
                                         <i class="ti ti-book" style="font-size: 72px;"></i>
                                     </div>
-                                @else
+                                <?php else: ?>
                                     <div class="bg-label-secondary d-flex align-items-center justify-content-center"
                                         style="height: 250px;">
                                         <i class="ti ti-book" style="font-size: 72px;"></i>
                                     </div>
-                                @endif
+                                <?php endif; ?>
                                 <div class="card-body d-flex flex-column">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <h5 class="card-title mb-0 flex-grow-1" style="max-width: 80%;">
-                                            {{ Str::limit($ebook->title, 30) }}</h5>
+                                            <?php echo e(Str::limit($ebook->title, 30)); ?></h5>
                                         <div class="dropdown">
                                             <button type="button"
                                                 class="btn btn-sm btn-icon btn-text-secondary rounded-pill dropdown-toggle hide-arrow"
@@ -269,22 +278,22 @@
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-end">
                                                 <a class="dropdown-item"
-                                                    href="{{ route('admin.ebooks.show', $ebook->id) }}">
+                                                    href="<?php echo e(route('admin.ebooks.show', $ebook->id)); ?>">
                                                     <i class="ti ti-eye me-2"></i> View
                                                 </a>
                                                 <a class="dropdown-item"
-                                                    href="{{ route('admin.ebooks.edit', $ebook->id) }}">
+                                                    href="<?php echo e(route('admin.ebooks.edit', $ebook->id)); ?>">
                                                     <i class="ti ti-pencil me-2"></i> Edit
                                                 </a>
                                                 <div class="dropdown-divider"></div>
-                                                <form action="{{ route('admin.ebooks.destroy', $ebook->id) }}"
+                                                <form action="<?php echo e(route('admin.ebooks.destroy', $ebook->id)); ?>"
                                                     method="POST" style="display: none;"
-                                                    id="delete-ebook-card-{{ $ebook->id }}">
-                                                    @csrf
-                                                    @method('DELETE')
+                                                    id="delete-ebook-card-<?php echo e($ebook->id); ?>">
+                                                    <?php echo csrf_field(); ?>
+                                                    <?php echo method_field('DELETE'); ?>
                                                 </form>
                                                 <a class="dropdown-item text-danger" href="javascript:void(0);"
-                                                    onclick="if(confirm('Delete this ebook?')) document.getElementById('delete-ebook-card-{{ $ebook->id }}').submit();">
+                                                    onclick="if(confirm('Delete this ebook?')) document.getElementById('delete-ebook-card-<?php echo e($ebook->id); ?>').submit();">
                                                     <i class="ti ti-trash me-2"></i> Delete
                                                 </a>
                                             </div>
@@ -292,66 +301,67 @@
                                     </div>
                                     <p class="card-text small text-muted mb-3"
                                         style="flex-grow: 1; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">
-                                        {{ Str::limit(strip_tags($ebook->description), 100) }}</p>
+                                        <?php echo e(Str::limit(strip_tags($ebook->description), 100)); ?></p>
 
                                     <!-- Fixed bottom section -->
                                     <div class="mt-auto pt-2">
                                         <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
                                             <span class="badge bg-label-info flex-shrink-0">
-                                                <i class="ti ti-file me-1"></i>{{ $ebook->page_count ?? 0 }} pages
+                                                <i class="ti ti-file me-1"></i><?php echo e($ebook->page_count ?? 0); ?> pages
                                             </span>
-                                            @if ($ebook->status === 'published')
+                                            <?php if($ebook->status === 'published'): ?>
                                                 <span class="badge bg-success">Published</span>
-                                            @elseif($ebook->status === 'draft')
+                                            <?php elseif($ebook->status === 'draft'): ?>
                                                 <span class="badge bg-warning">Draft</span>
-                                            @elseif($ebook->status === 'waiting_approval')
+                                            <?php elseif($ebook->status === 'waiting_approval'): ?>
                                                 <span class="badge bg-info text-truncate" style="max-width: 120px;"
                                                     title="Waiting Approval">Waiting</span>
-                                            @elseif($ebook->status === 'unpublished')
+                                            <?php elseif($ebook->status === 'unpublished'): ?>
                                                 <span class="badge bg-secondary">Unpublished</span>
-                                            @elseif($ebook->status === 'archived')
+                                            <?php elseif($ebook->status === 'archived'): ?>
                                                 <span class="badge bg-dark">Archived</span>
-                                            @elseif($ebook->status === 'rejected')
+                                            <?php elseif($ebook->status === 'rejected'): ?>
                                                 <span class="badge bg-danger">Rejected</span>
-                                            @else
+                                            <?php else: ?>
                                                 <span class="badge bg-secondary text-truncate"
-                                                    style="max-width: 120px;">{{ ucfirst($ebook->status) }}</span>
-                                            @endif
+                                                    style="max-width: 120px;"><?php echo e(ucfirst($ebook->status)); ?></span>
+                                            <?php endif; ?>
                                         </div>
                                         <div class="small text-muted d-flex align-items-center">
                                             <i class="ti ti-eye me-1"></i>
-                                            <span>{{ number_format($ebook->view_count ?? 0) }} views</span>
+                                            <span><?php echo e(number_format($ebook->view_count ?? 0)); ?> views</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <div class="col-12 text-center py-5">
                             <i class="ti ti-book" style="font-size: 48px; color: #ddd;"></i>
                             <p class="mt-2 text-muted">No ebooks found</p>
-                            <a href="{{ route('admin.ebooks.create') }}" class="btn btn-sm btn-primary">Add Your First
+                            <a href="<?php echo e(route('admin.ebooks.create')); ?>" class="btn btn-sm btn-primary">Add Your First
                                 Ebook</a>
                         </div>
-                    @endforelse
+                    <?php endif; ?>
                 </div>
             </div>
 
-            @if ($ebooks->hasPages())
+            <?php if($ebooks->hasPages()): ?>
                 <div class="card-footer">
-                    {{ $ebooks->appends([
+                    <?php echo e($ebooks->appends([
                         'per_page' => request('per_page', 8), 
                         'sort_by' => request('sort_by'), 
                         'sort_order' => request('sort_order'),
                         'search' => request('search'),
                         'status' => request('status')
-                    ])->links() }}
+                    ])->links()); ?>
+
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
     </div>
 
-    @push('scripts')
+    <?php $__env->startPush('scripts'); ?>
         <script>
             // View toggle with pagination adjustment
             function toggleView(view) {
@@ -493,11 +503,11 @@
                 
                 console.log('Toggle clicked:', isEnabled);
                 
-                fetch('{{ route('admin.ebooks.toggle-download') }}', {
+                fetch('<?php echo e(route('admin.ebooks.toggle-download')); ?>', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>',
                         'Accept': 'application/json'
                     },
                     body: JSON.stringify({
@@ -516,13 +526,13 @@
                         const icon = document.querySelector('.ti-download');
                         
                         if (isEnabled) {
-                            statusBadge.textContent = '{{ __("admin.ebooks.enabled") }}';
+                            statusBadge.textContent = '<?php echo e(__("admin.ebooks.enabled")); ?>';
                             statusBadge.classList.remove('bg-danger');
                             statusBadge.classList.add('bg-success');
                             icon.classList.remove('text-danger');
                             icon.classList.add('text-success');
                         } else {
-                            statusBadge.textContent = '{{ __("admin.ebooks.disabled") }}';
+                            statusBadge.textContent = '<?php echo e(__("admin.ebooks.disabled")); ?>';
                             statusBadge.classList.remove('bg-success');
                             statusBadge.classList.add('bg-danger');
                             icon.classList.remove('text-success');
@@ -546,5 +556,7 @@
             }
 
         </script>
-    @endpush
-@endsection
+    <?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\ebook_traveling\resources\views/admin/ebooks/index.blade.php ENDPATH**/ ?>

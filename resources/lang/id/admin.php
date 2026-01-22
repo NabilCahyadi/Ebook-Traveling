@@ -686,8 +686,8 @@ return [
         'no_active_yet' => 'Belum ada pelanggan aktif.',
     ],
 
-    // Role Permissions
-    'role_permissions' => [
+    // Role Permissions (merged with detailed permissions below)
+    'role_permissions_basic' => [
         'title' => 'Kelola Hak Akses Role',
         'configure_permissions' => 'Konfigurasi Hak Akses',
         'configure' => 'Konfigurasi',

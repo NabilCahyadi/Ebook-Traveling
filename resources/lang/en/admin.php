@@ -674,8 +674,8 @@ return [
         'no_active_yet' => 'There are no active subscribers yet.',
     ],
 
-    // Role Permissions
-    'role_permissions' => [
+    // Role Permissions (basic)
+    'role_permissions_basic' => [
         'title' => 'Role Permissions Management',
         'configure_permissions' => 'Configure Permissions',
         'configure' => 'Configure',

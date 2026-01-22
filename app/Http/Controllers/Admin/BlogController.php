@@ -76,7 +76,7 @@ class BlogController extends Controller
             'excerpt' => 'nullable|string',
             'featured_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
             'category' => 'nullable|string|max:100',
-            'author_id' => 'required|exists:users,id',
+            'author_id' => 'nullable|exists:users,id',
             'status' => 'required|in:draft,published,unpublished,archived',
         ], [
             'title.required' => 'Judul blog wajib diisi.',
@@ -86,7 +86,6 @@ class BlogController extends Controller
             'featured_image.mimes' => 'Format gambar harus JPEG, JPG, PNG, atau WebP.',
             'featured_image.max' => 'Ukuran gambar maksimal 2MB.',
             'category.max' => 'Kategori maksimal 100 karakter.',
-            'author_id.required' => 'Author (Creator) wajib dipilih.',
             'author_id.exists' => 'Author (Creator) yang dipilih tidak valid.',
             'status.required' => 'Status publikasi wajib dipilih.',
             'status.in' => 'Status publikasi tidak valid.',
