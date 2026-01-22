@@ -9,7 +9,7 @@
     <meta name="author" content="MeatMap Team">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ url()->current() }}">
-    
+
     {{-- Open Graph / Facebook --}}
     <meta property="og:type" content="article">
     <meta property="og:title" content="{{ $blog->meta_title ?: $blog->title }}">
@@ -27,19 +27,19 @@
     <meta property="article:tag" content="{{ $tag }}">
         @endforeach
     @endif
-    
+
     {{-- Twitter Card --}}
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ $blog->meta_title ?: $blog->title }}">
     <meta name="twitter:description" content="{{ $blog->meta_description ?: Str::limit(strip_tags($blog->content), 160) }}">
     <meta name="twitter:image" content="{{ $blog->featured_image_url }}">
-    
+
     {{-- Schema.org structured data for Article --}}
     @php
         $imageUrl = $blog->featured_image_url;
-        
+
         $schemaKeywords = $blog->tags ? implode(', ', $blog->tags) : '';
-        
+
         // Build JSON-LD schema as PHP array
         $schemaData = [
             '@context' => 'https://schema.org',
@@ -72,7 +72,7 @@
             ],
             'url' => url()->current()
         ];
-        
+
         // Add keywords only if they exist
         if ($schemaKeywords) {
             $schemaData['keywords'] = $schemaKeywords;
@@ -104,12 +104,12 @@
             ]
         ];
     @endphp
-    
+
     {{-- Article Schema --}}
     <script type="application/ld+json">
     {!! json_encode($schemaData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
     </script>
-    
+
     {{-- Breadcrumb Schema --}}
     <script type="application/ld+json">
     {!! json_encode($breadcrumbSchema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
@@ -226,14 +226,6 @@
                         </div>
                         <div class="col-lg-3 primary-sidebar sticky-sidebar pt-50">
                             <div class="widget-area">
-                                <div class="sidebar-widget-2 widget_search mb-50">
-                                    <div class="search-form">
-                                        <form action="#">
-                                            <input type="text" placeholder="Search…" />
-                                            <button type="submit"><i class="fi fi-rs-search"></i></button>
-                                        </form>
-                                    </div>
-                                </div>
                                 <!-- Product sidebar Widget -->
                                 <div class="sidebar-widget product-sidebar mb-50 p-30 bg-grey border-radius-10">
                                     <h5 class="section-title style-1 mb-30">Related E-Books</h5>

@@ -6,18 +6,18 @@
 
 @section('meta')
     @php
-        $metaDescription = isset($tag) 
+        $metaDescription = isset($tag)
             ? "Explore articles tagged with " . ucfirst($tag) . " on MeatMap blog. Discover travel guides, tips, and stories."
             : "Read the latest travel guides, destination tips, and stories from MeatMap. Your source for travel inspiration and information.";
-        
+
         $metaKeywords = isset($tag) ? $tag . ", " : "";
         $metaKeywords .= "blog, travel, destinations, guides, meatmap";
-        
+
         $ogTitle = isset($tag) ? "Blog Tag: " . ucfirst($tag) . " - MeatMap" : "Blog & News - MeatMap";
-        $ogDescription = isset($tag) 
+        $ogDescription = isset($tag)
             ? "Explore articles tagged with " . ucfirst($tag) . " on MeatMap blog."
             : "Read the latest travel guides and stories from MeatMap.";
-        $twitterDescription = isset($tag) 
+        $twitterDescription = isset($tag)
             ? "Explore articles tagged with " . ucfirst($tag) . "."
             : "Read the latest travel guides from MeatMap.";
     @endphp
@@ -25,7 +25,7 @@
     <meta name="keywords" content="{{ $metaKeywords }}">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ url()->current() }}">
-    
+
     {{-- Open Graph --}}
     <meta property="og:type" content="website">
     <meta property="og:title" content="{{ $ogTitle }}">
@@ -33,7 +33,7 @@
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:site_name" content="MeatMap">
     <meta property="og:image" content="{{ asset('images/only-logoo.png') }}">
-    
+
     {{-- Twitter Card --}}
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="{{ $ogTitle }}">
@@ -45,6 +45,60 @@
     .post-thumb {
         margin-left: 20px;
         border-radius: 10px;
+    }
+
+    /* Empty State Styling */
+    .empty-state-blog {
+        padding: 50px 40px !important;
+        margin: 40px 0;
+        transition: all 0.3s ease;
+    }
+
+    .empty-state-blog .empty-icon {
+        animation: floatIcon 3s ease-in-out infinite;
+    }
+
+    @keyframes floatIcon {
+        0%, 100% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .empty-state-blog h4 {
+        font-weight: 700;
+        font-size: 1.5rem;
+    }
+
+    .empty-state-blog p {
+        font-size: 1rem;
+        line-height: 1.6;
+        max-width: 550px;
+        margin: 0 auto 1.5rem;
+    }
+
+    .empty-state-blog .btn-brand {
+        background-color: #FF4C61;
+        color: white;
+        padding: 10px 25px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .empty-state-blog .btn-brand:hover {
+        background-color: #e03a4d;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 76, 97, 0.3);
+        color: white;
+    }
+
+    .text-brand {
+        color: #FF4C61 !important;
     }
 </style>
 <main class="main">
@@ -92,7 +146,7 @@
                         @php
                             $perPage = request('per_page', 20);
                             $sortBy = request('sort_by', 'newest');
-                            
+
                             $perPageOptions = [
                                 20 => '20',
                                 40 => '40',
@@ -101,7 +155,7 @@
                                 100 => '100',
                                 'all' => 'All'
                             ];
-                            
+
                             $sortOptions = [
                                 'newest' => 'Newest',
                                 'oldest' => 'Oldest',
@@ -123,7 +177,7 @@
                                     <ul>
                                         @foreach($perPageOptions as $value => $label)
                                         <li>
-                                            <a class="{{ $perPage == $value ? 'active' : '' }}" 
+                                            <a class="{{ $perPage == $value ? 'active' : '' }}"
                                                href="{{ request()->fullUrlWithQuery(['per_page' => $value, 'page' => 1]) }}">
                                                 {{ $label }}
                                             </a>
@@ -145,7 +199,7 @@
                                     <ul>
                                         @foreach($sortOptions as $value => $label)
                                         <li>
-                                            <a class="{{ $sortBy == $value ? 'active' : '' }}" 
+                                            <a class="{{ $sortBy == $value ? 'active' : '' }}"
                                                href="{{ request()->fullUrlWithQuery(['sort_by' => $value, 'page' => 1]) }}">
                                                 {{ $label }}
                                             </a>
@@ -199,12 +253,26 @@
                             </div>
                         </article>
                         @empty
-                        <div class="alert alert-info">
+                        <div class="empty-state-blog text-center py-5">
+                            <div class="empty-icon mb-4">
+                                <i class="fi fi-rs-document" style="font-size: 4rem; color: #FF4C61;"></i>
+                            </div>
                             @if(isset($tag))
-                            Tidak ada artikel dengan tag "<strong>{{ $tag }}</strong>" untuk saat ini.
+                            <h4 class="mb-3" style="color: #253D4E;">No Articles Found</h4>
+                            <p class="text-muted mb-4">
+                                We couldn't find any articles tagged with "<strong class="text-brand">{{ $tag }}</strong>" at the moment.
+                                <br>
+                                Try exploring other tags or check back later for new content.
+                            </p>
                             @else
-                            Belum ada artikel yang dipublish untuk saat ini.
+                            <h4 class="mb-3" style="color: #253D4E;">No Articles Published Yet</h4>
+                            <p class="text-muted mb-4">
+                                We're working on bringing you amazing content. Stay tuned for our latest travel guides and stories!
+                            </p>
                             @endif
+                            <a href="{{ route('blogs.index') }}" class="btn btn-sm btn-brand">
+                                <i class="fi fi-rs-arrow-left mr-2"></i> Back to All Articles
+                            </a>
                         </div>
                         @endforelse
                     </div>
@@ -218,16 +286,6 @@
                 <!-- Sidebar (col-lg-3) -->
                 <div class="col-lg-3 primary-sidebar sticky-sidebar">
                     <div class="widget-area">
-                        <!-- Widget Search -->
-                        <div class="sidebar-widget-2 widget_search mb-50">
-                            <div class="search-form">
-                                <form action="{{ route('blogs.index') }}" method="GET">
-                                    <input type="text" name="search" placeholder="Search…" value="{{ request('search') }}" />
-                                    <button type="submit"><i class="fi fi-rs-search"></i></button>
-                                </form>
-                            </div>
-                        </div>
-
                         <!-- Widget Popular Tags (DINAMIS) -->
                         <div class="sidebar-widget widget-tags mb-50 pb-10">
                             <h5 class="section-title style-1 mb-30">Popular Tags</h5>
@@ -238,18 +296,10 @@
                                     <a href="{{ route('blogs.by.tag', $tag) }}"><i class="fi fi-rs-cross mr-10"></i>{{ $tag }}</a>
                                 </li>
                                 @empty
-                                <li>Belum ada tag populer.</li> {{-- Ubah pesan sedikit --}}
+                                <li>No popular tags yet.</li> {{-- Ubah pesan sedikit --}}
                                 @endforelse
                             </ul>
                         </div>
-
-                        <!-- Widget lainnya bisa ditambahkan di sini -->
-                        <!-- Contoh: Widget Kategori, Trending E-book, dll -->
-                        <!-- <div class="sidebar-widget product-sidebar mb-50 p-30 bg-grey border-radius-10">
-                            <h5 class="section-title style-1 mb-30">Trending E-Books</h5>
-                            {{-- Anda bisa memanggil komponen related e-books di sini jika diperlukan --}}
-                            <p>Widget E-Book bisa ditambahkan di sini.</p>
-                        </div> -->
                     </div>
                 </div>
             </div>
