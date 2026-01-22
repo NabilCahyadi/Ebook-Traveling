@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ===============================
-# CONFIG
+# CONFIGs
 # ===============================
 PROJECT_PATH="/home/u778058510/domains/mappy.id/ebook_traveling_core"
 PHP_BIN="/usr/bin/php"
