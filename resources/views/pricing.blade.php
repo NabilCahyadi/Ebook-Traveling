@@ -460,17 +460,17 @@
                     <img src="{{ asset('storage/' . $bannerData->image) }}" alt="Banner" class="img-fluid w-100 rounded" id="pricing-banner-img" style="aspect-ratio: 2.5/1; object-fit: cover;">
 
                     <div id="pricing-banner-content" class="js-fade-in" style="
-                        position: absolute; 
-                        top: 0; 
-                        left: 0; 
-                        width: 100%; 
-                        height: 100%; 
-                        display: flex; 
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        display: flex;
                         flex-direction: column;
-                        justify-content: center; 
+                        justify-content: center;
                         align-items: center;
                         text-align: center;
-                        color: white; 
+                        color: white;
                         padding: 20px;
                         opacity: 0;
                         transition: opacity 1s ease-in-out;
@@ -530,23 +530,30 @@
                                 $isActive = $currentSub !== null;
                                 $isCurrentPlan = $isActive && $currentSub->subscription_plan_id === $plan->id;
                                 $currentPlan = $user->currentPlan ?? null;
+                                $currentDuration = $currentPlan ? $currentPlan->duration_days : 0;
                                 @endphp
 
                                 @if($isActive)
                                 @if($isCurrentPlan)
-                                <!-- RENEW: Pakai Mayar asli -->
-                                <button class="pricing-button pricing-button--primary w-100"
-                                    onclick="subscribeWithMayar('{{ $plan->id }}', this)">
-                                    Renew Subscription
-                                </button>
-                                @elseif($currentPlan && $plan->price > $currentPlan->price)
-                                <!-- UPGRADE: Pakai Mayar asli -->
-                                <button class="pricing-button pricing-button--primary w-100"
-                                    onclick="subscribeWithMayar('{{ $plan->id }}', this)">
-                                    Upgrade Subscription
-                                </button>
+                                <!-- RENEW: Pakai form POST -->
+                                <form action="{{ route('subscription.renew') }}" method="POST" class="w-100">
+                                    @csrf
+                                    <input type="hidden" name="plan_slug" value="{{ $plan->slug }}">
+                                    <button type="submit" class="pricing-button pricing-button--primary w-100">
+                                        <i class="fi fi-rs-refresh me-1"></i> Renew Subscription
+                                    </button>
+                                </form>
+                                @elseif($plan->duration_days > $currentDuration)
+                                <!-- UPGRADE: Pakai form POST -->
+                                <form action="{{ route('subscription.upgrade') }}" method="POST" class="w-100">
+                                    @csrf
+                                    <input type="hidden" name="plan_slug" value="{{ $plan->slug }}">
+                                    <button type="submit" class="pricing-button pricing-button--primary w-100">
+                                        <i class="fi fi-rs-arrow-up me-1"></i> Upgrade Subscription
+                                    </button>
+                                </form>
                                 @else
-                                <!-- DOWNGRADE: Tidak diizinkan -->
+                                <!-- DOWNGRADE atau SAME TIER: Tidak diizinkan -->
                                 <span class="text-muted small d-block text-center py-2">Upgrade only</span>
                                 @endif
                                 @else

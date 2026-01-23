@@ -91,6 +91,15 @@ Route::middleware(['user.session'])->group(function () {
     Route::get('/subscribe/{slug}', [SubscriptionController::class, 'redirectToPaymentLink'])
         ->middleware('auth')
         ->name('subscribe.redirect');
-        Route::post('/subscription/create', [SubscriptionController::class, 'create'])
+
+    // Subscription management routes (require authentication)
+    Route::middleware('auth')->group(function () {
+        Route::post('/subscription/renew', [SubscriptionController::class, 'renewSubscription'])
+            ->name('subscription.renew');
+        Route::post('/subscription/upgrade', [SubscriptionController::class, 'upgradeSubscription'])
+            ->name('subscription.upgrade');
+    });
+
+    Route::post('/subscription/create', [SubscriptionController::class, 'create'])
         ->name('api.subscription.create');
 });

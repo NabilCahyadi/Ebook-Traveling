@@ -308,7 +308,7 @@
                                                 @csrf
                                             </form>
                                             <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                                <i class="fi fi-rs-sign-out mr-10"></i>
+                                                <i class="fi fi-rs-sign-out mr-5"></i>
                                                 Sign out
                                             </a>
                                             <!-- Pastikan form logout ada di halaman ini -->

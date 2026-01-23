@@ -52,6 +52,17 @@ class AccountController extends Controller
 
         $accountData['citiesHeader'] = $citiesHeader;
 
+        // ✅ 4. GET SUBSCRIPTION PLANS FOR UPGRADE OPTIONS
+        // Only show plans with higher duration than current active plan
+        $currentPlan = $user->currentPlan;
+        $currentDuration = $currentPlan ? $currentPlan->duration_days : 0;
+
+        $subscriptionPlans = \App\Models\SubscriptionPlan::where('is_active', true)
+            ->where('duration_days', '>', $currentDuration)
+            ->orderBy('duration_days', 'asc')
+            ->get();
+        $accountData['subscriptionPlans'] = $subscriptionPlans;
+
         return view('page-account', $accountData);
     }
 

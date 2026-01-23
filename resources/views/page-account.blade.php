@@ -496,7 +496,7 @@
                 </div>
                 <h3 class="mb-3" style="color: #2d3436; font-weight: 700;">Payment Successful!</h3>
                 <p class="text-muted mb-4" style="font-size: 16px;">
-                    Congratulations! 🎉 You are now a <strong style="color: #FF4C61;">Premium Member</strong>.<br>
+                    Congratulations! <br> You are now a <strong style="color: #FF4C61;">Premium Member</strong>.<br>
                     Enjoy unlimited access to all exclusive features!
                 </p>
                 <button type="button" class="btn btn-brand btn-lg px-5" onclick="closeSuccessModal()" style="background: linear-gradient(135deg, #FF4C61 0%, #FF6B81 100%); border: none; border-radius: 25px; font-weight: 600;">
@@ -1031,7 +1031,48 @@
                                             </div>
                                             <div class="mb-3">
                                                 <h6 class="text-muted fw-normal mb-1">Period</h6>
-                                                <p class="mb-0">{{ $sub->start_date->format('d M Y H:i:s') }} – {{ $sub->end_date->format('d M Y H:i:s') }}</p>
+                                                @php
+                                                    // Get payment record for this subscription to check payment_type
+                                                    $subPayment = $user->payments()
+                                                        ->where('subscription_id', $sub->id)
+                                                        ->where('status', 'success')
+                                                        ->first();
+
+                                                    $paymentType = $subPayment ? $subPayment->payment_type : 'new';
+                                                    $durationDays = $plan->duration_days;
+                                                @endphp
+
+                                                @if($paymentType === 'renewal')
+                                                    <p class="mb-0">
+                                                        <span class="badge bg-info-subtle text-info mb-1">
+                                                            <i class="fi fi-rs-refresh me-1"></i> Renewed
+                                                        </span><br>
+                                                        Extended by <strong>{{ $durationDays }} day{{ $durationDays > 1 ? 's' : '' }}</strong><br>
+                                                        <small class="text-muted">
+                                                            {{ $sub->start_date->format('d M Y H:i') }} – {{ $sub->end_date->format('d M Y H:i') }}
+                                                        </small>
+                                                    </p>
+                                                @elseif($paymentType === 'upgrade')
+                                                    <p class="mb-0">
+                                                        <span class="badge bg-primary-subtle text-primary mb-1">
+                                                            <i class="fi fi-rs-arrow-up me-1"></i> Upgraded
+                                                        </span><br>
+                                                        Upgraded on <strong>{{ $sub->start_date->format('d M Y H:i') }}</strong><br>
+                                                        <small class="text-muted">
+                                                            Valid until {{ $sub->end_date->format('d M Y H:i') }}
+                                                        </small>
+                                                    </p>
+                                                @else
+                                                    <p class="mb-0">
+                                                        <span class="badge bg-success-subtle text-success mb-1">
+                                                            <i class="fi fi-rs-check me-1"></i> New Subscription
+                                                        </span><br>
+                                                        <strong>{{ $durationDays }} day{{ $durationDays > 1 ? 's' : '' }}</strong> access<br>
+                                                        <small class="text-muted">
+                                                            {{ $sub->start_date->format('d M Y H:i') }} – {{ $sub->end_date->format('d M Y H:i') }}
+                                                        </small>
+                                                    </p>
+                                                @endif
                                             </div>
                                         </div>
 
@@ -1081,15 +1122,50 @@
                                     </div>
 
                                     <!-- Action Buttons -->
-                                    <div class="d-grid gap-2 d-md-flex mb-5">
-                                        <a href="{{ route('pricing') }}" class="custom-button custom-button--primary text-white px-4">
-                                            Renew Subscription
-                                        </a>
+                                    <div class="d-grid gap-2 d-md-flex mb-3">
+                                        <!-- Renew Current Plan Button -->
+                                        <form action="{{ route('subscription.renew') }}" method="POST" class="d-inline">
+                                            @csrf
+                                            <button type="submit" class="custom-button custom-button--primary text-white px-4">
+                                                <i class="fi fi-rs-refresh me-1"></i> Renew Subscription
+                                            </button>
+                                        </form>
 
                                         <button type="button" class="custom-button custom-button--primary text-white px-4" onclick="downloadInvoice()">
                                             <i class="fi fi-rs-file-invoice me-1"></i> Download Invoice
                                         </button>
                                     </div>
+
+                                    <!-- Upgrade Options -->
+                                    @if(isset($subscriptionPlans) && $subscriptionPlans->isNotEmpty())
+                                    <div class="mt-4 pt-3 border-top">
+                                        <h6 class="fw-bold mb-3">Upgrade to Higher Tier</h6>
+                                        <div class="row g-3">
+                                            @foreach($subscriptionPlans as $upgradePlan)
+                                            <div class="col-md-6">
+                                                <div class="card border-primary">
+                                                    <div class="card-body">
+                                                        <h6 class="card-title text-primary mb-2">{{ $upgradePlan->name }}</h6>
+                                                        <p class="text-muted small mb-2">{{ $upgradePlan->duration_days }} days access</p>
+                                                        <p class="h5 text-success mb-3">Rp {{ number_format($upgradePlan->price, 0, ',', '.') }}</p>
+                                                        <form action="{{ route('subscription.upgrade') }}" method="POST">
+                                                            @csrf
+                                                            <input type="hidden" name="plan_slug" value="{{ $upgradePlan->slug }}">
+                                                            <button type="submit" class="btn btn-primary btn-sm w-100">
+                                                                <i class="fi fi-rs-arrow-up me-1"></i> Upgrade Now
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @endforeach
+                                        </div>
+                                        <p class="text-muted small mt-3 mb-0">
+                                            <i class="fi fi-rs-info me-1"></i>
+                                            Upgrading will deactivate your current subscription and create a new one with the selected plan.
+                                        </p>
+                                    </div>
+                                    @endif
 
                                     @else
                                     <!-- No Active Subscription -->
@@ -1125,61 +1201,96 @@
                                             <tbody class="px-3">
                                                 @foreach($user->payments()->with(['plan', 'subscription'])->latest()->get() as $payment)
                                                 @php
-                                                $sub = $payment->subscription; // Sudah di-load di controller
+                                                $sub = $payment->subscription;
                                                 $now = now();
-                                                $status = 'Expired';
-                                                $badgeClass = 'bg-danger-subtle text-danger';
+                                                $paymentType = $payment->payment_type ?? 'new';
+                                                $durationDays = $payment->plan ? $payment->plan->duration_days : 0;
+
+                                                // Determine status based on payment_type and subscription status
+                                                $displayStatus = 'Unknown';
+                                                $statusBadgeClass = 'bg-secondary-subtle text-secondary';
+                                                $statusIcon = 'fi-rs-question';
 
                                                 if ($sub) {
-                                                if ($sub->status === 'active') {
-                                                $hoursRemaining = $now->diffInHours($sub->end_date, false);
+                                                    // Check if expired first
+                                                    $hoursRemaining = $now->diffInHours($sub->end_date, false);
 
-                                                if ($hoursRemaining > 0) {
-                                                $status = 'Active';
-                                                $badgeClass = 'bg-success-subtle text-success';
-
-                                                // Expires Soon: hanya jika >0 jam dan ≤24 jam
-                                                if ($hoursRemaining <= 24) {
-                                                    $status='Expires Soon' ;
-                                                    $badgeClass='bg-warning-subtle text-warning' ;
-                                                    }
+                                                    if ($hoursRemaining <= 0 && $sub->end_date < $now) {
+                                                        // Expired
+                                                        $displayStatus = 'Expired';
+                                                        $statusBadgeClass = 'bg-danger-subtle text-danger';
+                                                        $statusIcon = 'fi-rs-cross-circle';
+                                                    } elseif ($hoursRemaining > 0 && $hoursRemaining <= 12) {
+                                                        // Soon Expired (< 12 hours)
+                                                        $displayStatus = 'Soon Expired';
+                                                        $statusBadgeClass = 'bg-warning-subtle text-warning';
+                                                        $statusIcon = 'fi-rs-exclamation';
+                                                    } elseif ($paymentType === 'renewal') {
+                                                        // Renewal
+                                                        $displayStatus = 'Renewed';
+                                                        $statusBadgeClass = 'bg-info-subtle text-info';
+                                                        $statusIcon = 'fi-rs-refresh';
+                                                    } elseif ($paymentType === 'upgrade' || $sub->status === 'upgraded') {
+                                                        // Upgrade
+                                                        $displayStatus = 'Upgraded';
+                                                        $statusBadgeClass = 'bg-primary-subtle text-primary';
+                                                        $statusIcon = 'fi-rs-arrow-up';
                                                     } else {
-                                                    $status='Expired' ;
-                                                    $badgeClass='bg-danger-subtle text-danger' ;
+                                                        // Active (new subscription)
+                                                        $displayStatus = 'Active';
+                                                        $statusBadgeClass = 'bg-success-subtle text-success';
+                                                        $statusIcon = 'fi-rs-check-circle';
                                                     }
-                                                    } else {
-                                                    $status=ucfirst($sub->status);
-                                                    $badgeClass = 'bg-secondary-subtle text-secondary';
-                                                    }
-                                                    }
-                                                    @endphp
-                                                    <tr>
-                                                        <td class="ps-3 py-3">{{ $payment->created_at->format('d M Y') }}</td>
-                                                        <td class="py-3">{{ $payment->plan?->name ?? '-' }}</td>
-                                                        <td class="py-3">
-                                                            @if($payment->subscription)
-                                                            <small>
-                                                                {{ $loop->index === 0
-                                                                ? $payment->subscription->start_date->format('d M Y H:i') . ' – ' . $payment->subscription->end_date->format('d M Y H:i')
-                                                                : 'Renewal on ' . $payment->created_at->format('d M Y') }}
-                                                            </small>
+                                                }
+                                                @endphp
+                                                <tr>
+                                                    <td class="ps-3 py-3">{{ $payment->created_at->format('d M Y') }}</td>
+                                                    <td class="py-3">{{ $payment->plan?->name ?? '-' }}</td>
+                                                    <td class="py-3">
+                                                        @if($sub)
+                                                            @if($paymentType === 'renewal')
+                                                                {{-- RENEWAL: Show extension info --}}
+                                                                <div class="small">
+                                                                    <strong class="text-success">+{{ $durationDays }} day{{ $durationDays > 1 ? 's' : '' }}</strong><br>
+                                                                </div>
+                                                            @elseif($paymentType === 'upgrade')
+                                                                {{-- UPGRADE: Show period range --}}
+                                                                <div class="small">
+                                                                    {{ $sub->start_date->format('d M Y H:i') }} - {{ $sub->end_date->format('d M Y H:i') }}
+                                                                </div>
                                                             @else
-                                                            <span class="text-muted">—</span>
+                                                                {{-- NEW: Show full period range --}}
+                                                                <div class="small">
+                                                                    <span class="badge bg-success-subtle text-success mb-1">
+                                                                        <i class="fi fi-rs-check"></i> New
+                                                                    </span><br>
+                                                                    <strong>{{ $sub->start_date->format('d M Y H:i') }}</strong><br>
+                                                                    <span class="text-muted">to</span><br>
+                                                                    <strong>{{ $sub->end_date->format('d M Y H:i') }}</strong>
+                                                                </div>
                                                             @endif
-                                                        </td>
-                                                        <td class="py-3 fw-medium">Rp {{ number_format($payment->amount, 0, ',', '.') }}</td>
-                                                        <td class="py-3">{{ ucfirst($payment->payment_method ?? '—') }}</td>
-                                                        <td class="py-3">
-                                                            @if($payment->status === 'success')
-                                                            <span class="badge bg-success-subtle text-success rounded-pill px-3 py-1">Paid</span>
-                                                            @else
-                                                            <span class="badge bg-warning-subtle text-warning rounded-pill px-3 py-1">Pending</span>
-                                                            @endif
-
-                                                            <span class="badge {{ $badgeClass }} rounded-pill py-1">
-                                                                {{ $status }}
+                                                        @else
+                                                            <span class="text-muted small">—</span>
+                                                        @endif
+                                                    </td>
+                                                    <td class="py-3 fw-medium">Rp {{ number_format((float)$payment->amount, 0, ',', '.') }}</td>
+                                                    <td class="py-3">{{ ucfirst($payment->payment_method ?? '—') }}</td>
+                                                    <td class="py-3 text-center">
+                                                        {{-- Single unified status badge --}}
+                                                        @if($payment->status === 'pending')
+                                                            <span class="badge bg-warning-subtle text-warning rounded-pill px-3 py-2">
+                                                                <i class="fi fi-rs-time-forward"></i> Pending Payment
                                                             </span>
-                                                        </td>
+                                                        @elseif($sub)
+                                                            <span class="badge {{ $statusBadgeClass }} rounded-pill px-3 py-2">
+                                                                <i class="{{ $statusIcon }}"></i> {{ $displayStatus }}
+                                                            </span>
+                                                        @else
+                                                            <span class="badge bg-success-subtle text-success rounded-pill px-3 py-2">
+                                                                <i class="fi fi-rs-check-circle"></i> Paid
+                                                            </span>
+                                                        @endif
+                                                    </td>
                                                         <td class="py-3 text-center">
                                                             <button type="button"
                                                                 class="px-2 py-1"

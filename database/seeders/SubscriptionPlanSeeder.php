@@ -106,7 +106,7 @@ class SubscriptionPlanSeeder extends Seeder
                 'description' => 'Untuk simulasi, anda dapat subscribe paket harian ini. Dengan memilih pembayaran e-wallet -> shopeepay, lalu saat muncul qr code nya, anda klik QR CODE nya.',
                 'price' => 2000,
                 'price_description' => 'Untuk Simulasi',
-                'duration_days' => 2,
+                'duration_days' => 1,
                 'features' => [
                     'Access to 5 Free Ebooks',
                     'Community Support',
