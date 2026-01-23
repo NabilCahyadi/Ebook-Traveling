@@ -91,4 +91,6 @@ Route::middleware(['user.session'])->group(function () {
     Route::get('/subscribe/{slug}', [SubscriptionController::class, 'redirectToPaymentLink'])
         ->middleware('auth')
         ->name('subscribe.redirect');
+        Route::post('/subscription/create', [SubscriptionController::class, 'create'])
+        ->name('api.subscription.create');
 });

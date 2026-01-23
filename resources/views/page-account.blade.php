@@ -482,6 +482,90 @@
         transform: translateY(-3px) !important;
     }
 </style>
+
+{{-- Popup Payment Success --}}
+@if(session('payment_success'))
+<div id="paymentSuccessModal" class="modal fade show" style="display: block; background: rgba(0,0,0,0.5);" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 15px; border: none; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+            <div class="modal-body text-center p-5">
+                <div class="success-checkmark mb-4">
+                    <div class="check-icon" style="width: 80px; height: 80px; margin: 0 auto; background: linear-gradient(135deg, #FF4C61 0%, #FF6B81 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fi fi-rs-check" style="font-size: 40px; color: white; font-weight: bold;"></i>
+                    </div>
+                </div>
+                <h3 class="mb-3" style="color: #2d3436; font-weight: 700;">Payment Successful!</h3>
+                <p class="text-muted mb-4" style="font-size: 16px;">
+                    Congratulations! 🎉 You are now a <strong style="color: #FF4C61;">Premium Member</strong>.<br>
+                    Enjoy unlimited access to all exclusive features!
+                </p>
+                <button type="button" class="btn btn-brand btn-lg px-5" onclick="closeSuccessModal()" style="background: linear-gradient(135deg, #FF4C61 0%, #FF6B81 100%); border: none; border-radius: 25px; font-weight: 600;">
+                    <i class="fi fi-rs-party-horn me-2"></i> Let's Explore!
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes checkmark-pop {
+        0% {
+            transform: scale(0);
+            opacity: 0;
+        }
+        50% {
+            transform: scale(1.2);
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .success-checkmark .check-icon {
+        animation: checkmark-pop 0.5s ease-out;
+    }
+
+    #paymentSuccessModal .modal-content {
+        animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+        from {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+</style>
+
+<script>
+    function closeSuccessModal() {
+        const modal = document.getElementById('paymentSuccessModal');
+        modal.style.opacity = '0';
+        modal.style.transition = 'opacity 0.3s ease-out';
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    }
+
+    // Auto close after 8 seconds
+    setTimeout(() => {
+        closeSuccessModal();
+    }, 8000);
+
+    // Close on click outside
+    document.getElementById('paymentSuccessModal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeSuccessModal();
+        }
+    });
+</script>
+@endif
+
 <main class="main pages">
     <div class="page-header mt-30 mb-30">
         <div class="container">
@@ -1075,7 +1159,7 @@
                                                         <td class="py-3">
                                                             @if($payment->subscription)
                                                             <small>
-                                                                {{ $loop->index === 0 
+                                                                {{ $loop->index === 0
                                                                 ? $payment->subscription->start_date->format('d M Y H:i') . ' – ' . $payment->subscription->end_date->format('d M Y H:i')
                                                                 : 'Renewal on ' . $payment->created_at->format('d M Y') }}
                                                             </small>
@@ -1285,8 +1369,8 @@
                                                             <div class="fw-bold text-dark mb-1" style="font-size: 1.1rem; color: #FF416C;">
                                                                 Rp{{ number_format($order->total_amount, 0, ',', '.') }}
                                                             </div>
-                                                            <span class="badge 
-                                            {{ $order->status == 'completed' ? 'bg-success' : 
+                                                            <span class="badge
+                                            {{ $order->status == 'completed' ? 'bg-success' :
                                                ($order->status == 'pending' ? 'bg-warning text-dark' : 'bg-secondary') }}">
                                                                 {{ ucfirst($order->status) }}
                                                             </span>

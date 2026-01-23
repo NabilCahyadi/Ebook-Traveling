@@ -32,59 +32,194 @@ class SubscriptionController extends Controller
      */
     public function mayarCallback(Request $request)
     {
+        // ✅ LOG 1: Webhook received
+        Log::info('🔔 Mayar Webhook Received', [
+            'headers' => $request->headers->all(),
+            'ip' => $request->ip(),
+            'method' => $request->method(),
+        ]);
+
         try {
-            // Validasi signature...
-            $signature = $request->header('X-Mayar-Signature');
+            // ✅ LOG 2: Raw payload
             $payload = $request->getContent();
+            Log::info('📦 Webhook Payload', [
+                'raw' => $payload,
+                'json' => $request->json()->all(),
+            ]);
+
+            // Validasi signature - Mayar sends webhook token directly in X-Callback-Token header
+            $receivedToken = $request->header('X-Callback-Token');
             $webhookToken = config('services.mayar.webhook_token');
 
-            if (!$webhookToken || !hash_equals(hash_hmac('sha256', $payload, $webhookToken), $signature)) {
+            // ✅ LOG 3: Signature validation
+            Log::info('🔐 Signature Validation', [
+                'received_token' => $receivedToken,
+                'webhook_token_exists' => !empty($webhookToken),
+                'tokens_match' => $receivedToken === $webhookToken,
+            ]);
+
+            if (!$webhookToken) {
+                Log::error('❌ MAYAR_WEBHOOK_TOKEN not configured in .env');
+                return response('Webhook token not configured', 500);
+            }
+
+            // Mayar sends the webhook token directly, not HMAC signature
+            if ($receivedToken !== $webhookToken) {
+                Log::error('❌ Invalid webhook token', [
+                    'received' => $receivedToken,
+                    'expected' => $webhookToken,
+                ]);
                 return response('Unauthorized', 401);
             }
 
+            Log::info('✅ Signature validated successfully');
+
+            // Parse data
             $data = $request->json('data', []);
             $event = $request->json('event', '');
 
+            // ✅ LOG 4: Event info
+            Log::info('📋 Webhook Event', [
+                'event' => $event,
+                'status' => $data['status'] ?? 'N/A',
+                'external_id' => $data['externalId'] ?? 'N/A',
+                'product_name' => $data['productName'] ?? 'N/A',
+                'amount' => $data['amount'] ?? 'N/A',
+            ]);
+
+            // Check event type
             if ($event !== 'payment.received' || ($data['status'] ?? '') !== 'SUCCESS') {
+                Log::info('⏭️ Skipping webhook - not a successful payment event', [
+                    'event' => $event,
+                    'status' => $data['status'] ?? 'N/A',
+                ]);
                 return response('OK', 200);
             }
 
+            // Get user by email
             $email = $data['customerEmail'] ?? '';
+            $externalId = $data['externalId'] ?? null;
+
+            Log::info('🔍 Looking for user', [
+                'email' => $email,
+                'external_id' => $externalId,
+            ]);
+
             $user = DB::table('users')->where('email', $email)->first();
 
             if (!$user) {
+                Log::warning('⚠️ User not found', ['email' => $email]);
                 return response('OK', 200);
             }
 
-            // Cari plan
+            Log::info('✅ User found', [
+                'user_id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ]);
+
+            // Update payment status if external_id exists
+            if ($externalId) {
+                $payment = DB::table('payments')->where('id', $externalId)->first();
+
+                if ($payment) {
+                    DB::table('payments')
+                        ->where('id', $externalId)
+                        ->update([
+                            'status' => 'success',
+                            'updated_at' => now(),
+                        ]);
+                    Log::info('💳 Payment updated to success', [
+                        'payment_id' => $externalId,
+                        'old_status' => $payment->status,
+                        'new_status' => 'success',
+                    ]);
+                } else {
+                    Log::warning('⚠️ Payment record not found', ['external_id' => $externalId]);
+                }
+            }
+
+            // Find plan
+            $productName = $data['productName'] ?? '';
             $plan = DB::table('subscription_plans')
-                ->where('name', $data['productName'] ?? '')
+                ->where('name', $productName)
                 ->first();
 
             if (!$plan) {
+                Log::warning('⚠️ Plan not found by name, trying fallback', ['product_name' => $productName]);
                 $plan = DB::table('subscription_plans')
                     ->where('slug', 'starter-daily-30788')
                     ->first();
             }
 
-            if ($plan) {
-                // ✅ GUNAKAN MODEL SUBSCRIPTION
-                Subscription::create([
-                    'user_id' => $user->id,
-                    'subscription_plan_id' => $plan->id,
-                    'status' => 'active',
-                    'start_date' => now(),
-                    'end_date' => now()->addDays($plan->duration_days),
-                    'subscription_code' => 'SUB-' . strtoupper(Str::random(8)),
-                    'total_amount' => $plan->price,
-                    'auto_renew' => false,
-                ]);
+            if (!$plan) {
+                Log::error('❌ No plan found - cannot create subscription');
+                return response('Plan not found', 400);
             }
+
+            Log::info('📦 Plan found', [
+                'plan_id' => $plan->id,
+                'plan_name' => $plan->name,
+                'duration_days' => $plan->duration_days,
+                'price' => $plan->price,
+            ]);
+
+            // ✅ Check for existing active subscription to prevent duplicates
+            $existingSubscription = DB::table('subscriptions')
+                ->where('user_id', $user->id)
+                ->where('status', 'active')
+                ->where('end_date', '>', now())
+                ->first();
+
+            if ($existingSubscription) {
+                Log::info('ℹ️ User already has active subscription, skipping creation', [
+                    'existing_sub_id' => $existingSubscription->id,
+                    'end_date' => $existingSubscription->end_date,
+                ]);
+                return response('OK', 200);
+            }
+
+            // Create subscription
+            $subscription = Subscription::create([
+                'user_id' => $user->id,
+                'subscription_plan_id' => $plan->id,
+                'payment_id' => $externalId, // Link to payment
+                'status' => 'active',
+                'start_date' => now(),
+                'end_date' => now()->addDays($plan->duration_days),
+                'subscription_code' => 'SUB-' . strtoupper(Str::random(8)),
+                'total_amount' => $plan->price,
+                'auto_renew' => false,
+            ]);
+
+            Log::info('🎉 Subscription created successfully', [
+                'subscription_id' => $subscription->id,
+                'subscription_code' => $subscription->subscription_code,
+                'user_id' => $user->id,
+                'user_email' => $user->email,
+                'plan_id' => $plan->id,
+                'plan_name' => $plan->name,
+                'start_date' => $subscription->start_date->toDateTimeString(),
+                'end_date' => $subscription->end_date->toDateTimeString(),
+                'status' => $subscription->status,
+                'total_amount' => $subscription->total_amount,
+            ]);
+
             return response('OK', 200);
+
         } catch (\Exception $e) {
-            // Simpan error ke session
+            // ✅ LOG ERROR with full details
+            Log::error('❌ Mayar Webhook Error', [
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            // Simpan error ke session untuk ditampilkan di success page
             session(['webhook_error' => $e->getMessage()]);
-            return response('OK', 200);
+
+            return response('OK', 200); // Still return 200 to prevent Mayar retry
         }
     }
 
@@ -129,25 +264,12 @@ class SubscriptionController extends Controller
         $user = auth()->user();
         $user->load(['currentSubscription', 'subscriptions.plan']);
 
+        // Refresh premium status in session
         session()->forget('user_premium_status');
         session()->put('user_premium_status', $user->hasActiveSubscription());
 
-        $citiesHeader = City::where('is_active', true)
-            ->orderBy('order_index')
-            ->orderBy('name')
-            ->get();
-
-        // Ambil error webhook jika ada
-        $webhookError = session('webhook_error');
-        if ($webhookError) {
-            session()->forget('webhook_error'); // Hapus setelah ditampilkan
-        }
-
-        return view('payment.success', [
-            'isPremium' => $user->hasActiveSubscription(),
-            'citiesHeader' => $citiesHeader,
-            'webhookError' => $webhookError // Kirim ke view
-        ]);
+        // Redirect ke page-account tab dashboard dengan popup sukses
+        return redirect('/page-account?tab=dashboard')->with('payment_success', true);
     }
 
     /**

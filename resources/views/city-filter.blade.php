@@ -84,7 +84,6 @@
     }
 
     .search-info {
-        background: #f8f9fa;
         padding: 20px;
         border-radius: 10px;
         margin-bottom: 30px;
