@@ -44,30 +44,30 @@
     <script src="{{ asset('assets/admin/vendor/js/helpers.js') }}"></script>
     <script src="{{ asset('assets/admin/vendor/js/template-customizer.js') }}"></script>
     <script src="{{ asset('assets/admin/js/config.js') }}"></script>
-    
+
     <style>
         :root {
             --bs-primary: #ff4c61 !important;
             --bs-primary-rgb: 255, 76, 97 !important;
         }
-        
+
         .btn-primary {
             background-color: #ff4c61 !important;
             border-color: #ff4c61 !important;
         }
-        
+
         .btn-primary:hover,
         .btn-primary:focus,
         .btn-primary:active {
             background-color: #e6405a !important;
             border-color: #e6405a !important;
         }
-        
+
         .text-primary,
         a {
             color: #ff4c61 !important;
         }
-        
+
         a:hover {
             color: #e6405a !important;
         }
@@ -155,7 +155,7 @@
                         <div class="text-center">
                             <a href="{{ route('admin.login') }}" class="d-flex align-items-center justify-content-center">
                                 <i class="ti ti-chevron-left scaleX-n1-rtl me-1"></i>
-                                Kembali ke login
+                                Back to login
                             </a>
                         </div>
                     </div>

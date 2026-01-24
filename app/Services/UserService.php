@@ -484,6 +484,11 @@ class UserService
             'readingHistory' => $readingHistory,
             'userRatings' => $userRatings,
             'createdEbooks' => $user->createdEbooks()->with('categories')->get(),
+            
+            // ✅ STATS UNTUK DASHBOARD (Line 772-785)
+            'ebooksRead' => $user->readings()->distinct('ebook_id')->count('ebook_id'), // Total unique ebooks read
+            'favoritesCount' => $user->savedBooks->count(), // Total wishlist/favorites
+            'reviewsCount' => $user->ratings()->count(), // Total reviews written
         ];
 
         return $data;

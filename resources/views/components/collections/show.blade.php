@@ -83,10 +83,11 @@
         text-overflow: ellipsis;
         flex-grow: 1;
     }
-        /* Maksimal 2 baris */
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
+
+    /* Maksimal 2 baris */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
     }
 
     .product-meta {
@@ -115,7 +116,8 @@
     .product-img {
         position: relative;
         width: 100%;
-        padding-top: 140%; /* Rasio 5:7 (tinggi 140% dari lebar) untuk cover buku */
+        padding-top: 140%;
+        /* Rasio 5:7 (tinggi 140% dari lebar) untuk cover buku */
         overflow: hidden;
         border-radius: 15px;
         background-color: #f5f5f5;
@@ -167,15 +169,84 @@
         color: #FF4C61;
         background-color: #fff;
     }
+
+    .product-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        font-size: 0.8rem;
+    }
 </style>
 <section class="product-tabs section-padding position-relative">
     <div class="container">
         {{-- Bagian Judul Koleksi --}}
         <div class="section-title style-2 wow animate__animated animate__fadeIn">
             <h3>{{ $collection->name }}</h3>
-            @if($collection->description)
-            <p class="collection-description">{{ $collection->description }}</p>
+            @if ($collection->description)
+                <p class="collection-description">{{ $collection->description }}</p>
             @endif
+            <div class="sort-by-product-area">
+                <div class="sort-by-cover mr-10">
+                    <div class="sort-by-product-wrap">
+                        <div class="sort-by">
+                            <span><i class="fi-rs-apps"></i>Show :</span>
+                        </div>
+                        <div class="sort-by-dropdown-wrap">
+                            <span> {{ $perPage === 'all' ? 'All' : $perPage }} <i
+                                    class="fi-rs-angle-small-down"></i></span>
+                        </div>
+                    </div>
+                    <div class="sort-by-dropdown">
+                        <ul>
+                            <li><a class="{{ $perPage == '50' ? 'active' : '' }}"
+                                    href="?per_page=50&sort_by={{ $sortBy }}">50</a></li>
+                            <li><a class="{{ $perPage == '100' ? 'active' : '' }}"
+                                    href="?per_page=100&sort_by={{ $sortBy }}">100</a></li>
+                            <li><a class="{{ $perPage == '150' ? 'active' : '' }}"
+                                    href="?per_page=150&sort_by={{ $sortBy }}">150</a></li>
+                            <li><a class="{{ $perPage == '200' ? 'active' : '' }}"
+                                    href="?per_page=200&sort_by={{ $sortBy }}">200</a></li>
+                            <li><a class="{{ $perPage == '250' ? 'active' : '' }}"
+                                    href="?per_page=250&sort_by={{ $sortBy }}">250</a></li>
+                            <li><a class="{{ $perPage == '300' ? 'active' : '' }}"
+                                    href="?per_page=300&sort_by={{ $sortBy }}">300</a></li>
+                            <li><a class="{{ strtolower($perPage) == 'all' ? 'active' : '' }}"
+                                    href="?per_page=all&sort_by={{ $sortBy }}">All</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="sort-by-cover">
+                    <div class="sort-by-product-wrap">
+                        <div class="sort-by">
+                            <span><i class="fi-rs-apps-sort"></i>Sort :</span>
+                        </div>
+                        <div class="sort-by-dropdown-wrap">
+                            <span>
+                                @if ($sortBy === 'newest')
+                                    Newest
+                                @elseif($sortBy === 'release_date')
+                                    Oldest First
+                                @else
+                                    Featured
+                                @endif
+                                <i class="fi-rs-angle-small-down"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="sort-by-dropdown">
+                        <ul>
+                            <li><a class="{{ $sortBy === 'featured' ? 'active' : '' }}"
+                                    href="?per_page={{ $perPage }}&sort_by=featured">Featured</a></li>
+                            <li><a class="{{ $sortBy === 'newest' ? 'active' : '' }}"
+                                    href="?per_page={{ $perPage }}&sort_by=newest">Newest</a></li>
+                            <li><a class="{{ $sortBy === 'release_date' ? 'active' : '' }}"
+                                    href="?per_page={{ $perPage }}&sort_by=release_date">Oldest
+                                    First</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
 
         {{-- Kontainer untuk Daftar Ebook --}}
@@ -184,98 +255,126 @@
                 <div class="products-scroll-container">
                     <div class="row product-grid-4 scroll-wrapper">
 
-                        @if($collection->ebooks->isNotEmpty())
-                        @foreach($collection->ebooks as $index => $ebook)
-                        <div class="col-lg-1-5 col-md-4 col-12 col-sm-6 scroll-item">
+                        @if ($collection->ebooks->isNotEmpty())
+                            @foreach ($collection->ebooks as $index => $ebook)
+                                <div class="col-lg-1-5 col-md-4 col-12 col-sm-6 scroll-item">
 
-                            {{-- ========== KARTU EBOOK YANG SAMA UNTUK SEMUA USER ========== --}}
-                            <div class="product-cart-wrap mb-30 wow animate__animated animate__fadeIn" data-wow-delay="{{ ($index + 1) * 0.1 }}s">
-                                <div class="product-img-action-wrap">
-                                    <div class="product-img product-img-zoom">
-                                        <a href="/ebooks/{{ $ebook->slug }}">
-                                            @php
-                                                $coverImage = $ebook->external_cover_url 
-                                                    ? $ebook->external_cover_url 
-                                                    : ($ebook->cover_image_url ?? 'assets-nest/nest-fe/imgs/shop/product-1-1.jpg');
-                                            @endphp
-                                            <img class="default-img" src="{{ $coverImage }}" alt="{{ $ebook->title }}" />
-                                        </a>
-                                    </div>
-                                    <div class="product-badges product-badges-position product-badges-mrg">
-                                        <span class="badge-language hot">{{ strtoupper($ebook->language) }}</span>
-                                    </div>
-                                </div>
-                                <div class="product-content-wrap">
-                                    <h2 style="margin-top:15px;"><a href="/ebooks/{{ $ebook->slug }}">{{ Str::limit($ebook->title, 40) }}</a></h2>
-
-                                    <div class="product-author" style="margin-bottom:-4px;">
-                                        @if($ebook->creator)
-                                        <span>by {{ $ebook->creator->creator->pen_name ?? $ebook->creator->name }}</span>
-                                        @else
-                                        <span>by Unknown Author</span>
-                                        @endif
-                                    </div>
-
-                                    <div class="product-meta">
-                                        <div class="product-detail-rating">
-                                            <div class="product-rate-cover text-end">
-                                                <div class="product-rate-cover">
-                                                    <div class="product-rate d-inline-block">
-                                                        {{-- HITUNG RATA-RATA LANGSUNG DARI TABEL ebook_ratings --}}
-                                                        <div class="product-rating" style="width: {{ ($ebook->ratings()->avg('rating') / 5) * 100 }}%"></div>
-                                                    </div>
-                                                    {{-- TAMPILKAN JUGA RATA-RATA YANG SAMA --}}
-                                                    <span class="font-small ml-5 text-muted">({{ round($ebook->ratings()->avg('rating'), 2) }})</span>
-                                                </div>
+                                    {{-- ========== KARTU EBOOK YANG SAMA UNTUK SEMUA USER ========== --}}
+                                    <div class="product-cart-wrap mb-30 wow animate__animated animate__fadeIn"
+                                        data-wow-delay="{{ ($index + 1) * 0.1 }}s">
+                                        <div class="product-img-action-wrap">
+                                            <div class="product-img product-img-zoom">
+                                                <a href="/ebooks/{{ $ebook->slug }}">
+                                                    @php
+                                                        $coverImage = $ebook->external_cover_url
+                                                            ? $ebook->external_cover_url
+                                                            : $ebook->cover_image_url ??
+                                                                'assets-nest/nest-fe/imgs/shop/product-1-1.jpg';
+                                                    @endphp
+                                                    <img class="default-img" src="{{ $coverImage }}"
+                                                        alt="{{ $ebook->title }}" />
+                                                </a>
+                                            </div>
+                                            <div class="product-badges product-badges-position product-badges-mrg">
+                                                <span
+                                                    class="badge-language hot">{{ strtoupper($ebook->language) }}</span>
                                             </div>
                                         </div>
-                                        <div class="read-count">
-                                            <i class="fi fi-rs-eye align-middle"></i><!--  {{ number_format($ebook->view_count) }} -->
-                                            <span class="post-on">
-                                                @php
-                                                $views = $ebook->view_count;
-                                                if ($views >= 1000000000) { // 1 Miliar
-                                                $formattedViews = number_format($views / 1000000000, 1) . 'B';
-                                                } elseif ($views >= 1000000) { // 1 Juta
-                                                $formattedViews = number_format($views / 1000000, 1) . 'M';
-                                                } elseif ($views >= 1000) { // 1 Ribu
-                                                $formattedViews = number_format($views / 1000, 1) . 'k';
-                                                } else {
-                                                $formattedViews = $views;
-                                                }
-                                                @endphp
-                                                {{ $formattedViews }}
-                                            </span>
+                                        <div class="product-content-wrap">
+                                            <h2 style="margin-top:15px;"><a
+                                                    href="/ebooks/{{ $ebook->slug }}">{{ Str::limit($ebook->title, 40) }}</a>
+                                            </h2>
+
+                                            <div class="product-author" style="margin-bottom:-4px;">
+                                                @if ($ebook->creator)
+                                                    <span>by
+                                                        {{ $ebook->creator->creator->pen_name ?? $ebook->creator->name }}</span>
+                                                @else
+                                                    <span>by Unknown Author</span>
+                                                @endif
+                                            </div>
+
+                                            <div class="product-meta">
+                                                <div class="product-detail-rating">
+                                                    <div class="product-rate-cover text-end">
+                                                        <div class="product-rate-cover">
+                                                            <div class="product-rate d-inline-block">
+                                                                {{-- HITUNG RATA-RATA LANGSUNG DARI TABEL ebook_ratings --}}
+                                                                <div class="product-rating"
+                                                                    style="width: {{ ($ebook->ratings()->avg('rating') / 5) * 100 }}%">
+                                                                </div>
+                                                            </div>
+                                                            {{-- TAMPILKAN JUGA RATA-RATA YANG SAMA --}}
+                                                            <span
+                                                                class="font-small ml-5 text-muted">({{ round($ebook->ratings()->avg('rating'), 2) }})</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="read-count">
+                                                    <i
+                                                        class="fi fi-rs-eye align-middle"></i><!--  {{ number_format($ebook->view_count) }} -->
+                                                    <span class="post-on">
+                                                        @php
+                                                            $views = $ebook->view_count;
+                                                            if ($views >= 1000000000) {
+                                                                // 1 Miliar
+                                                                $formattedViews =
+                                                                    number_format($views / 1000000000, 1) . 'B';
+                                                            } elseif ($views >= 1000000) {
+                                                                // 1 Juta
+                                                                $formattedViews =
+                                                                    number_format($views / 1000000, 1) . 'M';
+                                                            } elseif ($views >= 1000) {
+                                                                // 1 Ribu
+                                                                $formattedViews = number_format($views / 1000, 1) . 'k';
+                                                            } else {
+                                                                $formattedViews = $views;
+                                                            }
+                                                        @endphp
+                                                        {{ $formattedViews }}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <p class="product-description">
+                                                {{ Str::limit(strip_tags($ebook->short_description ?? $ebook->description), 80) }}
+                                            </p>
+
+                                            {{-- LOGIKA HANYA PADA TOMBOL AKSI --}}
+                                            @if (auth()->check() && auth()->user()->hasActiveSubscription())
+                                                <a href="{{ route('user.ebook.read', $ebook->slug) }}"
+                                                    class="action-btn btn-read-now">
+                                                    <i class="fi fi-rs-book-open"></i>
+                                                    <span>Read Now</span>
+                                                </a>
+                                            @else
+                                                <a href="/pricing" class="action-btn btn-subscribe-now">
+                                                    <i class="fi fi-rs-lock"></i>
+                                                    <span>Subscribe to Read</span>
+                                                </a>
+                                            @endif
                                         </div>
                                     </div>
 
-                                    <p class="product-description">{{ Str::limit(strip_tags($ebook->short_description ?? $ebook->description), 80) }}</p>
-
-                                    {{-- LOGIKA HANYA PADA TOMBOL AKSI --}}
-                                    @if(auth()->check() && auth()->user()->hasActiveSubscription())
-                                    <a href="{{ route('user.ebook.read', $ebook->slug) }}" class="action-btn btn-read-now">
-                                        <i class="fi fi-rs-book-open"></i>
-                                        <span>Read Now</span>
-                                    </a>
-                                    @else
-                                    <a href="/pricing" class="action-btn btn-subscribe-now">
-                                        <i class="fi fi-rs-lock"></i>
-                                        <span>Subscribe to Read</span>
-                                    </a>
-                                    @endif
                                 </div>
-                            </div>
-
-                        </div>
-                        @endforeach
+                            @endforeach
                         @else
-                        <div class="col-12 text-center py-5">
-                            <p class="text-muted">No ebooks available in this collection yet.</p>
-                        </div>
+                            <div class="col-12 text-center py-5">
+                                <p class="text-muted">No ebooks available in this collection yet.</p>
+                            </div>
                         @endif
 
                     </div>
                 </div>
+
+                {{-- ✅ PAGINATION (if not showing all) --}}
+                @if ($perPage !== 'all' && $collection->ebooks->hasPages())
+                    <div class="pagination-area mt-20 mb-20">
+                        <nav aria-label="Page navigation">
+                            {{ $collection->ebooks->appends(['per_page' => $perPage, 'sort_by' => $sortBy])->links() }}
+                        </nav>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

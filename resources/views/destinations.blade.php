@@ -329,7 +329,7 @@
                 Explore diverse destinations from beaches to cities — discover hidden gems and popular spots with authentic local experiences.
             </p>
         </div>
-        <div class="row">
+        <div class="row mt-5">
             @forelse ($allCities as $index => $city)
             <div class="col-lg-3 col-md-4 col-sm-6">
                 {{-- Bungkus seluruh card dengan tag <a> --}}

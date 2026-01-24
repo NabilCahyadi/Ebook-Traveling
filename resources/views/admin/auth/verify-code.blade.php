@@ -50,7 +50,7 @@
             --bs-primary: #ff4c61 !important;
             --bs-primary-rgb: 255, 76, 97 !important;
         }
-        
+
         .code-input {
             width: 50px;
             height: 50px;
@@ -77,24 +77,24 @@
             color: #ff4c61;
             font-weight: 500;
         }
-        
+
         .btn-primary {
             background-color: #ff4c61 !important;
             border-color: #ff4c61 !important;
         }
-        
+
         .btn-primary:hover,
         .btn-primary:focus,
         .btn-primary:active {
             background-color: #e6405a !important;
             border-color: #e6405a !important;
         }
-        
+
         .text-primary,
         a {
             color: #ff4c61 !important;
         }
-        
+
         a:hover {
             color: #e6405a !important;
         }
@@ -163,7 +163,7 @@
 
                             <div class="text-center">
                                 <p class="mb-0">
-                                    Tidak menerima kode? 
+                                    Tidak menerima kode?
                                     <span id="resendContainer">
                                         <span class="resend-timer" id="timer">Tunggu <span id="countdown">60</span>s</span>
                                         <a href="#" id="btnResend" class="d-none" style="color: #ff4c61; font-weight: 500;">Kirim ulang kode</a>
@@ -175,7 +175,7 @@
                         <div class="text-center">
                             <a href="{{ route('admin.login') }}" class="d-flex align-items-center justify-content-center">
                                 <i class="ti ti-chevron-left scaleX-n1-rtl me-1"></i>
-                                Kembali ke login
+                                Back to login
                             </a>
                         </div>
                     </div>
@@ -206,18 +206,18 @@
             $('.code-input').on('keyup', function(e) {
                 const $current = $(this);
                 const value = $current.val();
-                
+
                 if (value.length === 1 && e.key !== 'Backspace') {
                     $current.next('.code-input').focus();
                 }
-                
+
                 // Combine all codes
                 let fullCode = '';
                 $('.code-input').each(function() {
                     fullCode += $(this).val();
                 });
                 $('#fullCode').val(fullCode);
-                
+
                 // Auto submit when all 6 digits are entered
                 if (fullCode.length === 6) {
                     $('#formVerifyCode').submit();
@@ -236,13 +236,13 @@
                 e.preventDefault();
                 const pastedData = e.originalEvent.clipboardData.getData('text');
                 const digits = pastedData.replace(/\D/g, '').substring(0, 6).split('');
-                
+
                 $('.code-input').each(function(index) {
                     if (digits[index]) {
                         $(this).val(digits[index]);
                     }
                 });
-                
+
                 if (digits.length === 6) {
                     $('#fullCode').val(pastedData.replace(/\D/g, '').substring(0, 6));
                     $('#formVerifyCode').submit();
@@ -254,7 +254,7 @@
             const timerInterval = setInterval(function() {
                 countdown--;
                 $('#countdown').text(countdown);
-                
+
                 if (countdown <= 0) {
                     clearInterval(timerInterval);
                     $('#timer').addClass('d-none');
@@ -265,7 +265,7 @@
             // Resend code
             $('#btnResend').on('click', function(e) {
                 e.preventDefault();
-                
+
                 $.ajax({
                     url: '{{ route("admin.password.resend-code") }}',
                     method: 'POST',
@@ -283,22 +283,22 @@
                                 </div>
                             `;
                             $(alertHtml).insertAfter('.app-brand');
-                            
+
                             // Reset timer
                             countdown = 60;
                             $('#countdown').text(countdown);
                             $('#btnResend').addClass('d-none');
                             $('#timer').removeClass('d-none');
-                            
+
                             // Clear code inputs
                             $('.code-input').val('');
                             $('#code1').focus();
-                            
+
                             // Restart countdown
                             const newTimerInterval = setInterval(function() {
                                 countdown--;
                                 $('#countdown').text(countdown);
-                                
+
                                 if (countdown <= 0) {
                                     clearInterval(newTimerInterval);
                                     $('#timer').addClass('d-none');

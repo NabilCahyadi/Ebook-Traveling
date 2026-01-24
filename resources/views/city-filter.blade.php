@@ -244,7 +244,7 @@
                     {{-- Tombol Aksi --}}
                     @auth
                     @if(auth()->user()->hasActiveSubscription() || $ebook->is_free)
-                    <a href="{{ route('reader.show', $ebook->slug) }}" class="action-btn btn-read-now">
+                    <a href="{{ route('user.ebook.read', $ebook->slug) }}" class="action-btn btn-read-now">
                         <i class="fi fi-rs-book"></i>
                         <span>Read Now</span>
                     </a>

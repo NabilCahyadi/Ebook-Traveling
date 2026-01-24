@@ -24,78 +24,6 @@
 @endsection
 
 @section('content')
-
-    <main class="main">
-        <div class="page-header mt-30 mb-30">
-            <div class="container">
-                <h3>Blog & News</h3>
-            </div>
-        </div>
-
-        <div class="page-content mb-50">
-            <div class="container">
-                <div class="row">
-
-                    <div class="col-lg-12">
-                        <div class="row">
-
-                            @forelse ($blogs as $blog)
-                                <article class="col-xl-3 col-lg-4 col-md-6 mb-30 text-center hover-up">
-
-                                    <div class="post-thumb">
-                                        <a href="{{ route('blogs.show', $blog->slug) }}">
-                                            <img src="{{ $blog->featured_image_url }}" alt="{{ $blog->title }}"
-                                                style="width:100%;height:250px;object-fit:cover;border-radius:15px;">
-                                        </a>
-                                    </div>
-
-                                    <div class="entry-content-2 mt-15">
-                                        <h6 class="text-muted">{{ $blog->category }}</h6>
-
-                                        <h5 class="post-title mt-10">
-                                            <a href="{{ route('blogs.show', $blog->slug) }}">
-                                                {{ Str::limit($blog->title, 60) }}
-                                            </a>
-                                        </h5>
-
-                                        <div class="entry-meta font-xs mt-10 text-muted">
-                                            <span>{{ $blog->published_at->format('d F Y') }}</span>
-                                            <span class="ml-10 has-dot">
-                                                {{ $blog->view_count >= 1000000000
-                                                    ? number_format($blog->view_count / 1000000000, 1) . 'B'
-                                                    : ($blog->view_count >= 1000000
-                                                        ? number_format($blog->view_count / 1000000, 1) . 'M'
-                                                        : ($blog->view_count >= 1000
-                                                            ? number_format($blog->view_count / 1000, 1) . 'k'
-                                                            : $blog->view_count)) }}
-                                                Views
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                </article>
-                            @empty
-                                <div class="col-12 text-center py-5">
-                                    <p class="text-muted">No blog posts available.</p>
-                                </div>
-                            @endforelse
-
-                        </div>
-
-                        <div class="pagination-area mt-30">
-                            {{ $blogs->links() }}
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </main>
-
-@endsection
-
-
-@section('content')
     <style>
         /* Consistent Blog Image Frame */
         .post-thumb {
@@ -249,12 +177,9 @@
             <div class="container">
                 <div class="archive-header">
                     <div class="row align-items-center">
-                        <div class="col-xl-3">
+                        <div class="col-xl-7">
                             <h3 class="mb-15">Blog & News</h3>
-                            <div class="breadcrumb">
-                                <a href="/" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
-                                <span></span> Blog & News
-                            </div>
+                            <p>Find the best travel tips for exploring every corner of Indonesia.</h>
                         </div>
                     </div>
                 </div>
@@ -279,16 +204,26 @@
                                             <span><i class="fi-rs-apps"></i>Show :</span>
                                         </div>
                                         <div class="sort-by-dropdown-wrap">
-                                            <span> 50 <i class="fi-rs-angle-small-down"></i></span>
+                                            <span> {{ $perPage === 'all' ? 'All' : $perPage }} <i
+                                                    class="fi-rs-angle-small-down"></i></span>
                                         </div>
                                     </div>
                                     <div class="sort-by-dropdown">
                                         <ul>
-                                            <li><a class="active" href="#">50</a></li>
-                                            <li><a href="#">100</a></li>
-                                            <li><a href="#">150</a></li>
-                                            <li><a href="#">200</a></li>
-                                            <li><a href="#">All</a></li>
+                                            <li><a class="{{ $perPage == '50' ? 'active' : '' }}"
+                                                    href="?per_page=50&sort_by={{ $sortBy }}">50</a></li>
+                                            <li><a class="{{ $perPage == '100' ? 'active' : '' }}"
+                                                    href="?per_page=100&sort_by={{ $sortBy }}">100</a></li>
+                                            <li><a class="{{ $perPage == '150' ? 'active' : '' }}"
+                                                    href="?per_page=150&sort_by={{ $sortBy }}">150</a></li>
+                                            <li><a class="{{ $perPage == '200' ? 'active' : '' }}"
+                                                    href="?per_page=200&sort_by={{ $sortBy }}">200</a></li>
+                                            <li><a class="{{ $perPage == '250' ? 'active' : '' }}"
+                                                    href="?per_page=250&sort_by={{ $sortBy }}">250</a></li>
+                                            <li><a class="{{ $perPage == '300' ? 'active' : '' }}"
+                                                    href="?per_page=300&sort_by={{ $sortBy }}">300</a></li>
+                                            <li><a class="{{ strtolower($perPage) == 'all' ? 'active' : '' }}"
+                                                    href="?per_page=all&sort_by={{ $sortBy }}">All</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -298,15 +233,27 @@
                                             <span><i class="fi-rs-apps-sort"></i>Sort :</span>
                                         </div>
                                         <div class="sort-by-dropdown-wrap">
-                                            <span>Featured <i class="fi-rs-angle-small-down"></i></span>
+                                            <span>
+                                                @if ($sortBy === 'newest')
+                                                    Newest
+                                                @elseif($sortBy === 'release_date')
+                                                    Oldest First
+                                                @else
+                                                    Featured
+                                                @endif
+                                                <i class="fi-rs-angle-small-down"></i>
+                                            </span>
                                         </div>
                                     </div>
                                     <div class="sort-by-dropdown">
                                         <ul>
-                                            <li><a class="active" href="#">Featured</a></li>
-                                            <li><a href="#">Newest</a></li>
-                                            <li><a href="#">Most comments</a></li>
-                                            <li><a href="#">Release Date</a></li>
+                                            <li><a class="{{ $sortBy === 'featured' ? 'active' : '' }}"
+                                                    href="?per_page={{ $perPage }}&sort_by=featured">Featured</a></li>
+                                            <li><a class="{{ $sortBy === 'newest' ? 'active' : '' }}"
+                                                    href="?per_page={{ $perPage }}&sort_by=newest">Newest</a></li>
+                                            <li><a class="{{ $sortBy === 'release_date' ? 'active' : '' }}"
+                                                    href="?per_page={{ $perPage }}&sort_by=release_date">Oldest
+                                                    First</a></li>
                                         </ul>
                                     </div>
                                 </div>

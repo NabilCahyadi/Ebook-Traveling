@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <title>Page Not Found - {{ config('app.name') }}</title>
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ asset('images/only-logoo.png') }}" />
 
@@ -27,7 +27,7 @@
             <h4 class="mb-2">Halaman Tidak Ditemukan</h4>
             <p class="mb-6 mx-2">Oops! Halaman yang Anda cari tidak ditemukan.</p>
             <a href="{{ route('admin.dashboard') }}" class="btn btn-primary mb-6 waves-effect waves-light">
-                Kembali ke Dashboard
+                Back to Dashboard
             </a>
             <!-- <div class="mt-12">
                 <img src="{{ asset('assets/admin/img/illustrations/page-misc-error-light.png') }}"
@@ -52,19 +52,19 @@
             text-align: center;
             padding: 2rem;
         }
-        
+
         .misc-wrapper h1 {
             font-weight: 700;
             color: #e7174b;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
-        
+
         .misc-wrapper h4 {
             font-weight: 600;
             margin-bottom: 1rem;
             color: #5e5873;
         }
-        
+
         .misc-wrapper p {
             color: #6e6b7b;
             font-size: 1.1rem;

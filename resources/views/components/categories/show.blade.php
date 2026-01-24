@@ -183,7 +183,7 @@
                 <div class="archive-header">
                     <div class="row align-items-center">
                         <div class="col-xl-6">
-                            <h1 class="mb-15">{{ $category->name }}</h1>
+                            <h3 class="mb-15">{{ $category->name }}</h3>
                             <div class="breadcrumb">
                                 <p>{{ $category->description }}</p>
                             </div>
@@ -211,16 +211,18 @@
                                             <span><i class="fi fi-rs-apps"></i>Show :</span>
                                         </div>
                                         <div class="sort-by-dropdown-wrap">
-                                            <span> 50 <i class="fi fi-rs-angle-small-down"></i></span>
+                                            <span> {{ $perPage === 'all' ? 'All' : $perPage }} <i class="fi fi-rs-angle-small-down"></i></span>
                                         </div>
                                     </div>
                                     <div class="sort-by-dropdown">
                                         <ul>
-                                            <li><a class="active" href="#">50</a></li>
-                                            <li><a href="#">100</a></li>
-                                            <li><a href="#">150</a></li>
-                                            <li><a href="#">200</a></li>
-                                            <li><a href="#">All</a></li>
+                                            <li><a class="{{ $perPage == '50' ? 'active' : '' }}" href="?per_page=50&sort_by={{ $sortBy }}">50</a></li>
+                                            <li><a class="{{ $perPage == '100' ? 'active' : '' }}" href="?per_page=100&sort_by={{ $sortBy }}">100</a></li>
+                                            <li><a class="{{ $perPage == '150' ? 'active' : '' }}" href="?per_page=150&sort_by={{ $sortBy }}">150</a></li>
+                                            <li><a class="{{ $perPage == '200' ? 'active' : '' }}" href="?per_page=200&sort_by={{ $sortBy }}">200</a></li>
+                                            <li><a class="{{ $perPage == '250' ? 'active' : '' }}" href="?per_page=250&sort_by={{ $sortBy }}">250</a></li>
+                                            <li><a class="{{ $perPage == '300' ? 'active' : '' }}" href="?per_page=300&sort_by={{ $sortBy }}">300</a></li>
+                                            <li><a class="{{ strtolower($perPage) == 'all' ? 'active' : '' }}" href="?per_page=all&sort_by={{ $sortBy }}">All</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -230,15 +232,23 @@
                                             <span><i class="fi fi-rs-apps-sort"></i>Sort :</span>
                                         </div>
                                         <div class="sort-by-dropdown-wrap">
-                                            <span>Featured <i class="fi fi-rs-angle-small-down"></i></span>
+                                            <span>
+                                                @if($sortBy === 'newest')
+                                                    Newest
+                                                @elseif($sortBy === 'release_date')
+                                                    Release Date
+                                                @else
+                                                    Featured
+                                                @endif
+                                                <i class="fi fi-rs-angle-small-down"></i>
+                                            </span>
                                         </div>
                                     </div>
                                     <div class="sort-by-dropdown">
                                         <ul>
-                                            <li><a class="active" href="#">Featured</a></li>
-                                            <li><a href="#">Newest</a></li>
-                                            <li><a href="#">Most comments</a></li>
-                                            <li><a href="#">Release Date</a></li>
+                                            <li><a class="{{ $sortBy === 'featured' ? 'active' : '' }}" href="?per_page={{ $perPage }}&sort_by=featured">Featured</a></li>
+                                            <li><a class="{{ $sortBy === 'newest' ? 'active' : '' }}" href="?per_page={{ $perPage }}&sort_by=newest">Newest</a></li>
+                                            <li><a class="{{ $sortBy === 'release_date' ? 'active' : '' }}" href="?per_page={{ $perPage }}&sort_by=release_date">Release Date</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -371,6 +381,15 @@
 
                                     </div>
                                 </div>
+
+                                {{-- Pagination Links --}}
+                                @if (strtolower($perPage) !== 'all' && method_exists($category->ebooks, 'links'))
+                                    <div class="pagination-area mt-20 mb-20">
+                                        <nav aria-label="Page navigation">
+                                            {{ $category->ebooks->links() }}
+                                        </nav>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                         <!-- Menampilkan Data Ebooks - End Here -->

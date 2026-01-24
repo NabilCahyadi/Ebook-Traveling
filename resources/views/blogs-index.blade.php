@@ -139,7 +139,7 @@
                                 Tag : <span class="text-brand">#{{ ucfirst($tag) }}</span>
                                 @else
                                 <img class="w-36px mr-10" src="{{ asset('assets/imgs/theme/icons/category-1.svg') }}" alt="" />
-                                Semua Artikel
+                                All Articles
                                 @endif
                             </h4>
                         </div>
