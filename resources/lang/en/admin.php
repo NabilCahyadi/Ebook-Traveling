@@ -902,6 +902,7 @@ return [
         'category_mingguan' => 'Weekly',
         'category_bulanan' => 'Monthly',
         'category_tahunan' => 'Yearly',
+        'no_plans_found' => 'No subscription plans found',
     ],
 
     // Receipt
