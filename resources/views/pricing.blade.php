@@ -549,7 +549,7 @@
                 <div class="style-4">
                     <div class="rectangle single-animation-wrap rounded mt-15" style="position: relative;">
                         @if ($bannerData)
-                            <img src="{{ asset('storage/' . $bannerData->image) }}" alt="Banner" class="img-fluid w-100 rounded"
+                            <img src="{{ asset($bannerData->image) }}" alt="Banner" class="img-fluid w-100 rounded"
                                 id="pricing-banner-img" style="aspect-ratio: 2.5/1; object-fit: cover;">
 
                             <div id="pricing-banner-content" class="js-fade-in"
