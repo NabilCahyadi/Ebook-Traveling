@@ -155,13 +155,23 @@
                                 value="{{ request('end_date') }}">
                         </div>
 
+                            <!-- <div class="col-md-2">
+                                <label class="form-label">{{ __('admin.common.per_page') }}</label>
+                                <select class="form-select" name="per_page">
+                                    <option value="15" {{ request('per_page', 15) == 15 ? 'selected' : '' }}>15</option>
+                                    <option value="30" {{ request('per_page') == 30 ? 'selected' : '' }}>30</option>
+                                    <option value="45" {{ request('per_page') == 45 ? 'selected' : '' }}>45</option>
+                                    <option value="60" {{ request('per_page') == 60 ? 'selected' : '' }}>60</option>
+                                </select>
+                            </div> -->
+
                         <div class="col-md-1 d-flex align-items-end">
                             <button type="submit" class="btn btn-primary w-100">
                                 <i class="ti ti-filter"></i>
                             </button>
                         </div>
 
-                        @if (request()->hasAny(['search', 'type', 'status', 'start_date', 'end_date']))
+                        @if (request()->hasAny(['search', 'type', 'status', 'start_date', 'end_date', 'per_page']))
                             <div class="col-md-12">
                                 <a href="{{ route('admin.subscription-history.index') }}"
                                     class="btn btn-outline-secondary btn-sm">
@@ -176,8 +186,19 @@
 
         <!-- Payment History Table -->
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">{{ __('admin.subscription_history.payment_history') }}</h5>
+                <div class="d-flex align-items-center gap-2">
+                    <label class="text-muted small mb-0">{{ __('admin.common.per_page') }}:</label>
+                    <select class="form-select form-select-sm" style="width: auto;" onchange="window.location.href=this.value">
+                        @foreach([15, 30, 45, 60] as $perPageOption)
+                            <option value="{{ request()->fullUrlWithQuery(['per_page' => $perPageOption, 'page' => 1]) }}" 
+                                {{ request('per_page', 15) == $perPageOption ? 'selected' : '' }}>
+                                {{ $perPageOption }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
 
             <div class="table-responsive text-nowrap">
@@ -246,21 +267,38 @@
                                     <strong>Rp {{ number_format($subscription->total_amount, 0, ',', '.') }}</strong>
                                 </td>
                                 <td>
-                                    <div class="d-flex gap-1">
+                                    @if ($subscription->status === 'active' && $subscription->end_date->isFuture())
+                                        {{-- Dropdown menu dengan 2 actions --}}
+                                        <div class="dropdown">
+                                            <button type="button" class="btn btn-sm btn-icon btn-text-secondary rounded-pill" 
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="ti ti-dots-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li>
+                                                    <a class="dropdown-item" href="javascript:void(0);" 
+                                                        data-bs-toggle="modal" data-bs-target="#detailModal{{ $subscription->id }}">
+                                                        <i class="ti ti-eye me-2"></i>
+                                                        View Details
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="{{ route('admin.subscription-history.print', $subscription->id) }}" 
+                                                        target="_blank">
+                                                        <i class="ti ti-printer me-2"></i>
+                                                        {{ __('admin.subscription_history.print_receipt') }}
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    @else
+                                        {{-- Hanya 1 action, tampilkan icon biasa --}}
                                         <button type="button" class="btn btn-sm btn-icon btn-text-secondary rounded-pill"
                                             data-bs-toggle="modal" data-bs-target="#detailModal{{ $subscription->id }}"
                                             title="View Details">
                                             <i class="ti ti-eye"></i>
                                         </button>
-                                        @if ($subscription->status === 'active' && $subscription->end_date->isFuture())
-                                            <a href="{{ route('admin.subscription-history.print', $subscription->id) }}" 
-                                                class="btn btn-sm btn-icon btn-text-primary rounded-pill"
-                                                target="_blank"
-                                                title="Print Receipt">
-                                                <i class="ti ti-printer"></i>
-                                            </a>
-                                        @endif
-                                    </div>
+                                    @endif
                                 </td>
                             </tr>
 
@@ -448,19 +486,23 @@
                 </table>
             </div>
 
-            @if ($subscriptions->hasPages())
-                <div class="card-footer">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="text-muted small">
-                            Showing {{ $subscriptions->firstItem() }} to {{ $subscriptions->lastItem() }} of
-                            {{ $subscriptions->total() }} entries
-                        </div>
-                        <div>
-                            {{ $subscriptions->links() }}
-                        </div>
+            <div class="card-footer">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div class="text-muted small">
+                        @if ($subscriptions->total() > 0)
+                            {{ __('admin.common.showing') }} {{ $subscriptions->firstItem() }} {{ __('admin.common.to') }} {{ $subscriptions->lastItem() }} {{ __('admin.common.of') }}
+                            {{ $subscriptions->total() }} {{ __('admin.common.entries') }}
+                        @else
+                            {{ __('admin.common.no_entries') }}
+                        @endif
                     </div>
+                    @if ($subscriptions->hasPages())
+                        <div>
+                            {{ $subscriptions->withQueryString()->links() }}
+                        </div>
+                    @endif
                 </div>
-            @endif
+            </div>
         </div>
     </div>
 @endsection
