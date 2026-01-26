@@ -24,6 +24,16 @@ class SubscriberRepository implements SubscriberRepositoryInterface
             ->with(['user.roles', 'plan'])
             ->whereIn('status', ['active', 'pending', 'expired']);
 
+        // Additional check: For 'active' status, ensure end_date hasn't passed
+        // This handles cases where automated task hasn't run yet
+        $query->where(function ($q) {
+            $q->where('status', '!=', 'active')
+              ->orWhere(function ($subQ) {
+                  $subQ->where('status', 'active')
+                       ->where('end_date', '>=', now());
+              });
+        });
+
         // Filter by role
         if (!empty($filters['role'])) {
             $query->whereHas('user.roles', function ($q) use ($filters) {
