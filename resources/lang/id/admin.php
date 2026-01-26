@@ -933,6 +933,7 @@ return [
         'category_mingguan' => 'Mingguan',
         'category_bulanan' => 'Bulanan',
         'category_tahunan' => 'Tahunan',
+        'no_plans_found' => 'Tidak ada paket berlangganan ditemukan',
     ],
 
     // Receipt

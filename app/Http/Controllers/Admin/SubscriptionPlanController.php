@@ -18,11 +18,13 @@ class SubscriptionPlanController extends Controller
     /**
      * Display a listing of subscription plans.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $plans = $this->subscriptionPlanService->getPaginatedPlans(5);
+        $category = $request->get('category', 'all');
+        $plans = $this->subscriptionPlanService->getPaginatedPlansByCategory($category, 10);
+        $activeCategory = $category;
 
-        return view('admin.subscription-plans.index', compact('plans'));
+        return view('admin.subscription-plans.index', compact('plans', 'activeCategory'));
     }
 
     /**

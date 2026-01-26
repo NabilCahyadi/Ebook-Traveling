@@ -44,6 +44,14 @@ class SubscriptionPlanService
     }
 
     /**
+     * Get paginated subscription plans by category
+     */
+    public function getPaginatedPlansByCategory(string $category = 'all', int $perPage = 10)
+    {
+        return $this->subscriptionPlanRepository->getAllPaginatedByCategory($category, $perPage);
+    }
+
+    /**
      * Get active subscription plans
      */
     public function getActivePlans()

@@ -25,6 +25,17 @@ class SubscriptionPlanRepository implements SubscriptionPlanRepositoryInterface
         return $this->model->orderBy('duration_days', 'asc')->paginate($perPage);
     }
 
+    public function getAllPaginatedByCategory(string $category = 'all', int $perPage = 10)
+    {
+        $query = $this->model->orderBy('duration_days', 'asc');
+        
+        if ($category !== 'all') {
+            $query->where('category_subscription', $category);
+        }
+        
+        return $query->paginate($perPage);
+    }
+
     public function getById(string $id)
     {
         return $this->model->findOrFail($id);

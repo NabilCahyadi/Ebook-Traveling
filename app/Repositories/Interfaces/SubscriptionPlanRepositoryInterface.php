@@ -9,6 +9,8 @@ interface SubscriptionPlanRepositoryInterface
 
     public function getAllPaginated(int $perPage = 10);
 
+    public function getAllPaginatedByCategory(string $category = 'all', int $perPage = 10);
+
     public function getById(string $id);
 
     public function findById(string $id);

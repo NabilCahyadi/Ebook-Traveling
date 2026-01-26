@@ -2,6 +2,40 @@
 
 @section('title', __('admin.subscription_plans.title'))
 
+@push('styles')
+<style>
+    /* Navigation Pills Styling */
+    .nav-pills .nav-item {
+        margin-right: 8px;
+    }
+    .nav-pills .nav-item:last-child {
+        margin-right: 0;
+    }
+    .nav-pills .nav-link.active,
+    .nav-pills .nav-link.active:hover,
+    .nav-pills .nav-link.active:focus,
+    .nav-pills .nav-link.active:active {
+        color: #ffffff !important;
+        background-color: #ff4c61 !important;
+    }
+    
+    /* Fix: Sidebar icon tetap terlihat saat menu active tapi dropdown ditutup */
+    .menu-inner > .menu-item.active:not(.open) > .menu-link.menu-toggle .menu-icon {
+        color: #ffffff !important;
+    }
+    
+    /* Fix: Pastikan background juga kontras */
+    .menu-inner > .menu-item.active:not(.open) > .menu-link.menu-toggle {
+        background-color: #ff4c61 !important;
+        color: #ffffff !important;
+    }
+    
+    .menu-inner > .menu-item.active:not(.open) > .menu-link.menu-toggle div {
+        color: #ffffff !important;
+    }
+</style>
+@endpush
+
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -29,7 +63,48 @@
 
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">{{ __('admin.subscription_plans.title') }}</h5>
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <h5 class="mb-0">{{ __('admin.subscription_plans.title') }}</h5>
+                    
+                    <!-- Category Filter Navigation -->
+                    <ul class="nav nav-pills" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link {{ $activeCategory === 'all' ? 'active' : '' }}" 
+                               href="{{ route('admin.subscription-plans.index', ['category' => 'all']) }}"
+                               style="{{ $activeCategory === 'all' ? 'color: #fff !important;' : '' }}">
+                                {{ __('admin.subscription_plans.all_plans') }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ $activeCategory === 'harian' ? 'active' : '' }}" 
+                               href="{{ route('admin.subscription-plans.index', ['category' => 'harian']) }}"
+                               style="{{ $activeCategory === 'harian' ? 'color: #fff !important;' : '' }}">
+                                {{ __('admin.subscription_plans.category_harian') }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ $activeCategory === 'mingguan' ? 'active' : '' }}" 
+                               href="{{ route('admin.subscription-plans.index', ['category' => 'mingguan']) }}"
+                               style="{{ $activeCategory === 'mingguan' ? 'color: #fff !important;' : '' }}">
+                                {{ __('admin.subscription_plans.category_mingguan') }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ $activeCategory === 'bulanan' ? 'active' : '' }}" 
+                               href="{{ route('admin.subscription-plans.index', ['category' => 'bulanan']) }}"
+                               style="{{ $activeCategory === 'bulanan' ? 'color: #fff !important;' : '' }}">
+                                {{ __('admin.subscription_plans.category_bulanan') }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ $activeCategory === 'tahunan' ? 'active' : '' }}" 
+                               href="{{ route('admin.subscription-plans.index', ['category' => 'tahunan']) }}"
+                               style="{{ $activeCategory === 'tahunan' ? 'color: #fff !important;' : '' }}">
+                                {{ __('admin.subscription_plans.category_tahunan') }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             <div class="table-responsive text-nowrap">
@@ -123,7 +198,7 @@
                             <tr>
                                 <td colspan="7" class="text-center py-5">
                                     <i class="bx bx-package" style="font-size: 48px; color: #ddd;"></i>
-                                    <p class="mt-2 text-muted">No subscription plans found</p>
+                                    <p class="mt-2 text-muted">{{ __('admin.subscription_plans.no_plans_found') }}</p>
                                     <a href="{{ route('admin.subscription-plans.create') }}"
                                         class="btn btn-sm btn-primary">{{ __('admin.subscription_plans.add_plan') }}</a>
                                 </td>
@@ -135,7 +210,7 @@
 
             @if ($plans->hasPages())
                 <div class="card-footer">
-                    {{ $plans->links() }}
+                    {{ $plans->withQueryString()->links() }}
                 </div>
             @endif
         </div>
