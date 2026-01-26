@@ -5,7 +5,7 @@
 
 @section('content')
 <style>
-    /* 
+    /*
             Kustomisasi dari template e-book Anda
             Beberapa aturan disesuaikan untuk halaman detail kota
         */
@@ -364,8 +364,8 @@
                                     <div class="product-img product-img-zoom">
                                         <a href="/ebooks/{{ $ebook->slug }}">
                                             @php
-                                                $coverImage = $ebook->external_cover_url 
-                                                    ? $ebook->external_cover_url 
+                                                $coverImage = $ebook->external_cover_url
+                                                    ? $ebook->external_cover_url
                                                     : ($ebook->cover_image_url ?? 'https://via.placeholder.com/300x400.png?text=No+Cover');
                                             @endphp
                                             <img class="default-img" src="{{ $coverImage }}" alt="{{ $ebook->title }}" />
@@ -426,7 +426,6 @@
                                         {{-- Logika Tombol Aksi --}}
                                         @if(auth()->check() && auth()->user()->hasActiveSubscription())
                                         <a href="{{ route('user.ebook.read', $ebook->slug) }}" class="action-btn btn-read-now">
-                                            <i class="fi fi-rs-book-open"></i>
                                             <span>Read Now</span>
                                         </a>
                                         @else

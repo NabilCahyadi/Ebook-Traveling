@@ -279,7 +279,6 @@
                                             @if (auth()->check() && auth()->user()->hasActiveSubscription())
                                                 <a href="{{ route('user.ebook.read', $ebook->slug) }}"
                                                     class="action-btn btn-read-now">
-                                                    <i class="fi fi-rs-book-open"></i>
                                                     <span>Read Now</span>
                                                 </a>
                                             @else
