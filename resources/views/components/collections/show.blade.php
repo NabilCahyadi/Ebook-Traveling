@@ -1,7 +1,4 @@
 @props(['collection']) {{-- Definisikan bahwa komponen ini menerima data 'collection' --}}
-{{-- resources/views/components/collections/show.blade.php --}}
-
-@props(['collection']) {{-- Definisikan bahwa komponen ini menerima data 'collection' --}}
 
 <style>
     /* Kustomisasi Koleksi E-book */
@@ -186,67 +183,6 @@
             @if ($collection->description)
                 <p class="collection-description">{{ $collection->description }}</p>
             @endif
-            <div class="sort-by-product-area">
-                <div class="sort-by-cover mr-10">
-                    <div class="sort-by-product-wrap">
-                        <div class="sort-by">
-                            <span><i class="fi-rs-apps"></i>Show :</span>
-                        </div>
-                        <div class="sort-by-dropdown-wrap">
-                            <span> {{ $perPage === 'all' ? 'All' : $perPage }} <i
-                                    class="fi-rs-angle-small-down"></i></span>
-                        </div>
-                    </div>
-                    <div class="sort-by-dropdown">
-                        <ul>
-                            <li><a class="{{ $perPage == '50' ? 'active' : '' }}"
-                                    href="?per_page=50&sort_by={{ $sortBy }}">50</a></li>
-                            <li><a class="{{ $perPage == '100' ? 'active' : '' }}"
-                                    href="?per_page=100&sort_by={{ $sortBy }}">100</a></li>
-                            <li><a class="{{ $perPage == '150' ? 'active' : '' }}"
-                                    href="?per_page=150&sort_by={{ $sortBy }}">150</a></li>
-                            <li><a class="{{ $perPage == '200' ? 'active' : '' }}"
-                                    href="?per_page=200&sort_by={{ $sortBy }}">200</a></li>
-                            <li><a class="{{ $perPage == '250' ? 'active' : '' }}"
-                                    href="?per_page=250&sort_by={{ $sortBy }}">250</a></li>
-                            <li><a class="{{ $perPage == '300' ? 'active' : '' }}"
-                                    href="?per_page=300&sort_by={{ $sortBy }}">300</a></li>
-                            <li><a class="{{ strtolower($perPage) == 'all' ? 'active' : '' }}"
-                                    href="?per_page=all&sort_by={{ $sortBy }}">All</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="sort-by-cover">
-                    <div class="sort-by-product-wrap">
-                        <div class="sort-by">
-                            <span><i class="fi-rs-apps-sort"></i>Sort :</span>
-                        </div>
-                        <div class="sort-by-dropdown-wrap">
-                            <span>
-                                @if ($sortBy === 'newest')
-                                    Newest
-                                @elseif($sortBy === 'release_date')
-                                    Oldest First
-                                @else
-                                    Featured
-                                @endif
-                                <i class="fi-rs-angle-small-down"></i>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="sort-by-dropdown">
-                        <ul>
-                            <li><a class="{{ $sortBy === 'featured' ? 'active' : '' }}"
-                                    href="?per_page={{ $perPage }}&sort_by=featured">Featured</a></li>
-                            <li><a class="{{ $sortBy === 'newest' ? 'active' : '' }}"
-                                    href="?per_page={{ $perPage }}&sort_by=newest">Newest</a></li>
-                            <li><a class="{{ $sortBy === 'release_date' ? 'active' : '' }}"
-                                    href="?per_page={{ $perPage }}&sort_by=release_date">Oldest
-                                    First</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
         </div>
 
         {{-- Kontainer untuk Daftar Ebook --}}
@@ -254,7 +190,6 @@
             <div class="tab-pane fade show active" id="{{ $collection->slug }}" role="tabpanel">
                 <div class="products-scroll-container">
                     <div class="row product-grid-4 scroll-wrapper">
-
                         @if ($collection->ebooks->isNotEmpty())
                             @foreach ($collection->ebooks as $index => $ebook)
                                 <div class="col-lg-1-5 col-md-4 col-12 col-sm-6 scroll-item">
@@ -363,18 +298,8 @@
                                 <p class="text-muted">No ebooks available in this collection yet.</p>
                             </div>
                         @endif
-
                     </div>
                 </div>
-
-                {{-- ✅ PAGINATION (if not showing all) --}}
-                @if ($perPage !== 'all' && $collection->ebooks->hasPages())
-                    <div class="pagination-area mt-20 mb-20">
-                        <nav aria-label="Page navigation">
-                            {{ $collection->ebooks->appends(['per_page' => $perPage, 'sort_by' => $sortBy])->links() }}
-                        </nav>
-                    </div>
-                @endif
             </div>
         </div>
     </div>
