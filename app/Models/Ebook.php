@@ -43,6 +43,7 @@ class Ebook extends Model
         'status',
         'is_active',
         'published_at',
+        'average_rating',
     ];
 
     protected $casts = [
@@ -177,7 +178,7 @@ class Ebook extends Model
      */
     public function ratings(): HasMany
     {
-        return $this->hasMany(Rating::class, 'ebook_id');
+        return $this->hasMany(EbookRating::class, 'ebook_id');
     }
 
     /**

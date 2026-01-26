@@ -63,21 +63,25 @@
 
                         <!-- Role -->
                         <div class="col-md-6 mb-3">
-                            <label for="role" class="form-label">{{ __('admin.form.role') }} <span class="text-danger">*</span></label>
-                            <select class="form-select @error('role') is-invalid @enderror" id="role" name="role"
-                                required>
-                                <option value="">{{ __('admin.common.select') }} {{ __('admin.form.role') }}</option>
-                                @php
-                                    $roles = \App\Models\Role::all();
-                                    $selectedRole = old('role') ?? ($roleSlug ?? '');
-                                @endphp
+                            <label for="roles" class="form-label">{{ __('admin.form.role') }} <span class="text-danger">*</span></label>
+                            @php
+                                $roles = \App\Models\Role::all();
+                                $selectedRoles = old('roles', $roleSlug ? [$roleSlug] : []);
+                            @endphp
+                            <select class="form-select @error('roles') is-invalid @enderror @error('roles.*') is-invalid @enderror" 
+                                id="roles" name="roles[]" multiple required style="min-height: 120px;">
                                 @foreach ($roles as $role)
-                                    <option value="{{ $role->slug }}" {{ $selectedRole == $role->slug ? 'selected' : '' }}>
+                                    <option value="{{ $role->slug }}" 
+                                        {{ in_array($role->slug, (array)$selectedRoles) ? 'selected' : '' }}>
                                         {{ $role->name }}
                                     </option>
                                 @endforeach
                             </select>
-                            @error('role')
+                            <small class="text-muted">Hold Ctrl/Cmd to select multiple roles</small>
+                            @error('roles')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            @error('roles.*')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

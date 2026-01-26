@@ -206,15 +206,6 @@
                                     </td>
                                     <td>
                                         <div>{{ $user->email }}</div>
-                                        @if ($user->email_verified_at)
-                                            <small class="text-success">
-                                                <i class="ti ti-check ti-xs"></i> {{ __('admin.users.verified') }}
-                                            </small>
-                                        @else
-                                            <small class="text-muted">
-                                                <i class="ti ti-x ti-xs"></i> {{ __('admin.users.not_verified') }}
-                                            </small>
-                                        @endif
                                     </td>
                                     <td class="d-none d-md-table-cell">
                                         @if ($user->roles && $user->roles->count() > 0)

@@ -154,6 +154,17 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
         Route::post('ebooks/{id}/reject', [\App\Http\Controllers\Admin\EbookController::class, 'reject'])->name('ebooks.reject');
     });
 
+    // Ebook Ratings Management
+    Route::middleware(['admin.permission:ebooks.edit'])->group(function () {
+        Route::get('ebooks/{ebook}/ratings', [\App\Http\Controllers\Admin\EbookRatingController::class, 'index'])->name('ebooks.ratings.index');
+        Route::get('ebooks/{ebook}/ratings/create', [\App\Http\Controllers\Admin\EbookRatingController::class, 'create'])->name('ebooks.ratings.create');
+        Route::post('ebooks/{ebook}/ratings', [\App\Http\Controllers\Admin\EbookRatingController::class, 'store'])->name('ebooks.ratings.store');
+        Route::get('ebooks/{ebook}/ratings/{rating}/edit', [\App\Http\Controllers\Admin\EbookRatingController::class, 'edit'])->name('ebooks.ratings.edit');
+        Route::put('ebooks/{ebook}/ratings/{rating}', [\App\Http\Controllers\Admin\EbookRatingController::class, 'update'])->name('ebooks.ratings.update');
+        Route::delete('ebooks/{ebook}/ratings/{rating}', [\App\Http\Controllers\Admin\EbookRatingController::class, 'destroy'])->name('ebooks.ratings.destroy');
+        Route::patch('ebooks/{ebook}/ratings/{rating}/toggle-approval', [\App\Http\Controllers\Admin\EbookRatingController::class, 'toggleApproval'])->name('ebooks.ratings.toggle-approval');
+    });
+
     // Category Management
     Route::middleware(['admin.permission:categories.view'])->group(function () {
         Route::get('categories', [\App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('categories.index');

@@ -64,16 +64,18 @@ class BlogRepository implements BlogRepositoryInterface
 
     public function getFiltered(array $filters, int $perPage = 15)
     {
-        $query = $this->model->with('author');
+        $query = $this->model->with(['author', 'categories']);
 
         // Filter by specific status if provided
         if (isset($filters['status']) && $filters['status'] && in_array($filters['status'], ['draft', 'published', 'unpublished'])) {
             $query->where('status', $filters['status']);
         }
 
-        // Filter by category
+        // Filter by category using relationship
         if (isset($filters['category']) && $filters['category']) {
-            $query->where('category', $filters['category']);
+            $query->whereHas('categories', function ($q) use ($filters) {
+                $q->where('category_id', $filters['category']);
+            });
         }
 
         // Search - search in title, content, excerpt, and author name
@@ -98,11 +100,10 @@ class BlogRepository implements BlogRepositoryInterface
 
     public function getAllCategories()
     {
-        return $this->model->select('category')
-            ->whereNotNull('category')
-            ->where('category', '!=', '')
-            ->distinct()
-            ->pluck('category');
+        return \App\Models\Category::where('type', 'blog')
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get();
     }
 
     public function getLatestPublished(int $limit = 4)
