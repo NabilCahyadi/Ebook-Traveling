@@ -106,7 +106,19 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">{{ __('admin.subscribers.list') }}</h5>
-            <div class="text-muted">{{ __('admin.common.total') }}: {{ $subscriptions->total() }} {{ __('admin.subscribers.subscribers') }}</div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="text-muted">{{ __('admin.common.total') }}: {{ $subscriptions->total() }} {{ __('admin.subscribers.subscribers') }}</div>
+                <div class="d-flex align-items-center gap-2">
+                    <label for="perPageSelect" class="mb-0 text-muted" style="white-space: nowrap;">{{ __('admin.common.show') }}:</label>
+                    <select id="perPageSelect" class="form-select form-select-sm" style="width: auto;" onchange="changePerPage(this.value)">
+                        @foreach([5, 10, 15, 20, 25, 30, 50] as $option)
+                            <option value="{{ $option }}" {{ request('per_page', 15) == $option ? 'selected' : '' }}>
+                                {{ $option }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
         </div>
         <div class="card-body">
             @if ($subscriptions->count() > 0)
@@ -266,3 +278,14 @@
     </div>
 
 @endsection
+
+@push('scripts')
+<script>
+function changePerPage(value) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('per_page', value);
+    url.searchParams.delete('page'); // Reset to first page
+    window.location.href = url.toString();
+}
+</script>
+@endpush
