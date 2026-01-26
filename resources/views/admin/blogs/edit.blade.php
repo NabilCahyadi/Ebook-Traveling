@@ -128,11 +128,12 @@
 
                             <!-- Scheduled Publishing Date/Time -->
                             <div class="mb-3" id="scheduledDateContainer" style="{{ old('status', $blog->status) == 'scheduled' ? '' : 'display: none;' }}">
-                                <label class="form-label" for="published_at"><i class="ti ti-calendar-time me-1"></i> Publish Date & Time <span class="text-danger">*</span></label>
+                                <label class="form-label" for="published_at"><i class="ti ti-calendar-time me-1"></i> Publish Date & Time <span class="text-danger" id="published_at_required">*</span></label>
                                 <input type="datetime-local" class="form-control @error('published_at') is-invalid @enderror" 
                                     id="published_at" name="published_at" 
                                     value="{{ old('published_at', $blog->published_at ? $blog->published_at->format('Y-m-d\TH:i') : '') }}"
-                                    min="{{ now()->format('Y-m-d\TH:i') }}">
+                                    min="{{ now()->format('Y-m-d\TH:i') }}"
+                                    {{ old('status', $blog->status) == 'scheduled' ? 'required' : '' }}>
                                 @error('published_at')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -744,14 +745,18 @@
             const statusSelect = document.getElementById('status');
             const scheduledContainer = document.getElementById('scheduledDateContainer');
             const publishedAtInput = document.getElementById('published_at');
+            const publishedAtRequired = document.getElementById('published_at_required');
             
             function toggleScheduledDate() {
                 if (statusSelect.value === 'scheduled') {
                     scheduledContainer.style.display = 'block';
-                    publishedAtInput.required = true;
+                    publishedAtInput.setAttribute('required', 'required');
+                    if (publishedAtRequired) publishedAtRequired.style.display = 'inline';
                 } else {
                     scheduledContainer.style.display = 'none';
-                    publishedAtInput.required = false;
+                    publishedAtInput.removeAttribute('required');
+                    if (publishedAtRequired) publishedAtRequired.style.display = 'none';
+                    publishedAtInput.value = ''; // Clear the value when not scheduled
                 }
             }
             

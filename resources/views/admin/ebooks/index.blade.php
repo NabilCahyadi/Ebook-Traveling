@@ -295,6 +295,9 @@
                                                 <a class="dropdown-item" href="{{ route('admin.ebooks.edit', $ebook->id) }}">
                                                     <i class="ti ti-pencil me-2"></i> {{ __('admin.actions.edit') }}
                                                 </a>
+                                                <a class="dropdown-item" href="{{ route('admin.ebooks.ratings.index', $ebook->id) }}">
+                                                    <i class="ti ti-star me-2"></i> {{ __('admin.ebooks.manage_ratings') }}
+                                                </a>
                                                 <div class="dropdown-divider"></div>
                                                 <form action="{{ route('admin.ebooks.destroy', $ebook->id) }}" method="POST"
                                                     style="display: none;" id="delete-ebook-{{ $ebook->id }}">
@@ -361,6 +364,9 @@
                                                 </a>
                                                 <a class="dropdown-item" href="{{ route('admin.ebooks.edit', $ebook->id) }}">
                                                     <i class="ti ti-pencil me-2"></i> Edit
+                                                </a>
+                                                <a class="dropdown-item" href="{{ route('admin.ebooks.ratings.index', $ebook->id) }}">
+                                                    <i class="ti ti-star me-2"></i> {{ __('admin.ebooks.manage_ratings') }}
                                                 </a>
                                                 <div class="dropdown-divider"></div>
                                                 <form action="{{ route('admin.ebooks.destroy', $ebook->id) }}" method="POST"

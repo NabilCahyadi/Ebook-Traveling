@@ -48,7 +48,7 @@
                             <select class="form-select form-select-sm" id="category" onchange="applyBlogFilters()" style="min-width: 120px; max-width: 150px;">
                                 <option value="">{{ __('admin.blogs.all_categories') }}</option>
                                 @foreach ($categories as $cat)
-                                    <option value="{{ $cat }}" {{ $category == $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                                    <option value="{{ $cat->id }}" {{ $category == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -160,8 +160,10 @@
                                             @endif
                                         </td>
                                         <td>
-                                            @if ($blog->category)
-                                                <span class="badge bg-label-info">{{ $blog->category }}</span>
+                                            @if ($blog->categories && $blog->categories->count() > 0)
+                                                @foreach($blog->categories as $category)
+                                                    <span class="badge bg-label-info mb-1">{{ $category->name }}</span>
+                                                @endforeach
                                             @else
                                                 <span class="text-muted">-</span>
                                             @endif
