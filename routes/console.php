@@ -10,3 +10,6 @@ Artisan::command('inspire', function () {
 
 // Schedule the publish command to run every minute
 Schedule::command('content:publish-scheduled')->everyMinute();
+
+// Schedule to check and update expired subscriptions every hour
+Schedule::command('subscriptions:update-expired')->hourly();

@@ -29,8 +29,14 @@ class SubscriberController extends Controller
             'search' => $request->input('search'),
         ];
 
+        // Get per page value from request (multiples of 5)
+        $perPage = $request->input('per_page', 15);
+        // Ensure it's a valid multiple of 5, min 5, max 100
+        $perPage = max(5, min(100, intval($perPage)));
+        $perPage = ceil($perPage / 5) * 5; // Round to nearest multiple of 5
+
         // Get filtered subscriptions through service
-        $subscriptions = $this->subscriberService->getFilteredSubscribers($filters, 15);
+        $subscriptions = $this->subscriberService->getFilteredSubscribers($filters, $perPage);
 
         // Get roles and subscription plans for filters
         $roles = $this->subscriberService->getAllRoles();
