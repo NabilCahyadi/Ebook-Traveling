@@ -763,7 +763,7 @@
                                                 <p class="mb-2 small text-muted">
                                                     Unlock all ebooks and exclusive features with a premium subscription.
                                                 </p>
-                                                <a href="{{ route('pricing#pricing-plans') }}" class="btn btn-sm btn-outline-info">View
+                                                <a href="{{ route('pricing') }}#pricing-plans" class="btn btn-sm btn-outline-info">View
                                                     Plans</a>
                                             </div>
                                         @endif

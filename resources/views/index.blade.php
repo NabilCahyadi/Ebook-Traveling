@@ -958,7 +958,7 @@ $collections = collect();
                                                 <span>Read Now</span>
                                             </a>
                                             @else
-                                            <a href="/pricing#pricing-plans" class="action-btn btn-subscribe-now">
+                                            <a href="{{ route('pricing') }}#pricing-plans" class="action-btn btn-subscribe-now">
                                                 <i class="fi fi-rs-lock"></i>
                                                 <span>Subscribe to Read</span>
                                             </a>
