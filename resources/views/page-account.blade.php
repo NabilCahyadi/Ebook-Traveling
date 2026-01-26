@@ -1219,12 +1219,6 @@
                                                         Renew Subscription
                                                     </button>
                                                 </form>
-
-                                                <button type="button"
-                                                    class="custom-button custom-button--primary text-white px-4"
-                                                    onclick="downloadInvoice()">
-                                                    Download Invoice
-                                                </button>
                                             </div>
 
                                             <!-- Upgrade Options -->

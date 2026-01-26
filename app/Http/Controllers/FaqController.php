@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Faq;
 use App\Models\City;
+use App\Models\ContactInfo;
 
 class FaqController extends Controller
 {
@@ -28,6 +29,11 @@ class FaqController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('faq', compact('faqs', 'categories', 'citiesHeader'));
+        // Ambil contact info yang aktif
+        $contactInfos = ContactInfo::where('is_active', true)
+            ->orderBy('contact_type')
+            ->get();
+
+        return view('faq', compact('faqs', 'categories', 'citiesHeader', 'contactInfos'));
     }
 }

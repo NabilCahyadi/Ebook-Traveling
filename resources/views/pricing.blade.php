@@ -52,111 +52,111 @@
         }
     </style>
     <!-- <style>
-            /* CSS untuk Grid Layout dan Centering */
-            .pricing-grid {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 2rem;
-                margin-top: 1.5rem;
-            }
+                                                        /* CSS untuk Grid Layout dan Centering */
+                                                        .pricing-grid {
+                                                            display: flex;
+                                                            flex-wrap: wrap;
+                                                            justify-content: center;
+                                                            gap: 2rem;
+                                                            margin-top: 1.5rem;
+                                                        }
 
-            .pricing-card {
-                flex: 0 0 calc(33.333% - 1.333rem);
-                padding: 2rem;
-                text-align: center;
-                border-radius: 0.5rem;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-            }
+                                                        .pricing-card {
+                                                            flex: 0 0 calc(33.333% - 1.333rem);
+                                                            padding: 2rem;
+                                                            text-align: center;
+                                                            border-radius: 0.5rem;
+                                                            display: flex;
+                                                            flex-direction: column;
+                                                            align-items: center;
+                                                            transition: transform 0.3s ease, box-shadow 0.3s ease;
+                                                        }
 
-            .pricing-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            }
+                                                        .pricing-card:hover {
+                                                            transform: translateY(-5px);
+                                                            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+                                                        }
 
-            /* --- Gaya untuk Card Ganjil (Background Putih) --- */
-            .pricing-card--odd {
-                border: 1px solid #FF4C61;
-                background-color: #ffffff;
-                color: #1f2937;
-                /* Warna teks utama gelap */
-            }
+                                                        /* --- Gaya untuk Card Ganjil (Background Putih) --- */
+                                                        .pricing-card--odd {
+                                                            border: 1px solid #FF4C61;
+                                                            background-color: #ffffff;
+                                                            color: #1f2937;
+                                                            /* Warna teks utama gelap */
+                                                        }
 
-            .pricing-card--odd .card-title,
-            .pricing-card--odd .card-price-description,
-            .pricing-card--odd .card-features {
-                color: #6b7280;
-            }
+                                                        .pricing-card--odd .card-title,
+                                                        .pricing-card--odd .card-price-description,
+                                                        .pricing-card--odd .card-features {
+                                                            color: #6b7280;
+                                                        }
 
-            .pricing-card--odd .card-features .feature-check {
-                color: #FF4C61;
-            }
+                                                        .pricing-card--odd .card-features .feature-check {
+                                                            color: #FF4C61;
+                                                        }
 
-            /* --- Gaya untuk Card Genap (Background Merah) --- */
-            .pricing-card--even {
-                background-color: #FF4C61;
-            }
+                                                        /* --- Gaya untuk Card Genap (Background Merah) --- */
+                                                        .pricing-card--even {
+                                                            background-color: #FF4C61;
+                                                        }
 
-            /* Paksa semua teks di dalam card merah menjadi putih */
-            .pricing-card--even * {
-                color: #ffffff !important;
-            }
+                                                        /* Paksa semua teks di dalam card merah menjadi putih */
+                                                        .pricing-card--even * {
+                                                            color: #ffffff !important;
+                                                        }
 
-            /* --- Gaya Tombol (Perbaikan di sini) --- */
-            .pricing-button {
-                width: 100%;
-                padding: 0.75rem 1.5rem;
-                margin-top: auto;
-                font-weight: 600;
-                text-transform: capitalize;
-                border-radius: 0.375rem;
-                border: none;
-                cursor: pointer;
-                transition: all 0.3s ease;
-            }
+                                                        /* --- Gaya Tombol (Perbaikan di sini) --- */
+                                                        .pricing-button {
+                                                            width: 100%;
+                                                            padding: 0.75rem 1.5rem;
+                                                            margin-top: auto;
+                                                            font-weight: 600;
+                                                            text-transform: capitalize;
+                                                            border-radius: 0.375rem;
+                                                            border: none;
+                                                            cursor: pointer;
+                                                            transition: all 0.3s ease;
+                                                        }
 
-            /* Tombol di Card Putih */
-            .pricing-card--odd .pricing-button {
-                background-color: #FF4C61;
-                color: white;
-            }
+                                                        /* Tombol di Card Putih */
+                                                        .pricing-card--odd .pricing-button {
+                                                            background-color: #FF4C61;
+                                                            color: white;
+                                                        }
 
-            .pricing-card--odd .pricing-button:hover {
-                background-color: #ca3145;
-                /* Warna merah lebih gelap saat hover */
-            }
+                                                        .pricing-card--odd .pricing-button:hover {
+                                                            background-color: #ca3145;
+                                                            /* Warna merah lebih gelap saat hover */
+                                                        }
 
-            /* Tombol di Card Merah */
-            .pricing-card--even .pricing-button {
-                background-color: #ffffff;
-                /* Background putih */
-                color: #FF4C61 !important;
-                /* Teks merah */
-            }
+                                                        /* Tombol di Card Merah */
+                                                        .pricing-card--even .pricing-button {
+                                                            background-color: #ffffff;
+                                                            /* Background putih */
+                                                            color: #FF4C61 !important;
+                                                            /* Teks merah */
+                                                        }
 
-            .pricing-card--even .pricing-button:hover {
-                background-color: #f8f8f8;
-                /* Background abu-abu sangat muda saat hover, agar tidak menyatu */
-                color: #ca3145 !important;
-                /* Teks merah lebih gelap saat hover */
-            }
+                                                        .pricing-card--even .pricing-button:hover {
+                                                            background-color: #f8f8f8;
+                                                            /* Background abu-abu sangat muda saat hover, agar tidak menyatu */
+                                                            color: #ca3145 !important;
+                                                            /* Teks merah lebih gelap saat hover */
+                                                        }
 
-            /* Responsive */
-            @media (max-width: 992px) {
-                .pricing-card {
-                    flex: 0 0 calc(50% - 1rem);
-                }
-            }
+                                                        /* Responsive */
+                                                        @media (max-width: 992px) {
+                                                            .pricing-card {
+                                                                flex: 0 0 calc(50% - 1rem);
+                                                            }
+                                                        }
 
-            @media (max-width: 576px) {
-                .pricing-card {
-                    flex: 0 0 100%;
-                }
-            }
-        </style> -->
+                                                        @media (max-width: 576px) {
+                                                            .pricing-card {
+                                                                flex: 0 0 100%;
+                                                            }
+                                                        }
+                                                    </style> -->
     <style>
         /* STYLE UNTUK FAQS */
         /* FAQ accordion styles (minimal & elegant) */
@@ -290,24 +290,24 @@
         }
 
         /* .pricing-card--featured {
-                border-color: var(--primary-color);
-                transform: scale(1.05);
-            } */
+                                                            border-color: var(--primary-color);
+                                                            transform: scale(1.05);
+                                                        } */
 
         /* .pricing-card--featured::before {
-                content: 'MOST POPULAR';
-                position: absolute;
-                top: -15px;
-                left: 50%;
-                transform: translateX(-50%);
-                background-color: var(--primary-color);
-                color: white;
-                padding: 5px 20px;
-                border-radius: 50px;
-                font-size: 0.75rem;
-                font-weight: 700;
-                letter-spacing: 1px;
-            } */
+                                                            content: 'MOST POPULAR';
+                                                            position: absolute;
+                                                            top: -15px;
+                                                            left: 50%;
+                                                            transform: translateX(-50%);
+                                                            background-color: var(--primary-color);
+                                                            color: white;
+                                                            padding: 5px 20px;
+                                                            border-radius: 50px;
+                                                            font-size: 0.75rem;
+                                                            font-weight: 700;
+                                                            letter-spacing: 1px;
+                                                        } */
 
         /* --- Typography di dalam Kartu --- */
         .pricing-card .card-title {
@@ -451,34 +451,124 @@
             color: #fff;
         }
     </style>
+    <style>
+        /* Default (Desktop) */
+        .detail-info-banner {
+            max-width: 900px;
+            width: 90%;
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        .detail-info-banner h1 {
+            font-size: 3rem !important;
+            line-height: 1.2 !important;
+            max-width: 900px;
+            width: 90%;
+            margin: 2rem 0 0 2.2rem;
+        }
+
+        .detail-info-banner p {
+            font-size: 25px !important;
+            line-height: 1.5 !important;
+            max-width: 800px;
+            width: 90%;
+            margin: 2rem 0 0 2.7rem;
+        }
+
+        /* Tablet */
+        @media (max-width: 992px) {
+            .detail-info-banner h1 {
+                font-size: 2.5rem !important;
+            }
+
+            .detail-info-banner p {
+                font-size: 20px !important;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .detail-info-banner h1 {
+                font-size: 1.5rem !important;
+                line-height: 1.3 !important;
+            }
+
+            .detail-info-banner p {
+                font-size: 16px !important;
+                line-height: 1.4 !important;
+            }
+        }
+
+        /* Mobile sangat kecil */
+        @media (max-width: 480px) {
+            .detail-info-banner h1 {
+                font-size: 0.9rem !important;
+                max-width: 500px;
+                width: 60%;
+                margin: 0.1rem 0 0 4rem;
+            }
+
+            .detail-info-banner p {
+                max-width: 500px;
+                width: 60%;
+                font-size: 12px !important;
+                margin: -1rem 0 0 3.65rem;
+            }
+        }
+    </style>
+    <style>
+        /* === Desktop (default) === */
+        .newsletter-inner {}
+
+        /* === Tablet (≤992px) === */
+        @media (max-width: 992px) {
+            .newsletter-inner {
+                padding: 4rem 3rem;
+                background-position: left center;
+                /* Geser gambar ke kiri */
+            }
+        }
+
+        /* === Mobile (≤768px) === */
+        @media (max-width: 768px) {
+            .newsletter-inner {}
+
+            .btn-primary-custom,
+            .btn-secondary-custom {}
+        }
+
+        /* === HP Sangat Kecil (≤480px) === */
+        @media (max-width: 480px) {
+            .newsletter-inner {}
+        }
+    </style>
     <div class="container">
         <section class="home-slider position-relative mb-30">
             <div>
                 <div class="style-4">
                     <div class="rectangle single-animation-wrap rounded mt-15" style="position: relative;">
                         @if ($bannerData)
-                            <img src="{{ asset('storage/' . $bannerData->image) }}" alt="Banner"
-                                class="img-fluid w-100 rounded" id="pricing-banner-img"
-                                style="aspect-ratio: 2.5/1; object-fit: cover;">
+                            <img src="{{ asset($bannerData->image) }}" alt="Banner" class="img-fluid w-100 rounded"
+                                id="pricing-banner-img" style="aspect-ratio: 2.5/1; object-fit: cover;">
 
                             <div id="pricing-banner-content" class="js-fade-in"
                                 style="
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: center;
-                        align-items: center;
-                        text-align: center;
-                        color: white;
-                        padding: 20px;
-                        opacity: 0;
-                        transition: opacity 1s ease-in-out;
-                    ">
-                                <div style="max-width: 800px; width: 90%;">
+                                        position: absolute;
+                                        top: 0;
+                                        left: 0;
+                                        width: 100%;
+                                        height: 100%;
+                                        display: flex;
+                                        flex-direction: column;
+                                        justify-content: center;
+                                        align-items: center;
+                                        text-align: center;
+                                        color: white;
+                                        padding: 20px;
+                                        opacity: 0;
+                                        transition: opacity 1s ease-in-out; ">
+                                <div class="detail-info-banner">
                                     <h1 class="mb-30">
                                         {!! nl2br(e($bannerData->title)) !!}
                                     </h1>
@@ -506,12 +596,12 @@
 
                 @if (isset($groupedSubscriptionPlans) && $groupedSubscriptionPlans->isNotEmpty())
                     <!-- Tab Navigation (menggunakan nav-pills) -->
-                    <ul class="nav nav-pills justify-content-center mb-5" id="pricingTab" role="tablist">
+                    <ul class="nav nav-pills pricing-tab-nav justify-content-center mb-5" id="pricingTab" role="tablist">
                         @foreach ($groupedSubscriptionPlans as $categoryKey => $plans)
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link {{ $loop->first ? 'active' : '' }}" id="{{ $categoryKey }}-tab"
-                                    data-bs-toggle="pill" data-bs-target="#{{ $categoryKey }}" type="button"
-                                    role="tab" aria-controls="{{ $categoryKey }}"
+                                    style="margin-top:1rem;" data-bs-toggle="pill" data-bs-target="#{{ $categoryKey }}"
+                                    type="button" role="tab" aria-controls="{{ $categoryKey }}"
                                     aria-selected="{{ $loop->first ? 'true' : 'false' }}">
                                     {{ App\Models\SubscriptionPlan::CATEGORIES[$categoryKey] ?? ucfirst($categoryKey) }}
                                 </button>
@@ -820,7 +910,6 @@
             </div>
         </section>
         <!-- end pricing cards-->
-        <!-- Frequently Asked Questions - minimal, elegant, readable -->
         <section class="faqs-section py-5">
             <div class="container">
                 <h3 class="text-center mb-3">Frequently Asked Questions</h3>
@@ -853,8 +942,126 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="position-relative newsletter-inner"
-                            style="background-image: url('{{ asset($ctaBackground) }}'); background-size: cover; background-position: center; color: #ffffff; padding: 5rem 5rem 5rem 5rem; text-align: left; border-radius: 1rem;">
+                        <style>
+                            /* === Desktop (default) === */
+                            .newsletter-inner {
+                                background-image: url('{{ asset($ctaBackground) }}');
+                                color: #ffffff;
+                                padding: 5rem 5rem;
+                                text-align: left;
+                                border-radius: 1rem;
+                                background-size: cover;
+                                background-position: center;
+                            }
+
+                            .newsletter-content h3 {
+                                font-size: 2rem;
+                                line-height: 1.3;
+                                margin-bottom: 1.5rem;
+                            }
+
+                            .newsletter-content p {
+                                font-size: 1.1rem;
+                                line-height: 1.6;
+                                margin-bottom: 2rem;
+                            }
+
+                            .newsletter-content .btn-primary-custom,
+                            .newsletter-content .btn-secondary-custom {
+                                padding: 0.8rem 1.8rem;
+                                border-radius: 0.5rem;
+                                font-size: 1rem;
+                                white-space: nowrap;
+                                text-decoration: none;
+                                display: inline-block;
+                                transition: all 0.3s ease;
+                            }
+
+                            /* === Tablet (≤992px) === */
+                            @media (max-width: 992px) {
+                                .newsletter-inner {
+                                    padding: 4rem 3rem;
+                                }
+
+                                .newsletter-content h3 {
+                                    font-size: 1.75rem;
+                                }
+
+                                .newsletter-content p {
+                                    font-size: 1rem;
+                                }
+
+                                .newsletter-content .btn-primary-custom,
+                                .newsletter-content .btn-secondary-custom {
+                                    padding: 0.75rem 1.5rem;
+                                    font-size: 0.95rem;
+                                }
+                            }
+
+                            /* === Mobile (≤768px) === */
+                            @media (max-width: 768px) {
+                                .newsletter-inner {
+                                    padding: 3rem 2rem;
+                                    text-align: center;
+                                }
+
+                                .newsletter-content h3 {
+                                    font-size: 1.5rem;
+                                    margin-bottom: 1rem;
+                                }
+
+                                .newsletter-content h3 br {
+                                    display: none; /* Hapus line break di mobile */
+                                }
+
+                                .newsletter-content p {
+                                    font-size: 0.95rem;
+                                    margin-bottom: 1.5rem;
+                                }
+
+                                .newsletter-content p br {
+                                    display: none; /* Hapus line break di mobile */
+                                }
+
+                                .newsletter-content > div {
+                                    flex-direction: column !important;
+                                    align-items: stretch !important;
+                                    gap: 0.75rem !important;
+                                }
+
+                                .newsletter-content .btn-primary-custom,
+                                .newsletter-content .btn-secondary-custom {
+                                    width: 100%;
+                                    padding: 0.9rem 1rem;
+                                    font-size: 0.95rem;
+                                    text-align: center;
+                                }
+                            }
+
+                            /* === HP Sangat Kecil (≤480px) === */
+                            @media (max-width: 480px) {
+                                .newsletter-inner {
+                                    padding: 2rem 1.5rem;
+                                }
+
+                                .newsletter-content h3 {
+                                    font-size: 1.25rem;
+                                    line-height: 1.4;
+                                }
+
+                                .newsletter-content p {
+                                    font-size: 0.85rem;
+                                    line-height: 1.5;
+                                }
+
+                                .newsletter-content .btn-primary-custom,
+                                .newsletter-content .btn-secondary-custom {
+                                    padding: 0.8rem 1rem;
+                                    font-size: 0.9rem;
+                                }
+                            }
+                        </style>
+                        <div class="position-relative newsletter-inner">
                             <div class="newsletter-content">
                                 <h3 class="mb-20">
                                     Still confused about which subscription<br />
@@ -864,12 +1071,12 @@
                                     subscription packages. <br> <span class="text-brand">We are ready to help.</span></p>
                                 <div
                                     style="display: flex; flex-direction: row; gap: 1rem; justify-content: flex-start; align-items: center; flex-wrap: nowrap;">
-                                    <a href="/subscription" class="btn-primary-custom"
-                                        style="background-color: #FF4C61; color: white; border: none; padding: 0.8rem 1.8rem; border-radius: 0.5rem; font-size: 1rem; cursor: pointer; transition: background-color 0.3s ease, transform 0.2s ease; white-space: nowrap; text-decoration: none;">
+                                    <a href="{{ route('pricing') }}#pricing-plans" class="btn-primary-custom"
+                                        style="background-color: #FF4C61; color: white; border: none; cursor: pointer; transition: background-color 0.3s ease, transform 0.2s ease;">
                                         Subscribe Now
                                     </a>
                                     <a href="/contact" class="btn-secondary-custom"
-                                        style="background-color: transparent; color: #FF4C61; border: 2px solid #FF4C61; padding: 0.8rem 1.8rem; border-radius: 0.5rem; font-size: 1rem; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease; white-space: nowrap; text-decoration: none;">
+                                        style="background-color: transparent; color: #FF4C61; border: 2px solid #FF4C61; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;">
                                         Call Us
                                     </a>
                                 </div>

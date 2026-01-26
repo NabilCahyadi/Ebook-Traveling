@@ -175,11 +175,55 @@
                     <div class="contact-support">
                         <h4>Still Have Questions?</h4>
                         <p>Our support team is ready to assist you 24/7 via :</p>
-                        <p>
-                            <strong>WhatsApp :</strong> +62 812 3456 7890<br>
-                            <strong>Email :</strong> support@meatmap.co<br>
-                            <strong>Operating Hours :</strong> 08:00 - 22:00 WIB
-                        </p>
+                        
+                        @if($contactInfos->isNotEmpty())
+                            <p>
+                                @php
+                                    $whatsapp = $contactInfos->firstWhere('contact_type', 'whatsapp');
+                                    $email = $contactInfos->firstWhere('contact_type', 'email');
+                                    $phone = $contactInfos->firstWhere('contact_type', 'phone');
+                                @endphp
+                                
+                                @if($whatsapp)
+                                    <strong>WhatsApp :</strong> 
+                                    @if($whatsapp->link)
+                                        <a href="{{ $whatsapp->link }}" target="_blank">{{ str_replace(['https://wa.me/', 'tel:'], '', $whatsapp->link) }}</a>
+                                    @else
+                                        {{ $whatsapp->description }}
+                                    @endif
+                                    <br>
+                                @endif
+                                
+                                @if($email)
+                                    <strong>Email :</strong> 
+                                    @if($email->link)
+                                        <a href="{{ $email->link }}">{{ str_replace('mailto:', '', $email->link) }}</a>
+                                    @else
+                                        {{ $email->description }}
+                                    @endif
+                                    <br>
+                                @endif
+                                
+                                @if($phone)
+                                    <strong>Phone :</strong> 
+                                    @if($phone->link)
+                                        <a href="{{ $phone->link }}">{{ str_replace('tel:', '', $phone->link) }}</a>
+                                    @else
+                                        {{ $phone->description }}
+                                    @endif
+                                    <br>
+                                @endif
+                                
+                                <strong>Operating Hours :</strong> 08:00 - 22:00 WIB
+                            </p>
+                        @else
+                            <p>
+                                <strong>WhatsApp :</strong> +62 812 3456 7890<br>
+                                <strong>Email :</strong> support@meatmap.co<br>
+                                <strong>Operating Hours :</strong> 08:00 - 22:00 WIB
+                            </p>
+                        @endif
+                        
                         <p>or click <a href="{{ route('contact') }}">contact</a></p>
                     </div>
                 </div>

@@ -56,6 +56,21 @@ class BannerSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            // ✅ Banner untuk Pricing Page
+            [
+                'id' => Str::uuid(),
+                'title' => 'Subscribe & Access All Travel Ebooks',
+                'description' => 'Berlangganan sekarang dan nikmati akses tak terbatas ke semua ebook panduan wisata.',
+                'image' => '/images/banner-pricing.webp',
+                'type' => 'banner-pricing',
+                'target_url' => null,
+                'is_active' => true,
+                'start_date' => null,
+                'end_date' => null,
+                'order_index' => 0,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
 
         $this->command->info('Successfully seeded ' . Banner::count() . ' banners.');

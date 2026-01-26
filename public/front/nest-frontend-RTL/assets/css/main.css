@@ -9867,14 +9867,15 @@ footer .hotline img {
 #scrollUp {
   width: 32px;
   height: 32px;
-  color: #253D4E;
+  color: #FF4C61;
   right: 30px;
   bottom: 30px;
+  margin-top:10px;
   border-radius: 30px;
   text-align: center;
   overflow: hidden;
   z-index: 999 !important;
-  border: 2px solid #253D4E;
+  border: 2px solid #FF4C61;
   background-color: #fff;
 }
 
@@ -10699,7 +10700,7 @@ footer .hotline img {
 }
 
 /***************************
-    Page section margin 
+    Page section margin
 ****************************/
 .mtb-0 {
   margin: 0;
