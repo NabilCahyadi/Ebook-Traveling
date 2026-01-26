@@ -31,7 +31,7 @@
                 class="menu-item {{ Request::is('admin/admins*') || Request::is('admin/admin-activity-logs*') ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons ti ti-user-shield"></i>
-                    <div data-i18n="Admin Management">Admin Management</div>
+                    <div data-i18n="Admin Management">Admin</div>
                 </a>
                 <ul class="menu-sub">
                     <!-- Admin List -->

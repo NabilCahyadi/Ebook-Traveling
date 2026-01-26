@@ -81,26 +81,28 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'phone' => 'nullable|string|max:20',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|string|exists:roles,slug',
+            'roles' => 'required|array|min:1',
+            'roles.*' => 'string|exists:roles,slug',
         ]);
 
         try {
-            // Get role information
-            $role = \App\Models\Role::where('slug', $validated['role'])->first();
+            // Get all selected roles
+            $roleIds = \App\Models\Role::whereIn('slug', $validated['roles'])->pluck('id')->toArray();
+            $roleNames = \App\Models\Role::whereIn('slug', $validated['roles'])->pluck('name')->toArray();
 
-            // Set user_type based on role
-            $validated['user_type'] = $role->slug === 'admin' ? 'admin' : 'user';
+            // Set user_type based on roles (if any role is admin-related)
+            $validated['user_type'] = in_array('admin', $validated['roles']) ? 'admin' : 'user';
 
             // Create user
             $user = $this->userService->createUser($validated);
 
-            // Assign role to user
-            if ($role) {
-                $user->roles()->sync([$role->id]);
+            // Assign multiple roles to user
+            if (!empty($roleIds)) {
+                $user->roles()->sync($roleIds);
             }
 
             return redirect()->route('admin.users.index')
-                ->with('success', 'User created successfully with role: ' . $role->name);
+                ->with('success', 'User created successfully with role(s): ' . implode(', ', $roleNames));
         } catch (\Exception $e) {
             return back()->withInput()
                 ->with('error', 'Failed to create user: ' . $e->getMessage());
