@@ -71,11 +71,6 @@
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <div class="avatar avatar-sm me-2 bg-label-primary">
-                                                <span class="avatar-initial rounded-circle">
-                                                    <i class="ti ti-shield"></i>
-                                                </span>
-                                            </div>
                                             <strong>{{ $role->name }}</strong>
                                         </div>
                                     </td>

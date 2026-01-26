@@ -9,7 +9,7 @@ class CollectionItem extends Model
 {
     use HasUuids; // Tambahkan trait untuk UUID
 
-    protected $table = 'collection_ebooks'; // Perbaikan: gunakan nama tabel yang benar
+    protected $table = 'collection_ebook'; // Perbaikan: gunakan nama tabel yang benar
 
     protected $fillable = [
         'collection_id',

@@ -58,7 +58,14 @@ class SubscriptionHistoryController extends Controller
             $query->whereDate('start_date', '<=', $request->end_date);
         }
 
-        $subscriptions = $query->paginate(15);
+        // Get per_page value (multiples of 15: 15, 30, 45, 60)
+        $perPage = $request->input('per_page', 15);
+        $allowedPerPage = [15, 30, 45, 60];
+        if (!in_array((int)$perPage, $allowedPerPage)) {
+            $perPage = 15;
+        }
+
+        $subscriptions = $query->paginate($perPage);
 
         // Calculate statistics
         $stats = [

@@ -63,26 +63,34 @@
 
                         <!-- Role -->
                         <div class="col-md-6 mb-3">
-                            <label for="roles" class="form-label">{{ __('admin.form.role') }} <span class="text-danger">*</span></label>
+                            <label for="role_selector" class="form-label">{{ __('admin.form.role') }} <span class="text-danger">*</span></label>
                             @php
                                 $roles = \App\Models\Role::all();
                                 $selectedRoles = old('roles', $roleSlug ? [$roleSlug] : []);
                             @endphp
                             <select class="form-select @error('roles') is-invalid @enderror @error('roles.*') is-invalid @enderror" 
-                                id="roles" name="roles[]" multiple required style="min-height: 120px;">
+                                id="role_selector">
+                                <option value="">Select Role</option>
                                 @foreach ($roles as $role)
-                                    <option value="{{ $role->slug }}" 
-                                        {{ in_array($role->slug, (array)$selectedRoles) ? 'selected' : '' }}>
+                                    <option value="{{ $role->slug }}" data-name="{{ $role->name }}">
                                         {{ $role->name }}
                                     </option>
                                 @endforeach
                             </select>
-                            <small class="text-muted">Hold Ctrl/Cmd to select multiple roles</small>
+                            
+                            <!-- Selected Roles Display -->
+                            <div id="selected-roles" class="mt-2">
+                                <!-- Badges will appear here -->
+                            </div>
+                            
+                            <!-- Hidden inputs for form submission -->
+                            <div id="role-inputs"></div>
+                            
                             @error('roles')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                             @error('roles.*')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                         </div>
 
@@ -144,6 +152,127 @@
                     icon.classList.add('ti-eye');
                 }
             });
+
+            // Role selection handler
+            const selectedRoles = new Map();
+            
+            // Restore old values on validation errors
+            @if(old('roles'))
+                @foreach(old('roles') as $roleSlug)
+                    @php
+                        $role = \App\Models\Role::where('slug', $roleSlug)->first();
+                    @endphp
+                    @if($role)
+                        selectedRoles.set('{{ $roleSlug }}', '{{ $role->name }}');
+                    @endif
+                @endforeach
+            @elseif(isset($roleSlug) && $roleSlug)
+                @php
+                    $role = \App\Models\Role::where('slug', $roleSlug)->first();
+                @endphp
+                @if($role)
+                    selectedRoles.set('{{ $roleSlug }}', '{{ $role->name }}');
+                @endif
+            @endif
+            
+            // Render existing selections
+            function renderRoleSelection() {
+                const container = document.getElementById('selected-roles');
+                const inputsContainer = document.getElementById('role-inputs');
+                container.innerHTML = '';
+                inputsContainer.innerHTML = '';
+                
+                selectedRoles.forEach((name, slug) => {
+                    // Create badge
+                    const badge = document.createElement('span');
+                    badge.className = 'role-badge';
+                    badge.innerHTML = `
+                        ${name}
+                        <button type="button" class="badge-remove" data-slug="${slug}">
+                            <i class="ti ti-x"></i>
+                        </button>
+                    `;
+                    container.appendChild(badge);
+                    
+                    // Create hidden input
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'roles[]';
+                    input.value = slug;
+                    inputsContainer.appendChild(input);
+                });
+                
+                // Add remove handlers
+                document.querySelectorAll('.badge-remove').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const slug = this.dataset.slug;
+                        selectedRoles.delete(slug);
+                        renderRoleSelection();
+                        
+                        // Re-enable option in select
+                        const option = document.querySelector(`#role_selector option[value="${slug}"]`);
+                        if (option) option.disabled = false;
+                    });
+                });
+            }
+            
+            // Role selector change event
+            document.getElementById('role_selector').addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                if (selectedOption.value) {
+                    const slug = selectedOption.value;
+                    const name = selectedOption.dataset.name;
+                    
+                    if (!selectedRoles.has(slug)) {
+                        selectedRoles.set(slug, name);
+                        renderRoleSelection();
+                        selectedOption.disabled = true;
+                    }
+                    
+                    this.value = '';
+                }
+            });
+            
+            // Initial render
+            renderRoleSelection();
         </script>
+    @endpush
+
+    @push('styles')
+        <style>
+            .role-badge {
+                display: inline-flex;
+                align-items: center;
+                background-color: #e0f0ff;
+                border: 1px solid #7eb3ff;
+                border-radius: 4px;
+                padding: 4px 8px;
+                margin-right: 6px;
+                margin-bottom: 6px;
+                font-size: 13px;
+                color: #0056b3;
+            }
+            
+            .role-badge .badge-remove {
+                background: none;
+                border: none;
+                color: #0056b3;
+                cursor: pointer;
+                padding: 0;
+                margin-left: 6px;
+                display: inline-flex;
+                align-items: center;
+                font-size: 14px;
+                line-height: 1;
+            }
+            
+            .role-badge .badge-remove:hover {
+                color: #003d82;
+            }
+            
+            .role-badge .badge-remove i {
+                font-size: 14px;
+            }
+        </style>
     @endpush
 @endsection
