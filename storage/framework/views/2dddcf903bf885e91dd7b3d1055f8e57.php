@@ -1,1 +1,0 @@
-<?php /**PATH C:\laragon\www\ebook_traveling\resources\views\test-payment.blade.php ENDPATH**/ ?>
