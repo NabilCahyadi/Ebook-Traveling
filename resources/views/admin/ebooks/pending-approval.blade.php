@@ -2,7 +2,7 @@
 
 @section('title', 'Ebooks Pending Approval')
 
-@section('styles')
+@push('styles')
     <style>
         /* Cover preview di tabel dengan ratio 1:1.6 */
         .table .ebook-cover-preview {
@@ -40,7 +40,7 @@
             justify-content: center;
         }
     </style>
-@endsection
+@endpush
 
 @section('content')
     <div class="d-flex justify-content-between align-items-center mb-4">

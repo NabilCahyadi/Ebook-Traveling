@@ -47,6 +47,13 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     Route::get('admins/{id}/permissions', [\App\Http\Controllers\Admin\AdminPermissionController::class, 'edit'])->name('admins.permissions.edit');
     Route::put('admins/{id}/permissions', [\App\Http\Controllers\Admin\AdminPermissionController::class, 'update'])->name('admins.permissions.update');
     
+    // Admin Permissions Matrix
+    Route::get('admin-permissions-matrix', [\App\Http\Controllers\Admin\AdminPermissionMatrixController::class, 'index'])->name('admin-permissions-matrix.index');
+    Route::post('admin-permissions-matrix/update-permission', [\App\Http\Controllers\Admin\AdminPermissionMatrixController::class, 'updatePermission'])->name('admin-permissions-matrix.update-permission');
+    Route::post('admin-permissions-matrix/bulk-update', [\App\Http\Controllers\Admin\AdminPermissionMatrixController::class, 'bulkUpdate'])->name('admin-permissions-matrix.bulk-update');
+    Route::post('admin-permissions-matrix/apply-template', [\App\Http\Controllers\Admin\AdminPermissionMatrixController::class, 'applyTemplate'])->name('admin-permissions-matrix.apply-template');
+    Route::get('admin-permissions-matrix/export', [\App\Http\Controllers\Admin\AdminPermissionMatrixController::class, 'export'])->name('admin-permissions-matrix.export');
+
     // Admin Activity Logs
     Route::get('admin-activity-logs', [\App\Http\Controllers\Admin\AdminActivityLogController::class, 'index'])->name('admin-activity-logs.index');
     Route::get('admin-activity-logs/export', [\App\Http\Controllers\Admin\AdminActivityLogController::class, 'export'])->name('admin-activity-logs.export');

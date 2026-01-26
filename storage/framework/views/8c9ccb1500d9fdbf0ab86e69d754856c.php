@@ -1,0 +1,553 @@
+<?php $__env->startSection('title', __('admin.banners.title')); ?>
+
+<?php $__env->startPush('styles'); ?>
+    <style>
+        .banner-preview {
+            position: relative;
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .cursor-move {
+            cursor: move;
+        }
+
+        .sortable-ghost {
+            opacity: 0.4;
+            background-color: #e3f2fd;
+        }
+
+        .action-buttons {
+            gap: 0.25rem;
+        }
+
+        /* Custom tab styling */
+        .nav-tabs .nav-link {
+            border-radius: 6px 6px 0 0;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #ff5b7a;
+            color: #ffffff !important;
+            border-color: #ff5b7a;
+        }
+
+        .nav-tabs .nav-link.active i {
+            color: #ffffff !important;
+        }
+    </style>
+<?php $__env->stopPush(); ?>
+
+<?php $__env->startSection('content'); ?>
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+        <div>
+            <h4 class="fw-bold mb-1">
+                <span class="text-muted fw-light"><?php echo e(__('admin.menu.website_management')); ?> /</span> <?php echo e(__('admin.banners.hero_banners')); ?>
+
+            </h4>
+            <p class="mb-0"><?php echo e(__('admin.banners.description')); ?></p>
+        </div>
+        <div>
+            <?php if($activeTab === 'home-slider'): ?>
+                <a href="<?php echo e(route('admin.banners.create')); ?>" class="btn btn-primary">
+                    <i class="ti ti-plus me-1"></i> <?php echo e(__('admin.banners.add_banner')); ?>
+
+                </a>
+            <?php elseif($activeTab === 'banner-pricing'): ?>
+                <?php if($bannerPricing): ?>
+                    <button class="btn btn-secondary" disabled title="<?php echo e(__('admin.banners.banner_exists')); ?>">
+                        <i class="ti ti-plus me-1"></i> <?php echo e(__('admin.banners.add_banner')); ?>
+
+                    </button>
+                <?php else: ?>
+                    <a href="<?php echo e(route('admin.banners.create')); ?>?type=banner-pricing" class="btn btn-primary">
+                        <i class="ti ti-plus me-1"></i> <?php echo e(__('admin.banners.add_banner')); ?>
+
+                    </a>
+                <?php endif; ?>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <ul class="nav nav-tabs mb-4" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link <?php echo e($activeTab === 'home-slider' ? 'active' : ''); ?>" 
+               href="<?php echo e(route('admin.banners.index', ['tab' => 'home-slider'])); ?>">
+                <i class="ti ti-photo me-1"></i> <?php echo e(__('admin.banners.home_slider')); ?>
+
+            </a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link <?php echo e($activeTab === 'banner-pricing' ? 'active' : ''); ?>" 
+               href="<?php echo e(route('admin.banners.index', ['tab' => 'banner-pricing'])); ?>">
+                <i class="ti ti-tag me-1"></i> <?php echo e(__('admin.banners.banner_pricing')); ?>
+
+            </a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link <?php echo e($activeTab === 'default-background' ? 'active' : ''); ?>" 
+               href="<?php echo e(route('admin.banners.index', ['tab' => 'default-background'])); ?>">
+                <i class="ti ti-photo-filled me-1"></i> <?php echo e(__('admin.banners.default_background')); ?>
+
+            </a>
+        </li>
+    </ul>
+
+    <!-- Success/Error Messages -->
+    <?php if(session('success')): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?php echo e(session('success')); ?>
+
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
+    <?php if(session('error')): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?php echo e(session('error')); ?>
+
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
+    <?php if($activeTab === 'home-slider'): ?>
+        <!-- Info Alert -->
+        <div class="alert alert-info d-flex align-items-center" role="alert">
+            <i class="ti ti-info-circle me-2"></i>
+            <div>
+                <strong><?php echo e(__('admin.banners.tips')); ?>:</strong> <?php echo e(__('admin.banners.dimension_tip')); ?>
+
+            </div>
+        </div>
+
+        <!-- Banners Card -->
+        <div class="card">
+            <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+                <h5 class="mb-0"><?php echo e(__('admin.banners.hero_list')); ?></h5>
+                <?php if($banners->count() > 1): ?>
+                    <div class="text-muted small">
+                        <i class="ti ti-arrows-sort me-1"></i> <?php echo e(__('admin.banners.drag_to_reorder')); ?>
+
+                    </div>
+                <?php endif; ?>
+            </div>
+            <div class="card-body p-0">
+                <?php if($banners->isEmpty()): ?>
+                <div class="text-center py-5">
+                    <i class="ti ti-photo-off display-4 text-muted"></i>
+                    <p class="mt-3 mb-2"><?php echo e(__('admin.banners.no_banners')); ?></p>
+                    <p class="text-muted mb-3"><?php echo e(__('admin.banners.no_banners_desc')); ?></p>
+                    <a href="<?php echo e(route('admin.banners.create')); ?>" class="btn btn-primary">
+                        <i class="ti ti-plus me-1"></i> <?php echo e(__('admin.banners.create_banner')); ?>
+
+                    </a>
+                </div>
+            <?php else: ?>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th width="50">#</th>
+                                <th width="150"><?php echo e(__('admin.banners.banner_image')); ?></th>
+                                <th><?php echo e(__('admin.form.title')); ?></th>
+                                <th width="150" class="d-none d-md-table-cell"><?php echo e(__('admin.form.status')); ?></th>
+                                <th width="100" class="d-none d-lg-table-cell"><?php echo e(__('admin.form.order')); ?></th>
+                                <th width="200" class="text-center"><?php echo e(__('admin.common.actions')); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody id="sortable-banners">
+                            <?php $__currentLoopData = $banners; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $banner): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <tr data-id="<?php echo e($banner->id); ?>">
+                                    <td>
+                                        <i class="ti ti-grip-vertical cursor-move text-muted"></i>
+                                    </td>
+                                    <td>
+                                        <img src="<?php echo e($banner->image_url); ?>" alt="<?php echo e($banner->title); ?>"
+                                            class="banner-preview">
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <h6 class="mb-1"><?php echo e($banner->title); ?></h6>
+                                            <?php if($banner->description): ?>
+                                                <small class="text-muted"><?php echo e(Str::limit($banner->description, 60)); ?></small>
+                                            <?php endif; ?>
+                                            <?php if($banner->target_url): ?>
+                                                <div class="mt-1">
+                                                    <small class="text-primary">
+                                                        <i class="ti ti-link ti-xs"></i>
+                                                        <?php echo e(Str::limit($banner->target_url, 40)); ?>
+
+                                                    </small>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    </td>
+                                    <td class="d-none d-md-table-cell">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input status-toggle" type="checkbox"
+                                                data-id="<?php echo e($banner->id); ?>" <?php echo e($banner->is_active ? 'checked' : ''); ?>>
+                                            <label class="form-check-label">
+                                                <span class="badge <?php echo e($banner->is_active ? 'bg-success' : 'bg-secondary'); ?>">
+                                                    <?php echo e($banner->is_active ? __('admin.status.active') : __('admin.status.inactive')); ?>
+
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <?php if($banner->start_date || $banner->end_date): ?>
+                                            <small class="text-muted d-block mt-1">
+                                                <?php if($banner->start_date): ?>
+                                                    <?php echo e(__('admin.banners.from')); ?>: <?php echo e($banner->start_date->format('d M Y')); ?><br>
+                                                <?php endif; ?>
+                                                <?php if($banner->end_date): ?>
+                                                    <?php echo e(__('admin.banners.until')); ?>: <?php echo e($banner->end_date->format('d M Y')); ?>
+
+                                                <?php endif; ?>
+                                            </small>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="d-none d-lg-table-cell">
+                                        <span class="badge bg-label-secondary order-badge"><?php echo e($banner->order_index); ?></span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex justify-content-center action-buttons">
+                                            <a href="<?php echo e(route('admin.banners.edit', $banner->id)); ?>"
+                                                class="btn btn-sm btn-icon btn-label-primary" data-bs-toggle="tooltip"
+                                                title="Edit">
+                                                <i class="ti ti-edit"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-icon btn-label-danger"
+                                                onclick="confirmDelete('<?php echo e($banner->id); ?>')" data-bs-toggle="tooltip"
+                                                title="Delete">
+                                                <i class="ti ti-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- Delete Form (Hidden) -->
+    <form id="delete-form" method="POST" style="display: none;">
+        <?php echo csrf_field(); ?>
+        <?php echo method_field('DELETE'); ?>
+    </form>
+    <?php endif; ?>
+
+<?php $__env->startPush('scripts'); ?>
+    <?php if($activeTab === 'home-slider'): ?>
+    <!-- SortableJS -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Sortable
+            const sortableElement = document.getElementById('sortable-banners');
+
+            if (sortableElement) {
+                const sortable = new Sortable(sortableElement, {
+                    handle: '.ti-grip-vertical',
+                    animation: 150,
+                    ghostClass: 'sortable-ghost',
+                    onEnd: function(evt) {
+                        updateBannerOrder();
+                    }
+                });
+            }
+
+            // Update banner order
+            function updateBannerOrder() {
+                const rows = document.querySelectorAll('#sortable-banners tr');
+                const banners = [];
+
+                rows.forEach(function(row, index) {
+                    const badge = row.querySelector('.order-badge');
+                    if (badge) {
+                        badge.textContent = index;
+                    }
+
+                    banners.push({
+                        id: row.dataset.id,
+                        order_index: index
+                    });
+                });
+
+                // Save to server
+                fetch("<?php echo e(route('admin.banners.update-order')); ?>", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
+                        },
+                        body: JSON.stringify({
+                            banners: banners
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showToast('success', data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showToast('error', 'Failed to update order');
+                    });
+            }
+
+            // Toggle status
+            const statusToggles = document.querySelectorAll('.status-toggle');
+            statusToggles.forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    const bannerId = this.dataset.id;
+                    const badge = this.closest('td').querySelector('.badge');
+
+                    fetch(`/admin/banners/${bannerId}/toggle-active`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                badge.textContent = data.is_active ? 'Active' : 'Inactive';
+                                badge.className = data.is_active ? 'badge bg-success' :
+                                    'badge bg-secondary';
+                                showToast('success', data.message);
+                            }
+                        })
+                        .catch(error => {
+                            checkbox.checked = !checkbox.checked;
+                            showToast('error', 'Failed to update status');
+                        });
+                });
+            });
+
+            // Show toast notification
+            function showToast(type, message) {
+                // Simple alert for now, can be replaced with toast library
+                const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+                const alertHtml = `
+                    <div class="alert ${alertClass} alert-dismissible fade show position-fixed top-0 end-0 m-3" role="alert" style="z-index: 9999;">
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', alertHtml);
+
+                setTimeout(() => {
+                    const alert = document.querySelector('.alert');
+                    if (alert) alert.remove();
+                }, 3000);
+            }
+        });
+
+        // Confirm delete
+        function confirmDelete(bannerId) {
+            if (confirm('Are you sure you want to delete this banner?')) {
+                const form = document.getElementById('delete-form');
+                form.action = `/admin/banners/${bannerId}`;
+                form.submit();
+            }
+        }
+    </script>
+    <?php endif; ?>
+<?php $__env->stopPush(); ?>
+
+<?php if($activeTab === 'banner-pricing'): ?>
+<!-- Banner Pricing Section -->
+<div class="alert alert-info d-flex align-items-center" role="alert">
+    <i class="ti ti-info-circle me-2"></i>
+    <div>
+        <strong>Info:</strong> Banner Pricing hanya boleh ada 1 banner. Dimensi yang disarankan: 1500x600px (2.5:1).
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Banner Pricing</h5>
+    </div>
+    <div class="card-body">
+        <?php if($bannerPricing): ?>
+            <!-- Existing Banner -->
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="position-relative">
+                        <img src="<?php echo e(asset('storage/' . $bannerPricing->image)); ?>" 
+                             alt="<?php echo e($bannerPricing->title); ?>" 
+                             class="img-fluid rounded shadow-sm"
+                             style="width: 100%; aspect-ratio: 2.5/1; object-fit: cover;">
+                        <span class="badge position-absolute top-0 end-0 m-2 <?php echo e($bannerPricing->is_active ? 'bg-success' : 'bg-secondary'); ?>">
+                            <?php echo e($bannerPricing->is_active ? 'Active' : 'Inactive'); ?>
+
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h4 class="mb-3"><?php echo e($bannerPricing->title); ?></h4>
+                    <?php if($bannerPricing->description): ?>
+                    <p class="text-muted mb-3"><?php echo e($bannerPricing->description); ?></p>
+                    <?php endif; ?>
+                    
+                    <div class="mb-3">
+                        <small class="text-muted d-block mb-1"><i class="ti ti-calendar me-1"></i> Period</small>
+                        <?php if($bannerPricing->start_date || $bannerPricing->end_date): ?>
+                        <div class="d-flex gap-2 align-items-center">
+                            <span class="badge bg-label-primary"><?php echo e($bannerPricing->start_date ? $bannerPricing->start_date->format('d M Y') : 'Immediate'); ?></span>
+                            <i class="ti ti-arrow-right"></i>
+                            <span class="badge bg-label-primary"><?php echo e($bannerPricing->end_date ? $bannerPricing->end_date->format('d M Y') : 'No end'); ?></span>
+                        </div>
+                        <?php else: ?>
+                        <span class="text-muted">Always active</span>
+                        <?php endif; ?>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <small class="text-muted"><i class="ti ti-photo me-1"></i> Image: <?php echo e(basename($bannerPricing->image)); ?></small>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted"><i class="ti ti-clock me-1"></i> Last updated : <?php echo e($bannerPricing->updated_at->diffForHumans()); ?></small>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-2 mt-4">
+                        <a href="<?php echo e(route('admin.banners.edit', $bannerPricing->id)); ?>" class="btn btn-primary btn-sm">
+                            <i class="ti ti-edit me-1"></i> Edit
+                        </a>
+                        <form action="<?php echo e(route('admin.banners.destroy', $bannerPricing->id)); ?>" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus banner pricing ini?');">
+                            <?php echo csrf_field(); ?>
+                            <?php echo method_field('DELETE'); ?>
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="ti ti-trash me-1"></i> Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <?php else: ?>
+            <!-- No Banner -->
+            <div class="text-center py-5">
+                <i class="ti ti-photo-off" style="font-size: 3rem; opacity: 0.3;"></i>
+                <h5 class="mt-3 mb-2">Belum Ada Banner Pricing</h5>
+                <p class="text-muted mb-4">Buat banner pricing untuk ditampilkan di halaman pricing</p>
+                <a href="<?php echo e(route('admin.banners.create')); ?>?type=banner-pricing" class="btn btn-primary">
+                    <i class="ti ti-plus me-1"></i> Buat Banner Pricing
+                </a>
+            </div>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>
+
+<!-- Default Background Tab Content -->
+<?php if($activeTab === 'default-background'): ?>
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="ti ti-photo-filled me-2"></i>Default CTA Background</h5>
+            <p class="text-muted mb-0 mt-2">Manage default background image for CTA sections</p>
+        </div>
+        <div class="card-body">
+            <form action="<?php echo e(route('admin.banners.update-default-background')); ?>" method="POST" enctype="multipart/form-data">
+                <?php echo csrf_field(); ?>
+                <?php echo method_field('PUT'); ?>
+                
+                <!-- Current Background Preview -->
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Current Background</label>
+                    <div class="border rounded p-3 bg-light">
+                        <?php
+                            $currentBg = \App\Models\SystemSetting::get('default_cta_background_path');
+                            $bgUrl = $currentBg ? asset($currentBg) : asset('images/bg-default.webp');
+                        ?>
+                        <img src="<?php echo e($bgUrl); ?>" alt="Current Background" class="img-fluid rounded" 
+                            style="max-height: 300px; width: 100%; object-fit: cover;" id="currentBgPreview">
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                <i class="ti ti-info-circle me-1"></i>
+                                Current: <strong><?php echo e($currentBg ?: 'images/bg-default.webp'); ?></strong>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload New Background -->
+                <div class="mb-4">
+                    <label for="background_image" class="form-label fw-semibold">
+                        Upload New Background <span class="text-danger">*</span>
+                    </label>
+                    <input type="file" class="form-control <?php $__errorArgs = ['background_image'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                        id="background_image" name="background_image" accept="image/*" required>
+                    <?php $__errorArgs = ['background_image'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                    <div class="form-text">
+                        <i class="ti ti-info-circle me-1"></i>
+                        Recommended dimensions same as bg-default.webp. Max file size: 2MB. Image will be auto-compressed.
+                    </div>
+                </div>
+
+                <!-- Preview New Image -->
+                <div class="mb-4" id="newPreviewContainer" style="display: none;">
+                    <label class="form-label fw-semibold">Preview New Background</label>
+                    <div class="border rounded p-3">
+                        <img id="newBgPreview" src="" alt="New Background Preview" class="img-fluid rounded" 
+                            style="max-height: 300px; width: 100%; object-fit: cover;">
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="ti ti-device-floppy me-1"></i> Save Background
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('background_image').value=''; document.getElementById('newPreviewContainer').style.display='none';">
+                        <i class="ti ti-x me-1"></i> Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+<?php endif; ?>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startPush('scripts'); ?>
+<script>
+    // Preview new background image before upload
+    document.getElementById('background_image')?.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById('newBgPreview').src = event.target.result;
+                document.getElementById('newPreviewContainer').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\ebook_traveling\resources\views\admin\banners\index.blade.php ENDPATH**/ ?>

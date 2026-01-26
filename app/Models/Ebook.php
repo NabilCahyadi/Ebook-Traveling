@@ -186,7 +186,7 @@ class Ebook extends Model
      */
     public function collections(): BelongsToMany
     {
-        return $this->belongsToMany(Collection::class, 'collection_ebooks')
+        return $this->belongsToMany(Collection::class, 'collection_ebook')
             ->withPivot('order_index')
             ->withTimestamps();
     }

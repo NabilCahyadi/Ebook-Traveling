@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
-use App\Models\Permission;
+use App\Models\AdminPermission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -26,11 +26,11 @@ class AdminPermissionMatrixController extends Controller
             ->orderBy('name')
             ->get();
 
-        // Get all permissions grouped by category
-        $permissions = Permission::orderBy('category')
+        // Get all permissions grouped by group
+        $permissions = AdminPermission::orderBy('group')
             ->orderBy('name')
             ->get()
-            ->groupBy('category');
+            ->groupBy('group');
 
         // Get permission templates/presets
         $templates = $this->getPermissionTemplates();
@@ -45,12 +45,12 @@ class AdminPermissionMatrixController extends Controller
     {
         $request->validate([
             'admin_id' => 'required|exists:admins,id',
-            'permission_id' => 'required|exists:permissions,id',
+            'permission_id' => 'required|exists:admin_permissions,id',
             'action' => 'required|in:attach,detach'
         ]);
 
         $admin = Admin::findOrFail($request->admin_id);
-        $permission = Permission::findOrFail($request->permission_id);
+        $permission = AdminPermission::findOrFail($request->permission_id);
 
         if ($request->action === 'attach') {
             $admin->permissions()->syncWithoutDetaching([$request->permission_id]);
@@ -75,7 +75,7 @@ class AdminPermissionMatrixController extends Controller
             'admin_ids' => 'required|array',
             'admin_ids.*' => 'exists:admins,id',
             'permission_ids' => 'required|array',
-            'permission_ids.*' => 'exists:permissions,id',
+            'permission_ids.*' => 'exists:admin_permissions,id',
             'action' => 'required|in:attach,detach'
         ]);
 
@@ -136,7 +136,7 @@ class AdminPermissionMatrixController extends Controller
         $permissionNames = $template['permissions'];
 
         // Get permission IDs from names
-        $permissions = Permission::whereIn('name', $permissionNames)->pluck('id')->toArray();
+        $permissions = AdminPermission::whereIn('name', $permissionNames)->pluck('id')->toArray();
 
         if (empty($permissions)) {
             return response()->json([
@@ -303,7 +303,7 @@ class AdminPermissionMatrixController extends Controller
     public function export()
     {
         $admins = Admin::with('permissions')->orderBy('name')->get();
-        $allPermissions = Permission::orderBy('category')->orderBy('name')->get();
+        $allPermissions = AdminPermission::orderBy('group')->orderBy('name')->get();
 
         $filename = 'admin-permissions-matrix-' . now()->format('Y-m-d-His') . '.csv';
 

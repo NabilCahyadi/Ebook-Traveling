@@ -29,7 +29,6 @@ class DatabaseSeeder extends Seeder
             // ================================================
             // 2. PERMISSIONS & SYSTEM SETTINGS
             // ================================================
-            PermissionSeeder::class,            // Membuat permissions untuk role-based access (users)
             PanelAccessPermissionSeeder::class, // Panel access permissions untuk creators & admins
             AdminPermissionsSeeder::class,      // Membuat permissions untuk admin panel (new system)
             SystemSettingSeeder::class,         // Membuat system settings
