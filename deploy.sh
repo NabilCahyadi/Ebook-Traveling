@@ -19,6 +19,7 @@ echo "📥 Pulling latest changes from repository..."
 # Install/Update dependencies
 echo "📦 Installing Composer dependencies..."
 composer install --no-dev --optimize-autoloader --no-interaction
+composer require barryvdh/laravel-dompdf
 
 # Clear all caches before migration
 echo "🧹 Clearing application cache..."
