@@ -1921,43 +1921,48 @@
                             <!-- READING HISTORY TAB -->
                             <div class="tab-pane fade {{ request('tab') == 'reading-history' ? 'active show' : '' }}"
                                 id="reading-history" role="tabpanel">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5 class="mb-0">Reading History</h5>
+                                <div class="card border-0 shadow-sm">
+                                    <!-- Card Header with Title -->
+                                    <div class="card-header bg-white border-0 py-3">
+                                        <h5 class="mb-0 fw-bold text-dark">Reading History</h5>
                                     </div>
-                                    <!-- FORM SEARCH & FILTER -->
-                                <form method="GET" action="{{ route('page-account') }}" class="mb-4">
-                                    <input type="hidden" name="tab" value="reading-history">
-                                    <div class="row g-3 align-items-end">
-                                        <div class="col-md-6">
-                                            <label for="search" class="form-label">Search by Title</label>
-                                            <input type="text" class="form-control h-100" name="search"
-                                                id="search" placeholder="e.g., Yogyakarta"
-                                                value="{{ request('search') }}">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label for="city_slug" class="form-label">Filter by City</label>
-                                            <select name="city_slug" id="city_slug" class="form-select form-select-md">
-                                                <option value="">All Cities</option>
-                                                @foreach ($cities as $city)
-                                                    <option value="{{ $city->slug }}"
-                                                        {{ request('city_slug') == $city->slug ? 'selected' : '' }}>
-                                                        {{ $city->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <button type="submit" class="btn-read-now text-white px-4 py-2 mt-2">
-                                                <i class="fi fi-rs-search me-2"></i>Search
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
+
+                                    <!-- Card Body -->
                                     <div class="card-body">
+                                        <!-- FORM SEARCH & FILTER -->
+                                        <form method="GET" action="{{ route('page-account') }}" class="mb-4">
+                                            <input type="hidden" name="tab" value="reading-history">
+                                            <div class="row g-3 align-items-end">
+                                                <div class="col-md-6">
+                                                    <label for="search" class="form-label">Search by Title</label>
+                                                    <input type="text" class="form-control h-100" name="search"
+                                                        id="search" placeholder="e.g., Yogyakarta"
+                                                        value="{{ request('search') }}">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="city_slug" class="form-label">Filter by City</label>
+                                                    <select name="city_slug" id="city_slug" class="form-select form-select-md">
+                                                        <option value="">All Cities</option>
+                                                        @foreach ($cities as $city)
+                                                            <option value="{{ $city->slug }}"
+                                                                {{ request('city_slug') == $city->slug ? 'selected' : '' }}>
+                                                                {{ $city->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button type="submit" class="btn-read-now text-white px-4 py-2 mt-2">
+                                                        <i class="fi fi-rs-search me-2"></i>Search
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+
+                                        <!-- Content -->
                                         @if ($readingHistory->count() > 0)
                                             <div class="table-responsive">
-                                                <table class="table table-hover">
+                                                <table class="table table-hover align-middle">
                                                     <thead>
                                                         <tr>
                                                             <th>Ebook</th>
@@ -2023,8 +2028,7 @@
                                             <div class="text-center py-5">
                                                 <i class="fi fi-rs-history text-muted" style="font-size: 64px;"></i>
                                                 <h4 class="mt-3">No Reading History Yet</h4>
-                                                <p class="text-muted">Start reading ebooks to build your reading history
-                                                </p>
+                                                <p class="text-muted">Start reading ebooks to build your reading history</p>
                                                 <a href="{{ route('page-account', ['tab' => 'library']) }}"
                                                     class="custom-button custom-button--primary text-white px-4 mt-2">Start
                                                     Reading</a>
