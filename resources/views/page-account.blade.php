@@ -749,7 +749,7 @@
                                                 <i class="fi fi-rs-crown mt-1"
                                                     style="font-size: 1.5rem; color: #FF416C;"></i>
                                                 <div>
-                                                    <h5 class="fw-bold mb-2" style="color: #333;">Welcome back, Premium
+                                                    <h5 class="fw-bold mb-2" style="color: #333;">Welcome, Premium
                                                         Member!</h5>
                                                     <p class="text-muted mb-0">
                                                         You have full access to all travel eBooks and exclusive features.
@@ -1291,6 +1291,7 @@
                                                             <th scope="col" class="py-3">Amount</th>
                                                             <th scope="col" class="py-3">Method</th>
                                                             <th scope="col" class="py-3 text-center">Status</th>
+                                                            <th scope="col" class="py-3">Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody class="px-3">
@@ -1421,6 +1422,9 @@
                                                                             </span>
                                                                         @endif
                                                                     </div>
+                                                                </td>
+                                                                <td>
+                                                                    {{-- disini diisi oleh button download invoice ke pdf --}}
                                                                 </td>
                                                             </tr>
                                                         @endforeach
@@ -1636,7 +1640,7 @@
                                                                         @foreach ($order->items as $item)
                                                                             <div class="col-md-6">
                                                                                 <div class="d-flex align-items-center">
-                                                                                    <img src="{{ $item->ebook->cover_image ?: asset('assets/imgs/shop/product-1-1.jpg') }}"
+                                                                                    <img src="{{ $item->ebook->cover_image_url ?: asset('assets/imgs/shop/product-1-1.jpg') }}"
                                                                                         alt="{{ $item->ebook->title }}"
                                                                                         class="rounded"
                                                                                         style="width: 40px; height: 40px; object-fit: cover;">
@@ -2021,7 +2025,12 @@
                             <!-- MY REVIEWS TAB -->
                             <div class="tab-pane fade {{ request('tab') == 'reviews' ? 'active show' : '' }}"
                                 id="reviews" role="tabpanel">
-                                <!-- FORM SEARCH & FILTER -->
+
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-white border-0 py-3">
+                                        <h5 class="mb-0 fw-bold text-dark">My Reviews</h5>
+                                    </div>
+                                    <!-- FORM SEARCH & FILTER -->
                                 <form method="GET" action="{{ route('page-account') }}" class="mb-4">
                                     <input type="hidden" name="tab" value="reviews">
                                     <div class="row g-3 align-items-end">
@@ -2050,10 +2059,6 @@
                                         </div>
                                     </div>
                                 </form>
-                                <div class="card border-0 shadow-sm">
-                                    <div class="card-header bg-white border-0 py-3">
-                                        <h5 class="mb-0 fw-bold text-dark">My Reviews</h5>
-                                    </div>
                                     <div class="card-body">
                                         @if ($userRatings->count() > 0)
                                             <div class="row g-4">
@@ -2066,7 +2071,7 @@
                                                                 <div class="col-md-2 col-lg-1">
                                                                     <a href="{{ route('ebooks.show', $rating->ebook->slug) }}"
                                                                         class="d-block">
-                                                                        <img src="{{ $rating->ebook->cover_image ?: asset('assets/imgs/shop/product-1-1.jpg') }}"
+                                                                        <img src="{{ $rating->ebook->cover_image_url ?: asset('assets/imgs/shop/product-1-1.jpg') }}"
                                                                             alt="{{ $rating->ebook->title }}"
                                                                             class="img-fluid rounded"
                                                                             style="aspect-ratio: 2/3; object-fit: cover; border: 1px solid #e0e0e0;">
@@ -2147,7 +2152,6 @@
                                                         </div>
 
                                                         <!--  MODAL EDIT REVIEW -->
-                                                        <!-- MODAL EDIT REVIEW (FORM BIASA) -->
                                                         <div class="modal fade" id="editReviewModal-{{ $rating->id }}"
                                                             tabindex="-1">
                                                             <div class="modal-dialog modal-dialog-centered">

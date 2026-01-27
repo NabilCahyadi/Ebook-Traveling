@@ -249,13 +249,13 @@
                     </a>
                     @else
                     <a href="{{ route('pricing') }}" class="action-btn btn-subscribe-now">
-                        <i class="fi fi-rs-crown"></i>
+                        <i class="fi fi-rs-crown mt-1"></i>
                         <span>Subscribe to Read</span>
                     </a>
                     @endif
                     @else
                     <a href="{{ route('pricing') }}" class="action-btn btn-subscribe-now">
-                        <i class="fi fi-rs-crown"></i>
+                        <i class="fi fi-rs-crown mt-1"></i>
                         <span>Subscribe to Read</span>
                     </a>
                     @endauth
