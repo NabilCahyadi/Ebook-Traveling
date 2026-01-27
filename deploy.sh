@@ -44,6 +44,14 @@ $PHP_BIN artisan migrate --force
 echo "🔗 Creating storage symbolic link..."
 $PHP_BIN artisan storage:link
 
+# Ensure all storage directories exist
+echo "📁 Creating storage directories..."
+mkdir -p storage/framework/sessions
+mkdir -p storage/framework/cache
+mkdir -p storage/framework/views
+mkdir -p storage/logs
+mkdir -p storage/app/public
+
 # Set permissions untuk storage dan cache
 echo "🔒 Setting proper permissions..."
 chmod -R 775 storage bootstrap/cache
