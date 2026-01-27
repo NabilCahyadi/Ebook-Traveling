@@ -18,7 +18,7 @@ echo "📥 Pulling latest changes from repository..."
 
 # Install/Update dependencies
 echo "📦 Installing Composer dependencies..."
-composer install --no-dev --optimize-autoloader --no-interaction
+composer install --no-dev
 php artisan optimize:clear
 
 
