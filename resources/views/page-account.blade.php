@@ -2209,7 +2209,7 @@
                                                                             <div class="mb-3">
                                                                                 <label class="form-label">Your
                                                                                     Review</label>
-                                                                                <textarea class="form-control" name="review_text" rows="4" required>{{ $rating->review_text }}</textarea>
+                                                                                <textarea class="form-control" name="review_text" rows="8" required style="min-height: 200px; resize: vertical;">{{ $rating->review_text }}</textarea>
                                                                             </div>
                                                                         </div>
 
