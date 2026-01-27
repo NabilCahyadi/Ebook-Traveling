@@ -10,48 +10,48 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
             line-height: 1.6;
             color: #333;
         }
-        
+
         .container {
             max-width: 800px;
             margin: 0 auto;
             padding: 30px 20px;
         }
-        
+
         .header {
             margin-bottom: 30px;
             padding-bottom: 20px;
             border-bottom: 1px solid #ddd;
         }
-        
+
         .header h1 {
             font-size: 24px;
             color: #333;
             margin-bottom: 5px;
         }
-        
+
         .header .invoice-number {
             font-size: 13px;
             color: #666;
             margin-bottom: 15px;
         }
-        
+
         .header-row {
             display: flex;
             justify-content: space-between;
             font-size: 13px;
             color: #666;
         }
-        
+
         .section {
             margin-bottom: 25px;
         }
-        
+
         .section-title {
             font-size: 12px;
             font-weight: bold;
@@ -60,7 +60,7 @@
             margin-bottom: 8px;
             letter-spacing: 0.5px;
         }
-        
+
         .info-row {
             display: flex;
             justify-content: space-between;
@@ -68,36 +68,36 @@
             margin-bottom: 6px;
             line-height: 1.5;
         }
-        
+
         .info-label {
             color: #666;
             min-width: 140px;
         }
-        
+
         .info-value {
             color: #333;
             font-weight: 500;
             text-align: right;
             flex: 1;
         }
-        
+
         .divider {
             border-top: 1px solid #eee;
             margin: 20px 0;
         }
-        
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
             font-size: 13px;
         }
-        
+
         thead {
             background: #f5f5f5;
             border-bottom: 1px solid #ddd;
         }
-        
+
         th {
             padding: 10px 8px;
             text-align: left;
@@ -105,26 +105,26 @@
             color: #333;
             font-size: 12px;
         }
-        
+
         td {
             padding: 10px 8px;
             border-bottom: 1px solid #eee;
         }
-        
+
         .text-right {
             text-align: right;
         }
-        
+
         .summary-box {
             margin-top: 20px;
             display: flex;
             justify-content: flex-end;
         }
-        
+
         .summary-item {
             min-width: 250px;
         }
-        
+
         .summary-row {
             display: flex;
             justify-content: space-between;
@@ -132,7 +132,7 @@
             margin-bottom: 8px;
             padding: 0 8px;
         }
-        
+
         .summary-row.total {
             border-top: 1px solid #ddd;
             padding-top: 8px;
@@ -140,7 +140,7 @@
             font-size: 15px;
             color: #333;
         }
-        
+
         .footer {
             margin-top: 40px;
             padding-top: 15px;
@@ -149,7 +149,7 @@
             font-size: 11px;
             color: #999;
         }
-        
+
         .small-text {
             font-size: 12px;
             color: #666;

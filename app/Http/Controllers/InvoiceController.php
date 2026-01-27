@@ -23,7 +23,7 @@ class InvoiceController extends Controller
         $data = $this->prepareInvoiceData($payment);
 
         $pdf = Pdf::loadView('invoices.payment-invoice', $data);
-        
+
         // Generate filename
         $filename = 'Invoice-' . $payment->payment_code . '-' . date('Ymd') . '.pdf';
 

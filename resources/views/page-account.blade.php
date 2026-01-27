@@ -618,9 +618,6 @@
                                         <i
                                             class="fi fi-rs-heart me-3 fs-5 mt-1 {{ request('tab') == 'wishlist' ? 'text-white' : 'text-danger' }}"></i>
                                         <span>Wishlist</span>
-                                        <!-- @if ($wishlistCount > 0)
-    <span class="badge bg-primary rounded-pill ms-auto">{{ $wishlistCount }}</span>
-    @endif -->
                                     </a>
                                 </li>
 
@@ -889,10 +886,17 @@
                                                 <p class="text-muted">Start exploring our ebooks and add them to your
                                                     wishlist!
                                                 </p>
-                                                <a href="{{ route('page-account') }}?tab=library"
-                                                    class="custom-button custom-button--primary text-white px-4 mt-2">
-                                                    Browse Ebooks
-                                                </a>
+                                                @if (auth()->check() && auth()->user()->hasActiveSubscription())
+                                                    <a href="{{ route('page-account') }}?tab=library"
+                                                        class="custom-button custom-button--primary text-white px-4 mt-2">
+                                                        Browse Ebooks
+                                                    </a>
+                                                @else
+                                                    <a href="{{ route('destinations') }}"
+                                                        class="custom-button custom-button--primary text-white px-4 mt-2">
+                                                        Browse Ebooks
+                                                    </a>
+                                                @endif
                                             </div>
                                         @endif
                                     </div>
@@ -1424,10 +1428,9 @@
                                                                     </div>
                                                                 </td>
                                                                 <td>
-                                                                    {{-- Download Invoice Button --}}
                                                                     @if ($payment->status === 'success')
                                                                         <a href="{{ route('user.invoice.download', $payment) }}"
-                                                                            class="btn btn-sm btn-outline-primary"
+                                                                            class="btn btn-sm"
                                                                             title="Download Invoice">
                                                                             <i class="bi bi-printer"></i>
                                                                         </a>
