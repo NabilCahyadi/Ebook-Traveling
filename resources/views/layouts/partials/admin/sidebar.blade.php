@@ -381,11 +381,23 @@
                     @endif
                     <!-- About Us -->
                     @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.about-us.view', 'website.about-us.create', 'website.about-us.edit', 'website.about-us.delete']))
-                        <li class="menu-item {{ Request::is('admin/about-us*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.about-us.index') }}" class="menu-link">
+                        <li class="menu-item {{ Request::is('admin/about-us*') ? 'active open' : '' }}">
+                            <a href="javascript:void(0);" class="menu-link menu-toggle">
                                 <i class="menu-icon tf-icons ti ti-info-circle"></i>
                                 <div data-i18n="About Us">{{ __('admin.menu.about_us') }}</div>
                             </a>
+                            <ul class="menu-sub">
+                                <li class="menu-item {{ Request::is('admin/about-us') && !Request::is('admin/about-us-sections*') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.about-us.index') }}" class="menu-link">
+                                        <div data-i18n="Benefits">Benefits</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item {{ Request::is('admin/about-us-sections*') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.about-us-sections.index') }}" class="menu-link">
+                                        <div data-i18n="Sections">Sections</div>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     @endif
                     <!-- Hero Banners -->

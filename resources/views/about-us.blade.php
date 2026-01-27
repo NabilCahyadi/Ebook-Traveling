@@ -32,7 +32,7 @@
         <div class="row">
             <div class="col-xl-10 col-lg-12 m-auto">
                 <!-- SECTION 1: WELCOME -->
-                @if(isset($aboutSections['welcome']))
+                @if(isset($aboutSections['welcome']) && $aboutSections['welcome']->is_active)
                 <section class="row align-items-center mb-50">
                     <div class="col-lg-6">
                         <img src="{{ asset($aboutSections['welcome']->image) }}" alt="{{ $aboutSections['welcome']->title }}" class="border-radius-15 mb-md-3 mb-lg-0 mb-sm-4" />
@@ -88,31 +88,35 @@
                     </div>
                 </section>
 
-                <!-- SECTION 2: PERFORMANCE & ABOUT DETAILS -->
-                @if(isset($aboutSections['performance']) && isset($aboutSections['about_details']))
-                <section class="row align-items-center mb-50">
-                    <div class="row mb-50 align-items-center">
-                        <div class="col-lg-7 pr-30">
-                            <img src="{{ asset($aboutSections['performance']->image) }}" alt="{{ $aboutSections['performance']->title }}" class="mb-md-3 mb-lg-0 mb-sm-4" />
-                        </div>
-                        <div class="col-lg-5">
-                            <h4 class="mb-20 text-muted">Our performance</h4>
-                            <h1 class="heading-1 mb-40">{{ $aboutSections['performance']->title }}</h1>
-                            {!! $aboutSections['performance']->content !!}
-                        </div>
+                <!-- SECTION 2: PERFORMANCE -->
+                @if(isset($aboutSections['performance']) && $aboutSections['performance']->is_active)
+                <section class="row mb-50 align-items-center">
+                    <div class="col-lg-7 pr-30">
+                        <img src="{{ asset($aboutSections['performance']->image) }}" alt="{{ $aboutSections['performance']->title }}" class="mb-md-3 mb-lg-0 mb-sm-4" />
                     </div>
+                    <div class="col-lg-5">
+                        <h4 class="mb-20 text-muted">Our performance</h4>
+                        <h1 class="heading-1 mb-40">{{ $aboutSections['performance']->title }}</h1>
+                        {!! $aboutSections['performance']->content !!}
+                    </div>
+                </section>
+                @endif
+
+                <!-- SECTION 3: ABOUT DETAILS -->
+                @if(isset($aboutSections['about_details']) && $aboutSections['about_details']->is_active)
+                <section class="row mb-50">
                     @php
                     // Decode JSON untuk 3 kolom
                     $details = json_decode($aboutSections['about_details']->content, true);
                     @endphp
-                    <div class="row">
-                        @foreach($details as $detail)
-                        <div class="col-lg-4 pr-30 mb-md-5 mb-lg-0 mb-sm-5">
-                            <h3 class="mb-30">{{ $detail['title'] }}</h3>
-                            <p>{{ $detail['description'] }}</p>
-                        </div>
-                        @endforeach
+                    @if($details && is_array($details))
+                    @foreach($details as $detail)
+                    <div class="col-lg-4 pr-30 mb-md-5 mb-lg-0 mb-sm-5">
+                        <h3 class="mb-30">{{ $detail['title'] ?? '' }}</h3>
+                        <p>{{ $detail['description'] ?? '' }}</p>
                     </div>
+                    @endforeach
+                    @endif
                 </section>
                 @endif
             </div>
