@@ -140,3 +140,32 @@ if (!function_exists('translateCategorySubscription')) {
         return __('admin.category_subscription.' . $category, [], app()->getLocale());
     }
 }
+
+if (!function_exists('formatPhoneNumber')) {
+    /**
+     * Format nomor telepon Indonesia dari format 62x menjadi 08x.
+     *
+     * @param string $phone
+     * @return string
+     */
+    function formatPhoneNumber($phone)
+    {
+        if (empty($phone)) {
+            return $phone;
+        }
+
+        // Hapus semua karakter non-digit
+        $phone = preg_replace('/\D/', '', $phone);
+
+        // Jika dimulai dengan 62, ubah menjadi 0
+        if (strpos($phone, '62') === 0) {
+            $phone = '0' . substr($phone, 2);
+        }
+        // Jika hanya angka tanpa 62 atau 0, asumsikan dimulai dengan 0
+        elseif (strpos($phone, '0') !== 0 && strpos($phone, '62') !== 0) {
+            $phone = '0' . $phone;
+        }
+
+        return $phone;
+    }
+}

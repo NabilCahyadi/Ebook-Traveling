@@ -618,9 +618,6 @@
                                         <i
                                             class="fi fi-rs-heart me-3 fs-5 mt-1 {{ request('tab') == 'wishlist' ? 'text-white' : 'text-danger' }}"></i>
                                         <span>Wishlist</span>
-                                        <!-- @if ($wishlistCount > 0)
-    <span class="badge bg-primary rounded-pill ms-auto">{{ $wishlistCount }}</span>
-    @endif -->
                                     </a>
                                 </li>
 
@@ -749,7 +746,7 @@
                                                 <i class="fi fi-rs-crown mt-1"
                                                     style="font-size: 1.5rem; color: #FF416C;"></i>
                                                 <div>
-                                                    <h5 class="fw-bold mb-2" style="color: #333;">Welcome back, Premium
+                                                    <h5 class="fw-bold mb-2" style="color: #333;">Welcome, Premium
                                                         Member!</h5>
                                                     <p class="text-muted mb-0">
                                                         You have full access to all travel eBooks and exclusive features.
@@ -796,11 +793,43 @@
                             <!-- WISHLIST TAB -->
                             <div class="tab-pane fade {{ request('tab') == 'wishlist' ? 'active show' : '' }}"
                                 id="wishlist" role="tabpanel">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5 class="mb-0">Your Wishlist</h5>
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-white border-0 py-3">
+                                        <h5 class="mb-0 fw-bold text-dark">Your Wishlist</h5>
                                     </div>
                                     <div class="card-body">
+                                        <!-- FORM SEARCH & FILTER -->
+                                        <form method="GET" action="{{ route('page-account') }}" class="mb-4">
+                                            <input type="hidden" name="tab" value="wishlist">
+                                            <div class="row g-3 align-items-end">
+                                                <div class="col-md-6">
+                                                    <label for="wishlist_search" class="form-label">Search by Title</label>
+                                                    <input type="text" class="form-control h-100" name="search"
+                                                        id="wishlist_search" placeholder="e.g., Bali Travel Guide"
+                                                        value="{{ request('search') }}">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="wishlist_city" class="form-label">Filter by City</label>
+                                                    <select name="city_slug" id="wishlist_city"
+                                                        class="form-select form-select-md">
+                                                        <option value="">All Cities</option>
+                                                        @foreach ($cities as $city)
+                                                            <option value="{{ $city->slug }}"
+                                                                {{ request('city_slug') == $city->slug ? 'selected' : '' }}>
+                                                                {{ $city->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button type="submit"
+                                                        class="btn-read-now text-white px-4 py-2 mt-2">
+                                                        <i class="fi fi-rs-search me-2"></i>Search
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+
                                         @if ($wishlistItems->count() > 0)
                                             <div class="table-responsive">
                                                 <table class="table align-middle">
@@ -865,17 +894,11 @@
                                                                     @else
                                                                         <a href="/pricing"
                                                                             class="custom-button custom-button--primary text-white px-4">
-                                                                            <i class="fi fi-rs-lock"></i>
+                                                                            <i class="fi fi-rs-lock mt-1"></i>
                                                                             <span>Subscribe to Read</span>
                                                                         </a>
                                                                     @endif
                                                                 </td>
-                                                                <!-- <td>
-                                                                                <a href="{{ route('ebooks.show', $ebook->slug) }}"
-                                                                                    class="custom-button custom-button--primary text-white px-4">
-                                                                                    View
-                                                                                </a>
-                                                                            </td> -->
                                                             </tr>
                                                         @endforeach
                                                     </tbody>
@@ -888,10 +911,17 @@
                                                 <p class="text-muted">Start exploring our ebooks and add them to your
                                                     wishlist!
                                                 </p>
-                                                <a href="{{ route('page-account') }}?tab=library"
-                                                    class="custom-button custom-button--primary text-white px-4 mt-2">
-                                                    Browse Ebooks
-                                                </a>
+                                                @if (auth()->check() && auth()->user()->hasActiveSubscription())
+                                                    <a href="{{ route('page-account') }}?tab=library"
+                                                        class="custom-button custom-button--primary text-white px-4 mt-2">
+                                                        Browse Ebooks
+                                                    </a>
+                                                @else
+                                                    <a href="{{ route('destinations') }}"
+                                                        class="custom-button custom-button--primary text-white px-4 mt-2">
+                                                        Browse Ebooks
+                                                    </a>
+                                                @endif
                                             </div>
                                         @endif
                                     </div>
@@ -1290,6 +1320,7 @@
                                                             <th scope="col" class="py-3">Amount</th>
                                                             <th scope="col" class="py-3">Method</th>
                                                             <th scope="col" class="py-3 text-center">Status</th>
+                                                            {{-- <th scope="col" class="py-3">Action</th> --}}
                                                         </tr>
                                                     </thead>
                                                     <tbody class="px-3">
@@ -1421,6 +1452,17 @@
                                                                         @endif
                                                                     </div>
                                                                 </td>
+                                                                {{-- <td>
+                                                                    @if ($payment->status === 'success')
+                                                                        <a href="{{ route('user.invoice.download', $payment) }}"
+                                                                            class="btn btn-sm"
+                                                                            title="Download Invoice">
+                                                                            <i class="bi bi-printer"></i>
+                                                                        </a>
+                                                                    @else
+                                                                        <span class="text-muted small">—</span>
+                                                                    @endif
+                                                                </td> --}}
                                                             </tr>
                                                         @endforeach
                                                     </tbody>
@@ -1635,7 +1677,7 @@
                                                                         @foreach ($order->items as $item)
                                                                             <div class="col-md-6">
                                                                                 <div class="d-flex align-items-center">
-                                                                                    <img src="{{ $item->ebook->cover_image ?: asset('assets/imgs/shop/product-1-1.jpg') }}"
+                                                                                    <img src="{{ $item->ebook->cover_image_url ?: asset('assets/imgs/shop/product-1-1.jpg') }}"
                                                                                         alt="{{ $item->ebook->title }}"
                                                                                         class="rounded"
                                                                                         style="width: 40px; height: 40px; object-fit: cover;">
@@ -1855,7 +1897,6 @@
                                                                 <!-- TOMBOL AKSI -->
                                                                 <a href="{{ route('user.ebook.read', $ebook->slug) }}"
                                                                     class="action-btn btn-read-now w-100 mt-2">
-                                                                    <i class="fi fi-rs-book-open"></i>
                                                                     <span>{{ $isReading ? 'Continue Reading' : 'Read Now' }}</span>
                                                                 </a>
                                                             </div>
@@ -1904,43 +1945,48 @@
                             <!-- READING HISTORY TAB -->
                             <div class="tab-pane fade {{ request('tab') == 'reading-history' ? 'active show' : '' }}"
                                 id="reading-history" role="tabpanel">
-                                <!-- FORM SEARCH & FILTER -->
-                                <form method="GET" action="{{ route('page-account') }}" class="mb-4">
-                                    <input type="hidden" name="tab" value="reading-history">
-                                    <div class="row g-3 align-items-end">
-                                        <div class="col-md-6">
-                                            <label for="search" class="form-label">Search by Title</label>
-                                            <input type="text" class="form-control h-100" name="search"
-                                                id="search" placeholder="e.g., Yogyakarta"
-                                                value="{{ request('search') }}">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label for="city_slug" class="form-label">Filter by City</label>
-                                            <select name="city_slug" id="city_slug" class="form-select form-select-md">
-                                                <option value="">All Cities</option>
-                                                @foreach ($cities as $city)
-                                                    <option value="{{ $city->slug }}"
-                                                        {{ request('city_slug') == $city->slug ? 'selected' : '' }}>
-                                                        {{ $city->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <button type="submit" class="btn-read-now text-white px-4 py-2 mt-2">
-                                                <i class="fi fi-rs-search me-2"></i>Search
-                                            </button>
-                                        </div>
+                                <div class="card border-0 shadow-sm">
+                                    <!-- Card Header with Title -->
+                                    <div class="card-header bg-white border-0 py-3">
+                                        <h5 class="mb-0 fw-bold text-dark">Reading History</h5>
                                     </div>
-                                </form>
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5 class="mb-0">Reading History</h5>
-                                    </div>
+
+                                    <!-- Card Body -->
                                     <div class="card-body">
+                                        <!-- FORM SEARCH & FILTER -->
+                                        <form method="GET" action="{{ route('page-account') }}" class="mb-4">
+                                            <input type="hidden" name="tab" value="reading-history">
+                                            <div class="row g-3 align-items-end">
+                                                <div class="col-md-6">
+                                                    <label for="search" class="form-label">Search by Title</label>
+                                                    <input type="text" class="form-control h-100" name="search"
+                                                        id="search" placeholder="e.g., Yogyakarta"
+                                                        value="{{ request('search') }}">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="city_slug" class="form-label">Filter by City</label>
+                                                    <select name="city_slug" id="city_slug" class="form-select form-select-md">
+                                                        <option value="">All Cities</option>
+                                                        @foreach ($cities as $city)
+                                                            <option value="{{ $city->slug }}"
+                                                                {{ request('city_slug') == $city->slug ? 'selected' : '' }}>
+                                                                {{ $city->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button type="submit" class="btn-read-now text-white px-4 py-2 mt-2">
+                                                        <i class="fi fi-rs-search me-2"></i>Search
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+
+                                        <!-- Content -->
                                         @if ($readingHistory->count() > 0)
                                             <div class="table-responsive">
-                                                <table class="table table-hover">
+                                                <table class="table table-hover align-middle">
                                                     <thead>
                                                         <tr>
                                                             <th>Ebook</th>
@@ -2006,8 +2052,7 @@
                                             <div class="text-center py-5">
                                                 <i class="fi fi-rs-history text-muted" style="font-size: 64px;"></i>
                                                 <h4 class="mt-3">No Reading History Yet</h4>
-                                                <p class="text-muted">Start reading ebooks to build your reading history
-                                                </p>
+                                                <p class="text-muted">Start reading ebooks to build your reading history</p>
                                                 <a href="{{ route('page-account', ['tab' => 'library']) }}"
                                                     class="custom-button custom-button--primary text-white px-4 mt-2">Start
                                                     Reading</a>
@@ -2020,52 +2065,56 @@
                             <!-- MY REVIEWS TAB -->
                             <div class="tab-pane fade {{ request('tab') == 'reviews' ? 'active show' : '' }}"
                                 id="reviews" role="tabpanel">
-                                <!-- FORM SEARCH & FILTER -->
-                                <form method="GET" action="{{ route('page-account') }}" class="mb-4">
-                                    <input type="hidden" name="tab" value="reviews">
-                                    <div class="row g-3 align-items-end">
-                                        <div class="col-md-6">
-                                            <label for="search" class="form-label">Search by Title</label>
-                                            <input type="text" class="form-control h-100" name="search"
-                                                id="search" placeholder="e.g., Bali Travel Guide"
-                                                value="{{ request('search') }}">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label for="city_slug" class="form-label">Filter by City</label>
-                                            <select name="city_slug" id="city_slug" class="form-select form-select-md">
-                                                <option value="">All Cities</option>
-                                                @foreach ($cities as $city)
-                                                    <option value="{{ $city->slug }}"
-                                                        {{ request('city_slug') == $city->slug ? 'selected' : '' }}>
-                                                        {{ $city->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <button type="submit" class="btn-read-now text-white px-4 py-2 mt-2">
-                                                <i class="fi fi-rs-search me-2"></i>Search
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
                                 <div class="card border-0 shadow-sm">
-                                    <div class="card-header bg-white border-0 py-3">
+                                    <!-- Card Header with Title -->
+                                    <div class="card-header bg-white border-0">
                                         <h5 class="mb-0 fw-bold text-dark">My Reviews</h5>
                                     </div>
+
+                                    <!-- Card Body -->
                                     <div class="card-body">
+                                        <!-- FORM SEARCH & FILTER -->
+                                        <form method="GET" action="{{ route('page-account') }}" class="mb-4">
+                                            <input type="hidden" name="tab" value="reviews">
+                                            <div class="row g-3 align-items-end">
+                                                <div class="col-md-6">
+                                                    <label for="search" class="form-label">Search by Title</label>
+                                                    <input type="text" class="form-control h-100" name="search"
+                                                        id="search" placeholder="e.g., Bali Travel Guide"
+                                                        value="{{ request('search') }}">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="city_slug" class="form-label">Filter by City</label>
+                                                    <select name="city_slug" id="city_slug" class="form-select form-select-md">
+                                                        <option value="">All Cities</option>
+                                                        @foreach ($cities as $city)
+                                                            <option value="{{ $city->slug }}"
+                                                                {{ request('city_slug') == $city->slug ? 'selected' : '' }}>
+                                                                {{ $city->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button type="submit" class="btn-read-now text-white px-4 py-2 mt-2">
+                                                        <i class="fi fi-rs-search me-2"></i>Search
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+
+                                        <!-- Content -->
                                         @if ($userRatings->count() > 0)
                                             <div class="row g-4">
                                                 @foreach ($userRatings as $rating)
                                                     <div class="col-12">
                                                         <div class="card h-100 border-0 shadow-sm transition-all"
                                                             style="border-left: 4px solid #FF416C;">
-                                                            <div class="row g-0 align-items-center">
                                                                 <!--  COVER EBOOK DI KIRI -->
                                                                 <div class="col-md-2 col-lg-1">
                                                                     <a href="{{ route('ebooks.show', $rating->ebook->slug) }}"
                                                                         class="d-block">
-                                                                        <img src="{{ $rating->ebook->cover_image ?: asset('assets/imgs/shop/product-1-1.jpg') }}"
+                                                                        <img src="{{ $rating->ebook->cover_image_url ?: asset('assets/imgs/shop/product-1-1.jpg') }}"
                                                                             alt="{{ $rating->ebook->title }}"
                                                                             class="img-fluid rounded"
                                                                             style="aspect-ratio: 2/3; object-fit: cover; border: 1px solid #e0e0e0;">
@@ -2146,7 +2195,6 @@
                                                         </div>
 
                                                         <!--  MODAL EDIT REVIEW -->
-                                                        <!-- MODAL EDIT REVIEW (FORM BIASA) -->
                                                         <div class="modal fade" id="editReviewModal-{{ $rating->id }}"
                                                             tabindex="-1">
                                                             <div class="modal-dialog modal-dialog-centered">
@@ -2192,7 +2240,7 @@
                                                                             <div class="mb-3">
                                                                                 <label class="form-label">Your
                                                                                     Review</label>
-                                                                                <textarea class="form-control" name="review_text" rows="4" required>{{ $rating->review_text }}</textarea>
+                                                                                <textarea class="form-control" name="review_text" rows="8" required style="min-height: 200px; resize: vertical;">{{ $rating->review_text }}</textarea>
                                                                             </div>
                                                                         </div>
 

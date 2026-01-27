@@ -572,7 +572,7 @@
                                                     </a>
                                                 @else
                                                     <a href="/pricing" class="action-btn btn-subscribe-now">
-                                                        <i class="fi fi-rs-lock"></i>
+                                                        <i class="fi fi-rs-lock mt-1"></i>
                                                         <span>Subscribe to Read</span>
                                                     </a>
                                                 @endif
@@ -912,7 +912,7 @@
                                                     </a>
                                                 @else
                                                     <a href="/pricing" class="action-btn btn-subscribe-now">
-                                                        <i class="fi fi-rs-lock"></i>
+                                                        <i class="fi fi-rs-lock mt-1"></i>
                                                         <span>Subscribe to Read</span>
                                                     </a>
                                                 @endif

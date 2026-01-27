@@ -1,50 +1,37 @@
 #!/bin/bash
 
-# Path ke project
 PROJECT_PATH="/home/u778058510/domains/mappy.id/ebook_traveling_core"
-
-# Path ke PHP (ubah jika hosting berbeda)
 PHP_BIN="/usr/bin/php"
 
-# Masuk ke folder project
-cd $PROJECT_PATH
+cd $PROJECT_PATH || exit
 
-echo "🚀 Starting deployment process..."
+echo "🚀 Deploying..."
 
-# Update repo dari GitHub
-echo "📥 Pulling latest changes from repository..."
-/usr/bin/git fetch --all    
-/usr/bin/git reset --hard origin/main
+# Update code
+git fetch --all
+git reset --hard origin/main
 
-# Install/Update dependencies
-echo "📦 Installing Composer dependencies..."
+# Install dependencies
 composer install --no-dev --optimize-autoloader --no-interaction
 
-# Clear all caches before migration
-echo "🧹 Clearing application cache..."
-$PHP_BIN artisan config:clear
-$PHP_BIN artisan cache:clear
-$PHP_BIN artisan view:clear
-$PHP_BIN artisan route:clear
+# Clear everything safely
+$PHP_BIN artisan optimize:clear
 
-# Jalankan migrate:fresh dengan semua seeder
-echo "🗄️  Running fresh migrations with seeders..."
+# Run migrations
 $PHP_BIN artisan migrate --force
 
-
-# Create storage symlink (PENTING untuk akses file dari public)
-echo "🔗 Creating storage symbolic link..."
+# Storage link
 $PHP_BIN artisan storage:link
 
-# Set permissions untuk storage dan cache
-echo "🔒 Setting proper permissions..."
+# Ensure all storage directories exist
+echo "📁 Creating storage directories..."
+mkdir -p storage/framework/sessions
+mkdir -p storage/framework/cache
+mkdir -p storage/framework/views
+mkdir -p storage/logs
+mkdir -p storage/app/public
+
+# Permissions (SAFE)
 chmod -R 775 storage bootstrap/cache
-chown -R $USER:$USER storage bootstrap/cache
 
-# Optimize application for production
-echo "⚡ Optimizing application..."
-$PHP_BIN artisan config:cache
-$PHP_BIN artisan route:cache
-$PHP_BIN artisan view:cache
-
-echo "✅ Deployment completed successfully!"
+echo "✅ Deploy finished"

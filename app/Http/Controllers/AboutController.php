@@ -32,7 +32,21 @@ class AboutController extends Controller
             ->orderBy('order_index', 'asc')
             ->get()
             ->keyBy('section_key'); // Ubah menjadi array asosiatif
-        $latestBlogImages = Blog::latest()->take(4)->pluck('featured_image');
+        
+        // Ambil latest blog images dengan validasi
+        $latestBlogImages = Blog::latest()
+            ->take(4)
+            ->pluck('featured_image')
+            ->filter(function($image) {
+                // Validasi bahwa image file benar-benar ada
+                if (empty($image)) {
+                    return false;
+                }
+                // Cek apakah file ada di storage
+                $filePath = storage_path('app/public/' . $image);
+                return file_exists($filePath);
+            })
+            ->values(); // Re-index array
         
         $citiesHeader = City::where('is_active', true)
             ->orderBy('order_index')

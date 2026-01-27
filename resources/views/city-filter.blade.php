@@ -168,7 +168,7 @@
             <div class="col-lg-8">
                 <h4 class="mb-0">
                     @if($ebooks->total() > 0)
-                    Found <span class="text-brand">{{ $ebooks->total() }}</span> ebook(s) in "<strong>{{ $city->name }}</strong>"
+                    Showing {{ $ebooks->total() }} ebooks in "<strong>{{ $city->name }}</strong>"
                     @else
                     No ebooks found in "<strong>{{ $city->name }}</strong>"
                     @endif
@@ -249,13 +249,13 @@
                     </a>
                     @else
                     <a href="{{ route('pricing') }}" class="action-btn btn-subscribe-now">
-                        <i class="fi fi-rs-crown"></i>
+                        <i class="fi fi-rs-crown mt-1"></i>
                         <span>Subscribe to Read</span>
                     </a>
                     @endif
                     @else
                     <a href="{{ route('pricing') }}" class="action-btn btn-subscribe-now">
-                        <i class="fi fi-rs-crown"></i>
+                        <i class="fi fi-rs-crown mt-1"></i>
                         <span>Subscribe to Read</span>
                     </a>
                     @endauth

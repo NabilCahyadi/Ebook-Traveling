@@ -57,4 +57,12 @@ class Payment extends Model
     {
         return $this->belongsTo(SubscriptionPlan::class, 'subscription_plan_id');
     }
+
+    /**
+     * Get the user that owns the payment.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

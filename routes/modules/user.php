@@ -5,6 +5,7 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\ReaderController;
 use App\Http\Controllers\User\EbookReaderController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\InvoiceController;
 
 /* berada di routes/modules/user.php
 |--------------------------------------------------------------------------
@@ -14,6 +15,9 @@ use App\Http\Controllers\AccountController;
 */
 
 Route::prefix('user')->name('user.')->middleware(['user.session', 'auth'])->group(function () {
+    // Invoice Routes
+    Route::get('/invoice/{payment}/download', [InvoiceController::class, 'download'])->name('invoice.download');
+    Route::get('/invoice/{payment}/preview', [InvoiceController::class, 'preview'])->name('invoice.preview');
     // Ebook Reader Routes
     Route::get('/reader/{slug}', [ReaderController::class, 'show'])->name('ebook.read');
     Route::post('/reader/update-progress', [ReaderController::class, 'updateProgress'])->name('reader.updateProgress');
