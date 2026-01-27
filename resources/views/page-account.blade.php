@@ -866,7 +866,7 @@
                                                                     @else
                                                                         <a href="/pricing"
                                                                             class="custom-button custom-button--primary text-white px-4">
-                                                                            <i class="fi fi-rs-lock"></i>
+                                                                            <i class="fi fi-rs-lock mt-1"></i>
                                                                             <span>Subscribe to Read</span>
                                                                         </a>
                                                                     @endif
@@ -1424,7 +1424,24 @@
                                                                     </div>
                                                                 </td>
                                                                 <td>
-                                                                    {{-- disini diisi oleh button download invoice ke pdf --}}
+                                                                    {{-- Download Invoice Button --}}
+                                                                    @if ($payment->status === 'success')
+                                                                        <div class="d-flex gap-2">
+                                                                            <a href="{{ route('user.invoice.download', $payment) }}"
+                                                                                class="btn btn-sm btn-outline-primary"
+                                                                                title="Download Invoice PDF">
+                                                                                <i class="fi fi-rs-download me-1"></i>Download
+                                                                            </a>
+                                                                            <a href="{{ route('user.invoice.preview', $payment) }}"
+                                                                                target="_blank"
+                                                                                class="btn btn-sm btn-outline-secondary"
+                                                                                title="Preview Invoice">
+                                                                                <i class="fi fi-rs-eye me-1"></i>Preview
+                                                                            </a>
+                                                                        </div>
+                                                                    @else
+                                                                        <span class="text-muted small">—</span>
+                                                                    @endif
                                                                 </td>
                                                             </tr>
                                                         @endforeach
@@ -1909,7 +1926,11 @@
                             <!-- READING HISTORY TAB -->
                             <div class="tab-pane fade {{ request('tab') == 'reading-history' ? 'active show' : '' }}"
                                 id="reading-history" role="tabpanel">
-                                <!-- FORM SEARCH & FILTER -->
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Reading History</h5>
+                                    </div>
+                                    <!-- FORM SEARCH & FILTER -->
                                 <form method="GET" action="{{ route('page-account') }}" class="mb-4">
                                     <input type="hidden" name="tab" value="reading-history">
                                     <div class="row g-3 align-items-end">
@@ -1938,10 +1959,6 @@
                                         </div>
                                     </div>
                                 </form>
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5 class="mb-0">Reading History</h5>
-                                    </div>
                                     <div class="card-body">
                                         @if ($readingHistory->count() > 0)
                                             <div class="table-responsive">
