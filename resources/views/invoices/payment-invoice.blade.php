@@ -260,8 +260,8 @@
 
         <!-- Footer -->
         <div class="footer">
-            <p>Thank you for being part of Mappy.ID</p>
-            <p style="margin-top: 8px;">Mappy.ID &copy; {{ date('Y') }}</p>
+            <p>Thank you for being part of MeatMap</p>
+            <p style="margin-top: 8px;">MeatMap &copy; {{ date('Y') }}</p>
         </div>
     </div>
 </body>
