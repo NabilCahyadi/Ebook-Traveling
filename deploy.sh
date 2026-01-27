@@ -19,10 +19,11 @@ echo "📥 Pulling latest changes from repository..."
 # PENTING: Hapus vendor folder lama sebelum install ulang
 echo "🧹 Removing old vendor folder..."
 rm -rf vendor
+rm -rf composer.lock
 
-# Update dependencies menggunakan composer.lock
-echo "📦 Updating Composer dependencies..."
-composer update --no-dev --optimize-autoloader --no-interaction --prefer-dist
+# Install/Update dependencies - DENGAN AUTOLOADER
+echo "📦 Installing Composer dependencies..."
+composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
 # Generate autoloader cache
 echo "⚙️  Generating Composer autoloader..."
