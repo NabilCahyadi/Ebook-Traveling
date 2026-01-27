@@ -1426,19 +1426,11 @@
                                                                 <td>
                                                                     {{-- Download Invoice Button --}}
                                                                     @if ($payment->status === 'success')
-                                                                        <div class="d-flex gap-2">
-                                                                            <a href="{{ route('user.invoice.download', $payment) }}"
-                                                                                class="btn btn-sm btn-outline-primary"
-                                                                                title="Download Invoice PDF">
-                                                                                <i class="fi fi-rs-download me-1"></i>Download
-                                                                            </a>
-                                                                            <a href="{{ route('user.invoice.preview', $payment) }}"
-                                                                                target="_blank"
-                                                                                class="btn btn-sm btn-outline-secondary"
-                                                                                title="Preview Invoice">
-                                                                                <i class="fi fi-rs-eye me-1"></i>Preview
-                                                                            </a>
-                                                                        </div>
+                                                                        <a href="{{ route('user.invoice.download', $payment) }}"
+                                                                            class="btn btn-sm btn-outline-primary"
+                                                                            title="Download Invoice">
+                                                                            <i class="bi bi-printer"></i>
+                                                                        </a>
                                                                     @else
                                                                         <span class="text-muted small">—</span>
                                                                     @endif

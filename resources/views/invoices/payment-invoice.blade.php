@@ -12,83 +12,66 @@
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
             line-height: 1.6;
             color: #333;
-            background: #f5f5f5;
         }
         
         .container {
-            max-width: 900px;
+            max-width: 800px;
             margin: 0 auto;
-            padding: 40px;
-            background: white;
+            padding: 30px 20px;
         }
         
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             padding-bottom: 20px;
-            border-bottom: 2px solid #FF416C;
+            border-bottom: 1px solid #ddd;
         }
         
-        .logo-section h1 {
-            color: #FF416C;
-            font-size: 28px;
+        .header h1 {
+            font-size: 24px;
+            color: #333;
             margin-bottom: 5px;
         }
         
-        .logo-section p {
-            color: #666;
-            font-size: 13px;
-        }
-        
-        .invoice-details {
-            text-align: right;
-        }
-        
-        .invoice-details h2 {
-            color: #333;
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-        
-        .invoice-meta {
+        .header .invoice-number {
             font-size: 13px;
             color: #666;
-            line-height: 1.8;
+            margin-bottom: 15px;
         }
         
-        .invoice-meta strong {
-            color: #333;
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #666;
         }
         
         .section {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
         
         .section-title {
             font-size: 12px;
             font-weight: bold;
-            color: #666;
+            color: #333;
             text-transform: uppercase;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
         }
         
         .info-row {
             display: flex;
             justify-content: space-between;
-            font-size: 14px;
-            margin-bottom: 8px;
-            line-height: 1.6;
+            font-size: 13px;
+            margin-bottom: 6px;
+            line-height: 1.5;
         }
         
         .info-label {
             color: #666;
-            min-width: 150px;
+            min-width: 140px;
         }
         
         .info-value {
@@ -100,33 +83,31 @@
         
         .divider {
             border-top: 1px solid #eee;
-            margin: 25px 0;
+            margin: 20px 0;
         }
         
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 30px;
-            font-size: 14px;
+            margin: 20px 0;
+            font-size: 13px;
         }
         
         thead {
-            background: #f9f9f9;
-            border-bottom: 2px solid #FF416C;
+            background: #f5f5f5;
+            border-bottom: 1px solid #ddd;
         }
         
         th {
-            padding: 12px;
+            padding: 10px 8px;
             text-align: left;
             font-weight: bold;
             color: #333;
             font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
         
         td {
-            padding: 12px;
+            padding: 10px 8px;
             border-bottom: 1px solid #eee;
         }
         
@@ -134,74 +115,44 @@
             text-align: right;
         }
         
-        .summary {
-            margin-top: 30px;
+        .summary-box {
+            margin-top: 20px;
             display: flex;
             justify-content: flex-end;
         }
         
-        .summary-box {
-            min-width: 300px;
-            background: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
+        .summary-item {
+            min-width: 250px;
         }
         
         .summary-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 12px;
-            font-size: 14px;
+            font-size: 13px;
+            margin-bottom: 8px;
+            padding: 0 8px;
         }
         
         .summary-row.total {
-            border-top: 2px solid #FF416C;
-            padding-top: 12px;
+            border-top: 1px solid #ddd;
+            padding-top: 8px;
             font-weight: bold;
-            color: #FF416C;
-            font-size: 18px;
-        }
-        
-        .summary-label {
-            color: #666;
-        }
-        
-        .summary-value {
+            font-size: 15px;
             color: #333;
-            font-weight: 500;
         }
         
         .footer {
-            margin-top: 50px;
-            padding-top: 20px;
+            margin-top: 40px;
+            padding-top: 15px;
             border-top: 1px solid #eee;
             text-align: center;
-            font-size: 12px;
+            font-size: 11px;
             color: #999;
         }
         
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
+        .small-text {
             font-size: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        
-        .status-paid {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-        
-        .status-failed {
-            background: #f8d7da;
-            color: #721c24;
+            color: #666;
         }
     </style>
 </head>
@@ -209,68 +160,55 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <div class="logo-section">
-                <h1>Mappy.ID</h1>
-                <p>Premium E-Book Platform</p>
-            </div>
-            <div class="invoice-details">
-                <h2>INVOICE</h2>
-                <div class="invoice-meta">
-                    <div><strong>No. Invoice:</strong> {{ $invoiceNumber }}</div>
-                    <div><strong>Tanggal:</strong> {{ $invoiceDate->format('d F Y') }}</div>
-                    <div><strong>Status:</strong> 
-                        @if($payment->status === 'success')
-                            <span class="status-badge status-paid">PAID</span>
-                        @elseif($payment->status === 'pending')
-                            <span class="status-badge status-pending">PENDING</span>
-                        @else
-                            <span class="status-badge status-failed">{{ strtoupper($payment->status) }}</span>
-                        @endif
-                    </div>
+            <h1>INVOICE</h1>
+            <div class="invoice-number">{{ $invoiceNumber }}</div>
+            <div class="header-row">
+                <div>{{ $invoiceDate->format('d F Y') }}</div>
+                <div>
+                    @if($payment->status === 'success')
+                        <strong>PAID</strong>
+                    @elseif($payment->status === 'pending')
+                        PENDING
+                    @else
+                        {{ strtoupper($payment->status) }}
+                    @endif
                 </div>
             </div>
         </div>
 
-        <!-- Bill To Section -->
+        <!-- Customer Info -->
         <div class="section">
             <div class="section-title">Bill To</div>
             <div class="info-row">
-                <div class="info-label">Nama:</div>
+                <div class="info-label">Name:</div>
                 <div class="info-value">{{ $user->name }}</div>
             </div>
             <div class="info-row">
                 <div class="info-label">Email:</div>
                 <div class="info-value">{{ $user->email }}</div>
             </div>
-            @if($user->phone)
-            <div class="info-row">
-                <div class="info-label">No. Telepon:</div>
-                <div class="info-value">{{ $user->phone }}</div>
-            </div>
-            @endif
         </div>
 
         <div class="divider"></div>
 
-        <!-- Items Table -->
+        <!-- Items -->
         <table>
             <thead>
                 <tr>
-                    <th>Deskripsi</th>
-                    <th class="text-right" style="width: 150px;">Jumlah</th>
+                    <th>Description</th>
+                    <th class="text-right" style="width: 140px;">Amount</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>
-                        <strong>{{ $plan->name ?? 'Subscription Plan' }}</strong><br>
-                        <small style="color: #999;">
-                            @if($subscription)
+                        <strong>{{ $plan->name ?? 'Subscription Plan' }}</strong>
+                        <br>
+                        @if($subscription)
+                            <span class="small-text">
                                 {{ $subscription->start_date->format('d M Y') }} - {{ $subscription->end_date->format('d M Y') }}
-                                <br>
-                                {{ $subscription->end_date->diffInDays($subscription->start_date) }} hari akses premium
-                            @endif
-                        </small>
+                            </span>
+                        @endif
                     </td>
                     <td class="text-right">
                         <strong>Rp {{ number_format($payment->amount, 0, ',', '.') }}</strong>
@@ -280,19 +218,15 @@
         </table>
 
         <!-- Summary -->
-        <div class="summary">
-            <div class="summary-box">
+        <div class="summary-box">
+            <div class="summary-item">
                 <div class="summary-row">
-                    <span class="summary-label">Subtotal:</span>
-                    <span class="summary-value">Rp {{ number_format($payment->amount, 0, ',', '.') }}</span>
+                    <span>Subtotal:</span>
+                    <span>Rp {{ number_format($payment->amount, 0, ',', '.') }}</span>
                 </div>
                 <div class="summary-row">
-                    <span class="summary-label">Pajak:</span>
-                    <span class="summary-value">Rp 0</span>
-                </div>
-                <div class="summary-row">
-                    <span class="summary-label">Diskon:</span>
-                    <span class="summary-value">Rp 0</span>
+                    <span>Tax:</span>
+                    <span>Rp 0</span>
                 </div>
                 <div class="summary-row total">
                     <span>Total:</span>
@@ -301,35 +235,33 @@
             </div>
         </div>
 
-        <!-- Payment Details -->
         <div class="divider"></div>
+
+        <!-- Payment Info -->
         <div class="section">
-            <div class="section-title">Detail Pembayaran</div>
+            <div class="section-title">Payment Details</div>
             <div class="info-row">
-                <div class="info-label">Metode Pembayaran:</div>
-                <div class="info-value">{{ ucfirst($payment->payment_method ?? 'Mayar.ID') }}</div>
+                <div class="info-label">Method:</div>
+                <div class="info-value">{{ ucfirst($payment->payment_method ?? '-') }}</div>
             </div>
             <div class="info-row">
                 <div class="info-label">Gateway:</div>
-                <div class="info-value">{{ ucfirst($payment->payment_gateway ?? 'Mayar.ID') }}</div>
+                <div class="info-value">{{ ucfirst($payment->payment_gateway ?? '-') }}</div>
             </div>
             <div class="info-row">
-                <div class="info-label">Kode Transaksi:</div>
+                <div class="info-label">Transaction ID:</div>
                 <div class="info-value">{{ $payment->gateway_transaction_id ?? $payment->id }}</div>
             </div>
             <div class="info-row">
-                <div class="info-label">Tanggal Pembayaran:</div>
-                <div class="info-value">{{ $payment->paid_at ? $payment->paid_at->format('d F Y H:i') : 'Pending' }}</div>
+                <div class="info-label">Date Paid:</div>
+                <div class="info-value">{{ $payment->paid_at ? $payment->paid_at->format('d F Y') : 'Pending' }}</div>
             </div>
         </div>
 
         <!-- Footer -->
         <div class="footer">
-            <p>Terima kasih telah menjadi bagian dari Mappy.ID!</p>
-            <p style="margin-top: 10px;">Invoice ini adalah dokumen legal untuk transaksi Anda. Simpan invoice ini untuk keperluan Anda.</p>
-            <p style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px;">
-                Mappy.ID &copy; {{ date('Y') }} - Premium E-Book Platform
-            </p>
+            <p>Thank you for being part of Mappy.ID</p>
+            <p style="margin-top: 8px;">Mappy.ID &copy; {{ date('Y') }}</p>
         </div>
     </div>
 </body>
