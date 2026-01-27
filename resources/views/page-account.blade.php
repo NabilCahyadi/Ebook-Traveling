@@ -793,11 +793,43 @@
                             <!-- WISHLIST TAB -->
                             <div class="tab-pane fade {{ request('tab') == 'wishlist' ? 'active show' : '' }}"
                                 id="wishlist" role="tabpanel">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5 class="mb-0">Your Wishlist</h5>
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-white border-0 py-3">
+                                        <h5 class="mb-0 fw-bold text-dark">Your Wishlist</h5>
                                     </div>
                                     <div class="card-body">
+                                        <!-- FORM SEARCH & FILTER -->
+                                        <form method="GET" action="{{ route('page-account') }}" class="mb-4">
+                                            <input type="hidden" name="tab" value="wishlist">
+                                            <div class="row g-3 align-items-end">
+                                                <div class="col-md-6">
+                                                    <label for="wishlist_search" class="form-label">Search by Title</label>
+                                                    <input type="text" class="form-control h-100" name="search"
+                                                        id="wishlist_search" placeholder="e.g., Bali Travel Guide"
+                                                        value="{{ request('search') }}">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="wishlist_city" class="form-label">Filter by City</label>
+                                                    <select name="city_slug" id="wishlist_city"
+                                                        class="form-select form-select-md">
+                                                        <option value="">All Cities</option>
+                                                        @foreach ($cities as $city)
+                                                            <option value="{{ $city->slug }}"
+                                                                {{ request('city_slug') == $city->slug ? 'selected' : '' }}>
+                                                                {{ $city->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button type="submit"
+                                                        class="btn-read-now text-white px-4 py-2 mt-2">
+                                                        <i class="fi fi-rs-search me-2"></i>Search
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+
                                         @if ($wishlistItems->count() > 0)
                                             <div class="table-responsive">
                                                 <table class="table align-middle">
@@ -868,12 +900,6 @@
                                                                         </a>
                                                                     @endif
                                                                 </td>
-                                                                <!-- <td>
-                                                                                <a href="{{ route('ebooks.show', $ebook->slug) }}"
-                                                                                    class="custom-button custom-button--primary text-white px-4">
-                                                                                    View
-                                                                                </a>
-                                                                            </td> -->
                                                             </tr>
                                                         @endforeach
                                                     </tbody>
@@ -2041,48 +2067,51 @@
                             <!-- MY REVIEWS TAB -->
                             <div class="tab-pane fade {{ request('tab') == 'reviews' ? 'active show' : '' }}"
                                 id="reviews" role="tabpanel">
-
                                 <div class="card border-0 shadow-sm">
-                                    <div class="card-header bg-white border-0 py-3">
+                                    <!-- Card Header with Title -->
+                                    <div class="card-header bg-white border-0">
                                         <h5 class="mb-0 fw-bold text-dark">My Reviews</h5>
                                     </div>
-                                    <!-- FORM SEARCH & FILTER -->
-                                <form method="GET" action="{{ route('page-account') }}" class="mb-4">
-                                    <input type="hidden" name="tab" value="reviews">
-                                    <div class="row g-3 align-items-end">
-                                        <div class="col-md-6">
-                                            <label for="search" class="form-label">Search by Title</label>
-                                            <input type="text" class="form-control h-100" name="search"
-                                                id="search" placeholder="e.g., Bali Travel Guide"
-                                                value="{{ request('search') }}">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label for="city_slug" class="form-label">Filter by City</label>
-                                            <select name="city_slug" id="city_slug" class="form-select form-select-md">
-                                                <option value="">All Cities</option>
-                                                @foreach ($cities as $city)
-                                                    <option value="{{ $city->slug }}"
-                                                        {{ request('city_slug') == $city->slug ? 'selected' : '' }}>
-                                                        {{ $city->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <button type="submit" class="btn-read-now text-white px-4 py-2 mt-2">
-                                                <i class="fi fi-rs-search me-2"></i>Search
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
+
+                                    <!-- Card Body -->
                                     <div class="card-body">
+                                        <!-- FORM SEARCH & FILTER -->
+                                        <form method="GET" action="{{ route('page-account') }}" class="mb-4">
+                                            <input type="hidden" name="tab" value="reviews">
+                                            <div class="row g-3 align-items-end">
+                                                <div class="col-md-6">
+                                                    <label for="search" class="form-label">Search by Title</label>
+                                                    <input type="text" class="form-control h-100" name="search"
+                                                        id="search" placeholder="e.g., Bali Travel Guide"
+                                                        value="{{ request('search') }}">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="city_slug" class="form-label">Filter by City</label>
+                                                    <select name="city_slug" id="city_slug" class="form-select form-select-md">
+                                                        <option value="">All Cities</option>
+                                                        @foreach ($cities as $city)
+                                                            <option value="{{ $city->slug }}"
+                                                                {{ request('city_slug') == $city->slug ? 'selected' : '' }}>
+                                                                {{ $city->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button type="submit" class="btn-read-now text-white px-4 py-2 mt-2">
+                                                        <i class="fi fi-rs-search me-2"></i>Search
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+
+                                        <!-- Content -->
                                         @if ($userRatings->count() > 0)
                                             <div class="row g-4">
                                                 @foreach ($userRatings as $rating)
                                                     <div class="col-12">
                                                         <div class="card h-100 border-0 shadow-sm transition-all"
                                                             style="border-left: 4px solid #FF416C;">
-                                                            <div class="row g-0 align-items-center">
                                                                 <!--  COVER EBOOK DI KIRI -->
                                                                 <div class="col-md-2 col-lg-1">
                                                                     <a href="{{ route('ebooks.show', $rating->ebook->slug) }}"
