@@ -36,7 +36,7 @@
                         </div>
                         <ul class="contact-infor">
                             <li><strong>Address : </strong> <span>{{ $siteSettings['address'] ?? 'Alamat tidak tersedia' }}</span></li>
-                            <li><strong>Call Us : </strong><span>{{ $siteSettings['phone'] ?? 'Nomor telepon tidak tersedia' }}</span></li>
+                            <li><strong>Call Us : </strong><span>{{ formatPhoneNumber($siteSettings['phone'] ?? '') ?: 'Nomor telepon tidak tersedia' }}</span></li>
                             <li><strong>Email : </strong><span>{{ $siteSettings['email'] ?? 'Email tidak tersedia' }}</span></li>
                             <li><strong>Hours : </strong><span>{{ $siteSettings['hours'] ?? 'Jam operasional tidak tersedia' }}</span></li>
                         </ul>

@@ -46,7 +46,9 @@
                                 <div class="carausel-3-columns" id="carausel-3-columns">
                                     @if($latestBlogImages && $latestBlogImages->isNotEmpty())
                                     @foreach($latestBlogImages as $blogImage)
-                                    <img src="{{ asset($blogImage) }}" alt="Latest Blog Image" />
+                                    <img src="{{ asset('storage/' . $blogImage) }}" 
+                                         alt="Latest Blog Image" 
+                                         onerror="this.src='/images/blogs/1.webp';" />
                                     @endforeach
                                     @else
                                     <!-- Tampilkan gambar default jika tidak ada blog -->
