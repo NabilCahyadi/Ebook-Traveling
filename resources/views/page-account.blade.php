@@ -1320,7 +1320,7 @@
                                                             <th scope="col" class="py-3">Amount</th>
                                                             <th scope="col" class="py-3">Method</th>
                                                             <th scope="col" class="py-3 text-center">Status</th>
-                                                            <th scope="col" class="py-3">Action</th>
+                                                            {{-- <th scope="col" class="py-3">Action</th> --}}
                                                         </tr>
                                                     </thead>
                                                     <tbody class="px-3">
@@ -1452,7 +1452,7 @@
                                                                         @endif
                                                                     </div>
                                                                 </td>
-                                                                <td>
+                                                                {{-- <td>
                                                                     @if ($payment->status === 'success')
                                                                         <a href="{{ route('user.invoice.download', $payment) }}"
                                                                             class="btn btn-sm"
@@ -1462,7 +1462,7 @@
                                                                     @else
                                                                         <span class="text-muted small">—</span>
                                                                     @endif
-                                                                </td>
+                                                                </td> --}}
                                                             </tr>
                                                         @endforeach
                                                     </tbody>
