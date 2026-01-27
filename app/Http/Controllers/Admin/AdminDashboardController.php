@@ -104,7 +104,7 @@ class AdminDashboardController extends Controller
             ->get();
 
         // Get recent data
-        $recentEbooks = \App\Models\Ebook::with('category', 'city')
+        $recentEbooks = \App\Models\Ebook::with('categories', 'city')
             ->latest()
             ->take(5)
             ->get();

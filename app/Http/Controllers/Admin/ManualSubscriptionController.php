@@ -43,6 +43,11 @@ class ManualSubscriptionController extends Controller
 
     /**
      * Store a newly created subscription
+     * 
+     * Logic:
+     * - If user has active subscription with SAME category_subscription: extend/accumulate
+     * - If user has active subscription with DIFFERENT category_subscription: replace (extend will handle this)
+     * - If no active subscription: create new one
      */
     public function store(Request $request)
     {
@@ -57,21 +62,26 @@ class ManualSubscriptionController extends Controller
             $existingSubscription = $this->subscriptionService->getUserActiveSubscription($validated['user_id']);
 
             if ($existingSubscription) {
-                // If existing subscription has the SAME plan, extend/stack it
-                if ($existingSubscription->subscription_plan_id === $validated['subscription_plan_id']) {
-                    $this->subscriptionService->extendSubscriptionByPlan(
-                        $existingSubscription->id,
-                        $validated['subscription_plan_id'],
-                        $validated['quantity']
-                    );
+                // User has active subscription - use extend logic which handles category comparison
+                $this->subscriptionService->extendSubscriptionByPlan(
+                    $existingSubscription->id,
+                    $validated['subscription_plan_id'],
+                    $validated['quantity']
+                );
 
+                // Get plans to check if category is same or different for message
+                $existingPlan = $existingSubscription->plan;
+                $newPlan = \App\Models\SubscriptionPlan::find($validated['subscription_plan_id']);
+                
+                $isSameCategory = $existingPlan && $newPlan && 
+                    $existingPlan->category_subscription === $newPlan->category_subscription;
+
+                if ($isSameCategory) {
                     return redirect()->route('admin.manual-subscriptions.create')
-                        ->with('success', 'Subscription extended/stacked successfully! New duration added to existing subscription.');
+                        ->with('success', 'Subscription extended successfully! New duration added to existing subscription (same category: ' . ucfirst($newPlan->category_subscription) . ').');
                 } else {
-                    // Different plan - show error
-                    return back()
-                        ->withInput()
-                        ->with('error', 'User already has an active subscription with a different plan. Please cancel the current subscription or wait for it to expire first.');
+                    return redirect()->route('admin.manual-subscriptions.create')
+                        ->with('success', 'Subscription replaced successfully! Old subscription replaced with new plan (different category: ' . ucfirst($existingPlan->category_subscription ?? 'N/A') . ' → ' . ucfirst($newPlan->category_subscription) . ').');
                 }
             }
 

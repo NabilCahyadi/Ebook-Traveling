@@ -630,8 +630,10 @@
                                                 <div class="fw-medium">{{ Str::limit($ebook->title, 40) }}</div>
                                             </td>
                                             <td>
-                                                @if ($ebook->category)
-                                                    <span class="badge bg-label-info">{{ $ebook->category->name }}</span>
+                                                @if ($ebook->categories && $ebook->categories->count() > 0)
+                                                    @foreach ($ebook->categories as $category)
+                                                        <span class="badge bg-label-info">{{ $category->name }}</span>
+                                                    @endforeach
                                                 @else
                                                     <span class="text-muted">-</span>
                                                 @endif

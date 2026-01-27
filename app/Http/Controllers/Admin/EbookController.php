@@ -324,6 +324,7 @@ class EbookController extends Controller
     public function show($id)
     {
         $ebook = $this->ebookService->getEbookById($id);
+        $ebook->load('categories');
         return view('admin.ebooks.show', compact('ebook'));
     }
 
