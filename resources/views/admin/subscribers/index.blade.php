@@ -47,7 +47,7 @@
                     </div>
 
                     <!-- Role Filter -->
-                    <div class="col-md-3">
+                    <!-- <div class="col-md-3">
                         <label for="role" class="form-label">{{ __('admin.users.role') }}</label>
                         <select class="form-select" id="role" name="role">
                             <option value="">{{ __('admin.users.all_roles') }}</option>
@@ -58,7 +58,7 @@
                                 </option>
                             @endforeach
                         </select>
-                    </div>
+                    </div> -->
 
                     <!-- Subscription Plan Filter -->
                     <div class="col-md-3">
@@ -128,7 +128,7 @@
                             <tr>
                                 <th>{{ __('admin.subscribers.user') }}</th>
                                 <th>{{ __('admin.subscribers.email') }}</th>
-                                <th>{{ __('admin.subscribers.role') }}</th>
+                                <!-- <th>{{ __('admin.subscribers.role') }}</th> -->
                                 <th>{{ __('admin.subscribers.plan') }}</th>
                                 <th>{{ __('admin.subscribers.status') }}</th>
                                 <th>{{ __('admin.subscribers.start_date') }}</th>
@@ -161,7 +161,7 @@
                                             </small>
                                         @endif
                                     </td>
-                                    <td>
+                                    <!-- <td>
                                         @if ($subscription->user && $subscription->user->roles && $subscription->user->roles->count() > 0)
                                             @foreach ($subscription->user->roles as $role)
                                                 <span class="badge bg-label-primary mb-1">{{ $role->name }}</span>
@@ -169,7 +169,7 @@
                                         @else
                                             <span class="badge bg-label-secondary">{{ __('admin.users.no_role') }}</span>
                                         @endif
-                                    </td>
+                                    </td> -->
                                     <td>
                                         @if ($subscription->plan)
                                             <div class="fw-medium">{{ $subscription->plan->name }}</div>

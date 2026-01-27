@@ -547,6 +547,17 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
         Route::delete('about-us/{about_us}', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'destroy'])->name('about-us.destroy');
     });
 
+    // About Us Sections Management (Welcome, Performance, About Details)
+    Route::middleware(['admin.permission:website.about-us.view'])->group(function () {
+        Route::get('about-us-sections', [\App\Http\Controllers\Admin\AboutUsSectionController::class, 'index'])->name('about-us-sections.index');
+        Route::get('about-us-sections/{sectionKey}/edit', [\App\Http\Controllers\Admin\AboutUsSectionController::class, 'edit'])->name('about-us-sections.edit');
+    });
+    
+    Route::middleware(['admin.permission:website.about-us.edit'])->group(function () {
+        Route::put('about-us-sections/{sectionKey}', [\App\Http\Controllers\Admin\AboutUsSectionController::class, 'update'])->name('about-us-sections.update');
+        Route::post('about-us-sections/{sectionKey}/toggle-status', [\App\Http\Controllers\Admin\AboutUsSectionController::class, 'toggleStatus'])->name('about-us-sections.toggle-status');
+    });
+
     // Contact Info Management
     // NOTE: Specific routes (create) must be defined BEFORE wildcard {contact_info}
     Route::middleware(['admin.permission:website.contact-info.create'])->group(function () {

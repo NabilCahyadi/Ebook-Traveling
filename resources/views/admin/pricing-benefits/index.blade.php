@@ -66,7 +66,7 @@
                                         <i class="ti ti-grip-vertical text-muted" style="font-size: 1.2rem;"></i>
                                     </td>
                                     <td>
-                                        <span class="badge bg-label-primary">{{ $benefit->sort_order }}</span>
+                                        <span class="badge" style="background-color: rgba(255, 76, 97, 0.16); color: #FF4C61; font-weight: 600;">{{ $benefit->sort_order }}</span>
                                     </td>
                                     <td>
                                         <div class="icon-preview" style="font-size: 2rem; color: #FF4C61;">

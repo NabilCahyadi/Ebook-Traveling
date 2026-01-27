@@ -143,7 +143,8 @@ class AdminForgotPasswordController extends Controller
     public function showResetForm()
     {
         if (!session('email') || !session('token')) {
-            return redirect()->route('admin.password.request');
+            return redirect()->route('admin.password.request')
+                ->with('error', 'Sesi reset password telah berakhir. Silakan ulangi proses dari awal.');
         }
 
         return view('admin.auth.reset-password');
@@ -170,6 +171,9 @@ class AdminForgotPasswordController extends Controller
                 $request->token,
                 $request->password
             );
+
+            // Clear session data
+            $request->session()->forget(['email', 'token']);
 
             return redirect()->route('admin.login')
                 ->with('success', $result['message']);

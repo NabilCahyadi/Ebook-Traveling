@@ -85,7 +85,7 @@ class PricingBenefitController extends Controller
 
             DB::commit();
 
-            return redirect()->route('admin.pricing-benefits.index')
+            return redirect()->route('admin.about-us.index')
                 ->with('success', 'Benefit berhasil ditambahkan!');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -155,7 +155,7 @@ class PricingBenefitController extends Controller
 
             DB::commit();
 
-            return redirect()->route('admin.pricing-benefits.index')
+            return redirect()->route('admin.about-us.index')
                 ->with('success', 'Benefit berhasil diupdate!');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -174,7 +174,7 @@ class PricingBenefitController extends Controller
             $benefit = PricingBenefit::findOrFail($id);
             $benefit->delete();
 
-            return redirect()->route('admin.pricing-benefits.index')
+            return redirect()->route('admin.about-us.index')
                 ->with('success', 'Benefit berhasil dihapus!');
         } catch (\Exception $e) {
             return redirect()->back()
