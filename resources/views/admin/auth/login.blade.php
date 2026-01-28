@@ -62,8 +62,8 @@
                         </div>
                         <!-- /Logo -->
 
-                        <h4 class="mb-1 pt-2">Welcome Admin!</h4>
-                        <p class="mb-4">Please sign-in to your account</p>
+                        <h4 class="mb-1 pt-2">{{ __('admin.auth.welcome_admin') }}</h4>
+                        <p class="mb-4">{{ __('admin.auth.sign_in_description') }}</p>
 
                         @if (session('success'))
                             <div class="alert alert-success alert-dismissible" role="alert">
@@ -85,7 +85,7 @@
                             method="POST">
                             @csrf
                             <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
+                                <label for="email" class="form-label">{{ __('admin.auth.email') }}</label>
                                 <input type="email" class="form-control @error('email') is-invalid @enderror"
                                     id="email" name="email" placeholder="Enter your email"
                                     value="{{ old('email') }}" autofocus required />
@@ -96,9 +96,9 @@
 
                             <div class="mb-3 form-password-toggle">
                                 <div class="d-flex justify-content-between">
-                                    <label class="form-label" for="password">Password</label>
+                                    <label class="form-label" for="password">{{ __('admin.auth.password') }}</label>
                                     <a href="{{ route('admin.password.request') }}">
-                                        <small>Lupa Password?</small>
+                                        <small>{{ __('admin.auth.forgot_password') }}</small>
                                     </a>
                                 </div>
                                 <div class="input-group input-group-merge">
@@ -123,14 +123,14 @@
                             </div>
 
                             <div class="mb-3">
-                                <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
+                                <button class="btn btn-primary d-grid w-100" type="submit">{{ __('admin.auth.sign_in') }}</button>
                             </div>
                         </form>
 
                         <p class="text-center">
-                            <span>Back to </span>
+                            <span>{{ __('admin.auth.back_to') }} </span>
                             <a href="/">
-                                <span>Homepage</span>
+                                <span>{{ __('admin.auth.homepage') }}</span>
                             </a>
                         </p>
                     </div>

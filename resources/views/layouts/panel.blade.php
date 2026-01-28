@@ -336,8 +336,11 @@
         $(document).ready(function() {
             loadNotifications();
             
-            // Refresh notifications every 30 seconds
-            setInterval(loadNotifications, 30000);
+            // DISABLED: Notification polling removed to reduce server load
+            // Notifications will only refresh when:
+            // 1. Page is loaded
+            // 2. User clicks notification dropdown
+            // 3. After marking notification as read
         });
 
         // Load when dropdown is opened

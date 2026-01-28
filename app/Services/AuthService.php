@@ -2,267 +2,65 @@
 
 namespace App\Services;
 
-use App\Models\User;
-use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\Models\Admin;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
 
 class AuthService
 {
-    protected $userRepository;
-
-    public function __construct(UserRepositoryInterface $userRepository)
-    {
-        $this->userRepository = $userRepository;
-    }
-
     /**
-     * Register a new user.
+     * Attempt to authenticate admin
      */
-    public function register(array $data): User
+    public function attemptLogin(array $credentials, bool $remember = false): bool
     {
-        DB::beginTransaction();
-        try {
-            // Check if user with email already exists (including soft deleted)
-            $existingUser = User::withTrashed()->where('email', $data['email'])->first();
-            
-            if ($existingUser && $existingUser->trashed()) {
-                throw new \Exception('This email was previously registered but the account has been deactivated. Please <a href="/contact" style="color: #FF416C; text-decoration: underline;">contact support</a>.');
-            }
-            
-            $user = $this->userRepository->create([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'phone' => $data['phone'] ?? null,
-                'password' => $data['password'],
-                'status' => 'active',
-                'language_pref' => 'en',
-                'email_verified_at' => now(),
-            ]);
-
-            // Assign free user role automatically
-            $freeUserRole = \App\Models\Role::where('slug', 'free-user')->first();
-            if ($freeUserRole) {
-                $user->roles()->attach($freeUserRole->id);
-            }
-
-            DB::commit();
-            return $user;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
+        return Auth::guard('admin')->attempt($credentials, $remember);
     }
 
     /**
-     * Register user with Google OAuth.
-     */
-    public function registerWithGoogle(array $data, array $googleData): User
-    {
-        DB::beginTransaction();
-        try {
-            // Check if user with email already exists (including soft deleted)
-            $existingUser = User::withTrashed()->where('email', $googleData['email'])->first();
-            
-            if ($existingUser && $existingUser->trashed()) {
-                throw new \Exception('This email was previously registered but the account has been deactivated. Please <a href="/contact" style="color: #FF416C; text-decoration: underline;">contact support</a>.');
-            }
-            
-            $user = $this->userRepository->create([
-                'name' => $data['name'],
-                'email' => $googleData['email'],
-                'google_id' => $googleData['google_id'],
-                'avatar' => $googleData['avatar'],
-                'phone' => $data['phone'] ?? null,
-                'password' => $data['password'],
-                'status' => 'active',
-                'language_pref' => $data['language_pref'] ?? 'en',
-                'email_verified_at' => now(),
-            ]);
-
-            // Assign free user role automatically
-            $freeUserRole = \App\Models\Role::where('slug', 'free-user')->first();
-            if ($freeUserRole) {
-                $user->roles()->attach($freeUserRole->id);
-            }
-
-            DB::commit();
-            return $user;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
-    }
-
-    /**
-     * Attempt to login user.
-     */
-    public function login(string $email, string $password, bool $remember = false): bool
-    {
-        return Auth::attempt(['email' => $email, 'password' => $password], $remember);
-    }
-
-    /**
-     * Attempt to login admin user.
-     */
-    public function attemptAdminLogin(string $email, string $password, bool $remember = false): User
-    {
-        $credentials = [
-            'email' => $email,
-            'password' => $password,
-            'user_type' => 'admin',
-            'status' => 'active'
-        ];
-
-        if (!Auth::attempt($credentials, $remember)) {
-            throw new \Exception('Invalid credentials or you do not have admin access.');
-        }
-
-        $user = Auth::user();
-
-        // Update last login
-        $this->userRepository->update($user, [
-            'last_login_at' => now()
-        ]);
-
-        return $user;
-    }
-
-    /**
-     * Handle Google OAuth callback.
-     */
-    public function handleGoogleCallback($googleUser): array
-    {
-        // Check for active user
-        $user = $this->userRepository->findByEmail($googleUser->getEmail());
-        
-        // Also check for soft deleted user
-        $deletedUser = User::withTrashed()->where('email', $googleUser->getEmail())->first();
-
-        if ($user) {
-            // Update Google ID if not set
-            if (!$user->google_id) {
-                $this->userRepository->update($user, [
-                    'google_id' => $googleUser->getId(),
-                    'avatar' => $googleUser->getAvatar(),
-                ]);
-            }
-
-            return ['exists' => true, 'user' => $user];
-        }
-        
-        // If user is soft deleted, return with flag
-        if ($deletedUser && $deletedUser->trashed()) {
-            return [
-                'exists' => true,
-                'soft_deleted' => true,
-                'user' => $deletedUser,
-                'message' => 'Your account has been deactivated. Please <a href="/contact" style="color: #FF416C; text-decoration: underline;">contact support</a>.'
-            ];
-        }
-
-        // User doesn't exist, return Google data for registration
-        return [
-            'exists' => false,
-            'google_data' => [
-                'name' => $googleUser->getName(),
-                'email' => $googleUser->getEmail(),
-                'google_id' => $googleUser->getId(),
-                'avatar' => $googleUser->getAvatar(),
-            ]
-        ];
-    }
-
-    /**
-     * Handle Google OAuth callback for admin.
-     */
-    public function handleAdminGoogleCallback($googleUser): User
-    {
-        $user = $this->userRepository->findByEmail($googleUser->getEmail());
-
-        if (!$user) {
-            throw new \Exception('No admin account found with this Google email.');
-        }
-
-        if ($user->user_type !== 'admin' || $user->status !== 'active') {
-            throw new \Exception('You do not have admin access.');
-        }
-
-        // Update Google ID if not set
-        if (!$user->google_id) {
-            $this->userRepository->update($user, [
-                'google_id' => $googleUser->getId(),
-                'avatar' => $googleUser->getAvatar(),
-            ]);
-        }
-
-        // Update last login
-        $this->userRepository->update($user, [
-            'last_login_at' => now()
-        ]);
-
-        // Login the admin user
-        Auth::login($user);
-
-        return $user;
-    }
-
-    /**
-     * Logout user.
+     * Logout admin
      */
     public function logout(): void
     {
-        Auth::logout();
-        request()->session()->invalidate();
-        request()->session()->regenerateToken();
+        Auth::guard('admin')->logout();
     }
 
     /**
-     * Logout user dengan redirect ke home page.
+     * Get current authenticated admin
      */
-    public function logoutUser(): array
+    public function getCurrentAdmin(): ?Admin
     {
-        try {
-            $user = Auth::user();
-            $userId = $user ? $user->id : null;
-            $userEmail = $user ? $user->email : 'Unknown';
+        return Auth::guard('admin')->user();
+    }
 
-            Log::info('=== USER LOGOUT START ===', [
-                'user_id' => $userId,
-                'email' => $userEmail,
-                'user_type' => $user->user_type ?? 'user',
-                'session_id' => session()->getId()
-            ]);
+    /**
+     * Check if admin is authenticated
+     */
+    public function isAuthenticated(): bool
+    {
+        return Auth::guard('admin')->check();
+    }
 
-            // Logout dari Auth
-            Auth::logout();
+    /**
+     * Update admin's last login timestamp
+     */
+    public function updateLastLogin(Admin $admin): void
+    {
+        $admin->updateLastLogin();
+    }
 
-            // Clear session untuk memastikan
-            session()->flush();
+    /**
+     * Validate admin credentials
+     */
+    public function validateCredentials(string $email, string $password): ?Admin
+    {
+        $admin = Admin::where('email', $email)
+            ->where('status', 'active')
+            ->first();
 
-            Log::info('=== USER LOGOUT SUCCESS ===', [
-                'user_id' => $userId,
-                'auth_check_after' => Auth::check() ? 'TRUE' : 'FALSE'
-            ]);
-
-            return [
-                'success' => true,
-                'user_id' => $userId,
-                'redirect_to' => 'home',
-                'message' => 'User logged out successfully'
-            ];
-        } catch (\Exception $e) {
-            Log::error('=== USER LOGOUT FAILED ===', [
-                'error' => $e->getMessage(),
-                'user_id' => Auth::id() ?? 'Unknown'
-            ]);
-
-            return [
-                'success' => false,
-                'error' => $e->getMessage(),
-                'message' => 'Logout failed'
-            ];
+        if ($admin && Hash::check($password, $admin->password)) {
+            return $admin;
         }
+
+        return null;
     }
 }

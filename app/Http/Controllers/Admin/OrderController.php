@@ -3,46 +3,32 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Order;
+use App\Services\OrderService;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+    protected OrderService $orderService;
+
+    public function __construct(OrderService $orderService)
+    {
+        $this->orderService = $orderService;
+    }
+
     /**
      * Display a listing of orders.
      */
     public function index(Request $request)
     {
-        $query = Order::with(['user', 'orderItems.ebook']);
+        $filters = [
+            'status' => $request->get('status'),
+            'search' => $request->get('search'),
+            'date_from' => $request->get('date_from'),
+            'date_to' => $request->get('date_to'),
+        ];
 
-        // Filter by status
-        if ($request->has('status') && $request->status !== 'all') {
-            $query->where('status', $request->status);
-        }
-
-        // Search
-        if ($request->has('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->whereHas('user', function ($userQuery) use ($search) {
-                    $userQuery->where('name', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%");
-                })
-                    ->orWhere('order_number', 'like', "%{$search}%");
-            });
-        }
-
-        // Date range filter
-        if ($request->has('date_from')) {
-            $query->whereDate('created_at', '>=', $request->date_from);
-        }
-        if ($request->has('date_to')) {
-            $query->whereDate('created_at', '<=', $request->date_to);
-        }
-
-        $orders = $query->latest()->paginate(15);
-
-        $statuses = ['all', 'pending', 'processing', 'completed', 'cancelled', 'failed'];
+        $orders = $this->orderService->getAllOrders($filters, 15);
+        $statuses = $this->orderService->getAvailableStatuses();
 
         return view('admin.orders.index', compact('orders', 'statuses'));
     }
@@ -52,7 +38,7 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        $order = Order::with(['user', 'orderItems.ebook', 'payment'])->findOrFail($id);
+        $order = $this->orderService->findOrFail($id);
 
         return view('admin.orders.show', compact('order'));
     }
@@ -67,14 +53,7 @@ class OrderController extends Controller
             'notes' => 'nullable|string|max:500'
         ]);
 
-        $order = Order::findOrFail($id);
-        $order->status = $validated['status'];
-
-        if (isset($validated['notes'])) {
-            $order->notes = $validated['notes'];
-        }
-
-        $order->save();
+        $this->orderService->updateStatus($id, $validated['status'], $validated['notes'] ?? null);
 
         return redirect()->back()->with('success', 'Order status updated successfully.');
     }

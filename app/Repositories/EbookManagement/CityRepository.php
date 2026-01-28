@@ -1,0 +1,139 @@
+<?php
+
+namespace App\Repositories\EbookManagement;
+
+use App\Models\City;
+use App\Repositories\Interfaces\CityRepositoryInterface;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+
+class CityRepository implements CityRepositoryInterface
+{
+    protected $model;
+
+    public function __construct(City $model)
+    {
+        $this->model = $model;
+    }
+
+    public function all()
+    {
+        return $this->model->all();
+    }
+
+    public function paginate(int $perPage = 15)
+    {
+        return $this->model->paginate($perPage);
+    }
+
+    public function find(string $id)
+    {
+        return $this->model->findOrFail($id);
+    }
+
+    public function create(array $data)
+    {
+        return $this->model->create($data);
+    }
+
+    public function update(string $id, array $data)
+    {
+        $city = $this->find($id);
+        $city->update($data);
+        return $city;
+    }
+
+    public function delete(string $id)
+    {
+        $city = $this->find($id);
+        return $city->delete();
+    }
+
+    public function withCount(string $relation)
+    {
+        return $this->model->withCount($relation);
+    }
+
+    public function findBySlug(string $slug)
+    {
+        return City::where('slug', $slug)->first();
+    }
+
+    public function findByCountry(string $country)
+    {
+        return $this->model->where('country', $country)->get();
+    }
+
+    public function getPopularCities(int $limit = 10): Collection
+    {
+        return City::active()
+            ->withCount('ebooks')
+            ->popular()
+            ->ordered()
+            ->orderBy('order_index', 'asc')
+            ->limit($limit)
+            ->get();
+    }
+
+    public function getAllCities(int $perPage = 15)
+    {
+        return City::active()
+            ->ordered()
+            ->paginate($perPage);
+    }
+
+    public function incrementViews(string $id): bool
+    {
+        $city = City::find($id);
+        if ($city) {
+            $city->increment('views_count');
+            return true;
+        }
+        return false;
+    }
+
+    public function findBySlugWithEbooks(string $slug)
+    {
+        // Cari kota berdasarkan slug, lalu muat (load) relasi 'ebooks'
+        // Juga muat relasi 'creator' di dalam setiap ebook agar tidak error di view
+        // Filter hanya ebooks yang published
+        return $this->model
+            ->with(['ebooks' => function($query) {
+                $query->where('status', 'published')
+                      ->orderBy('created_at', 'desc');
+            }])
+            ->with('ebooks.creator')
+            ->with('ebooks.ratings')
+            ->where('slug', $slug)
+            ->firstOrFail();
+    }
+
+    public function getAllCitiesWithRanking(): Collection
+    {
+        // Kita hanya perlu menggabungkan cities dan ebooks
+        $query = DB::table('cities as c')
+            ->leftJoin('ebooks as e', 'c.id', '=', 'e.city_id') // <-- PERBAIKAN JOIN DI SINI
+            ->select(
+                'c.id',
+                'c.name',
+                'c.slug',
+                'c.image',
+                'c.description',
+                'c.is_popular',
+                'c.order_index',
+                // Hitung rating rata-rata dari ebook yang terhubung ke kota tersebut
+                DB::raw('COALESCE(AVG(e.average_rating), 0) as average_rating'),
+                // Buat kolom peringkat: populer berdasarkan order_index, sisanya 999
+                DB::raw('CASE WHEN c.is_popular = 1 THEN c.order_index ELSE 999 END as ranking')
+            )
+            ->groupBy('c.id', 'c.name', 'c.slug', 'c.image', 'c.description', 'c.is_popular', 'c.order_index')
+            // Urutkan: pertama berdasarkan ranking (1-10), lalu sisanya berdasarkan nama
+            ->orderBy('ranking', 'asc')
+            ->orderBy('c.name', 'asc');
+
+        // Konversi hasil query ke Collection of City models
+        return $query->get()->map(function ($item) {
+            return City::hydrate([$item])->first();
+        });
+    }
+}

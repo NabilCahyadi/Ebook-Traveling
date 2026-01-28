@@ -90,8 +90,8 @@
                         </div>
                         <!-- /Logo -->
 
-                        <h4 class="mb-1">Reset Password 🔐</h4>
-                        <p class="mb-4">Masukkan password baru Anda</p>
+                        <h4 class="mb-1">{{ __('admin.auth.reset_password_title') }}</h4>
+                        <p class="mb-4">{{ __('admin.auth.enter_new_password') }}</p>
 
                         @if (session('success'))
                             <div class="alert alert-success alert-dismissible" role="alert">
@@ -116,7 +116,7 @@
                             <input type="hidden" name="token" value="{{ session('token') }}">
 
                             <div class="mb-3 form-password-toggle">
-                                <label class="form-label" for="password">Password Baru</label>
+                                <label class="form-label" for="password">{{ __('admin.auth.new_password') }}</label>
                                 <div class="input-group input-group-merge">
                                     <input type="password"
                                         class="form-control @error('password') is-invalid @enderror" id="password"
@@ -128,12 +128,12 @@
                                 @error('password')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @else
-                                    <small class="text-muted">Minimal 8 karakter</small>
+                                    <small class="text-muted">{{ __('admin.auth.min_8_chars') }}</small>
                                 @enderror
                             </div>
 
                             <div class="mb-3 form-password-toggle">
-                                <label class="form-label" for="password_confirmation">Konfirmasi Password Baru</label>
+                                <label class="form-label" for="password_confirmation">{{ __('admin.auth.confirm_new_password') }}</label>
                                 <div class="input-group input-group-merge">
                                     <input type="password"
                                         class="form-control @error('password') is-invalid @enderror" id="password_confirmation"
@@ -147,7 +147,7 @@
                             <button class="btn btn-primary d-grid w-100 mb-3" type="submit">
                                 <span class="d-flex align-items-center justify-content-center">
                                     <i class="ti ti-lock me-2"></i>
-                                    <span>Reset Password</span>
+                                    <span>{{ __('admin.auth.reset_password') }}</span>
                                 </span>
                             </button>
                         </form>
@@ -155,7 +155,7 @@
                         <div class="text-center">
                             <a href="{{ route('admin.login') }}" class="d-flex align-items-center justify-content-center">
                                 <i class="ti ti-chevron-left scaleX-n1-rtl me-1"></i>
-                                Back to login
+                                {{ __('admin.auth.back_to_login') }}
                             </a>
                         </div>
                     </div>

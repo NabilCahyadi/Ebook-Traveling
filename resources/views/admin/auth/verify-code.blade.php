@@ -117,8 +117,8 @@
                         </div>
                         <!-- /Logo -->
 
-                        <h4 class="mb-1">Verifikasi Kode ✉️</h4>
-                        <p class="mb-4">Kami telah mengirimkan kode 6 digit ke <strong>{{ session('email') }}</strong></p>
+                        <h4 class="mb-1">{{ __('admin.auth.verify_code_title') }}</h4>
+                        <p class="mb-4">{{ __('admin.auth.code_sent_to') }} <strong>{{ session('email') }}</strong></p>
 
                         @if (session('success'))
                             <div class="alert alert-success alert-dismissible" role="alert">
@@ -143,7 +143,7 @@
                             <input type="hidden" name="code" id="fullCode">
 
                             <div class="mb-3">
-                                <label class="form-label">Masukkan Kode Verifikasi</label>
+                                <label class="form-label">{{ __('admin.auth.enter_verification_code') }}</label>
                                 <div class="code-container">
                                     <input type="text" class="form-control code-input" maxlength="1" id="code1" autofocus>
                                     <input type="text" class="form-control code-input" maxlength="1" id="code2">
@@ -157,16 +157,16 @@
                             <button class="btn btn-primary d-grid w-100 mb-3" type="submit" id="btnVerify">
                                 <span class="d-flex align-items-center justify-content-center">
                                     <i class="ti ti-check me-2"></i>
-                                    <span>Verifikasi Kode</span>
+                                    <span>{{ __('admin.auth.verify_code') }}</span>
                                 </span>
                             </button>
 
                             <div class="text-center">
                                 <p class="mb-0">
-                                    Tidak menerima kode?
+                                    {{ __('admin.auth.didnt_receive_code') }}
                                     <span id="resendContainer">
-                                        <span class="resend-timer" id="timer">Tunggu <span id="countdown">60</span>s</span>
-                                        <a href="#" id="btnResend" class="d-none" style="color: #ff4c61; font-weight: 500;">Kirim ulang kode</a>
+                                        <span class="resend-timer" id="timer">{{ __('admin.auth.wait') }} <span id="countdown">60</span>s</span>
+                                        <a href="#" id="btnResend" class="d-none" style="color: #ff4c61; font-weight: 500;">{{ __('admin.auth.resend_code') }}</a>
                                     </span>
                                 </p>
                             </div>
@@ -175,7 +175,7 @@
                         <div class="text-center">
                             <a href="{{ route('admin.login') }}" class="d-flex align-items-center justify-content-center">
                                 <i class="ti ti-chevron-left scaleX-n1-rtl me-1"></i>
-                                Back to login
+                                {{ __('admin.auth.back_to_login') }}
                             </a>
                         </div>
                     </div>

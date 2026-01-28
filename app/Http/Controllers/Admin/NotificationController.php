@@ -3,22 +3,25 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Notification;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
+    protected NotificationService $notificationService;
+
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
+
     /**
      * Display a listing of notifications.
      */
     public function index()
     {
-        $notifications = Auth::user()
-            ->userNotifications()
-            ->with('notification')
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
+        $notifications = $this->notificationService->getAdminNotifications(Auth::guard('admin')->id(), 20);
 
         return view('admin.notifications.index', compact('notifications'));
     }
@@ -28,10 +31,7 @@ class NotificationController extends Controller
      */
     public function getUnreadCount()
     {
-        $count = Auth::user()
-            ->userNotifications()
-            ->where('is_read', false)
-            ->count();
+        $count = $this->notificationService->getAdminUnreadCount(Auth::guard('admin')->id());
 
         return response()->json(['count' => $count]);
     }
@@ -41,16 +41,13 @@ class NotificationController extends Controller
      */
     public function getRecent()
     {
-        $notifications = Auth::user()
-            ->userNotifications()
-            ->with('notification')
-            ->orderBy('created_at', 'desc')
-            ->limit(5)
-            ->get();
+        $adminId = Auth::guard('admin')->id();
+        $notifications = $this->notificationService->getAdminRecentNotifications($adminId, 5);
+        $unreadCount = $this->notificationService->getAdminUnreadCount($adminId);
 
         return response()->json([
             'notifications' => $notifications,
-            'unread_count' => Auth::user()->userNotifications()->where('is_read', false)->count(),
+            'unread_count' => $unreadCount,
         ]);
     }
 
@@ -59,11 +56,7 @@ class NotificationController extends Controller
      */
     public function markAsRead($id)
     {
-        $userNotification = Auth::user()
-            ->userNotifications()
-            ->findOrFail($id);
-
-        $userNotification->update(['is_read' => true]);
+        $this->notificationService->markAsRead($id);
 
         return response()->json(['success' => true]);
     }
@@ -73,10 +66,7 @@ class NotificationController extends Controller
      */
     public function markAllAsRead()
     {
-        Auth::user()
-            ->userNotifications()
-            ->where('is_read', false)
-            ->update(['is_read' => true]);
+        $this->notificationService->markAllAdminNotificationsAsRead(Auth::guard('admin')->id());
 
         return response()->json(['success' => true, 'message' => __('admin.notifications.all_marked_read')]);
     }
@@ -86,11 +76,7 @@ class NotificationController extends Controller
      */
     public function destroy($id)
     {
-        $userNotification = Auth::user()
-            ->userNotifications()
-            ->findOrFail($id);
-
-        $userNotification->delete();
+        $this->notificationService->deleteNotification($id);
 
         return response()->json(['success' => true, 'message' => __('admin.notifications.deleted')]);
     }

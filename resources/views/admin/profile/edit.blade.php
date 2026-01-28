@@ -1,13 +1,13 @@
 @extends('layouts.admin')
 
-@section('title', 'Edit Profile')
+@section('title', __('admin.profile.edit_title'))
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="row">
             <div class="col-md-12">
                 <div class="card mb-4">
-                    <h5 class="card-header">Profile Details</h5>
+                    <h5 class="card-header">{{ __('admin.profile.details') }}</h5>
                     <!-- Account -->
                     <div class="card-body">
                         @if (session('success'))
@@ -33,7 +33,7 @@
                                 @endif
                                 <div class="button-wrapper">
                                     <label for="upload" class="btn btn-primary me-2 mb-3" tabindex="0">
-                                        <span class="d-none d-sm-block">Upload new photo</span>
+                                        <span class="d-none d-sm-block">{{ __('admin.profile.upload_photo') }}</span>
                                         <i class="ti ti-upload d-block d-sm-none"></i>
                                         <input type="file" id="upload" class="account-file-input" hidden
                                             accept="image/png, image/jpeg, image/jpg, image/gif" name="avatar" />
@@ -41,10 +41,10 @@
                                     <button type="button" class="btn btn-label-secondary account-image-reset mb-3"
                                         id="resetAvatar">
                                         <i class="ti ti-refresh d-block d-sm-none"></i>
-                                        <span class="d-none d-sm-block">Reset</span>
+                                        <span class="d-none d-sm-block">{{ __('admin.actions.reset') }}</span>
                                     </button>
 
-                                    <div class="text-muted small">Allowed JPG, GIF or PNG. Max size of 2MB</div>
+                                    <div class="text-muted small">{{ __('admin.profile.avatar_help') }}</div>
                                     @error('avatar')
                                         <div class="text-danger small">{{ $message }}</div>
                                     @enderror
@@ -53,7 +53,7 @@
 
                             <div class="row">
                                 <div class="mb-3 col-md-6">
-                                    <label for="name" class="form-label">Name</label>
+                                    <label for="name" class="form-label">{{ __('admin.profile.name') }}</label>
                                     <input class="form-control @error('name') is-invalid @enderror" type="text"
                                         id="name" name="name" value="{{ old('name', $admin->name) }}" autofocus
                                         required />
@@ -62,7 +62,7 @@
                                     @enderror
                                 </div>
                                 <div class="mb-3 col-md-6">
-                                    <label for="email" class="form-label">E-mail</label>
+                                    <label for="email" class="form-label">{{ __('admin.profile.email') }}</label>
                                     <input class="form-control @error('email') is-invalid @enderror" type="email"
                                         id="email" name="email" value="{{ old('email', $admin->email) }}" required />
                                     @error('email')
@@ -70,7 +70,7 @@
                                     @enderror
                                 </div>
                                 <div class="mb-3 col-md-6">
-                                    <label class="form-label" for="phone">Phone Number</label>
+                                    <label class="form-label" for="phone">{{ __('admin.profile.phone_number') }}</label>
                                     <div class="input-group">
                                         <select class="form-select" style="max-width: 140px;" id="countryCode" name="country_code">
                                             <option value="+62" selected>🇮🇩 +62</option>
@@ -109,8 +109,8 @@
                                 </div>
                             </div>
                             <div class="mt-2">
-                                <button type="submit" class="btn btn-primary me-2">Save changes</button>
-                                <button type="reset" class="btn btn-label-secondary">Cancel</button>
+                                <button type="submit" class="btn btn-primary me-2">{{ __('admin.profile.save_changes') }}</button>
+                                <button type="reset" class="btn btn-label-secondary">{{ __('admin.actions.cancel') }}</button>
                             </div>
                         </form>
                     </div>
@@ -119,7 +119,7 @@
 
                 <!-- Change Password -->
                 <div class="card mb-4">
-                    <h5 class="card-header">Change Password</h5>
+                    <h5 class="card-header">{{ __('admin.profile.change_password') }}</h5>
                     <div class="card-body">
                         <form id="formChangePassword" method="POST"
                             action="{{ route('admin.profile.password.update') }}">
@@ -128,7 +128,7 @@
 
                             <div class="row">
                                 <div class="mb-3 col-md-12 form-password-toggle">
-                                    <label class="form-label" for="current_password">Current Password</label>
+                                    <label class="form-label" for="current_password">{{ __('admin.profile.current_password') }}</label>
                                     <div class="input-group input-group-merge">
                                         <input class="form-control @error('current_password') is-invalid @enderror"
                                             type="password" id="current_password" name="current_password" required />
@@ -141,7 +141,7 @@
                             </div>
                             <div class="row">
                                 <div class="mb-3 col-md-6 form-password-toggle">
-                                    <label class="form-label" for="password">New Password</label>
+                                    <label class="form-label" for="password">{{ __('admin.profile.new_password') }}</label>
                                     <div class="input-group input-group-merge">
                                         <input class="form-control @error('password') is-invalid @enderror"
                                             type="password" id="password" name="password" required />
@@ -150,11 +150,11 @@
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                    <div class="form-text">Password must be at least 8 characters long.</div>
+                                    <div class="form-text">{{ __('admin.profile.password_help') }}</div>
                                 </div>
 
                                 <div class="mb-3 col-md-6 form-password-toggle">
-                                    <label class="form-label" for="password_confirmation">Confirm New Password</label>
+                                    <label class="form-label" for="password_confirmation">{{ __('admin.profile.confirm_password') }}</label>
                                     <div class="input-group input-group-merge">
                                         <input class="form-control" type="password" id="password_confirmation"
                                             name="password_confirmation" required />
@@ -162,7 +162,7 @@
                                     </div>
                                 </div>
                                 <div class="col-12">
-                                    <button type="submit" class="btn btn-primary me-2">Change Password</button>
+                                    <button type="submit" class="btn btn-primary me-2">{{ __('admin.profile.change_password') }}</button>
                                 </div>
                             </div>
                         </form>
