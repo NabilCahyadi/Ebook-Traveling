@@ -38,7 +38,7 @@ class EbookController extends Controller
         $cityId = $request->get('city_id');
 
         $ebooks = $this->ebookService->getAllEbooks($perPage, $sortBy, $sortOrder, $search, $status, $categoryId, $cityId);
-        $categories = \App\Models\Category::orderBy('name')->get();
+        $categories = \App\Models\Category::where('type', 'ebook')->orderBy('name')->get();
         $cities = \App\Models\City::orderBy('name')->get();
         
         return view('admin.ebook-management.ebooks.index', compact('ebooks', 'categories', 'cities'));
@@ -49,7 +49,7 @@ class EbookController extends Controller
      */
     public function create()
     {
-        $categories = \App\Models\Category::all();
+        $categories = \App\Models\Category::where('type', 'ebook')->get();
         $cities = \App\Models\City::all();
         $creators = \App\Models\User::where('user_type', 'creator')->get();
         return view('admin.ebook-management.ebooks.create', compact('categories', 'cities', 'creators'));
@@ -335,7 +335,7 @@ class EbookController extends Controller
     public function edit($id)
     {
         $ebook = $this->ebookService->getEbookById($id);
-        $categories = \App\Models\Category::all();
+        $categories = \App\Models\Category::where('type', 'ebook')->get();
         $cities = \App\Models\City::all();
         $creators = \App\Models\User::where('user_type', 'creator')->get();
         return view('admin.ebook-management.ebooks.edit', compact('ebook', 'categories', 'cities', 'creators'));

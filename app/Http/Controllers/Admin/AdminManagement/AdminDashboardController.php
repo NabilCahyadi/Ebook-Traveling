@@ -91,8 +91,9 @@ class AdminDashboardController extends Controller
                 ->count();
         }
 
-        // Get category distribution for chart
-        $categoryStats = \App\Models\Category::withCount('ebooks')
+        // Get category distribution for chart (only ebook categories)
+        $categoryStats = \App\Models\Category::where('type', 'ebook')
+            ->withCount('ebooks')
             ->orderBy('ebooks_count', 'desc')
             ->take(5)
             ->get();

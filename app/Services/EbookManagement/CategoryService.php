@@ -55,7 +55,7 @@ class CategoryService
 
     public function restoreCategory(string $id)
     {
-        $category = \App\Models\Category::onlyTrashed()->find($id);
+        $category = \App\Models\Category::where('type', 'ebook')->onlyTrashed()->find($id);
 
         if (!$category) {
             return false;
@@ -66,7 +66,7 @@ class CategoryService
 
     public function forceDeleteCategory(string $id)
     {
-        $category = \App\Models\Category::onlyTrashed()->find($id);
+        $category = \App\Models\Category::where('type', 'ebook')->onlyTrashed()->find($id);
 
         if (!$category) {
             return false;
@@ -83,7 +83,7 @@ class CategoryService
 
     public function getTrashedCategories(int $perPage = 10)
     {
-        return \App\Models\Category::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate($perPage);
+        return \App\Models\Category::where('type', 'ebook')->onlyTrashed()->orderBy('deleted_at', 'desc')->paginate($perPage);
     }
 
     public function getCategoryBySlug(string $slug)

@@ -52,7 +52,7 @@
                                 <!-- Filter Category -->
                                 <select class="form-select form-select-sm" id="filterCategory" style="width: 150px;">
                                     <option value="">{{ __('admin.ebooks.all_categories') }}</option>
-                                    @foreach(\App\Models\Category::orderBy('name')->get() as $category)
+                                    @foreach(\App\Models\Category::where('type', 'ebook')->orderBy('name')->get() as $category)
                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach
                                 </select>

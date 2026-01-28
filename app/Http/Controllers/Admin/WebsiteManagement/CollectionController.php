@@ -306,7 +306,7 @@ class CollectionController extends Controller
         }
 
         // Get filter parameters
-        $categories = Category::all();
+        $categories = Category::where('type', 'ebook')->get();
         
         return view('admin.website-management.collections.manage-ebooks', compact('collection', 'categories'));
     }

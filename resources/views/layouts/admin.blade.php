@@ -239,15 +239,16 @@
             color: #ff4c61 !important;
         }
         
-        /* Level 1 dropdown when ACTIVE but CLOSED (Ebook Management active tapi dropdown tutup) */
+        /* Level 1 dropdown when ACTIVE but CLOSED (Ebook Management active tapi dropdown tutup) - Background merah, icon & text putih */
         .menu-inner > .menu-item.active:not(.open) > .menu-link.menu-toggle {
-            background-color: rgba(255, 76, 97, 0.08) !important;
-            color: #ff4c61 !important;
-            font-weight: 500;
+            background-color: #ff4c61 !important;
+            color: #fff !important;
+            font-weight: 600;
         }
         
-        .menu-inner > .menu-item.active:not(.open) > .menu-link.menu-toggle .menu-icon {
-            color: #ff4c61 !important;
+        .menu-inner > .menu-item.active:not(.open) > .menu-link.menu-toggle .menu-icon,
+        .menu-inner > .menu-item.active:not(.open) > .menu-link.menu-toggle div {
+            color: #fff !important;
         }
         
         /* Level 1 dropdown when ACTIVE AND OPEN - Icon putih seperti menu active biasa */

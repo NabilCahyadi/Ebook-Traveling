@@ -146,7 +146,7 @@
                                 <label class="form-label">{{ __('admin.collections.category') }}</label>
                                 <select id="filter-category" class="form-select">
                                     <option value="">{{ __('admin.collections.all_categories') }}</option>
-                                    @foreach(\App\Models\Category::all() as $category)
+                                    @foreach(\App\Models\Category::where('type', 'ebook')->get() as $category)
                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach
                                 </select>

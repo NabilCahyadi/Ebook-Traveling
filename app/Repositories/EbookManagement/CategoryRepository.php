@@ -16,17 +16,17 @@ class CategoryRepository implements CategoryRepositoryInterface
 
     public function all()
     {
-        return $this->model->all();
+        return $this->model->where('type', 'ebook')->get();
     }
 
     public function paginate(int $perPage = 15)
     {
-        return $this->model->paginate($perPage);
+        return $this->model->where('type', 'ebook')->paginate($perPage);
     }
 
     public function find(string $id)
     {
-        return $this->model->findOrFail($id);
+        return $this->model->where('type', 'ebook')->findOrFail($id);
     }
 
     public function create(array $data)
@@ -54,7 +54,7 @@ class CategoryRepository implements CategoryRepositoryInterface
 
     public function findBySlug(string $slug)
     {
-        return $this->model->where('slug', $slug)->firstOrFail();
+        return $this->model->where('type', 'ebook')->where('slug', $slug)->firstOrFail();
     }
 
     public function getActiveParentCategories()

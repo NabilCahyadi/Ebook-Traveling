@@ -21,7 +21,7 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Category::withCount('ebooks');
+        $query = Category::where('type', 'ebook')->withCount('ebooks');
 
         // Search
         if ($request->filled('search')) {
@@ -74,6 +74,7 @@ class CategoryController extends Controller
 
         $validated['slug'] = Str::slug($validated['name']);
         $validated['id'] = Str::uuid();
+        $validated['type'] = 'ebook';
 
         // Handle image upload
         if ($request->hasFile('image')) {
@@ -94,7 +95,7 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        $category = Category::withCount('ebooks')->findOrFail($id);
+        $category = Category::where('type', 'ebook')->withCount('ebooks')->findOrFail($id);
         return view('admin.ebook-management.categories.show', compact('category'));
     }
 
@@ -103,7 +104,7 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        $category = Category::findOrFail($id);
+        $category = Category::where('type', 'ebook')->findOrFail($id);
         return view('admin.ebook-management.categories.edit', compact('category'));
     }
 
@@ -112,7 +113,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $category = Category::findOrFail($id);
+        $category = Category::where('type', 'ebook')->findOrFail($id);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name,' . $id,

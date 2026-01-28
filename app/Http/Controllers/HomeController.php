@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\City;
-use App\Services\BannerService;
+use App\Services\WebsiteManagement\BannerService;
 use App\Services\CityService;
 use App\Services\SubscriptionPlanService;
 use App\Services\CollectionService;

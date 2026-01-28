@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\PricingBenefitService;
 use App\Services\SubscriptionPlanService;
-use App\Services\FaqService;
+use App\Services\WebsiteManagement\FaqService;
 use App\Repositories\BannerRepository;
 use Illuminate\Support\Facades\Auth;
 use App\Models\City;
