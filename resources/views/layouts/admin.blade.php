@@ -239,15 +239,16 @@
             color: #ff4c61 !important;
         }
         
-        /* Level 1 dropdown when ACTIVE but CLOSED (Ebook Management active tapi dropdown tutup) */
+        /* Level 1 dropdown when ACTIVE but CLOSED (Ebook Management active tapi dropdown tutup) - Background merah, icon & text putih */
         .menu-inner > .menu-item.active:not(.open) > .menu-link.menu-toggle {
-            background-color: rgba(255, 76, 97, 0.08) !important;
-            color: #ff4c61 !important;
-            font-weight: 500;
+            background-color: #ff4c61 !important;
+            color: #fff !important;
+            font-weight: 600;
         }
         
-        .menu-inner > .menu-item.active:not(.open) > .menu-link.menu-toggle .menu-icon {
-            color: #ff4c61 !important;
+        .menu-inner > .menu-item.active:not(.open) > .menu-link.menu-toggle .menu-icon,
+        .menu-inner > .menu-item.active:not(.open) > .menu-link.menu-toggle div {
+            color: #fff !important;
         }
         
         /* Level 1 dropdown when ACTIVE AND OPEN - Icon putih seperti menu active biasa */
@@ -733,8 +734,16 @@
         $(document).ready(function() {
             loadNotifications();
             
-            // Refresh notifications every 30 seconds
-            setInterval(loadNotifications, 30000);
+            // DISABLED: Notification polling removed to reduce server load
+            // Notifications will only refresh when:
+            // 1. Page is loaded
+            // 2. User clicks notification dropdown
+            // 3. After marking notification as read
+            
+            // If you need real-time notifications, consider implementing:
+            // - WebSockets (Laravel Echo + Pusher/Soketi)
+            // - Server-Sent Events (SSE)
+            // - Or increase interval to 5 minutes: setInterval(loadNotifications, 300000);
         });
 
         // Load when dropdown is opened

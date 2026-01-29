@@ -21,18 +21,28 @@ class SubscriberRepository implements SubscriberRepositoryInterface
     public function getFilteredSubscribers(array $filters, int $perPage = 15): LengthAwarePaginator
     {
         $query = $this->model
-            ->with(['user.roles', 'plan'])
-            ->whereIn('status', ['active', 'pending', 'expired']);
+            ->with(['user.roles', 'plan']);
 
-        // Additional check: For 'active' status, ensure end_date hasn't passed
-        // This handles cases where automated task hasn't run yet
-        $query->where(function ($q) {
-            $q->where('status', '!=', 'active')
-              ->orWhere(function ($subQ) {
-                  $subQ->where('status', 'active')
-                       ->where('end_date', '>=', now());
-              });
-        });
+        // Filter by status (active or expired)
+        if (!empty($filters['status'])) {
+            if ($filters['status'] === 'active') {
+                // Active subscriptions: status is 'active' AND end_date has not passed
+                $query->where('status', 'active')
+                      ->where('end_date', '>=', now());
+            } elseif ($filters['status'] === 'expired') {
+                // Expired subscriptions: status is 'expired' OR (status is 'active' BUT end_date has passed)
+                $query->where(function ($q) {
+                    $q->where('status', 'expired')
+                      ->orWhere(function ($subQ) {
+                          $subQ->where('status', 'active')
+                               ->where('end_date', '<', now());
+                      });
+                });
+            }
+        } else {
+            // Default: show active and expired
+            $query->whereIn('status', ['active', 'pending', 'expired']);
+        }
 
         // Filter by role
         if (!empty($filters['role'])) {

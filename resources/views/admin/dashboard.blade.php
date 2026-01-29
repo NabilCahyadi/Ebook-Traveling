@@ -109,11 +109,9 @@
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
                                 @if (Route::has('admin.subscriptions.index'))
-                                    <a class="dropdown-item" href="{{ route('admin.subscriptions.index') }}">View
-                                        Subscribers</a>
+                                    <a class="dropdown-item" href="{{ route('admin.subscriptions.index') }}">{{ __('admin.dashboard.view_subscribers') }}</a>
                                 @elseif(Route::has('admin.active-subscribers.index'))
-                                    <a class="dropdown-item" href="{{ route('admin.active-subscribers.index') }}">View
-                                        Subscribers</a>
+                                    <a class="dropdown-item" href="{{ route('admin.active-subscribers.index') }}">{{ __('admin.dashboard.view_subscribers') }}</a>
                                 @endif
                             </div>
                         </div>
@@ -144,7 +142,7 @@
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <a class="dropdown-item"
-                                    href="{{ route('admin.orders.index', ['status' => 'pending']) }}">View Pending</a>
+                                    href="{{ route('admin.orders.index', ['status' => 'pending']) }}">{{ __('admin.dashboard.view_pending') }}</a>
                             </div>
                         </div>
                     </div>
@@ -154,9 +152,9 @@
                         @if ($pendingOrders > 0)
                             @if (Route::has('admin.orders.index'))
                                 <a href="{{ route('admin.orders.index', ['status' => 'pending']) }}"
-                                    class="text-danger small">Process now →</a>
+                                    class="text-danger small">{{ __('admin.dashboard.process_now') }}</a>
                             @else
-                                <small class="text-danger">Needs attention</small>
+                                <small class="text-danger">{{ __('admin.dashboard.needs_attention') }}</small>
                             @endif
                         @else
                             <small class="text-muted">{{ __('admin.dashboard.all_caught_up') }}</small>
@@ -185,8 +183,8 @@
                                 <i class="ti ti-dots-vertical ti-md"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
-                                <a class="dropdown-item" href="{{ route('admin.ebooks.index') }}">View All</a>
-                                <a class="dropdown-item" href="{{ route('admin.ebooks.create') }}">Add New</a>
+                                <a class="dropdown-item" href="{{ route('admin.ebooks.index') }}">{{ __('admin.dashboard.view_all') }}</a>
+                                <a class="dropdown-item" href="{{ route('admin.ebooks.create') }}">{{ __('admin.dashboard.add_new') }}</a>
                             </div>
                         </div>
                     </div>
@@ -215,7 +213,7 @@
                                 <i class="ti ti-dots-vertical ti-md"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
-                                <a class="dropdown-item" href="{{ route('admin.users.index') }}">View All</a>
+                                <a class="dropdown-item" href="{{ route('admin.users.index') }}">{{ __('admin.dashboard.view_all') }}</a>
                             </div>
                         </div>
                     </div>
@@ -244,7 +242,7 @@
                                 <i class="ti ti-dots-vertical ti-md"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
-                                <a class="dropdown-item" href="{{ route('admin.categories.index') }}">View All</a>
+                                <a class="dropdown-item" href="{{ route('admin.categories.index') }}">{{ __('admin.dashboard.view_all') }}</a>
                             </div>
                         </div>
                     </div>
@@ -273,7 +271,7 @@
                                 <i class="ti ti-dots-vertical ti-md"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
-                                <a class="dropdown-item" href="{{ route('admin.cities.index') }}">View All</a>
+                                <a class="dropdown-item" href="{{ route('admin.cities.index') }}">{{ __('admin.dashboard.view_all') }}</a>
                             </div>
                         </div>
                     </div>
@@ -294,10 +292,10 @@
             <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <div>
-                        <h5 class="card-title mb-1"><i class="ti ti-book me-2"></i>Ebook Status Overview</h5>
-                        <p class="card-subtitle mb-0">Content distribution by status</p>
+                        <h5 class="card-title mb-1"><i class="ti ti-book me-2"></i>{{ __('admin.dashboard.ebook_status_overview') }}</h5>
+                        <p class="card-subtitle mb-0">{{ __('admin.dashboard.content_distribution') }}</p>
                     </div>
-                    <a href="{{ route('admin.ebooks.index') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                    <a href="{{ route('admin.ebooks.index') }}" class="btn btn-sm btn-outline-primary">{{ __('admin.dashboard.view_all') }}</a>
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
@@ -308,7 +306,7 @@
                                 </div>
                                 <div>
                                     <h5 class="mb-0">{{ $ebookStatusCounts['draft'] ?? 0 }}</h5>
-                                    <small>Draft</small>
+                                    <small>{{ __('admin.dashboard.draft') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -319,7 +317,7 @@
                                 </div>
                                 <div>
                                     <h5 class="mb-0">{{ $ebookStatusCounts['published'] ?? 0 }}</h5>
-                                    <small>Published</small>
+                                    <small>{{ __('admin.dashboard.published') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -330,7 +328,7 @@
                                 </div>
                                 <div>
                                     <h5 class="mb-0">{{ $ebookStatusCounts['scheduled'] ?? 0 }}</h5>
-                                    <small>Scheduled</small>
+                                    <small>{{ __('admin.dashboard.scheduled') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -341,7 +339,7 @@
                                 </div>
                                 <div>
                                     <h5 class="mb-0">{{ $ebookStatusCounts['unpublished'] ?? 0 }}</h5>
-                                    <small>Unpublished</small>
+                                    <small>{{ __('admin.dashboard.unpublished') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -352,7 +350,7 @@
                                 </div>
                                 <div>
                                     <h5 class="mb-0">{{ $ebookStatusCounts['trash'] ?? 0 }}</h5>
-                                    <small>Trash</small>
+                                    <small>{{ __('admin.dashboard.trash') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -363,7 +361,7 @@
                                 </div>
                                 <div>
                                     <h5 class="mb-0">{{ $totalEbooks }}</h5>
-                                    <small>Total</small>
+                                    <small>{{ __('admin.dashboard.total') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -377,10 +375,10 @@
             <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <div>
-                        <h5 class="card-title mb-1"><i class="ti ti-news me-2"></i>Blog Status Overview</h5>
-                        <p class="card-subtitle mb-0">Content distribution by status</p>
+                        <h5 class="card-title mb-1"><i class="ti ti-news me-2"></i>{{ __('admin.dashboard.blog_status_overview') }}</h5>
+                        <p class="card-subtitle mb-0">{{ __('admin.dashboard.content_distribution') }}</p>
                     </div>
-                    <a href="{{ route('admin.blogs.index') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                    <a href="{{ route('admin.blogs.index') }}" class="btn btn-sm btn-outline-primary">{{ __('admin.dashboard.view_all') }}</a>
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
@@ -391,7 +389,7 @@
                                 </div>
                                 <div>
                                     <h5 class="mb-0">{{ $blogStatusCounts['draft'] ?? 0 }}</h5>
-                                    <small>Draft</small>
+                                    <small>{{ __('admin.dashboard.draft') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -402,7 +400,7 @@
                                 </div>
                                 <div>
                                     <h5 class="mb-0">{{ $blogStatusCounts['published'] ?? 0 }}</h5>
-                                    <small>Published</small>
+                                    <small>{{ __('admin.dashboard.published') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -413,7 +411,7 @@
                                 </div>
                                 <div>
                                     <h5 class="mb-0">{{ $blogStatusCounts['scheduled'] ?? 0 }}</h5>
-                                    <small>Scheduled</small>
+                                    <small>{{ __('admin.dashboard.scheduled') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -424,7 +422,7 @@
                                 </div>
                                 <div>
                                     <h5 class="mb-0">{{ $blogStatusCounts['unpublished'] ?? 0 }}</h5>
-                                    <small>Unpublished</small>
+                                    <small>{{ __('admin.dashboard.unpublished') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -435,7 +433,7 @@
                                 </div>
                                 <div>
                                     <h5 class="mb-0">{{ $blogStatusCounts['trash'] ?? 0 }}</h5>
-                                    <small>Trash</small>
+                                    <small>{{ __('admin.dashboard.trash') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -449,7 +447,7 @@
                                         $totalBlogs = array_sum(array_filter($blogStatusCounts ?? [], fn($v) => is_numeric($v)));
                                     @endphp
                                     <h5 class="mb-0">{{ $totalBlogs }}</h5>
-                                    <small>Total</small>
+                                    <small>{{ __('admin.dashboard.total') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -481,8 +479,8 @@
             <div class="card h-100">
                 <div class="card-header">
                     <div>
-                        <h5 class="card-title mb-1">Ebook by Cities</h5>
-                        <p class="card-subtitle mb-0">Top 5 cities</p>
+                        <h5 class="card-title mb-1">{{ __('admin.dashboard.ebook_by_cities') }}</h5>
+                        <p class="card-subtitle mb-0">{{ __('admin.dashboard.top_cities') }}</p>
                     </div>
                 </div>
                 <div class="card-body">
@@ -505,13 +503,13 @@
                             <input type="number" id="revenuePeriod" class="form-control form-control-sm" style="width: 80px;" value="6" min="1" max="30" placeholder="6">
                             <div class="btn-group" role="group">
                                 <input type="radio" class="btn-check" name="revenueFilter" id="filterDay" value="day" autocomplete="off">
-                                <label class="btn btn-sm btn-outline-primary" for="filterDay">Hari</label>
+                                <label class="btn btn-sm btn-outline-primary" for="filterDay">{{ __('admin.dashboard.day') }}</label>
 
                                 <input type="radio" class="btn-check" name="revenueFilter" id="filterMonth" value="month" autocomplete="off" checked>
-                                <label class="btn btn-sm btn-outline-primary" for="filterMonth">Bulan</label>
+                                <label class="btn btn-sm btn-outline-primary" for="filterMonth">{{ __('admin.dashboard.month') }}</label>
 
                                 <input type="radio" class="btn-check" name="revenueFilter" id="filterYear" value="year" autocomplete="off">
-                                <label class="btn btn-sm btn-outline-primary" for="filterYear">Tahun</label>
+                                <label class="btn btn-sm btn-outline-primary" for="filterYear">{{ __('admin.dashboard.year') }}</label>
                             </div>
                         </div>
                     </div>
@@ -615,7 +613,7 @@
                                         <th>{{ __('admin.dashboard.city') }}</th>
                                         <th>{{ __('admin.dashboard.status') }}</th>
                                         <th>{{ __('admin.dashboard.created') }}</th>
-                                        <th>Actions</th>
+                                        <th>{{ __('admin.dashboard.actions') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -647,11 +645,11 @@
                                             </td>
                                             <td>
                                                 @if ($ebook->status === 'published')
-                                                    <span class="badge bg-label-success">Published</span>
+                                                    <span class="badge bg-label-success">{{ __('admin.dashboard.published') }}</span>
                                                 @elseif ($ebook->status === 'draft')
-                                                    <span class="badge bg-label-warning">Draft</span>
+                                                    <span class="badge bg-label-warning">{{ __('admin.dashboard.draft') }}</span>
                                                 @elseif ($ebook->status === 'unpublished')
-                                                    <span class="badge bg-label-danger">Unpublished</span>
+                                                    <span class="badge bg-label-danger">{{ __('admin.dashboard.unpublished') }}</span>
                                                 @else
                                                     <span class="badge bg-label-secondary">{{ ucfirst($ebook->status) }}</span>
                                                 @endif
@@ -674,10 +672,10 @@
                     @else
                         <div class="text-center py-5">
                             <i class="ti ti-book-off ti-xl text-muted mb-3 d-block" style="font-size: 3rem;"></i>
-                            <h6 class="text-muted">No ebooks yet</h6>
-                            <p class="text-muted mb-3">Start by creating your first ebook</p>
+                            <h6 class="text-muted">{{ __('admin.dashboard.no_ebooks_yet') }}</h6>
+                            <p class="text-muted mb-3">{{ __('admin.dashboard.start_creating') }}</p>
                             <a href="{{ route('admin.ebooks.create') }}" class="btn btn-primary">
-                                <i class="ti ti-plus me-1"></i> Add New Ebook
+                                <i class="ti ti-plus me-1"></i> {{ __('admin.dashboard.add_new_ebook') }}
                             </a>
                         </div>
                     @endif

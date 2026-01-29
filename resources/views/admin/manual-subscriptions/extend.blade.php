@@ -89,31 +89,16 @@
                                 <div class="form-text">{{ __('admin.extend_subscription.select_duration') }}</div>
                             </div>
 
-                            <!-- Category Warning Alert -->
-                            <div class="alert alert-warning mb-3" id="category-warning" style="display: none;">
-                                <h6 class="alert-heading mb-2">
-                                    <i class="bx bx-error me-1"></i> {{ __('admin.extend_subscription.different_category_warning') }}
-                                </h6>
-                                <p class="mb-0">
-                                    {!! __('admin.extend_subscription.different_category_text') !!} (<span id="new-category-text"></span>) 
-                                    {{ __('admin.extend_subscription.from_current') }} (<span id="old-category-text"></span>).
-                                </p>
-                                <hr>
-                                <p class="mb-0 text-danger">
-                                    <i class="bx bx-info-circle me-1"></i>
-                                    <strong>{{ __('admin.extend_subscription.days_will_be_lost') }} <span id="lost-days"></span> {{ __('admin.extend_subscription.days_lost_text') }}</strong>
-                                </p>
+                            <!-- Hidden elements for JS compatibility -->
+                            <div id="category-warning" style="display: none;">
+                                <span id="new-category-text"></span>
+                                <span id="old-category-text"></span>
+                                <span id="lost-days"></span>
                             </div>
 
-                            <!-- Same Category Info -->
-                            <div class="alert alert-success mb-3" id="category-same" style="display: none;">
-                                <h6 class="alert-heading mb-2">
-                                    <i class="bx bx-check-circle me-1"></i> {{ __('admin.extend_subscription.same_category_info') }}
-                                </h6>
-                                <p class="mb-0">
-                                    {!! __('admin.extend_subscription.same_category_text') !!} (<span id="same-category-text"></span>).
-                                    {!! __('admin.extend_subscription.duration_accumulated') !!}
-                                </p>
+                            <!-- Same Category Info (hidden element for JS compatibility) -->
+                            <div id="category-same" style="display: none;">
+                                <span id="same-category-text"></span>
                             </div>
 
                             <div class="mb-3">
@@ -253,22 +238,17 @@
                     let newEndDate;
                     let previewDaysText;
 
-                    if (isSameCategory) {
-                        // Same category: accumulate
-                        newEndDate = new Date(currentEndDate);
-                        newEndDate.setDate(newEndDate.getDate() + totalDays);
-                        previewDaysText = totalDays + ' ' + daysText + ' (+ ' + remainingDays + ' remaining = ' + (totalDays + remainingDays) + ' total)';
+                    // ALWAYS ACCUMULATE: Both same and different category will accumulate days
+                    newEndDate = new Date(currentEndDate);
+                    newEndDate.setDate(newEndDate.getDate() + totalDays);
+                    previewDaysText = totalDays + ' ' + daysText + ' (+ ' + remainingDays + ' remaining = ' + (totalDays + remainingDays) + ' total)';
 
+                    if (isSameCategory) {
                         // Show same category alert
                         document.getElementById('category-same').style.display = 'block';
                         document.getElementById('same-category-text').textContent = translateCategory(newCategory);
                     } else {
-                        // Different category: replace (start from now)
-                        newEndDate = new Date();
-                        newEndDate.setDate(newEndDate.getDate() + totalDays);
-                        previewDaysText = totalDays + ' ' + daysText + ' (remaining ' + remainingDays + ' ' + daysText + ' will be lost)';
-
-                        // Show warning alert
+                        // Different category: still accumulates but changes plan type
                         document.getElementById('category-warning').style.display = 'block';
                         document.getElementById('new-category-text').textContent = translateCategory(newCategory);
                         document.getElementById('old-category-text').textContent = translateCategory(currentCategoryValue);
@@ -284,16 +264,10 @@
                     };
                     document.getElementById('preview-new-end').textContent = newEndDate.toLocaleDateString('en-US', options);
 
-                    // Update alert color based on category
+                    // Hide preview alert for both same and different category
                     const previewAlert = document.querySelector('.col-md-4 .alert');
                     if (previewAlert) {
-                        if (isSameCategory) {
-                            previewAlert.className = 'alert alert-success mb-0';
-                            previewAlert.innerHTML = '<small><i class="bx bx-check-circle me-1"></i> ' + sameAccumulatedText + '</small>';
-                        } else {
-                            previewAlert.className = 'alert alert-warning mb-0';
-                            previewAlert.innerHTML = '<small><i class="bx bx-error me-1"></i> ' + differentReplacedText + '</small>';
-                        }
+                        previewAlert.style.display = 'none';
                     }
                 } else {
                     document.getElementById('extension-summary').style.display = 'none';

@@ -90,8 +90,8 @@
                         </div>
                         <!-- /Logo -->
 
-                        <h4 class="mb-1">Lupa Password? 🔒</h4>
-                        <p class="mb-4">Masukkan email admin Anda dan kami akan mengirimkan kode verifikasi untuk reset password</p>
+                        <h4 class="mb-1">{{ __('admin.auth.forgot_password_title') }}</h4>
+                        <p class="mb-4">{{ __('admin.auth.forgot_password_description') }}</p>
 
                         @if (session('success'))
                             <div class="alert alert-success alert-dismissible" role="alert">
@@ -113,9 +113,9 @@
                             method="POST">
                             @csrf
                             <div class="mb-3">
-                                <label for="email" class="form-label">Email Admin</label>
+                                <label for="email" class="form-label">{{ __('admin.auth.admin_email') }}</label>
                                 <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                    id="email" name="email" placeholder="Masukkan email admin Anda"
+                                    id="email" name="email" placeholder="{{ __('admin.auth.enter_admin_email') }}"
                                     value="{{ old('email') }}" autofocus required />
                                 @error('email')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -125,7 +125,7 @@
                             <button class="btn btn-primary d-grid w-100" type="submit">
                                 <span class="d-flex align-items-center justify-content-center">
                                     <i class="ti ti-mail me-2"></i>
-                                    <span>Kirim Kode Verifikasi</span>
+                                    <span>{{ __('admin.auth.send_verification_code') }}</span>
                                 </span>
                             </button>
                         </form>
@@ -133,7 +133,7 @@
                         <div class="text-center">
                             <a href="{{ route('admin.login') }}" class="d-flex align-items-center justify-content-center">
                                 <i class="ti ti-chevron-left scaleX-n1-rtl me-1"></i>
-                                Back to login
+                                {{ __('admin.auth.back_to_login') }}
                             </a>
                         </div>
                     </div>

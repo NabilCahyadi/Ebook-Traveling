@@ -201,18 +201,18 @@
                             <ul class="menu-sub">
                                 <li class="menu-item {{ Request::is('admin/blogs/create') ? 'active' : '' }}">
                                     <a href="{{ route('admin.blogs.create') }}" class="menu-link">
-                                        <div data-i18n="Add New Blog">Add New Blog</div>
+                                        <div data-i18n="Add New Blog">{{ __('admin.blogs.add_new_blog') }}</div>
                                     </a>
                                 </li>
                                 <li
                                     class="menu-item {{ Request::is('admin/blogs') && !Request::is('admin/blogs/create') && !Request::is('admin/blogs/trash') ? 'active' : '' }}">
                                     <a href="{{ route('admin.blogs.index') }}" class="menu-link">
-                                        <div data-i18n="All Blogs">All Blogs</div>
+                                        <div data-i18n="All Blogs">{{ __('admin.blogs.all_blogs') }}</div>
                                     </a>
                                 </li>
                                 <li class="menu-item {{ Request::is('admin/blogs/trash') ? 'active' : '' }}">
                                     <a href="{{ route('admin.blogs.trash') }}" class="menu-link">
-                                        <div data-i18n="Trash">Trash</div>
+                                        <div data-i18n="Trash">{{ __('admin.blogs.trash') }}</div>
                                         @php
                                             $trashedBlogsCount = \App\Models\Blog::onlyTrashed()->count();
                                         @endphp
@@ -230,7 +230,7 @@
                         <li class="menu-item {{ Request::is('admin/blog-categories*') ? 'active' : '' }}">
                             <a href="{{ route('admin.blog-categories.index') }}" class="menu-link">
                                 <i class="menu-icon tf-icons ti ti-category"></i>
-                                <div data-i18n="Blog Categories">{{ __('admin.menu.blog_categories') }}</div>
+                                <div data-i18n="Categories">{{ __('admin.menu.blog_categories') }}</div>
                             </a>
                         </li>
                     @endif
