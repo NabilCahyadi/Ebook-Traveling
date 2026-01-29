@@ -129,7 +129,6 @@
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Type</th>
-                                <th>Status</th>
                                 <th>Registered</th>
                             </tr>
                         </thead>
@@ -139,20 +138,25 @@
                                     <td><strong>{{ $user->name }}</strong></td>
                                     <td>{{ $user->email }}</td>
                                     <td>
-                                        <span class="badge bg-label-primary">{{ ucfirst($user->user_type ?? 'user') }}</span>
-                                    </td>
-                                    <td>
-                                        @if($user->subscriptions->where('status', 'active')->count() > 0)
-                                            <span class="badge bg-label-success">Premium</span>
-                                        @else
-                                            <span class="badge bg-label-secondary">Free</span>
-                                        @endif
+                                        @php
+                                            $hasActiveSubscription = $user->subscriptions->where('status', 'active')->count() > 0;
+                                            $userType = $user->user_type ?? 'user';
+                                            
+                                            if ($hasActiveSubscription) {
+                                                $badgeClass = 'bg-label-success';
+                                                $typeLabel = 'Premium';
+                                            } else {
+                                                $badgeClass = 'bg-label-secondary';
+                                                $typeLabel = 'Free';
+                                            }
+                                        @endphp
+                                        <span class="badge {{ $badgeClass }}">{{ $typeLabel }}</span>
                                     </td>
                                     <td>{{ $user->created_at->format('d M Y') }}</td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted">
+                                    <td colspan="4" class="text-center text-muted">
                                         {{ __('admin.reports.no_data') }}
                                     </td>
                                 </tr>
