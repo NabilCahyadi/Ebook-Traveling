@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice Download Debug Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .container { border: 1px solid #ccc; padding: 20px; border-radius: 5px; }
+        h1 { color: #333; }
+        .section { margin: 20px 0; padding: 15px; background: #f5f5f5; border-radius: 3px; }
+        .button { padding: 10px 20px; margin: 5px; cursor: pointer; border: 1px solid #007bff; background: #007bff; color: white; border-radius: 3px; }
+        .button:hover { background: #0056b3; }
+        .log { border: 1px solid #ddd; padding: 10px; margin: 10px 0; background: #fff; max-height: 300px; overflow-y: auto; font-family: monospace; font-size: 12px; }
+        .log-entry { padding: 5px; border-bottom: 1px solid #eee; }
+        .log-entry.info { color: #0056b3; }
+        .log-entry.success { color: #28a745; }
+        .log-entry.error { color: #dc3545; }
+        input[type="text"] { padding: 8px; width: 100%; max-width: 400px; }
+        .info-box { background: #e7f3ff; border-left: 4px solid #2196F3; padding: 10px; margin: 10px 0; }
+        .warning-box { background: #fff3cd; border-left: 4px solid #ffc107; padding: 10px; margin: 10px 0; }
+        a.test-link { display: inline-block; padding: 10px 20px; margin: 10px 0; background: #28a745; color: white; text-decoration: none; border-radius: 3px; }
+        a.test-link:hover { background: #218838; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Invoice Download Debug Test</h1>
+
+        <div class="info-box">
+            <strong>Instructions:</strong> This page helps debug why invoice downloads aren't working. Check your browser's Network tab (F12) while testing.
+        </div>
+
+        <div class="section">
+            <h3>📋 Test Payment Info</h3>
+            <p>
+                <strong>Payment ID:</strong> <code id="payment-id">1f715339-62ff-4fb2-a289-215cc1a50950</code><br>
+                <strong>Payment Code:</strong> <code>RENEW-WYH0N1J8</code><br>
+                <strong>Expected Filename:</strong> <code id="expected-filename">Invoice-RENEW-WYH0N1J8-20260129.pdf</code>
+            </p>
+        </div>
+
+        <div class="section">
+            <h3>🧪 Test Methods</h3>
+            <p><strong>Method 1: HTML Link (New Tab)</strong></p>
+            <a href="/user/invoice/1f715339-62ff-4fb2-a289-215cc1a50950/download" target="_blank" class="test-link" id="link-new-tab">
+                📥 Download (New Tab)
+            </a>
+            <p style="font-size: 12px; color: #666;">Opens in new tab. Check if PDF downloads or if page loads.</p>
+
+            <p><strong>Method 2: HTML Link (Same Tab)</strong></p>
+            <a href="/user/invoice/1f715339-62ff-4fb2-a289-215cc1a50950/download" class="test-link" id="link-same-tab">
+                📥 Download (Same Tab)
+            </a>
+            <p style="font-size: 12px; color: #666;">Opens in same tab. Browser may redirect to PDF or show error.</p>
+
+            <p><strong>Method 3: JavaScript Fetch</strong></p>
+            <button class="button" onclick="testFetchDownload()">🔧 Fetch Download</button>
+            <p style="font-size: 12px; color: #666;">Uses JavaScript fetch. Shows exact response details.</p>
+
+            <p><strong>Method 4: XMLHttpRequest</strong></p>
+            <button class="button" onclick="testXHRDownload()">🔧 XHR Download</button>
+            <p style="font-size: 12px; color: #666;">Traditional AJAX method.</p>
+
+            <p><strong>Method 5: Programmatic Link Click (with download attribute)</strong></p>
+            <button class="button" onclick="testProgrammaticDownload()">🔧 Programmatic Download</button>
+            <p style="font-size: 12px; color: #666;">Simulates what the payment history button does.</p>
+        </div>
+
+        <div class="section">
+            <h3>📊 Response Log</h3>
+            <div class="log" id="log">
+                <div class="log-entry info">[Page Loaded] Open DevTools (F12) Network tab before testing</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>🛠️ Network Debugging Checklist</h3>
+            <ol>
+                <li>Open DevTools: Press <strong>F12</strong></li>
+                <li>Click <strong>Network</strong> tab</li>
+                <li>Clear previous requests (⚫ icon)</li>
+                <li>Try one of the test methods above</li>
+                <li>Look for request to <code>/user/invoice/.../download</code></li>
+                <li>Check Status Code: Should be <strong>200</strong> for success, <strong>403</strong> for auth error, <strong>404</strong> if route not found</li>
+                <li>Check Response Content-Type: Should be <strong>application/pdf</strong></li>
+                <li>Check Response Preview: Should show <strong>%PDF</strong> at start if valid PDF</li>
+            </ol>
+        </div>
+
+        <div class="warning-box">
+            <strong>⚠️ Important:</strong> Keep the Network tab open while clicking test buttons. The request must complete before the response appears in the log.
+        </div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            const timestamp = new Date().toLocaleTimeString();
+            entry.textContent = `[${timestamp}] ${message}`;
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function testFetchDownload() {
+            const paymentId = document.getElementById('payment-id').textContent;
+            const url = `/user/invoice/${paymentId}/download`;
+
+            log(`Fetching: ${url}`, 'info');
+
+            fetch(url)
+                .then(response => {
+                    log(`Status: ${response.status} ${response.statusText}`, response.ok ? 'success' : 'error');
+                    log(`Content-Type: ${response.headers.get('content-type')}`, 'info');
+                    log(`Content-Length: ${response.headers.get('content-length')} bytes`, 'info');
+
+                    if (!response.ok) {
+                        return response.text().then(text => {
+                            log(`Error Response: ${text.substring(0, 200)}`, 'error');
+                            throw new Error(`HTTP ${response.status}`);
+                        });
+                    }
+
+                    return response.blob().then(blob => {
+                        log(`✓ Received ${blob.size} bytes of type: ${blob.type}`, 'success');
+
+                        // Check if valid PDF
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const arr = new Uint8Array(e.target.result).subarray(0, 4);
+                            const header = String.fromCharCode.apply(null, arr);
+                            if (header === '%PDF') {
+                                log('✓ Valid PDF file detected (starts with %PDF)', 'success');
+                            } else {
+                                log(`⚠️ Not a valid PDF (starts with: ${header})`, 'error');
+                            }
+                        };
+                        reader.readAsArrayBuffer(blob.slice(0, 4));
+
+                        // Offer download
+                        const filename = document.getElementById('expected-filename').textContent;
+                        const downloadUrl = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = downloadUrl;
+                        a.download = filename;
+                        a.click();
+                        log(`✓ Download triggered for: ${filename}`, 'success');
+                    });
+                })
+                .catch(error => {
+                    log(`❌ Error: ${error.message}`, 'error');
+                });
+        }
+
+        function testXHRDownload() {
+            const paymentId = document.getElementById('payment-id').textContent;
+            const url = `/user/invoice/${paymentId}/download`;
+
+            log(`XHR Request: ${url}`, 'info');
+
+            const xhr = new XMLHttpRequest();
+            xhr.responseType = 'blob';
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.LOADING) {
+                    log(`Status: ${xhr.status}`, 'info');
+                }
+            };
+
+            xhr.onload = function() {
+                log(`✓ Status: ${xhr.status} ${xhr.statusText}`, xhr.status === 200 ? 'success' : 'error');
+                log(`Content-Type: ${xhr.getResponseHeader('content-type')}`, 'info');
+                log(`Received: ${xhr.response.size} bytes`, 'success');
+
+                const filename = document.getElementById('expected-filename').textContent;
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(xhr.response);
+                a.download = filename;
+                a.click();
+                log(`✓ Download triggered for: ${filename}`, 'success');
+            };
+
+            xhr.onerror = function() {
+                log(`❌ Error: ${xhr.status} ${xhr.statusText}`, 'error');
+            };
+
+            xhr.open('GET', url, true);
+            xhr.send();
+        }
+
+        function testProgrammaticDownload() {
+            const paymentId = document.getElementById('payment-id').textContent;
+            const url = `/user/invoice/${paymentId}/download`;
+            const filename = document.getElementById('expected-filename').textContent;
+
+            log(`Creating link: ${url}`, 'info');
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.target = '_blank';
+
+            log(`Simulating click on link with download attribute`, 'info');
+            a.click();
+            log(`✓ Click simulated`, 'success');
+        }
+
+        // Log page load info
+        window.addEventListener('load', function() {
+            log(`✓ Page loaded. Current URL: ${window.location.href}`, 'success');
+        });
+    </script>
+</body>
+</html>

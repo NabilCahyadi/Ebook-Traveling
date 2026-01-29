@@ -124,8 +124,8 @@
         }
 
         /* ==========================================================================
-                            Kustomisasi Tampilan E-book (Satu Kartu, Tombol Berbeda)
-                           ========================================================================== */
+                                Kustomisasi Tampilan E-book (Satu Kartu, Tombol Berbeda)
+                               ========================================================================== */
 
         .product-cart-wrap {
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -760,7 +760,8 @@
                                                 <p class="mb-2 small text-muted">
                                                     Unlock all ebooks and exclusive features with a premium subscription.
                                                 </p>
-                                                <a href="{{ route('pricing') }}#pricing-plans" class="btn btn-sm btn-outline-info">View
+                                                <a href="{{ route('pricing') }}#pricing-plans"
+                                                    class="btn btn-sm btn-outline-info">View
                                                     Plans</a>
                                             </div>
                                         @endif
@@ -803,7 +804,8 @@
                                             <input type="hidden" name="tab" value="wishlist">
                                             <div class="row g-3 align-items-end">
                                                 <div class="col-md-6">
-                                                    <label for="wishlist_search" class="form-label">Search by Title</label>
+                                                    <label for="wishlist_search" class="form-label">Search by
+                                                        Title</label>
                                                     <input type="text" class="form-control h-100" name="search"
                                                         id="wishlist_search" placeholder="e.g., Bali Travel Guide"
                                                         value="{{ request('search') }}">
@@ -822,8 +824,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <button type="submit"
-                                                        class="btn-read-now text-white px-4 py-2 mt-2">
+                                                    <button type="submit" class="btn-read-now text-white px-4 py-2 mt-2">
                                                         <i class="fi fi-rs-search me-2"></i>Search
                                                     </button>
                                                 </div>
@@ -1125,6 +1126,23 @@
                                                     $totalSeconds > 0
                                                         ? min(100, max(0, ($elapsedSeconds / $totalSeconds) * 100))
                                                         : 0;
+
+                                                // Variables for upgrade/downgrade filtering
+                                                $currentPlan = $plan;
+                                                $currentDuration = $plan->duration_days ?? 0;
+
+                                                // Compute upgrade/downgrade plans if subscriptionPlans is available
+                                                if (isset($subscriptionPlans) && $subscriptionPlans) {
+                                                    $upgradePlans = $subscriptionPlans->filter(function ($p) use ($currentDuration) {
+                                                        return $p->duration_days > $currentDuration;
+                                                    });
+                                                    $downgradePlans = $subscriptionPlans->filter(function ($p) use ($currentDuration) {
+                                                        return $p->duration_days < $currentDuration;
+                                                    });
+                                                } else {
+                                                    $upgradePlans = collect();
+                                                    $downgradePlans = collect();
+                                                }
                                             @endphp
 
                                             <div class="row mb-4">
@@ -1165,7 +1183,8 @@
                                                             </p>
                                                         @elseif($paymentType === 'upgrade')
                                                             <p class="mb-0">
-                                                                <span class="badge bg-primary-subtle text-primary mb-1">
+                                                                <span class="badge bg-primary-subtle text-primary mb-1"
+                                                                    style="border:1px solid #5A97FA; border-radius: 100px;">
                                                                     <i class="fi fi-rs-arrow-up me-1"></i> Upgraded
                                                                 </span><br>
                                                                 Upgraded on
@@ -1174,10 +1193,22 @@
                                                                     Valid until {{ $sub->end_date->format('d M Y H:i') }}
                                                                 </small>
                                                             </p>
+                                                        @elseif($paymentType === 'downgrade')
+                                                            <p class="mb-0">
+                                                                <span class="badge text-white mb-1"
+                                                                    style="background-color: #ff9800; border:1px solid #ff9800; border-radius: 100px;">
+                                                                    Downgraded
+                                                                </span><br>
+                                                                Downgraded on
+                                                                <strong>{{ $sub->start_date->format('d M Y H:i') }}</strong><br>
+                                                                <small class="text-muted">
+                                                                    Valid until {{ $sub->end_date->format('d M Y H:i') }}
+                                                                </small>
+                                                            </p>
                                                         @else
                                                             <p class="mb-0">
                                                                 <span class="badge bg-success-subtle text-success mb-1">
-                                                                    <i class="fi fi-rs-check me-1"></i> New Subscription
+                                                                    New Subscription
                                                                 </span><br>
                                                                 <strong>{{ $durationDays }}
                                                                     day{{ $durationDays > 1 ? 's' : '' }}</strong>
@@ -1252,43 +1283,88 @@
 
                                             <!-- Upgrade Options -->
                                             @if (isset($subscriptionPlans) && $subscriptionPlans->isNotEmpty())
-                                                <div class="mt-4 pt-3 border-top">
-                                                    <h6 class="fw-bold mb-3">Upgrade to Higher Tier</h6>
-                                                    <div class="row g-3">
-                                                        @foreach ($subscriptionPlans as $upgradePlan)
-                                                            <div class="col-lg-4 col-md-6">
-                                                                <div class="card border-primary h-100">
-                                                                    <div class="card-body d-flex flex-column">
-                                                                        <h6 class="card-title mb-2">
-                                                                            {{ $upgradePlan->name }}</h6>
-                                                                        <p class="text-muted small mb-2">
-                                                                            <i class="bi bi-calendar-check me-1"></i>
-                                                                            {{ $upgradePlan->duration_days }} days access
-                                                                        </p>
-                                                                        <p class="h5 text-success mb-3">Rp
-                                                                            {{ number_format($upgradePlan->price, 0, ',', '.') }}
-                                                                        </p>
-                                                                        <form action="{{ route('subscription.upgrade') }}"
-                                                                            method="POST" class="mt-auto">
-                                                                            @csrf
-                                                                            <input type="hidden" name="plan_slug"
-                                                                                value="{{ $upgradePlan->slug }}">
-                                                                            <button type="submit"
-                                                                                class="custom-button custom-button--primary text-white px-4 w-100">
-                                                                                Upgrade Now
-                                                                            </button>
-                                                                        </form>
+                                                <!-- UPGRADE SECTION -->
+                                                @if ($upgradePlans->isNotEmpty())
+                                                    <div class="mt-4 pt-3 border-top">
+                                                        <h6 class="fw-bold mb-3">
+                                                            Upgrade to Higher Tier</h6>
+                                                        <div class="row g-3">
+                                                            @foreach ($upgradePlans as $upgradePlan)
+                                                                <div class="col-lg-3 col-md-6">
+                                                                    <div class="card border-success h-100">
+                                                                        <div class="card-body d-flex flex-column">
+                                                                                <small class="mb-2 fs-9">
+                                                                                    {{ $upgradePlan->name }}
+                                                                                </small>
+                                                                            <p class="text-muted small mb-2">
+                                                                                <i class="bi bi-calendar-check me-1"></i>
+                                                                                {{ $upgradePlan->duration_days }} days
+                                                                                access
+                                                                            </p>
+                                                                            <p class="h5 text-success mb-3">Rp
+                                                                                {{ number_format($upgradePlan->price, 0, ',', '.') }}
+                                                                            </p>
+                                                                            <form
+                                                                                action="{{ route('subscription.upgrade') }}"
+                                                                                method="POST" class="mt-auto">
+                                                                                @csrf
+                                                                                <input type="hidden" name="plan_slug"
+                                                                                    value="{{ $upgradePlan->slug }}">
+                                                                                <button type="submit"
+                                                                                    class="custom-button custom-button--primary text-white px-4 w-100">
+                                                                                    Upgrade Now
+                                                                                </button>
+                                                                            </form>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        @endforeach
+                                                            @endforeach
+                                                        </div>
                                                     </div>
-                                                    <p class="text-muted small mt-3 mb-0">
-                                                        <i class="bi bi-info-circle me-1"></i>
-                                                        Upgrading will deactivate your current subscription and create a new
-                                                        one with the selected plan.
-                                                    </p>
-                                                </div>
+                                                @endif
+
+                                                <!-- DOWNGRADE SECTION -->
+                                                @if ($downgradePlans->isNotEmpty())
+                                                    <div class="mt-4 pt-3 border-top">
+                                                        <h6 class="fw-bold mb-3"><i class="fi fi-rs-arrow-down"
+                                                                style="color: #ff9800;" me-2></i>Downgrade to Lower Tier
+                                                        </h6>
+                                                        <div class="row g-3">
+                                                            @foreach ($downgradePlans as $downgradePlan)
+                                                                <div class="col-lg-3 col-md-6">
+                                                                    <div class="card border-warning h-100">
+                                                                        <div class="card-body d-flex flex-column">
+                                                                            <h6 class="mb-2">
+                                                                                {{ $downgradePlan->name }}</h6>
+                                                                            <p class="text-muted small mb-2">
+                                                                                <i class="bi bi-calendar-check me-1"></i>
+                                                                                {{ $downgradePlan->duration_days }} days
+                                                                                access
+                                                                            </p>
+                                                                            <p class="h5 mb-3" style="color: #ff9800;">Rp
+                                                                                {{ number_format($downgradePlan->price, 0, ',', '.') }}
+                                                                            </p>
+                                                                            <form
+                                                                                action="{{ route('subscription.downgrade') }}"
+                                                                                method="POST" class="mt-auto">
+                                                                                @csrf
+                                                                                <input type="hidden" name="plan_slug"
+                                                                                    value="{{ $downgradePlan->slug }}">
+                                                                                <button type="submit"
+                                                                                    class="custom-button text-white px-4 w-100"
+                                                                                    style="background-color: #ff9800; border-color: #ff9800;">
+                                                                                    <i
+                                                                                        class="fi fi-rs-arrow-down me-1"></i>
+                                                                                    Downgrade Now
+                                                                                </button>
+                                                                            </form>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                @endif
                                             @endif
                                         @else
                                             <!-- No Active Subscription -->
@@ -1316,11 +1392,9 @@
                                                         <tr>
                                                             <th scope="col" class="ps-3 py-3">Date</th>
                                                             <th scope="col" class="py-3">Plan</th>
-                                                            <th scope="col" class="py-3">Period</th>
                                                             <th scope="col" class="py-3">Amount</th>
-                                                            <th scope="col" class="py-3">Method</th>
                                                             <th scope="col" class="py-3 text-center">Status</th>
-                                                            {{-- <th scope="col" class="py-3">Action</th> --}}
+                                                            <th scope="col" class="py-3">Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody class="px-3">
@@ -1363,14 +1437,15 @@
                                                                         // Renewal
                                                                         $displayStatus = 'Renewed';
                                                                         $statusBadgeClass = 'bg-info-subtle text-info';
-                                                                    } elseif (
-                                                                        $paymentType === 'upgrade' ||
-                                                                        $sub->status === 'upgraded'
-                                                                    ) {
+                                                                    } elseif ($paymentType === 'upgrade') {
                                                                         // Upgrade
                                                                         $displayStatus = 'Upgraded';
                                                                         $statusBadgeClass =
                                                                             'bg-primary-subtle text-primary';
+                                                                    } elseif ($paymentType === 'downgrade') {
+                                                                        // Downgrade
+                                                                        $displayStatus = 'Downgraded';
+                                                                        $statusBadgeClass = 'text-white';
                                                                     } else {
                                                                         // Active (new subscription)
                                                                         $displayStatus = 'Active';
@@ -1382,87 +1457,125 @@
                                                             <tr>
                                                                 <td class="ps-3 py-3">
                                                                     {{ $payment->created_at->format('d M Y') }}</td>
-                                                                <td class="py-3">{{ $payment->plan?->name ?? '-' }}</td>
                                                                 <td class="py-3">
-                                                                    @if ($sub)
-                                                                        @if ($paymentType === 'renewal')
-                                                                            {{-- RENEWAL: Show extension info --}}
-                                                                            <div class="small">
-                                                                                Extended
-                                                                                <strong
-                                                                                    class="text-success">+{{ $durationDays }}
-                                                                                    day{{ $durationDays > 1 ? 's' : '' }}
-                                                                                </strong><br>
-                                                                            </div>
-                                                                        @elseif($paymentType === 'upgrade')
-                                                                            {{-- UPGRADE: Show period range --}}
-                                                                            <div class="small">
-                                                                                {{ $sub->start_date->format('d M Y H:i') }}
-                                                                                - {{ $sub->end_date->format('d M Y H:i') }}
-                                                                            </div>
-                                                                        @else
-                                                                            {{-- NEW: Show full period range --}}
-                                                                            <div class="small">
-                                                                                <span
-                                                                                    class="badge bg-success-subtle text-success mb-1">
-                                                                                    <i class="fi fi-rs-check"></i> New
-                                                                                </span><br>
-                                                                                <strong>{{ $sub->start_date->format('d M Y H:i') }}</strong><br>
-                                                                                <span class="text-muted">to</span><br>
-                                                                                <strong>{{ $sub->end_date->format('d M Y H:i') }}</strong>
-                                                                            </div>
-                                                                        @endif
-                                                                    @else
-                                                                        <span class="text-muted small">—</span>
-                                                                    @endif
+                                                                    <div>
+                                                                        <strong>{{ $payment->plan?->name ?? '-' }}</strong><br>
+                                                                        <small>
+                                                                            @if ($sub)
+                                                                                @if ($paymentType === 'renewal')
+                                                                                    Extended by <strong class="text-success">+{{ $durationDays }} day{{ $durationDays > 1 ? 's' : '' }}</strong>
+                                                                                @elseif ($paymentType === 'upgrade')
+                                                                                    Extended by <strong class="text-success">+{{ $durationDays }} day{{ $durationDays > 1 ? 's' : '' }}</strong>
+                                                                                @elseif ($paymentType === 'downgrade')
+                                                                                    Duration <strong class="text-warning">{{ $durationDays }} day{{ $durationDays > 1 ? 's' : '' }}</strong>
+                                                                                @else
+                                                                                    Duration <strong class="text-success">{{ $durationDays }} day{{ $durationDays > 1 ? 's' : '' }}</strong>
+                                                                                @endif
+                                                                            @else
+                                                                                —
+                                                                            @endif
+                                                                        </small>
+                                                                    </div>
                                                                 </td>
                                                                 <td class="py-3 fw-medium">Rp
                                                                     {{ number_format((float) $payment->amount, 0, ',', '.') }}
                                                                 </td>
-                                                                <td class="py-3">
-                                                                    {{ ucfirst($payment->payment_method ?? '—') }}</td>
                                                                 <td class="py-3 text-center">
-                                                                    {{-- Dual Status: Payment Status | Subscription Status --}}
+                                                                    {{-- Status Display: Pending payments show "Pending + Operation Type", Paid show subscription status --}}
                                                                     <div
                                                                         class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
-                                                                        {{-- PAYMENT STATUS --}}
                                                                         @if ($payment->status === 'pending')
+                                                                            {{-- PENDING PAYMENT: Show "Pending + Operation Type" --}}
                                                                             <span
                                                                                 class="badge bg-warning-subtle text-warning rounded-pill px-2 py-1">
                                                                                 Pending
                                                                             </span>
+                                                                            @if ($paymentType === 'renewal')
+                                                                                <span
+                                                                                    class="badge bg-info-subtle text-info rounded-pill px-2 py-1">
+                                                                                    Renewed
+                                                                                </span>
+                                                                            @elseif ($paymentType === 'upgrade')
+                                                                                <span
+                                                                                    class="badge bg-primary-subtle text-primary rounded-pill px-2 py-1">
+                                                                                    Upgraded
+                                                                                </span>
+                                                                            @elseif ($paymentType === 'downgrade')
+                                                                                <span
+                                                                                    class="badge bg-primary-subtle text-warning rounded-pill px-2 py-1">
+                                                                                    Downgraded
+                                                                                </span>
+                                                                            @endif
                                                                         @else
-                                                                            <span
-                                                                                class="badge bg-success-subtle text-success rounded-pill px-2 py-1">
-                                                                                Paid
-                                                                            </span>
-                                                                        @endif
+                                                                            {{-- PAID PAYMENT: Show Paid + Subscription Status (or Paid + Operation Type) --}}
+                                                                            @if ($paymentType === 'renewal')
+                                                                                <span
+                                                                                    class="badge bg-success-subtle text-success rounded-pill px-2 py-1">
+                                                                                    Paid
+                                                                                </span>
+                                                                                <span
+                                                                                    class="badge bg-info-subtle text-info rounded-pill px-2 py-1">
+                                                                                    Renewed
+                                                                                </span>
+                                                                            @elseif ($paymentType === 'upgrade')
+                                                                                <span
+                                                                                    class="badge bg-success-subtle text-success rounded-pill px-2 py-1">
+                                                                                    Paid
+                                                                                </span>
+                                                                                <span
+                                                                                    class="badge bg-primary-subtle text-primary rounded-pill px-2 py-1">
+                                                                                    Upgraded
+                                                                                </span>
+                                                                            @elseif ($paymentType === 'downgrade')
+                                                                                <span
+                                                                                    class="badge bg-success-subtle text-success rounded-pill px-2 py-1">
+                                                                                    Paid
+                                                                                </span>
+                                                                                <span
+                                                                                    class="badge text-danger rounded-pill px-2 py-1">
+                                                                                    Downgraded
+                                                                                </span>
+                                                                            @else
+                                                                                {{-- For 'new' subscription, show subscription status if available --}}
+                                                                                <span
+                                                                                    class="badge bg-success-subtle text-success rounded-pill px-2 py-1">
+                                                                                    Paid
+                                                                                </span>
 
-                                                                        {{-- SUBSCRIPTION STATUS --}}
-                                                                        @if ($sub)
-                                                                            <span
-                                                                                class="badge {{ $statusBadgeClass }} rounded-pill px-2 py-1">
-                                                                                {{ $displayStatus }}
-                                                                            </span>
-                                                                        @elseif($payment->status === 'success')
-                                                                            <span
-                                                                                class="badge bg-secondary-subtle text-secondary rounded-pill px-2 py-1">
-                                                                                No Sub
-                                                                            </span>
+                                                                                @if ($sub)
+                                                                                    <span
+                                                                                        class="badge {{ $statusBadgeClass }} rounded-pill px-2 py-1">
+                                                                                        {{ $displayStatus }}
+                                                                                    </span>
+                                                                                @elseif($payment->status === 'success')
+                                                                                    <span
+                                                                                        class="badge bg-secondary-subtle text-secondary rounded-pill px-2 py-1">
+                                                                                        No Sub
+                                                                                    </span>
+                                                                                @endif
+                                                                            @endif
                                                                         @endif
                                                                     </div>
                                                                 </td>
-                                                                {{-- <td>
+                                                                <td>
                                                                     @if ($payment->status === 'success')
                                                                         <a href="{{ route('user.invoice.download', $payment) }}"
+                                                                            download
                                                                             class="btn btn-sm"
                                                                             title="Download Invoice">
-                                                                            <i class="bi bi-printer"></i>
+                                                                            <i class="bi bi-printer mt-1"></i>
+                                                                        </a>
+                                                                    @elseif ($payment->status === 'pending' && $payment->plan)
+                                                                        {{-- Pending: Show link to payment gateway --}}
+                                                                        <a href="{{ $payment->plan->mayar_payment_link }}"
+                                                                            target="_blank" class="btn btn-sm"
+                                                                            title="Continue Payment">
+                                                                            <i class="bi bi-eye mt-1"></i>
                                                                         </a>
                                                                     @else
-                                                                        <span class="text-muted small">—</span>
+                                                                        <span class="text-muted small mt-1">—</span>
                                                                     @endif
-                                                                </td> --}}
+                                                                </td>
                                                             </tr>
                                                         @endforeach
                                                     </tbody>
@@ -1474,8 +1587,8 @@
                             </div>
 
                             <!-- HELP CENTER TAB -->
-                            <div class="tab-pane fade {{ request('tab') == 'help' ? 'active show' : '' }}" id="help"
-                                role="tabpanel">
+                            <div class="tab-pane fade {{ request('tab') == 'help' ? 'active show' : '' }}"
+                                id="help" role="tabpanel">
                                 <div class="card border-0 shadow-sm rounded-3">
                                     <div class="card-header bg-white border-0 py-3">
                                         <h5 class="mb-0 fw-bold text-dark">Help & Support</h5>
@@ -1965,7 +2078,8 @@
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="city_slug" class="form-label">Filter by City</label>
-                                                    <select name="city_slug" id="city_slug" class="form-select form-select-md">
+                                                    <select name="city_slug" id="city_slug"
+                                                        class="form-select form-select-md">
                                                         <option value="">All Cities</option>
                                                         @foreach ($cities as $city)
                                                             <option value="{{ $city->slug }}"
@@ -1986,28 +2100,48 @@
                                         <!-- Content -->
                                         @if ($readingHistory->count() > 0)
                                             <div class="table-responsive">
-                                                <table class="table table-hover align-middle">
+                                                <table class="table align-middle">
                                                     <thead>
                                                         <tr>
+                                                            <th style="width: 80px;">Cover</th>
                                                             <th>Ebook</th>
                                                             <th>Last Read</th>
                                                             <th>Progress</th>
-                                                            <th>Last Page</th>
                                                             <th>Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         @foreach ($readingHistory as $reading)
                                                             @php
-                                                                // Ambil langsung dari database (tidak hitung ulang)
                                                                 $progress = $reading->progress_percentage ?? 0;
                                                                 $lastPage = $reading->last_page ?? 1;
                                                                 $ebook = $reading->ebook;
                                                             @endphp
                                                             <tr>
+                                                                <!--  FOTO COVER -->
+                                                                <td>
+                                                                    <div class="bg-light rounded"
+                                                                        style="width: 60px; height: 80px;">
+                                                                        @if ($ebook && $ebook->cover_image_url)
+                                                                            <img src="{{ $ebook->cover_image_url }}"
+                                                                                alt="{{ $ebook->title }}"
+                                                                                class="img-fluid rounded"
+                                                                                style="width: 60px; height: 80px; object-fit: cover;">
+                                                                        @else
+                                                                            <div
+                                                                                class="d-flex align-items-center justify-content-center h-100 text-muted">
+                                                                                <i class="fi fi-rs-book"></i>
+                                                                            </div>
+                                                                        @endif
+                                                                    </div>
+                                                                </td>
+
+                                                                <!--  JUDUL & AUTHOR -->
                                                                 <td>
                                                                     @if ($ebook)
-                                                                        <strong>{{ $ebook->title }}</strong><br>
+                                                                        <div class="fw-bold">
+                                                                            {{ $ebook->title }}
+                                                                        </div>
                                                                         <small class="text-muted">by
                                                                             {{ $ebook->creator?->pen_name ?? ($ebook->creator?->user?->name ?? 'Unknown') }}
                                                                         </small>
@@ -2015,31 +2149,32 @@
                                                                         <strong class="text-muted">E-book deleted</strong>
                                                                     @endif
                                                                 </td>
-                                                                <td>{{ $reading->last_read_at?->format('d M Y H:i') ?? '-' }}
-                                                                </td>
-                                                                @php
-                                                                    $ebook = $reading->ebook;
-                                                                    $progress = $reading->progress_percentage ?? 0;
-                                                                    $lastPage = $reading->last_page ?? 1;
-                                                                @endphp
+
+                                                                <!--  LAST READ -->
                                                                 <td>
-                                                                    <div class="d-flex align-items-center">
+                                                                    <small>{{ $reading->last_read_at?->format('d M Y H:i') ?? '-' }}</small>
+                                                                </td>
+
+                                                                <!--  PROGRESS -->
+                                                                <td>
+                                                                    <div class="d-flex align-items-center gap-2">
                                                                         <div class="progress"
-                                                                            style="height:8px;width:80px">
+                                                                            style="height: 8px; width: 80px; flex-shrink: 0;">
                                                                             <div class="progress-bar"
-                                                                                style="width:{{ $progress }}%; background-color: #FF4C61;">
+                                                                                style="width: {{ $progress }}%; background-color: #FF4C61;">
                                                                             </div>
                                                                         </div>
                                                                         <small
-                                                                            class="ms-2">{{ number_format($progress, 0) }}%</small>
+                                                                            class="text-nowrap">{{ number_format($progress, 0) }}%</small>
                                                                     </div>
                                                                 </td>
-                                                                <td>Page {{ $lastPage }}</td>
+
+                                                                <!--  ACTION -->
                                                                 <td>
                                                                     @if ($ebook)
                                                                         <a href="{{ route('user.ebook.read', $ebook->slug) }}"
                                                                             class="custom-button custom-button--primary text-white px-4">
-                                                                            Continue
+                                                                            Continue Reading
                                                                         </a>
                                                                     @endif
                                                                 </td>
@@ -2052,7 +2187,8 @@
                                             <div class="text-center py-5">
                                                 <i class="fi fi-rs-history text-muted" style="font-size: 64px;"></i>
                                                 <h4 class="mt-3">No Reading History Yet</h4>
-                                                <p class="text-muted">Start reading ebooks to build your reading history</p>
+                                                <p class="text-muted">Start reading ebooks to build your reading history
+                                                </p>
                                                 <a href="{{ route('page-account', ['tab' => 'library']) }}"
                                                     class="custom-button custom-button--primary text-white px-4 mt-2">Start
                                                     Reading</a>
@@ -2085,7 +2221,8 @@
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="city_slug" class="form-label">Filter by City</label>
-                                                    <select name="city_slug" id="city_slug" class="form-select form-select-md">
+                                                    <select name="city_slug" id="city_slug"
+                                                        class="form-select form-select-md">
                                                         <option value="">All Cities</option>
                                                         @foreach ($cities as $city)
                                                             <option value="{{ $city->slug }}"
@@ -2108,20 +2245,22 @@
                                             <div class="row g-4">
                                                 @foreach ($userRatings as $rating)
                                                     <div class="col-12">
-                                                        <div class="card h-100 border-0 shadow-sm transition-all"
-                                                            style="border-left: 4px solid #FF416C;">
+                                                        <div class="card h-100">
+                                                            <div class="row g-0 h-100"
+                                                                style="margin-top:-15px; margin-bottom:-20px;">
                                                                 <!--  COVER EBOOK DI KIRI -->
-                                                                <div class="col-md-2 col-lg-1">
+                                                                <div class="col-auto d-flex align-items-start"
+                                                                    style="width: 140px; padding-right: 15px">
                                                                     <a href="{{ route('ebooks.show', $rating->ebook->slug) }}"
-                                                                        class="d-block">
+                                                                        class="d-block w-100">
                                                                         <img src="{{ $rating->ebook->cover_image_url ?: asset('assets/imgs/shop/product-1-1.jpg') }}"
                                                                             alt="{{ $rating->ebook->title }}"
-                                                                            class="img-fluid rounded"
-                                                                            style="aspect-ratio: 2/3; object-fit: cover; border: 1px solid #e0e0e0;">
+                                                                            class="img-fluid rounded w-100"
+                                                                            style="aspect-ratio: 2/3; object-fit: cover; border: 1px solid #e0e0e0; margin: 2rem -0.90rem -20px 1rem;">
                                                                     </a>
                                                                 </div>
 
-                                                                <div class="col-md-10 col-lg-11">
+                                                                <div class="col d-flex flex-column">
                                                                     <div class="card-body">
                                                                         <div
                                                                             class="d-flex justify-content-between align-items-start mb-2">
@@ -2157,12 +2296,34 @@
                                                                                 {{ $rating->review_title }}</h6>
                                                                         @endif
 
-                                                                        <p class="card-text mb-3">
-                                                                            {{ Str::limit($rating->review_text, 200) }}
-                                                                        </p>
+                                                                        <div class="review-text-container"
+                                                                            style="margin-top:-10px;"
+                                                                            data-rating-id="{{ $rating->id }}">
+                                                                            <p class="card-text review-text"
+                                                                                data-rating-id="{{ $rating->id }}"
+                                                                                style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; font-size: 0.95rem;">
+                                                                                {{ $rating->review_text }}
+                                                                            </p>
 
-                                                                        <div
-                                                                            class="d-flex justify-content-between align-items-center">
+                                                                            @php
+                                                                                $textLength = strlen(
+                                                                                    $rating->review_text,
+                                                                                );
+                                                                                $shouldShowMore = $textLength > 180;
+                                                                            @endphp
+
+                                                                            @if ($shouldShowMore)
+                                                                                <button type="button"
+                                                                                    class="review-toggle-btn"
+                                                                                    data-rating-id="{{ $rating->id }}"
+                                                                                    style="background: none; border: none; color: #FF416C; font-weight: 600; padding: 0; font-size: 0.85rem; cursor: pointer; margin-bottom: 10px;">
+                                                                                    More
+                                                                                </button>
+                                                                            @endif
+                                                                        </div>
+
+                                                                        <div class="d-flex justify-content-between align-items-center"
+                                                                            style="margin-top: -10px;">
                                                                             <!--  TANGGAL + STATUS EDITED -->
                                                                             <small>
                                                                                 <i class="fi fi-rs-calendar me-1"></i>
@@ -2182,197 +2343,167 @@
                                                                                     title="Edit review">
                                                                                     Edit
                                                                                 </button>
-                                                                                <a href="{{ route('ebooks.show', $rating->ebook->slug) }}"
-                                                                                    class="custom-button custom-button--primary text-white px-4 mt-1">
-                                                                                    <i class="fi fi-rs-book-open me-1"></i>
-                                                                                    View Ebook
-                                                                                </a>
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <!--  MODAL EDIT REVIEW -->
-                                                        <div class="modal fade" id="editReviewModal-{{ $rating->id }}"
-                                                            tabindex="-1">
-                                                            <div class="modal-dialog modal-dialog-centered">
-                                                                <div class="modal-content border-0 shadow-sm rounded-3">
-                                                                    <div class="modal-header border-0 pb-0">
-                                                                        <h5 class="modal-title fw-bold">Edit Review</h5>
-                                                                        <button type="button" class="btn-close"
-                                                                            data-bs-dismiss="modal"></button>
-                                                                    </div>
-
-                                                                    <!-- ✅ FORM BIASA (TANPA AJAX) -->
-                                                                    <form method="POST"
-                                                                        action="{{ route('user.account.reviews.update', $rating->id) }}">
-                                                                        @csrf
-                                                                        @method('PUT')
-
-                                                                        <div class="modal-body p-4">
-                                                                            <!-- Rating (Dropdown) -->
-                                                                            <div class="mb-3">
-                                                                                <label class="form-label fw-medium">Your
-                                                                                    Rating</label>
-                                                                                <select name="rating"
-                                                                                    class="form-select">
-                                                                                    <option value="5"
-                                                                                        {{ $rating->rating == 5 ? 'selected' : '' }}>
-                                                                                        5 - Excellent</option>
-                                                                                    <option value="4"
-                                                                                        {{ $rating->rating == 4 ? 'selected' : '' }}>
-                                                                                        4 - Very Good</option>
-                                                                                    <option value="3"
-                                                                                        {{ $rating->rating == 3 ? 'selected' : '' }}>
-                                                                                        3 - Average</option>
-                                                                                    <option value="2"
-                                                                                        {{ $rating->rating == 2 ? 'selected' : '' }}>
-                                                                                        2 - Poor</option>
-                                                                                    <option value="1"
-                                                                                        {{ $rating->rating == 1 ? 'selected' : '' }}>
-                                                                                        1 - Terrible</option>
-                                                                                </select>
-                                                                            </div>
-
-                                                                            <!-- Review Text -->
-                                                                            <div class="mb-3">
-                                                                                <label class="form-label">Your
-                                                                                    Review</label>
-                                                                                <textarea class="form-control" name="review_text" rows="8" required style="min-height: 200px; resize: vertical;">{{ $rating->review_text }}</textarea>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <div class="modal-footer border-0 pt-0 pb-4 px-4">
-                                                                            <button type="button" class="btn-edit-review"
-                                                                                data-bs-dismiss="modal">
-                                                                                Cancel
-                                                                            </button>
-                                                                            <button type="submit"
-                                                                                class="btn-edit-review">
-                                                                                Save Changes
-                                                                            </button>
-                                                                        </div>
-                                                                    </form>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
+
+                                                    {{-- REUSABLE MODAL COMPONENT --}}
+                                                    @include('components.edit-review-modal', [
+                                                        'rating' => $rating,
+                                                    ])
+                                                @endforeach
                                             </div>
-                                        @endforeach
+                                        @else
+                                            <div class="text-center py-5">
+                                                <i class="fi fi-rs-star text-muted"
+                                                    style="font-size: 64px; color: #FF416C;"></i>
+                                                <h5 class="mt-4 fw-bold text-dark">No Reviews Yet</h5>
+                                                <p class="text-muted mb-4">Share your thoughts by reviewing ebooks you've
+                                                    read</p>
+                                                <a href="{{ route('page-account') }}?tab=library"
+                                                    class="custom-button custom-button--primary text-white px-4">
+                                                    Browse Ebooks
+                                                </a>
+                                            </div>
+                                        @endif
                                     </div>
-                                @else
-                                    <div class="text-center py-5">
-                                        <i class="fi fi-rs-star text-muted" style="font-size: 64px; color: #FF416C;"></i>
-                                        <h5 class="mt-4 fw-bold text-dark">No Reviews Yet</h5>
-                                        <p class="text-muted mb-4">Share your thoughts by reviewing ebooks you've read</p>
-                                        <a href="{{ route('page-account') }}?tab=library"
-                                            class="custom-button custom-button--primary text-white px-4">
-                                            Browse Ebooks
-                                        </a>
-                                    </div>
-                                    @endif
                                 </div>
-                            </div>
 
+                                <script>
+                                    // Handle all review toggle buttons
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        const toggleButtons = document.querySelectorAll('.review-toggle-btn');
 
+                                        toggleButtons.forEach(button => {
+                                            button.addEventListener('click', function() {
+                                                const ratingId = this.getAttribute('data-rating-id');
+                                                const textElement = document.querySelector(
+                                                    `.review-text[data-rating-id="${ratingId}"]`);
 
-                            <!-- CREATOR TAB -->
-                            <!-- <div class="tab-pane fade {{ request('tab') == 'creator' ? 'active show' : '' }}" id="creator"
-                                                    role="tabpanel">
-                                                    <div class="card">
-                                                        <div class="card-header">
-                                                            <h5 class="mb-0">Creator Dashboard</h5>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            @if (auth()->user()->isCreator())
-                                                            @if (isset($createdEbooks) && $createdEbooks->count() > 0)
-                                                            <div class="row mb-4">
-                                                                <div class="col-md-3 mb-3">
-                                                                    <div class="text-center p-3 border rounded">
-                                                                        <h4 class="text-primary">{{ $createdEbooks->count() }}</h4>
-                                                                        <p class="mb-0">Published Ebooks</p>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-3 mb-3">
-                                                                    <div class="text-center p-3 border rounded">
-                                                                        <h4 class="text-success">{{ $createdEbooks->sum('view_count') }}</h4>
-                                                                        <p class="mb-0">Total Views</p>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-3 mb-3">
-                                                                    <div class="text-center p-3 border rounded">
-                                                                        <h4 class="text-warning">{{ $createdEbooks->sum('read_count') }}</h4>
-                                                                        <p class="mb-0">Total Reads</p>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-3 mb-3">
-                                                                    <div class="text-center p-3 border rounded">
-                                                                        <h4 class="text-info">{{ $createdEbooks->sum('total_reviews') }}</h4>
-                                                                        <p class="mb-0">Total Reviews</p>
-                                                                    </div>
-                                                                </div>
+                                                if (textElement) {
+                                                    const isCollapsed = this.textContent.trim() === 'More';
+
+                                                    if (isCollapsed) {
+                                                        // Expand text
+                                                        textElement.style.webkitLineClamp = 'unset';
+                                                        textElement.style.webkitBoxOrient = 'unset';
+                                                        textElement.style.overflow = 'visible';
+                                                        textElement.style.textOverflow = 'clip';
+                                                        textElement.style.display = 'block';
+                                                        this.textContent = 'Less';
+                                                    } else {
+                                                        // Collapse text
+                                                        textElement.style.webkitLineClamp = '3';
+                                                        textElement.style.webkitBoxOrient = 'vertical';
+                                                        textElement.style.overflow = 'hidden';
+                                                        textElement.style.textOverflow = 'ellipsis';
+                                                        textElement.style.display = '-webkit-box';
+                                                        this.textContent = 'More';
+                                                    }
+                                                }
+                                            });
+                                        });
+                                    });
+                                </script>
+                                <!-- CREATOR TAB -->
+                                <!-- <div class="tab-pane fade {{ request('tab') == 'creator' ? 'active show' : '' }}" id="creator"
+                                                        role="tabpanel">
+                                                        <div class="card">
+                                                            <div class="card-header">
+                                                                <h5 class="mb-0">Creator Dashboard</h5>
                                                             </div>
+                                                            <div class="card-body">
+                                                                @if (auth()->user()->isCreator())
+                                                                @if (isset($createdEbooks) && $createdEbooks->count() > 0)
+                                                                <div class="row mb-4">
+                                                                    <div class="col-md-3 mb-3">
+                                                                        <div class="text-center p-3 border rounded">
+                                                                            <h4 class="text-primary">{{ $createdEbooks->count() }}</h4>
+                                                                            <p class="mb-0">Published Ebooks</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-3 mb-3">
+                                                                        <div class="text-center p-3 border rounded">
+                                                                            <h4 class="text-success">{{ $createdEbooks->sum('view_count') }}</h4>
+                                                                            <p class="mb-0">Total Views</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-3 mb-3">
+                                                                        <div class="text-center p-3 border rounded">
+                                                                            <h4 class="text-warning">{{ $createdEbooks->sum('read_count') }}</h4>
+                                                                            <p class="mb-0">Total Reads</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-3 mb-3">
+                                                                        <div class="text-center p-3 border rounded">
+                                                                            <h4 class="text-info">{{ $createdEbooks->sum('total_reviews') }}</h4>
+                                                                            <p class="mb-0">Total Reviews</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
 
-                                                            <h6>Your Published Ebooks</h6>
-                                                            <div class="row">
-                                                                @foreach ($createdEbooks as $ebook)
+                                                                <h6>Your Published Ebooks</h6>
+                                                                <div class="row">
+                                                                    @foreach ($createdEbooks as $ebook)
     <div class="col-md-4 mb-4">
-                                                                    <div class="card h-100">
-                                                                        <img src="@if ($ebook->cover_image && filter_var($ebook->cover_image, FILTER_VALIDATE_URL)) {{ $ebook->cover_image }}@elseif($ebook->cover_image){{ asset('storage/' . $ebook->cover_image) }}@else{{ asset('images/ebook-placeholder.webp') }} @endif"
-                                                                            class="card-img-top" alt="{{ $ebook->title }}"
-                                                                            style="height: 200px; object-fit: cover;">
-                                                                        <div class="card-body">
-                                                                            <h6 class="card-title">{{ $ebook->title }}</h6>
-                                                                            <p class="card-text small text-muted">
-                                                                                {{ $ebook->short_description }}
-                                                                            </p>
-                                                                            <div class="mb-2">
-                                                                                @foreach ($ebook->categories as $category)
+                                                                        <div class="card h-100">
+                                                                            <img src="@if ($ebook->cover_image && filter_var($ebook->cover_image, FILTER_VALIDATE_URL)) {{ $ebook->cover_image }}@elseif($ebook->cover_image){{ asset('storage/' . $ebook->cover_image) }}@else{{ asset('images/ebook-placeholder.webp') }} @endif"
+                                                                                class="card-img-top" alt="{{ $ebook->title }}"
+                                                                                style="height: 200px; object-fit: cover;">
+                                                                            <div class="card-body">
+                                                                                <h6 class="card-title">{{ $ebook->title }}</h6>
+                                                                                <p class="card-text small text-muted">
+                                                                                    {{ $ebook->short_description }}
+                                                                                </p>
+                                                                                <div class="mb-2">
+                                                                                    @foreach ($ebook->categories as $category)
     <span>{{ $category->name }}</span>
     @endforeach
+                                                                                </div>
+                                                                                <div class="d-flex justify-content-between small text-muted">
+                                                                                    <span>Views: {{ $ebook->view_count }}</span>
+                                                                                    <span>Reads: {{ $ebook->read_count }}</span>
+                                                                                    <span>Rating: {{ $ebook->average_rating }}/5</span>
+                                                                                </div>
                                                                             </div>
-                                                                            <div class="d-flex justify-content-between small text-muted">
-                                                                                <span>Views: {{ $ebook->view_count }}</span>
-                                                                                <span>Reads: {{ $ebook->read_count }}</span>
-                                                                                <span>Rating: {{ $ebook->average_rating }}/5</span>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="card-footer bg-transparent">
-                                                                            <div class="d-flex gap-2">
-                                                                                <button class="btn btn-sm">Edit</button>
-                                                                                <button class="custom-button custom-button--primary text-white px-4">Stats</button>
+                                                                            <div class="card-footer bg-transparent">
+                                                                                <div class="d-flex gap-2">
+                                                                                    <button class="btn btn-sm">Edit</button>
+                                                                                    <button class="custom-button custom-button--primary text-white px-4">Stats</button>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
     @endforeach
-                                                            </div>
+                                                                </div>
 @else
     <div class="text-center py-4">
-                                                                <i class="fi fi-rs-edit text-muted" style="font-size: 48px;"></i>
-                                                                <h5 class="mt-3">No Published Ebooks Yet</h5>
-                                                                <p class="text-muted">Start creating and publishing your ebooks</p>
-                                                                <button class="custom-button custom-button--primary text-white px-4">Create Your First Ebook</button>
-                                                            </div>
-                                                            @endif
+                                                                    <i class="fi fi-rs-edit text-muted" style="font-size: 48px;"></i>
+                                                                    <h5 class="mt-3">No Published Ebooks Yet</h5>
+                                                                    <p class="text-muted">Start creating and publishing your ebooks</p>
+                                                                    <button class="custom-button custom-button--primary text-white px-4">Create Your First Ebook</button>
+                                                                </div>
+                                                                @endif
 @else
     <div class="text-center py-4">
-                                                                <i class="fi fi-rs-edit text-muted" style="font-size: 48px;"></i>
-                                                                <h5 class="mt-3">Become a Creator</h5>
-                                                                <p class="text-muted">Start sharing your knowledge by creating ebooks</p>
-                                                                <button class="custom-button custom-button--primary text-white px-4">Apply as Creator</button>
+                                                                    <i class="fi fi-rs-edit text-muted" style="font-size: 48px;"></i>
+                                                                    <h5 class="mt-3">Become a Creator</h5>
+                                                                    <p class="text-muted">Start sharing your knowledge by creating ebooks</p>
+                                                                    <button class="custom-button custom-button--primary text-white px-4">Apply as Creator</button>
+                                                                </div>
+                                                                @endif
                                                             </div>
-                                                            @endif
                                                         </div>
-                                                    </div>
-                                                </div> -->
+                                                    </div> -->
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
     </main>
 
     <!-- Change Password Modal -->

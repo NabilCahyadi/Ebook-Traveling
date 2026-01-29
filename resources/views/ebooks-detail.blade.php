@@ -192,19 +192,19 @@
         }
 
         /* .rating-label {
-            font-size: 0.9rem;
-            color: #495057;
-        }
+                font-size: 0.9rem;
+                color: #495057;
+            }
 
-        .rating-value {
-            font-size: 0.85rem;
-            color: #6c757d;
-        }
+            .rating-value {
+                font-size: 0.85rem;
+                color: #6c757d;
+            }
 
-        .average-score {
-            font-size: 1.2rem;
-            font-weight: 600;
-        } */
+            .average-score {
+                font-size: 1.2rem;
+                font-weight: 600;
+            } */
 
         .card {
             border: 1px solid #e9ecef;
@@ -608,14 +608,37 @@
                                         <div class="comment-list">
                                             @forelse ($ratings as $rating)
                                                 <div class="single-comment mb-30">
-                                                    <div class="review-header">
-                                                        <div class="product-rate d-inline-block">
-                                                            <div class="product-rating"
-                                                                style="width: {{ ($rating->rating / 5) * 100 }}%"></div>
+                                                    {{-- HEADER: Rating + Date + Edit Button (sejajar) --}}
+                                                    <div
+                                                        class="review-header d-flex justify-content-between align-items-center mb-2">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <div class="product-rate d-inline-block">
+                                                                <div class="product-rating"
+                                                                    style="width: {{ ($rating->rating / 5) * 100 }}%">
+                                                                </div>
+                                                            </div>
+                                                            <div class="review-date">
+                                                                {{ $rating->created_at->format('F d, Y') }}
+                                                                @if ($rating->updated_at && $rating->updated_at->gt($rating->created_at))
+                                                                    <span class="text-muted"
+                                                                        style="font-size: 0.85rem;">(edited
+                                                                        {{ $rating->updated_at->format('M d') }})</span>
+                                                                @endif
+                                                            </div>
                                                         </div>
-                                                        <div class="review-date">
-                                                            {{ $rating->created_at->format('F d, Y') }}</div>
+                                                        {{-- Edit Button di sebelah kanan --}}
+                                                        @if (auth()->check() && auth()->id() == $rating->user_id)
+                                                            <button data-bs-toggle="modal"
+                                                                data-bs-target="#editReviewModal-{{ $rating->id }}"
+                                                                title="Edit your review"
+                                                                class="btn bg-transparent border-0 p-0 text-danger d-inline-flex align-items-center justify-content-center"
+                                                                style="width: 36px; height: 36px;">
+                                                                <i class="bi bi-pencil-square fs-6"></i>
+                                                            </button>
+                                                        @endif
                                                     </div>
+
+                                                    {{-- USER INFO --}}
                                                     <div class="review-user">
                                                         <div class="avatar-container">
                                                             <img src="{{ $rating->user->avatar ? asset('storage/' . $rating->user->avatar) : asset('/images/user-avatar.png') }}"
@@ -645,6 +668,11 @@
                                                 </div>
                                             @endforelse
                                         </div>
+
+                                        {{-- Include Edit Review Modals for All Ratings --}}
+                                        @foreach ($ratings as $rating)
+                                            @include('components.edit-review-modal', ['rating' => $rating])
+                                        @endforeach
 
                                         <!-- PAGINASI -->
                                         @if ($ratings->hasPages())

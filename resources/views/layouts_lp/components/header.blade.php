@@ -353,8 +353,8 @@
                             <div class="categori-dropdown-inner-new">
                                 <ul class="category-list-columns">
                                     @forelse ($headerCategories as $category)
-                                    <li class="category-item">
-                                        <a href="{{ route('category.show', $category->slug) }}">
+                                    <li class="category-item" onclick="window.location.href='{{ route('category.show', $category->slug) }}';" style="cursor: pointer;">
+                                        <a href="{{ route('category.show', $category->slug) }}" onclick="event.preventDefault();">
                                             @if ($category->image)
                                             <img src="{{ asset($category->image) }}" alt="{{ $category->name }}" />
                                             @else
@@ -368,14 +368,6 @@
                                     @endforelse
                                 </ul>
                             </div>
-
-                            {{-- HAPUS SELURUH BLOK INI --}}
-                            {{-- <div class="more_categories">
-            <button id="toggle-categories-btn" class="btn-link">
-                <span class="icon"></span>
-                <span class="heading-sm-1">Show more...</span>
-            </button>
-        </div> --}}
                         </div>
                     </div>
                     <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block font-heading">

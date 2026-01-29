@@ -12,256 +12,303 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            line-height: 1.6;
-            color: #333;
+            font-family: 'Courier New', monospace;
+            background: #f5f5f5;
+            padding: 20px;
         }
 
-        .container {
-            max-width: 800px;
+        .receipt {
+            max-width: 380px;
             margin: 0 auto;
-            padding: 30px 20px;
+            background: white;
+            padding: 20px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
+        /* Header */
         .header {
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #ddd;
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px dashed #333;
+            padding-bottom: 15px;
         }
 
         .header h1 {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 3px;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 11px;
+            color: #666;
+            margin: 2px 0;
         }
 
         .header .invoice-number {
-            font-size: 13px;
+            font-size: 12px;
+            margin-top: 8px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .header .date {
+            font-size: 11px;
             color: #666;
+            margin-top: 5px;
+        }
+
+        /* Status */
+        .status {
+            text-align: center;
             margin-bottom: 15px;
+            font-size: 12px;
+            font-weight: bold;
         }
 
-        .header-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            color: #666;
+        .status.paid {
+            color: #27ae60;
         }
 
+        .status.pending {
+            color: #f39c12;
+        }
+
+        /* Customer Info */
         .section {
-            margin-bottom: 25px;
+            margin-bottom: 15px;
+            border-bottom: 1px dashed #ddd;
+            padding-bottom: 12px;
         }
 
         .section-title {
-            font-size: 12px;
+            font-size: 10px;
             font-weight: bold;
             color: #333;
             text-transform: uppercase;
-            margin-bottom: 8px;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
         }
 
-        .info-row {
+        .info-line {
             display: flex;
             justify-content: space-between;
-            font-size: 13px;
-            margin-bottom: 6px;
-            line-height: 1.5;
-        }
-
-        .info-label {
-            color: #666;
-            min-width: 140px;
-        }
-
-        .info-value {
+            font-size: 12px;
+            margin: 3px 0;
             color: #333;
-            font-weight: 500;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+
+        .value {
             text-align: right;
-            flex: 1;
+        }
+
+        /* Items */
+        .items {
+            margin-bottom: 15px;
+        }
+
+        .item {
+            border-bottom: 1px dashed #ddd;
+            padding: 10px 0;
+        }
+
+        .item-name {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .item-period {
+            font-size: 10px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .item-price {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Total */
+        .total-section {
+            margin-bottom: 15px;
+            padding: 8px 0;
+        }
+
+        .total-line {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin: 3px 0;
+        }
+
+        .total-line.amount {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .total-amount {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            font-weight: bold;
+            border-top: 2px solid #333;
+            border-bottom: 2px solid #333;
+            padding: 8px 0;
+            margin: 8px 0;
+        }
+
+        /* Payment Details */
+        .payment-details {
+            margin-bottom: 15px;
+            border-bottom: 1px dashed #ddd;
+            padding-bottom: 12px;
+        }
+
+        .payment-detail {
+            font-size: 11px;
+            margin: 4px 0;
+            color: #333;
+        }
+
+        .payment-label {
+            font-weight: bold;
+        }
+
+        .payment-value {
+            margin-left: 10px;
+            word-break: break-all;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 15px;
+            padding-top: 12px;
+            border-top: 1px dashed #ddd;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .footer p {
+            margin: 3px 0;
         }
 
         .divider {
-            border-top: 1px solid #eee;
-            margin: 20px 0;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 13px;
-        }
-
-        thead {
-            background: #f5f5f5;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            padding: 10px 8px;
-            text-align: left;
-            font-weight: bold;
-            color: #333;
-            font-size: 12px;
-        }
-
-        td {
-            padding: 10px 8px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .text-right {
-            text-align: right;
-        }
-
-        .summary-box {
-            margin-top: 20px;
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        .summary-item {
-            min-width: 250px;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            margin-bottom: 8px;
-            padding: 0 8px;
-        }
-
-        .summary-row.total {
-            border-top: 1px solid #ddd;
-            padding-top: 8px;
-            font-weight: bold;
-            font-size: 15px;
-            color: #333;
-        }
-
-        .footer {
-            margin-top: 40px;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
             text-align: center;
-            font-size: 11px;
-            color: #999;
+            font-size: 14px;
+            margin: 10px 0;
+            color: #ddd;
         }
 
-        .small-text {
-            font-size: 12px;
-            color: #666;
+        /* Print */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .receipt {
+                max-width: 100%;
+                border: none;
+                box-shadow: none;
+                padding: 0;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="receipt">
         <!-- Header -->
         <div class="header">
-            <h1>INVOICE</h1>
-            <div class="invoice-number">{{ $invoiceNumber }}</div>
-            <div class="header-row">
-                <div>{{ $invoiceDate->format('d F Y') }}</div>
-                <div>
-                    @if($payment->status === 'success')
-                        <strong>PAID</strong>
-                    @elseif($payment->status === 'pending')
-                        PENDING
-                    @else
-                        {{ strtoupper($payment->status) }}
-                    @endif
-                </div>
-            </div>
+            <h1>MEATMAP</h1>
+            <p>Premium eBook Subscription</p>
+            <div class="invoice-number">INVOICE #{{ $invoiceNumber }}</div>
+            <div class="date">{{ $invoiceDate->format('d M Y H:i') }}</div>
         </div>
 
-        <!-- Customer Info -->
+        <!-- Customer -->
         <div class="section">
-            <div class="section-title">Bill To</div>
-            <div class="info-row">
-                <div class="info-label">Name:</div>
-                <div class="info-value">{{ $user->name }}</div>
+            <div class="section-title">Customer</div>
+            <div class="info-line">
+                <span class="label">Name</span>
+                <span class="value">{{ $user->name }}</span>
             </div>
-            <div class="info-row">
-                <div class="info-label">Email:</div>
-                <div class="info-value">{{ $user->email }}</div>
+            <div class="info-line">
+                <span class="label">Email</span>
+                <span class="value" style="font-size: 10px;">{{ $user->email }}</span>
             </div>
         </div>
-
-        <div class="divider"></div>
 
         <!-- Items -->
-        <table>
-            <thead>
-                <tr>
-                    <th>Description</th>
-                    <th class="text-right" style="width: 140px;">Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <strong>{{ $plan->name ?? 'Subscription Plan' }}</strong>
-                        <br>
-                        @if($subscription)
-                            <span class="small-text">
-                                {{ $subscription->start_date->format('d M Y') }} - {{ $subscription->end_date->format('d M Y') }}
-                            </span>
-                        @endif
-                    </td>
-                    <td class="text-right">
-                        <strong>Rp {{ number_format($payment->amount, 0, ',', '.') }}</strong>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- Summary -->
-        <div class="summary-box">
-            <div class="summary-item">
-                <div class="summary-row">
-                    <span>Subtotal:</span>
-                    <span>Rp {{ number_format($payment->amount, 0, ',', '.') }}</span>
-                </div>
-                <div class="summary-row">
-                    <span>Tax:</span>
-                    <span>Rp 0</span>
-                </div>
-                <div class="summary-row total">
-                    <span>Total:</span>
+        <div class="items">
+            <div class="section-title" style="margin-bottom: 8px;">Item</div>
+            <div class="item">
+                <div class="item-name">{{ $plan->name ?? 'Subscription Plan' }}</div>
+                @if($subscription)
+                    <div class="item-period">
+                        {{ $subscription->start_date->format('d M Y') }} - {{ $subscription->end_date->format('d M Y') }}
+                    </div>
+                @endif
+                <div class="item-price">
+                    <span>1x</span>
                     <span>Rp {{ number_format($payment->amount, 0, ',', '.') }}</span>
                 </div>
             </div>
         </div>
 
-        <div class="divider"></div>
+        <!-- Total -->
+        <div class="total-section">
+            <div class="total-line amount">
+                <span>Subtotal</span>
+                <span>Rp {{ number_format($payment->amount, 0, ',', '.') }}</span>
+            </div>
+            <div class="total-line amount">
+                <span>Tax (0%)</span>
+                <span>Rp 0</span>
+            </div>
+            <div class="total-amount">
+                <span>TOTAL</span>
+                <span>Rp {{ number_format($payment->amount, 0, ',', '.') }}</span>
+            </div>
+        </div>
 
-        <!-- Payment Info -->
-        <div class="section">
-            <div class="section-title">Payment Details</div>
-            <div class="info-row">
-                <div class="info-label">Method:</div>
-                <div class="info-value">{{ ucfirst($payment->payment_method ?? '-') }}</div>
+        <!-- Payment Details -->
+        <div class="payment-details">
+            <div class="section-title" style="margin-bottom: 8px;">Payment</div>
+            <div class="payment-detail">
+                <span class="payment-label">Method:</span>
+                <span class="payment-value">{{ ucfirst($payment->payment_method ?? 'E-Wallet') }}</span>
             </div>
-            <div class="info-row">
-                <div class="info-label">Gateway:</div>
-                <div class="info-value">{{ ucfirst($payment->payment_gateway ?? '-') }}</div>
+            <div class="payment-detail">
+                <span class="payment-label">Gateway:</span>
+                <span class="payment-value">{{ ucfirst($payment->payment_gateway ?? 'Mayar.id') }}</span>
             </div>
-            <div class="info-row">
-                <div class="info-label">Transaction ID:</div>
-                <div class="info-value">{{ $payment->gateway_transaction_id ?? $payment->id }}</div>
+            <div class="payment-detail">
+                <span class="payment-label">Transaction:</span>
+                <span class="payment-value">{{ substr($payment->gateway_transaction_id ?? $payment->id, 0, 20) }}...</span>
             </div>
-            <div class="info-row">
-                <div class="info-label">Date Paid:</div>
-                <div class="info-value">{{ $payment->paid_at ? $payment->paid_at->format('d F Y') : 'Pending' }}</div>
-            </div>
+            @if($payment->paid_at)
+                <div class="payment-detail">
+                    <span class="payment-label">Paid:</span>
+                    <span class="payment-value">{{ $payment->paid_at->format('d M Y H:i') }}</span>
+                </div>
+            @endif
         </div>
 
         <!-- Footer -->
         <div class="footer">
-            <p>Thank you for being part of MeatMap</p>
-            <p style="margin-top: 8px;">MeatMap &copy; {{ date('Y') }}</p>
+            <div class="divider">- - - - - - - - - - - - - - - -</div>
+            <p>Thank you for your subscription!</p>
+            <p style="margin-top: 5px;">https://dev-new.mappy.id/</p>
+            <p style="margin-top: 5px; font-size: 10px;">MeatMap © {{ date('Y') }}</p>
         </div>
     </div>
 </body>

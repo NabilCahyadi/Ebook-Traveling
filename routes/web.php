@@ -29,6 +29,9 @@ require __DIR__ . '/modules/auth.php';
 // Load User Routes
 require __DIR__ . '/modules/user.php';
 
+// Load Test Routes (untuk debugging)
+require __DIR__ . '/test-invoice.php';
+
 // Load Creator Routes
 require __DIR__ . '/modules/creator.php';
 

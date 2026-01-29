@@ -12,22 +12,22 @@
         line-height: 1.5;
     }
 
-    /* Style untuk judul koleksi (h1) */
+    /* Style untuk judul koleksi */
     .section-title.style-2 h3 {
         margin-bottom: 5px;
     }
 
-    /* Style untuk tombol scroll (saat dinonaktifkan) */
-    /* Catatan: Aturan ini akan digunakan jika Anda menambahkan tombol scroll kembali */
-    .scroll-btn:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-        pointer-events: none;
+    /* Gaya kolom untuk baris dan spacing */
+    .row.product-grid-4 {
+        margin-left: -15px;
+        margin-right: -15px;
     }
 
-    /* ==========================================================================
-       Kustomisasi Tampilan E-book
-    ========================================================================== */
+    .row.product-grid-4 > div {
+        padding-left: 15px;
+        padding-right: 15px;
+        margin-bottom: 30px;
+    }
 
     /* Gaya Umum untuk Kartu */
     .product-cart-wrap {
@@ -36,7 +36,6 @@
         display: flex;
         flex-direction: column;
         height: 100%;
-        min-height: 520px;
     }
 
     .product-content-wrap {
@@ -45,46 +44,23 @@
         flex-grow: 1;
     }
 
-    /* Gaya untuk Judul Buku (digabung dari 2 aturan) */
+    /* Gaya untuk Judul Buku */
     .product-cart-wrap h2 {
         font-size: 1.1rem;
         line-height: 1.4;
         margin-bottom: 0.5rem;
-        min-height: 3.2em;
-        /* Untuk konsistensi tinggi */
         display: -webkit-box;
         -webkit-line-clamp: 2;
-        /* Maksimal 2 baris */
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
+        min-height: 3.2em;
     }
 
     .product-author {
         font-size: 0.9rem;
         color: var(--text-color-muted);
-        margin-bottom: 0.75rem;
-    }
-
-    /* Gaya untuk Deskripsi Buku (digabung dari 2 aturan) */
-    .product-description {
-        font-size: 0.85rem;
-        color: var(--text-color-muted);
-        margin-bottom: 1rem;
-        min-height: 2.8em;
-        /* Untuk konsistensi tinggi */
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        flex-grow: 1;
-    }
-
-    /* Maksimal 2 baris */
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
+        margin-bottom: -12px;
     }
 
     .product-meta {
@@ -114,7 +90,6 @@
         position: relative;
         width: 100%;
         padding-top: 140%;
-        /* Rasio 5:7 (tinggi 140% dari lebar) untuk cover buku */
         overflow: hidden;
         border-radius: 15px;
         background-color: #f5f5f5;
@@ -128,6 +103,21 @@
         height: 100%;
         object-fit: cover;
         object-position: center;
+    }
+
+    /* Gaya untuk Deskripsi Buku */
+    .product-description {
+        font-size: 0.85rem;
+        color: var(--text-color-muted);
+        margin-bottom: 0.5rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-height: 2.8em;
+        flex-grow: 1;
+        margin-bottom: -0.80rem;
     }
 
     /* --- Gaya untuk Tombol Aksi --- */
@@ -151,7 +141,7 @@
     }
 
     .btn-read-now:hover {
-        background-color: #FF4C61;
+        background-color: #de364aff;
         color: #fff;
     }
 
@@ -165,14 +155,6 @@
         box-shadow: 0 5px 15px rgba(255, 76, 97, 0.4);
         color: #FF4C61;
         background-color: #fff;
-    }
-
-    .product-meta {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
-        font-size: 0.8rem;
     }
 </style>
 <section class="product-tabs section-padding position-relative">
@@ -289,7 +271,6 @@
                                             @endif
                                         </div>
                                     </div>
-
                                 </div>
                             @endforeach
                         @else

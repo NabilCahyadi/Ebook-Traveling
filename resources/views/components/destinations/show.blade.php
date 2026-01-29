@@ -299,13 +299,7 @@
                     </div>
 
                     {{-- HERO: Gambar + Teks di Tengah Bawah --}}
-                    <div class="city-hero-card rounded-3 overflow-hidden shadow-sm" style="position: relative; height: 450px;">
-                        <!-- Gambar sebagai background -->
-                        <img src="{{ $city->image ?: 'https://via.placeholder.com/1200x450.png?text=' . urlencode($city->name) }}"
-                            alt="{{ $city->name }}"
-                            class="w-100 h-100"
-                            style="object-fit: cover;">
-
+                    <div class="city-hero-card rounded-3 overflow-hidden shadow-sm destination-hero-image" data-image="{{ $city->image }}" style="position: relative; height: 450px; background-color: #f0f0f0;">
                         <!-- Overlay gelap lembut -->
                         <div class="city-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent 60%);"></div>
 
@@ -366,9 +360,13 @@
                                             @php
                                                 $coverImage = $ebook->external_cover_url
                                                     ? $ebook->external_cover_url
-                                                    : ($ebook->cover_image_url ?? 'https://via.placeholder.com/300x400.png?text=No+Cover');
+                                                    : ($ebook->cover_image_url ?? '');
                                             @endphp
-                                            <img class="default-img" src="{{ $coverImage }}" alt="{{ $ebook->title }}" />
+                                            <img class="default-img ebook-cover-image"
+                                                 src="{{ $coverImage ?: 'https://via.placeholder.com/300x400.png?text=No+Cover' }}"
+                                                 data-fallback="https://via.placeholder.com/300x400.png?text=No+Cover"
+                                                 alt="{{ $ebook->title }}"
+                                                 onerror="this.src = this.getAttribute('data-fallback');" />
                                         </a>
                                     </div>
                                     <div class="product-badges product-badges-position product-badges-mrg">
@@ -449,4 +447,34 @@
         </div>
     </section>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const placeholderImage = '/images/placeholder-destination.jpg';
+
+        // Function untuk validate dan set background image
+        function setBackgroundImageHero(element, imageUrl) {
+            if (!imageUrl || imageUrl.trim() === '' || imageUrl.includes('null')) {
+                element.style.backgroundImage = `url('${placeholderImage}')`;
+                return;
+            }
+
+            const img = new Image();
+            img.onload = function() {
+                element.style.backgroundImage = `url('${imageUrl}')`;
+            };
+            img.onerror = function() {
+                element.style.backgroundImage = `url('${placeholderImage}')`;
+            };
+            img.src = imageUrl;
+        }
+
+        // Handle hero image
+        const heroElement = document.querySelector('.destination-hero-image');
+        if (heroElement) {
+            const imageUrl = heroElement.getAttribute('data-image');
+            setBackgroundImageHero(heroElement, imageUrl);
+        }
+    });
+</script>
 @endsection

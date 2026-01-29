@@ -285,7 +285,7 @@
             @forelse ($popularCities as $city)
             <!-- Ini adalah item slide untuk setiap kota, class-nya TIDAK BOLEH BERUBAH -->
             <!-- Kita tambahkan style inline untuk background image yang dinamis -->
-            <div class="item" style="background-image: url('{{ asset($city->image) }}');">
+            <div class="item destination-slider-item" data-image="{{ asset($city->image) }}" style="background-color: #f0f0f0;">
                 <!-- Ini adalah konten di dalam slide, class-nya TIDAK BOLEH BERUBAH -->
                 <div class="content">
                     <h2 class="name">{{ $city->name }}</h2>
@@ -298,7 +298,7 @@
             </div>
             @empty
             <!-- Ini adalah fallback jika tidak ada kota populer -->
-            <div class="item" style="background-image: url('https://via.placeholder.com/1200x600.png?text=No+Destinations');">
+            <div class="item" style="background-image: url('/images/placeholder-destination.jpg');">
                 <div class="content">
                     <h2 class="name">Discover Your Journey</h2>
                     <p class="description">Popular destinations will be shown here.</p>
@@ -334,9 +334,12 @@
             <div class="col-lg-3 col-md-4 col-sm-6">
                 {{-- Bungkus seluruh card dengan tag <a> --}}
                 <a href="{{ route('destination.show', $city->slug) }}" class="text-decoration-none destination-link">
-                    <div class="destination-card position-relative overflow-hidden" style="height: 250px; border-radius: 12px;">
-                        <!-- Gambar sebagai background -->
-                        <div class="destination-thumb" style="background-image: url('{{ asset($city->image) }}'); height: 100%; background-size: cover; background-position: center;"></div>
+                    <div class="destination-card position-relative overflow-hidden" style="height: 250px; border-radius: 12px; background-color: #f0f0f0;">
+                        <!-- Gambar sebagai background dengan fallback -->
+                        <div class="destination-thumb destination-card-item"
+                             data-image="{{ asset($city->image) }}"
+                             style="height: 100%; background-size: cover; background-position: center; background-color: #f0f0f0;">
+                        </div>
 
                         <!-- Overlay gelap untuk teks lebih terbaca -->
                         <div class="destination-overlay position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0,0,0,0.3);"></div>
@@ -359,18 +362,57 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const placeholderImage = '/images/placeholder-destination.jpg';
+
+        // Function untuk validate image dan set background
+        function setBackgroundImage(element, imageUrl) {
+            // Jika image path kosong, langsung gunakan placeholder
+            if (!imageUrl || imageUrl.trim() === '' || imageUrl.includes('null')) {
+                element.style.backgroundImage = `url('${placeholderImage}')`;
+                return;
+            }
+
+            // Test apakah image bisa diload
+            const img = new Image();
+            img.onload = function() {
+                element.style.backgroundImage = `url('${imageUrl}')`;
+            };
+            img.onerror = function() {
+                // Jika image gagal diload, gunakan placeholder
+                element.style.backgroundImage = `url('${placeholderImage}')`;
+            };
+            img.src = imageUrl;
+        }
+
+        // Handle slider items
+        document.querySelectorAll('.destination-slider-item').forEach(function(item) {
+            const imageUrl = item.getAttribute('data-image');
+            setBackgroundImage(item, imageUrl);
+        });
+
+        // Handle destination card items
+        document.querySelectorAll('.destination-card-item').forEach(function(item) {
+            const imageUrl = item.getAttribute('data-image');
+            setBackgroundImage(item, imageUrl);
+        });
+
+        // Slider navigation
         let next = document.querySelector('.next');
         let prev = document.querySelector('.prev');
 
-        next.addEventListener('click', function() {
-            let items = document.querySelectorAll('.item');
-            document.querySelector('.slide').appendChild(items[0]);
-        })
+        if (next) {
+            next.addEventListener('click', function() {
+                let items = document.querySelectorAll('.item');
+                document.querySelector('.slide').appendChild(items[0]);
+            });
+        }
 
-        prev.addEventListener('click', function() {
-            let items = document.querySelectorAll('.item');
-            document.querySelector('.slide').prepend(items[items.length - 1]);
-        })
+        if (prev) {
+            prev.addEventListener('click', function() {
+                let items = document.querySelectorAll('.item');
+                document.querySelector('.slide').prepend(items[items.length - 1]);
+            });
+        }
     });
 </script>
 @endsection

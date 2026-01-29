@@ -98,6 +98,8 @@ Route::middleware(['user.session'])->group(function () {
             ->name('subscription.renew');
         Route::post('/subscription/upgrade', [SubscriptionController::class, 'upgradeSubscription'])
             ->name('subscription.upgrade');
+        Route::post('/subscription/downgrade', [SubscriptionController::class, 'downgradeSubscription'])
+            ->name('subscription.downgrade');
     });
 
     Route::post('/subscription/create', [SubscriptionController::class, 'create'])

@@ -20,14 +20,28 @@ class InvoiceController extends Controller
             throw new AuthorizationException('Unauthorized');
         }
 
-        $data = $this->prepareInvoiceData($payment);
+        // Check if payment is completed
+        if ($payment->status !== 'success') {
+            return back()->with('error', 'Invoice is not available for this payment. Only completed payments can be downloaded.');
+        }
 
-        $pdf = Pdf::loadView('invoices.payment-invoice', $data);
+        try {
+            $data = $this->prepareInvoiceData($payment);
+            $pdf = Pdf::loadView('invoices.payment-invoice', $data);
+            $filename = 'Invoice-' . $payment->payment_code . '-' . date('Ymd') . '.pdf';
 
-        // Generate filename
-        $filename = 'Invoice-' . $payment->payment_code . '-' . date('Ymd') . '.pdf';
+            // Get PDF content and send as response
+            $pdfContent = $pdf->output();
 
-        return $pdf->download($filename);
+            return response($pdfContent, 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . $filename . '"',
+                'Pragma' => 'no-cache',
+                'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            ]);
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to generate invoice. Please try again later.');
+        }
     }
 
     /**

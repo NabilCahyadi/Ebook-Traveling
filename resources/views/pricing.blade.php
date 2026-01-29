@@ -661,10 +661,22 @@
                                                                     Upgrade Subscription
                                                                 </button>
                                                             </form>
+                                                        @elseif($plan->duration_days < $currentDuration)
+                                                            <!-- DOWNGRADE: Pakai form POST -->
+                                                            <form action="{{ route('subscription.downgrade') }}"
+                                                                method="POST" class="w-100">
+                                                                @csrf
+                                                                <input type="hidden" name="plan_slug"
+                                                                    value="{{ $plan->slug }}">
+                                                                <button type="submit"
+                                                                    class="btn text-white pricing-button--warning rounded-pill py-3 w-100 mb-1"
+                                                                    style="background-color: #FF4C61;">
+                                                                    Downgrade Subscription
+                                                                </button>
+                                                            </form>
                                                         @else
-                                                            <!-- DOWNGRADE atau SAME TIER: Tidak diizinkan -->
-                                                            <span class="text-muted small d-block text-center py-2">Upgrade
-                                                                only</span>
+                                                            <!-- SAME TIER: Tidak diizinkan -->
+                                                            <span class="text-muted small d-block text-center py-2">Same tier</span>
                                                         @endif
                                                     @else
                                                         @if (str_contains($plan->mayar_payment_link, 'mayar.shop'))

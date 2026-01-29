@@ -25,7 +25,84 @@ class MayarService
     }
 
     /**
-     * Generate payment link for subscription
+     * Create payment link via Mayar API (PREFERRED - dengan return_url yang benar)
+     * 
+     * @param User $user
+     * @param SubscriptionPlan $plan
+     * @param string $paymentId - Payment ID dari database payments table
+     * @return array ['success' => bool, 'data' => ['payment_url' => string], 'message' => string]
+     */
+    public function createPaymentLinkViaMayarAPI(User $user, SubscriptionPlan $plan, string $paymentId): array
+    {
+        try {
+            $payload = [
+                'external_id' => $paymentId,
+                'amount' => (int) $plan->price,
+                'description' => "Subscription: {$plan->name}",
+                'payer_name' => $user->name,
+                'payer_email' => $user->email,
+                'payer_phone' => $user->phone ? preg_replace('/\D/', '', $user->phone) : '628123456789',
+                'callback_url' => $this->callbackUrl,
+                'return_url' => $this->returnUrl, // ✅ Use correct return_url dari config
+                'expired_at' => now()->addHours(24)->toIso8601String(),
+                'is_test' => true,
+            ];
+
+            Log::info('MayarService: Creating payment link via API', [
+                'external_id' => $paymentId,
+                'amount' => $plan->price,
+                'return_url' => $this->returnUrl,
+            ]);
+
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ])->post($this->baseUrl . '/v1/payment-links', $payload);
+
+            if ($response->successful()) {
+                $paymentUrl = $response->json('data.payment_url') ?? $response->json('payment_url');
+                
+                Log::info('MayarService: Payment link created successfully', [
+                    'payment_url' => $paymentUrl
+                ]);
+                
+                return [
+                    'success' => true,
+                    'data' => [
+                        'payment_url' => $paymentUrl,
+                        'payment_id' => $response->json('data.id') ?? $response->json('id'),
+                    ],
+                    'message' => 'Payment link created successfully'
+                ];
+            }
+
+            Log::error('MayarService: Failed to create payment link via API', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+
+            return [
+                'success' => false,
+                'message' => $response->json('message') ?? 'Failed to create payment link',
+                'errors' => $response->json('errors') ?? []
+            ];
+        } catch (\Exception $e) {
+            Log::error('MayarService: Exception creating payment link', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return [
+                'success' => false,
+                'message' => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Generate payment link for subscription (LEGACY - masih gunakan hardcoded link)
+     * DEPRECATED: Gunakan createPaymentLinkViaMayarAPI() untuk redirect yang benar
      */
     public function generatePaymentLink(User $user, SubscriptionPlan $plan, ?string $paymentId = null): PaymentLink
     {

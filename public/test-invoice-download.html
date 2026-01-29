@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice Download Test</title>
+</head>
+<body>
+    <h1>Invoice Download Test</h1>
+
+    <h2>Test 1: Direct URL Test</h2>
+    <p>Klik link di bawah untuk test direct URL:</p>
+    <a href="https://overangry-uncriticisably-debra.ngrok-free.dev/user/invoice/1f715339-62ff-4fb2-a289-215cc1a50950/download"
+       target="_blank"
+       download>
+        Download via Direct URL (1f715339-62ff-4fb2-a289-215cc1a50950)
+    </a>
+
+    <hr>
+
+    <h2>Test 2: Check Console for Logs</h2>
+    <p>Buka DevTools (F12) → Console tab</p>
+    <p>Klik button di bawah dan lihat apakah ada console log:</p>
+    <button onclick="testClick()">Click Me & Check Console</button>
+
+    <script>
+        function testClick() {
+            console.log('Button clicked!');
+            console.log('Current URL:', window.location.href);
+            console.log('Testing fetch to invoice endpoint...');
+
+            // Try to fetch the payment data
+            fetch('https://overangry-uncriticisably-debra.ngrok-free.dev/api/test-payment')
+                .then(r => r.json())
+                .then(data => {
+                    console.log('Payment data:', data);
+                })
+                .catch(e => {
+                    console.log('Fetch error:', e);
+                });
+        }
+    </script>
+</body>
+</html>

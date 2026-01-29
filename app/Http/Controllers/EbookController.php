@@ -53,8 +53,96 @@ class EbookController extends Controller
         // Ambil semua rating untuk ditampilkan
         $ratings = $ebook->ratings()->latest()->paginate(3);
 
-        // TAMBAHKAN BARIS INI: Tambah 1 ke view_count
-        $ebook->increment('view_count');
+        // ============================================================
+        // TRACKING VIEW: Hanya hitung 1 view per user per 1 jam
+        // ============================================================
+        // Untuk user yang login: tracking by user ID
+        // Untuk guest: tracking by session ID (per device)
+
+        $ebookId = $ebook->id;
+        $now = now();
+
+        if (auth()->check()) {
+            // User yang login: track by user ID
+            $userId = auth()->id();
+            $sessionKey = "viewed_ebook_{$ebookId}_user_{$userId}";
+            $trackingType = "authenticated_user";
+        } else {
+            // Guest user: track by session ID
+            $sessionId = session()->getId();
+            $sessionKey = "viewed_ebook_{$ebookId}_guest_{$sessionId}";
+            $trackingType = "guest_user";
+        }
+
+        // Ambil waktu view terakhir dari session
+        $lastViewTime = session()->get($sessionKey);
+
+        // === DEBUG LOGGING ===
+        \Log::info("📖 [VIEW TRACKING] Started", [
+            'ebook_id' => $ebookId,
+            'ebook_title' => $ebook->title,
+            'tracking_type' => $trackingType,
+            'session_key' => $sessionKey,
+            'last_view_time' => $lastViewTime ? $lastViewTime->toDateTimeString() : null,
+            'now' => $now->toDateTimeString(),
+            'current_view_count' => $ebook->view_count,
+            'session_id' => session()->getId(),
+        ]);
+
+        // Jika belum ada di session atau sudah lebih dari 60 menit
+        $shouldIncrement = false;
+        $minutesElapsed = 0;
+
+        if ($lastViewTime === null) {
+            $shouldIncrement = true;
+            \Log::info("📖 [VIEW TRACKING] Reason: First view - no session data found");
+        } else {
+            $minutesElapsed = $now->diffInMinutes($lastViewTime);
+            if ($minutesElapsed >= 60) {
+                $shouldIncrement = true;
+                \Log::info("📖 [VIEW TRACKING] Reason: 1 hour passed - can count again", [
+                    'minutes_elapsed' => $minutesElapsed,
+                ]);
+            } else {
+                \Log::info("📖 [VIEW TRACKING] Reason: Within 1 hour - skip counting", [
+                    'minutes_elapsed' => $minutesElapsed,
+                    'minutes_remaining' => (60 - $minutesElapsed),
+                ]);
+            }
+        }
+
+        if ($shouldIncrement) {
+            try {
+                // Increment view_count di database
+                $ebook->increment('view_count');
+
+                // Refresh untuk mendapatkan nilai terbaru
+                $ebook->refresh();
+
+                \Log::info("✅ [VIEW TRACKING] View count incremented", [
+                    'ebook_id' => $ebookId,
+                    'ebook_title' => $ebook->title,
+                    'new_view_count' => $ebook->view_count,
+                    'session_key' => $sessionKey,
+                ]);
+
+                // Simpan waktu view sekarang ke session (berlaku 1 jam)
+                session()->put($sessionKey, $now);
+                session()->save(); // Force save session
+
+                \Log::info("💾 [VIEW TRACKING] Session updated", [
+                    'session_key' => $sessionKey,
+                    'saved_time' => $now->toDateTimeString(),
+                ]);
+            } catch (\Exception $e) {
+                \Log::error("❌ [VIEW TRACKING] Error during increment", [
+                    'ebook_id' => $ebookId,
+                    'error_message' => $e->getMessage(),
+                    'error_trace' => $e->getTraceAsString(),
+                ]);
+            }
+        }
+        // ============================================================
 
         // Cek apakah user yang login sudah pernah memberi rating
         $hasReviewed = false;

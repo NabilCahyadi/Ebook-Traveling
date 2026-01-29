@@ -299,9 +299,9 @@ class SubscriptionController extends Controller
 
                 return response('OK', 200);
 
-            } elseif ($paymentType === 'upgrade') {
-                // ✅ UPGRADE: Deactivate old subscription, create new one
-                Log::info('⬆️ Processing upgrade payment');
+            } elseif ($paymentType === 'upgrade' || $paymentType === 'downgrade') {
+                // ✅ UPGRADE/DOWNGRADE: Update plan + extend duration (DO NOT DELETE OLD DURATION)
+                Log::info($paymentType === 'upgrade' ? '⬆️ Processing upgrade payment' : '⬇️ Processing downgrade payment');
 
                 // ✅ UPDATE PAYMENT STATUS TO SUCCESS
                 if ($externalId && $payment) {
@@ -312,56 +312,50 @@ class SubscriptionController extends Controller
                             'paid_at' => now(),
                             'updated_at' => now(),
                         ]);
-                    Log::info('💳 Upgrade payment updated to success', [
+                    Log::info('💳 ' . ucfirst($paymentType) . ' payment updated to success', [
                         'payment_id' => $externalId,
                         'old_status' => $payment->status,
                         'new_status' => 'success',
                     ]);
                 }
 
-                $oldSubscription = DB::table('subscriptions')
+                $existingSubscription = DB::table('subscriptions')
                     ->where('user_id', $user->id)
                     ->where('status', 'active')
+                    ->where('end_date', '>=', now())
+                    ->orderBy('end_date', 'desc')
                     ->first();
 
-                if ($oldSubscription) {
-                    // Deactivate old subscription
+                if ($existingSubscription) {
+                    // ✅ UPDATE existing subscription: change plan + extend duration
+                    $oldPlanId = $existingSubscription->subscription_plan_id;
+                    $currentEndDate = \Carbon\Carbon::parse($existingSubscription->end_date);
+                    $newEndDate = $currentEndDate->copy()->addDays($plan->duration_days);
+
                     DB::table('subscriptions')
-                        ->where('id', $oldSubscription->id)
+                        ->where('id', $existingSubscription->id)
                         ->update([
-                            'status' => 'upgraded',
+                            'subscription_plan_id' => $plan->id,
+                            'end_date' => $newEndDate->format('Y-m-d H:i:s'),
+                            'total_amount' => DB::raw("`total_amount` + {$plan->price}"),
                             'updated_at' => now(),
                         ]);
 
-                    Log::info('📝 Old subscription deactivated', [
-                        'old_subscription_id' => $oldSubscription->id,
-                        'old_status' => 'active',
-                        'new_status' => 'upgraded',
+                    Log::info('🎉 Subscription ' . $paymentType . ' successfully', [
+                        'subscription_id' => $existingSubscription->id,
+                        'subscription_code' => $existingSubscription->subscription_code,
+                        'old_plan_id' => $oldPlanId,
+                        'new_plan_id' => $plan->id,
+                        'new_plan_name' => $plan->name,
+                        'old_end_date' => $existingSubscription->end_date,
+                        'new_end_date' => $newEndDate->format('Y-m-d H:i:s'),
+                        'extended_days' => $plan->duration_days,
+                        'operation' => $paymentType,
                     ]);
+                } else {
+                    Log::error('❌ No active subscription found for ' . $paymentType);
+                    return response('No active subscription to ' . $paymentType, 400);
                 }
-
-                // Create new subscription with higher tier plan
-                $subscription = Subscription::create([
-                    'user_id' => $user->id,
-                    'subscription_plan_id' => $plan->id,
-                    'payment_id' => $externalId,
-                    'status' => 'active',
-                    'start_date' => now(),
-                    'end_date' => now()->addDays($plan->duration_days),
-                    'subscription_code' => 'SUB-' . strtoupper(Str::random(8)),
-                    'total_amount' => $plan->price,
-                    'auto_renew' => false,
-                ]);
-
-                Log::info('🎉 Subscription upgraded successfully', [
-                    'old_subscription_id' => $oldSubscription->id ?? null,
-                    'new_subscription_id' => $subscription->id,
-                    'new_subscription_code' => $subscription->subscription_code,
-                    'plan_id' => $plan->id,
-                    'plan_name' => $plan->name,
-                    'start_date' => $subscription->start_date->toDateTimeString(),
-                    'end_date' => $subscription->end_date->toDateTimeString(),
-                ]);
 
                 return response('OK', 200);
 
@@ -369,12 +363,13 @@ class SubscriptionController extends Controller
                 // ✅ NEW SUBSCRIPTION: Create new subscription (existing logic)
                 Log::info('🆕 Processing new subscription payment');
 
-                // ✅ UPDATE PAYMENT STATUS TO SUCCESS
+                // ✅ UPDATE PAYMENT STATUS TO SUCCESS + SET PAYMENT_TYPE
                 if ($externalId && $payment) {
                     DB::table('payments')
                         ->where('id', $externalId)
                         ->update([
                             'status' => 'success',
+                            'payment_type' => 'new', // ✅ Ensure payment_type is 'new'
                             'paid_at' => now(),
                             'updated_at' => now(),
                         ]);
@@ -382,6 +377,7 @@ class SubscriptionController extends Controller
                         'payment_id' => $externalId,
                         'old_status' => $payment->status,
                         'new_status' => 'success',
+                        'payment_type' => 'new',
                     ]);
                 }
 
@@ -459,22 +455,34 @@ class SubscriptionController extends Controller
             'amount' => $plan->price,
             'status' => 'pending',
             'payment_method' => 'mayar',
+            'payment_type' => 'new', // ✅ Set payment_type untuk new subscription
             'payment_code' => 'PAY-' . strtoupper(Str::random(8)),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        // Kirim externalId = payment_id
-        $queryParams = http_build_query([
-            'external_id' => $paymentId,
-            'customer_name' => $user->name ?? 'Customer',
-            'customer_email' => $user->email ?? 'user@example.com',
+        // ✅ PERBAIKAN: Gunakan MayarService untuk create payment link via API
+        // Ini memastikan return_url correct dan auto-fill parameters terintegrasi
+        $mayarService = new \App\Services\MayarService();
+        $response = $mayarService->createPaymentLinkViaMayarAPI($user, $plan, $paymentId);
+
+        if (!$response['success']) {
+            Log::error('Failed to create payment link', [
+                'payment_id' => $paymentId,
+                'plan' => $plan->slug,
+                'error' => $response['message']
+            ]);
+            return redirect()->back()->with('error', 'Failed to create payment link. Please try again.');
+        }
+
+        $paymentUrl = $response['data']['payment_url'];
+        
+        Log::info('Redirecting to Mayar payment', [
+            'payment_id' => $paymentId,
+            'url' => $paymentUrl
         ]);
 
-        $url = $plan->mayar_payment_link;
-        $url .= (str_contains($url, '?') ? '&' : '?') . $queryParams;
-
-        return redirect($url);
+        return redirect($paymentUrl);
     }
 
     public function paymentSuccess()
@@ -490,8 +498,8 @@ class SubscriptionController extends Controller
         session()->forget('user_premium_status');
         session()->put('user_premium_status', $user->hasActiveSubscription());
 
-        // Redirect ke page-account tab dashboard dengan popup sukses
-        return redirect('/page-account?tab=dashboard')->with('payment_success', true);
+        // ✅ Redirect ke page-account dengan query string yang clean (tanpa external_id)
+        return redirect()->route('page-account', ['tab' => 'dashboard'])->with('payment_success', true);
     }
 
     /**
@@ -716,6 +724,115 @@ class SubscriptionController extends Controller
         $url .= (str_contains($url, '?') ? '&' : '?') . $queryParams;
 
         Log::info('🔗 Redirecting to Mayar for upgrade', [
+            'url' => $url,
+            'payment_id' => $paymentId,
+        ]);
+
+        return redirect($url);
+    }
+
+    /**
+     * Downgrade subscription to lower tier
+     * Similar to upgrade but allows downgrades (plan with lower duration_days)
+     */
+    public function downgradeSubscription(Request $request): RedirectResponse
+    {
+        $user = auth()->user();
+        $newPlanSlug = $request->input('plan_slug');
+
+        // ✅ LOG: Downgrade request started
+        Log::info('⬇️ Downgrade request started', [
+            'user_id' => $user->id,
+            'user_email' => $user->email,
+            'new_plan_slug' => $newPlanSlug,
+        ]);
+
+        if (!$newPlanSlug) {
+            Log::warning('⚠️ No plan slug provided for downgrade');
+            return redirect()->back()->with('error', 'Please select a plan to downgrade to.');
+        }
+
+        // Get current active subscription
+        $currentSubscription = DB::table('subscriptions')
+            ->where('user_id', $user->id)
+            ->where('status', 'active')
+            ->first();
+
+        if (!$currentSubscription) {
+            Log::warning('⚠️ No active subscription found for downgrade', [
+                'user_id' => $user->id,
+            ]);
+            return redirect()->back()->with('error', 'No active subscription to downgrade.');
+        }
+
+        // Get current and new plans
+        $currentPlan = SubscriptionPlan::find($currentSubscription->subscription_plan_id);
+        $newPlan = SubscriptionPlan::where('slug', $newPlanSlug)->first();
+
+        if (!$currentPlan || !$newPlan) {
+            Log::error('❌ Plan not found for downgrade', [
+                'current_plan_id' => $currentSubscription->subscription_plan_id,
+                'new_plan_slug' => $newPlanSlug,
+            ]);
+            return redirect()->back()->with('error', 'Subscription plan not found.');
+        }
+
+        // ✅ Validate: new plan must have lower duration (lower tier) - OPPOSITE of upgrade
+        if ($newPlan->duration_days >= $currentPlan->duration_days) {
+            Log::warning('⚠️ Cannot downgrade to higher or same tier plan', [
+                'current_duration' => $currentPlan->duration_days,
+                'new_duration' => $newPlan->duration_days,
+            ]);
+            return redirect()->back()->with('error', 'Can only downgrade to a lower tier plan. For upgrades, use the upgrade option.');
+        }
+
+        Log::info('📦 Plans found for downgrade', [
+            'current_plan' => [
+                'id' => $currentPlan->id,
+                'name' => $currentPlan->name,
+                'duration_days' => $currentPlan->duration_days,
+            ],
+            'new_plan' => [
+                'id' => $newPlan->id,
+                'name' => $newPlan->name,
+                'duration_days' => $newPlan->duration_days,
+            ],
+        ]);
+
+        // Create payment record with payment_type = 'downgrade'
+        $paymentId = (string) Str::uuid();
+        DB::table('payments')->insert([
+            'id' => $paymentId,
+            'user_id' => $user->id,
+            'subscription_id' => $currentSubscription->id, // Link to old subscription
+            'subscription_plan_id' => $newPlan->id, // New plan
+            'amount' => $newPlan->price,
+            'status' => 'pending',
+            'payment_method' => 'mayar',
+            'payment_type' => 'downgrade', // ✅ Mark as downgrade
+            'payment_code' => 'DWN-' . strtoupper(Str::random(8)),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        Log::info('💳 Downgrade payment record created', [
+            'payment_id' => $paymentId,
+            'old_subscription_id' => $currentSubscription->id,
+            'new_plan_id' => $newPlan->id,
+            'payment_type' => 'downgrade',
+        ]);
+
+        // Build Mayar payment URL with query params
+        $queryParams = http_build_query([
+            'external_id' => $paymentId,
+            'customer_name' => $user->name ?? 'Customer',
+            'customer_email' => $user->email ?? 'user@example.com',
+        ]);
+
+        $url = $newPlan->mayar_payment_link;
+        $url .= (str_contains($url, '?') ? '&' : '?') . $queryParams;
+
+        Log::info('🔗 Redirecting to Mayar for downgrade', [
             'url' => $url,
             'payment_id' => $paymentId,
         ]);
