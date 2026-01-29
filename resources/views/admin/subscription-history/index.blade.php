@@ -219,12 +219,12 @@
                             <tr>
                                 <td>
                                     <div class="d-flex flex-column">
-                                        <span class="fw-semibold">{{ $subscription->user->name }}</span>
-                                        <small class="text-muted">{{ $subscription->user->email }}</small>
+                                        <span class="fw-semibold">{{ $subscription->user->name ?? 'User Deleted' }}</span>
+                                        <small class="text-muted">{{ $subscription->user->email ?? '-' }}</small>
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="badge bg-label-info">{{ $subscription->plan->name }}</span>
+                                    <span class="badge bg-label-info">{{ $subscription->plan->name ?? 'Plan Deleted' }}</span>
                                 </td>
                                 <td>
                                     @if ($subscription->payment_id)
@@ -338,15 +338,19 @@
                                             <div class="row mb-3">
                                                 <div class="col-md-6">
                                                     <small class="text-muted d-block">{{ __('admin.subscription_history.user') }}</small>
-                                                    <p class="mb-0 fw-semibold">{{ $subscription->user->name }}</p>
-                                                    <small class="text-muted">{{ $subscription->user->email }}</small>
+                                                    <p class="mb-0 fw-semibold">{{ $subscription->user->name ?? 'User Deleted' }}</p>
+                                                    <small class="text-muted">{{ $subscription->user->email ?? '-' }}</small>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <small class="text-muted d-block">{{ __('admin.subscription_history.plan') }}</small>
-                                                    <p class="mb-0 fw-semibold">{{ $subscription->plan->name }}</p>
-                                                    <span class="badge bg-label-info">Rp
-                                                        {{ number_format($subscription->plan->price, 0, ',', '.') }} /
-                                                        {{ $subscription->plan->duration_in_days }} days</span>
+                                                    <p class="mb-0 fw-semibold">{{ $subscription->plan->name ?? 'Plan Deleted' }}</p>
+                                                    @if($subscription->plan)
+                                                        <span class="badge bg-label-info">Rp
+                                                            {{ number_format($subscription->plan->price, 0, ',', '.') }} /
+                                                            {{ $subscription->plan->duration_in_days }} days</span>
+                                                    @else
+                                                        <span class="badge bg-label-secondary">-</span>
+                                                    @endif
                                                 </div>
                                             </div>
 
