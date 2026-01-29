@@ -69,6 +69,7 @@
                             <tr>
                                 <th>{{ __('admin.blog_categories.name') }}</th>
                                 <!-- <th>{{ __('admin.blog_categories.slug') }}</th> -->
+                                <th class="d-none d-sm-table-cell">{{ __('admin.form.type') }}</th>
                                 <th>{{ __('admin.blog_categories.description') }}</th>
                                 <th>{{ __('admin.blog_categories.status') }}</th>
                                 <th>{{ __('admin.blog_categories.blogs') }}</th>
@@ -87,6 +88,9 @@
                                     <!-- <td>
                                         <code>{{ $category->slug }}</code>
                                     </td> -->
+                                    <td class="d-none d-sm-table-cell">
+                                        <span class="badge bg-label-success">Blog</span>
+                                    </td>
                                     <td>
                                         <small class="text-muted">{{ Str::limit($category->description ?? '-', 50) }}</small>
                                     </td>

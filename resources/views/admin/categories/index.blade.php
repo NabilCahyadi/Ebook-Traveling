@@ -92,6 +92,7 @@
                                 <tr>
                                     <th>{{ __('admin.form.image') }}</th>
                                     <th>{{ __('admin.form.name') }}</th>
+                                    <th class="d-none d-sm-table-cell">{{ __('admin.form.type') }}</th>
                                     <th class="d-none d-md-table-cell">{{ __('admin.categories.ebooks_count') }}</th>
                                     <th class="d-none d-lg-table-cell">{{ __('admin.common.date_created') }}</th>
                                     <th>{{ __('admin.common.actions') }}</th>
@@ -105,6 +106,9 @@
                                         </td>
                                         <td>
                                             <div class="fw-medium">{{ $category->name }}</div>
+                                        </td>
+                                        <td class="d-none d-sm-table-cell">
+                                            <span class="badge bg-label-primary">Ebook</span>
                                         </td>
                                         <td class="d-none d-md-table-cell">
                                             <span class="badge bg-label-info">{{ $category->ebooks_count }} {{ __('admin.common.ebooks') }}</span>
