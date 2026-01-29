@@ -14,6 +14,8 @@ class SubscriptionHistoryController extends Controller
     public function index(Request $request)
     {
         $query = Subscription::with(['user', 'plan', 'payment'])
+            ->whereHas('user') // Only get subscriptions with existing users
+            ->whereHas('plan') // Only get subscriptions with existing plans
             ->orderBy('created_at', 'desc');
 
         // Filter by type (manual or payment_gateway)

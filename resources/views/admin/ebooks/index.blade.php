@@ -28,22 +28,22 @@
                 </a>
                 <!-- Toggle Enable Download -->
                 <!-- @php
-                        $downloadEnabled = \App\Models\SystemSetting::get('enable_ebook_download', '1');
-                    @endphp
-                    <div class="d-flex align-items-center gap-2 px-3 py-2 bg-light rounded">
-                        <i class="ti ti-download {{ $downloadEnabled == '1' ? 'text-success' : 'text-danger' }}"></i>
-                        <span class="small fw-semibold">{{ __('admin.ebooks.download') }}:</span>
-                        <div class="form-check form-switch mb-0">
-                            <input class="form-check-input" type="checkbox" id="toggleDownload" 
-                                {{ $downloadEnabled == '1' ? 'checked' : '' }}
-                                onchange="toggleEbookDownload(this)">
-                            <label class="form-check-label" for="toggleDownload">
-                                <span id="downloadStatus" class="badge bg-{{ $downloadEnabled == '1' ? 'success' : 'danger' }}">
-                                    {{ $downloadEnabled == '1' ? __('admin.ebooks.enabled') : __('admin.ebooks.disabled') }}
-                                </span>
-                            </label>
-                        </div>
-                    </div> -->
+                            $downloadEnabled = \App\Models\SystemSetting::get('enable_ebook_download', '1');
+                        @endphp
+                        <div class="d-flex align-items-center gap-2 px-3 py-2 bg-light rounded">
+                            <i class="ti ti-download {{ $downloadEnabled == '1' ? 'text-success' : 'text-danger' }}"></i>
+                            <span class="small fw-semibold">{{ __('admin.ebooks.download') }}:</span>
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" id="toggleDownload" 
+                                    {{ $downloadEnabled == '1' ? 'checked' : '' }}
+                                    onchange="toggleEbookDownload(this)">
+                                <label class="form-check-label" for="toggleDownload">
+                                    <span id="downloadStatus" class="badge bg-{{ $downloadEnabled == '1' ? 'success' : 'danger' }}">
+                                        {{ $downloadEnabled == '1' ? __('admin.ebooks.enabled') : __('admin.ebooks.disabled') }}
+                                    </span>
+                                </label>
+                            </div>
+                        </div> -->
                 <a href="{{ route('admin.ebooks.create') }}" class="btn btn-primary">
                     <i class="ti ti-plus me-1"></i> {{ __('admin.ebooks.add_new') }}
                 </a>
@@ -63,7 +63,7 @@
                                 <i class="ti ti-download me-1"></i>
                                 {{ __('admin.common.export') }}
                             </a>
-                            
+
                             <!-- Filter Category -->
                             <select class="form-select form-select-sm" id="filterCategory" onchange="applyFilters()"
                                 style="min-width: 120px; max-width: 150px;">
@@ -80,7 +80,8 @@
                                 style="min-width: 100px; max-width: 140px;">
                                 <option value="">{{ __('admin.ebooks.all_cities') }}</option>
                                 <option value="null" {{ request('city_id') == 'null' ? 'selected' : '' }}>
-                                    {{ __('admin.ebooks.no_city') }}</option>
+                                    {{ __('admin.ebooks.no_city') }}
+                                </option>
                                 @foreach($cities as $city)
                                     <option value="{{ $city->id }}" {{ request('city_id') == $city->id ? 'selected' : '' }}>
                                         {{ $city->name }}
@@ -92,10 +93,15 @@
                             <select class="form-select form-select-sm" id="filterStatus" onchange="applyFilters()"
                                 style="width: 130px;">
                                 <option value="">{{ __('admin.ebooks.all_status') }}</option>
+                                                                <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>
+                                    {{ __('admin.ebooks.draft') }}
+                                </option>
                                 <option value="published" {{ request('status') == 'published' ? 'selected' : '' }}>
-                                    {{ __('admin.ebooks.published') }}</option>
-                                <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>
-                                    {{ __('admin.ebooks.draft') }}</option>
+                                    {{ __('admin.ebooks.published') }}
+                                </option>
+                                <option value="unpublished" {{ request('status') == 'unpublished' ? 'selected' : '' }}>
+                                    Unpublished
+                                </option>
                             </select>
 
                             <!-- Sort By -->
@@ -216,8 +222,7 @@
                     </thead>
                     <tbody class="table-border-bottom-0" id="ebookTableBody">
                         @forelse($ebooks as $ebook)
-                            @if($ebook->status !== 'draft')
-                                <tr data-status="{{ $ebook->status }}" style="height: 60px;">
+                            <tr data-status="{{ $ebook->status }}" style="height: 60px;">
                                     <td class="py-2 bulk-checkbox-column" style="display: none;">
                                         <input type="checkbox" class="form-check-input ebook-checkbox" value="{{ $ebook->id }}"
                                             onchange="updateBulkActions()">
@@ -295,7 +300,8 @@
                                                 <a class="dropdown-item" href="{{ route('admin.ebooks.edit', $ebook->id) }}">
                                                     <i class="ti ti-pencil me-2"></i> {{ __('admin.actions.edit') }}
                                                 </a>
-                                                <a class="dropdown-item" href="{{ route('admin.ebooks.ratings.index', $ebook->id) }}">
+                                                <a class="dropdown-item"
+                                                    href="{{ route('admin.ebooks.ratings.index', $ebook->id) }}">
                                                     <i class="ti ti-star me-2"></i> {{ __('admin.ebooks.manage_ratings') }}
                                                 </a>
                                                 <div class="dropdown-divider"></div>
@@ -310,9 +316,8 @@
                                                 </a>
                                             </div>
                                         </div>
-                                </td>
-                            </tr>
-                            @endif
+                                    </td>
+                                </tr>
                         @empty
                             <tr id="noDataRow">
                                 <td colspan="7" class="text-center py-5">
@@ -365,7 +370,8 @@
                                                 <a class="dropdown-item" href="{{ route('admin.ebooks.edit', $ebook->id) }}">
                                                     <i class="ti ti-pencil me-2"></i> Edit
                                                 </a>
-                                                <a class="dropdown-item" href="{{ route('admin.ebooks.ratings.index', $ebook->id) }}">
+                                                <a class="dropdown-item"
+                                                    href="{{ route('admin.ebooks.ratings.index', $ebook->id) }}">
                                                     <i class="ti ti-star me-2"></i> {{ __('admin.ebooks.manage_ratings') }}
                                                 </a>
                                                 <div class="dropdown-divider"></div>
@@ -629,7 +635,7 @@
             window.toggleBulkMode = function () {
                 const toggleBtn = document.getElementById('toggleBulkMode');
                 isBulkMode = !isBulkMode;
-                
+
                 if (isBulkMode) {
                     // Activate bulk mode
                     document.querySelectorAll('.bulk-checkbox-column').forEach(el => {

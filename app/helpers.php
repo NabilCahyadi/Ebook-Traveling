@@ -123,6 +123,24 @@ if (!function_exists('getInitials')) {
     }
 }
 
+if (!function_exists('translateCategorySubscription')) {
+    /**
+     * Translate category subscription from Indonesian to current locale.
+     * Value tetap bahasa Indonesia, tapi display sesuai locale.
+     *
+     * @param string $category Indonesian category (harian, mingguan, bulanan, tahunan)
+     * @return string Translated category
+     */
+    function translateCategorySubscription($category)
+    {
+        if (empty($category)) {
+            return 'N/A';
+        }
+
+        return __('admin.category_subscription.' . $category, [], app()->getLocale());
+    }
+}
+
 if (!function_exists('formatPhoneNumber')) {
     /**
      * Format nomor telepon Indonesia dari format 62x menjadi 08x.
@@ -151,4 +169,3 @@ if (!function_exists('formatPhoneNumber')) {
         return $phone;
     }
 }
-

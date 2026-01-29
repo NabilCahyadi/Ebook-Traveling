@@ -21,7 +21,11 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Category::withCount('ebooks');
+        $query = Category::withCount('ebooks')
+            ->where(function($q) {
+                $q->where('type', 'ebook')
+                  ->orWhereNull('type');
+            });
 
         // Search
         if ($request->filled('search')) {

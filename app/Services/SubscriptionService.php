@@ -144,6 +144,10 @@ class SubscriptionService
 
     /**
      * Extend subscription by plan with quantity
+     * 
+     * Logic:
+     * - If category_subscription is the SAME: Duration is accumulated (added to remaining days)
+     * - If category_subscription is DIFFERENT: Duration is replaced (starts from now, old remaining days are lost)
      */
     public function extendSubscriptionByPlan(string $id, string $planId, int $quantity = 1): Subscription
     {
@@ -154,24 +158,47 @@ class SubscriptionService
                 throw new \Exception('Subscription not found.');
             }
 
-            $plan = $this->subscriptionPlanRepository->findById($planId);
-            if (!$plan) {
+            $newPlan = $this->subscriptionPlanRepository->findById($planId);
+            if (!$newPlan) {
                 throw new \Exception('Subscription plan not found.');
             }
 
-            // Calculate total days and amount
-            $totalDays = $plan->duration_days * $quantity;
-            $totalAmount = $plan->price * $quantity;
+            // Get current plan to compare category_subscription
+            $currentPlan = $subscription->plan;
 
-            // Extend end date
-            $newEndDate = \Carbon\Carbon::parse($subscription->end_date)->addDays($totalDays);
+            // Calculate total days and amount for new plan
+            $totalDays = $newPlan->duration_days * $quantity;
+            $totalAmount = $newPlan->price * $quantity;
 
-            // Update subscription
-            $this->subscriptionRepository->update($subscription, [
-                'end_date' => $newEndDate,
-                'status' => 'active',
-                'total_amount' => $subscription->total_amount + $totalAmount,
-            ]);
+            // Check if category_subscription is the same
+            $isSameCategory = $currentPlan && 
+                              $currentPlan->category_subscription === $newPlan->category_subscription;
+
+            if ($isSameCategory) {
+                // SAME CATEGORY: Accumulate duration (add to existing end_date)
+                $newEndDate = \Carbon\Carbon::parse($subscription->end_date)->addDays($totalDays);
+                $newTotalAmount = $subscription->total_amount + $totalAmount;
+                
+                // Update subscription - keep the same plan
+                $this->subscriptionRepository->update($subscription, [
+                    'end_date' => $newEndDate,
+                    'status' => 'active',
+                    'total_amount' => $newTotalAmount,
+                ]);
+            } else {
+                // DIFFERENT CATEGORY: Replace duration (start from now, old days are lost)
+                $newStartDate = now();
+                $newEndDate = now()->addDays($totalDays);
+                
+                // Update subscription with new plan
+                $this->subscriptionRepository->update($subscription, [
+                    'subscription_plan_id' => $newPlan->id,
+                    'start_date' => $newStartDate,
+                    'end_date' => $newEndDate,
+                    'status' => 'active',
+                    'total_amount' => $totalAmount, // Reset amount to new plan's amount
+                ]);
+            }
 
             DB::commit();
             return $subscription->fresh();
