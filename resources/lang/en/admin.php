@@ -1074,6 +1074,20 @@ return [
         'additional_info' => 'Additional Info',
         'current_banner' => 'Current banner image',
         'banner_replace_help' => 'Upload a new banner image to replace the current one (Optional, recommended size: 1200x400px)',
+        
+        // Trash & Restore
+        'view_trash' => 'View Trash',
+        'trashed' => 'Trash',
+        'trashed_title' => 'Deleted Subscription Plans',
+        'trashed_plans' => 'Deleted Plans',
+        'trashed_notice' => 'Warning: Data here has been temporarily deleted',
+        'trashed_description' => 'You can restore or permanently delete subscription plans that are here.',
+        'items_in_trash' => 'items in trash',
+        'deleted_at' => 'Deleted At',
+        'no_trashed_plans' => 'No deleted subscription plans',
+        'restore_confirm' => 'Are you sure you want to restore this plan?',
+        'permanent_delete_confirm' => 'WARNING! You are about to PERMANENTLY delete this plan!',
+        'permanent_delete_warning' => 'Permanently deleted data cannot be recovered. Continue?',
     ],
 
     // Receipt
@@ -1139,6 +1153,8 @@ return [
         'clear_filters' => 'Clear Filters',
         'remove' => 'Remove',
         'view_profile' => 'View Profile',
+        'restore' => 'Restore',
+        'delete_permanent' => 'Delete Permanently',
     ],
 
     // Status

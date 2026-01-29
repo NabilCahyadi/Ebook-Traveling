@@ -1104,6 +1104,20 @@ return [
         'additional_info' => 'Info Tambahan',
         'current_banner' => 'Gambar banner saat ini',
         'banner_replace_help' => 'Unggah gambar banner baru untuk mengganti yang lama (Opsional, ukuran rekomendasi: 1200x400px)',
+        
+        // Trash & Restore
+        'view_trash' => 'Lihat Sampah',
+        'trashed' => 'Sampah',
+        'trashed_title' => 'Paket Berlangganan yang Dihapus',
+        'trashed_plans' => 'Paket yang Dihapus',
+        'trashed_notice' => 'Peringatan: Data di sini sudah dihapus sementara',
+        'trashed_description' => 'Anda dapat memulihkan atau menghapus permanen paket berlangganan yang ada di sini.',
+        'items_in_trash' => 'item di sampah',
+        'deleted_at' => 'Dihapus Pada',
+        'no_trashed_plans' => 'Tidak ada paket berlangganan yang dihapus',
+        'restore_confirm' => 'Apakah Anda yakin ingin memulihkan paket ini?',
+        'permanent_delete_confirm' => 'PERHATIAN! Anda akan menghapus paket ini secara PERMANEN!',
+        'permanent_delete_warning' => 'Data yang dihapus permanen tidak dapat dikembalikan. Lanjutkan?',
     ],
 
     // Receipt
@@ -1144,6 +1158,7 @@ return [
         'edit' => 'Edit',
         'delete' => 'Hapus',
         'restore' => 'Pulihkan',
+        'delete_permanent' => 'Hapus Permanen',
         'view' => 'Lihat',
         'view_details' => 'Lihat Detail',
         'save' => 'Simpan',

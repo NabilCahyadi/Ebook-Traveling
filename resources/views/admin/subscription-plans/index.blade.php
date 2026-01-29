@@ -42,9 +42,14 @@
             <h4 class="fw-bold py-3 mb-0">
                 <span class="text-muted fw-light">{{ __('admin.menu.dashboard') }} /</span> {{ __('admin.subscription_plans.title') }}
             </h4>
-            <a href="{{ route('admin.subscription-plans.create') }}" class="btn btn-primary">
-                <i class="bx bx-plus me-1"></i> {{ __('admin.subscription_plans.add_plan') }}
-            </a>
+            <div class="d-flex gap-2">
+                <a href="{{ route('admin.subscription-plans.trashed') }}" class="btn btn-outline-danger">
+                    <i class="ti ti-trash me-1"></i> {{ __('admin.subscription_plans.view_trash') }}
+                </a>
+                <a href="{{ route('admin.subscription-plans.create') }}" class="btn btn-primary">
+                    <i class="bx bx-plus me-1"></i> {{ __('admin.subscription_plans.add_plan') }}
+                </a>
+            </div>
         </div>
 
         @if (session('success'))
