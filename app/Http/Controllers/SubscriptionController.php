@@ -476,7 +476,7 @@ class SubscriptionController extends Controller
         }
 
         $paymentUrl = $response['data']['payment_url'];
-        
+
         Log::info('Redirecting to Mayar payment', [
             'payment_id' => $paymentId,
             'url' => $paymentUrl
@@ -605,14 +605,14 @@ class SubscriptionController extends Controller
         ]);
 
         // Build Mayar payment URL with query params
+        $baseUrl = rtrim($plan->mayar_payment_link, '?');
         $queryParams = http_build_query([
             'external_id' => $paymentId,
-            'customer_name' => $user->name ?? 'Customer',
-            'customer_email' => $user->email ?? 'user@example.com',
+            'name' => $user->name,
+            'email' => $user->email,
         ]);
 
-        $url = $plan->mayar_payment_link;
-        $url .= (str_contains($url, '?') ? '&' : '?') . $queryParams;
+        $url = $baseUrl . '?' . $queryParams;
 
         Log::info('🔗 Redirecting to Mayar for renewal', [
             'url' => $url,
@@ -714,14 +714,14 @@ class SubscriptionController extends Controller
         ]);
 
         // Build Mayar payment URL with query params
+        $baseUrl = rtrim($newPlan->mayar_payment_link, '?');
         $queryParams = http_build_query([
             'external_id' => $paymentId,
-            'customer_name' => $user->name ?? 'Customer',
-            'customer_email' => $user->email ?? 'user@example.com',
+            'name' => $user->name,
+            'email' => $user->email,
         ]);
 
-        $url = $newPlan->mayar_payment_link;
-        $url .= (str_contains($url, '?') ? '&' : '?') . $queryParams;
+        $url = $baseUrl . '?' . $queryParams;
 
         Log::info('🔗 Redirecting to Mayar for upgrade', [
             'url' => $url,
@@ -823,14 +823,14 @@ class SubscriptionController extends Controller
         ]);
 
         // Build Mayar payment URL with query params
+        $baseUrl = rtrim($newPlan->mayar_payment_link, '?');
         $queryParams = http_build_query([
             'external_id' => $paymentId,
-            'customer_name' => $user->name ?? 'Customer',
-            'customer_email' => $user->email ?? 'user@example.com',
+            'name' => $user->name,
+            'email' => $user->email,
         ]);
 
-        $url = $newPlan->mayar_payment_link;
-        $url .= (str_contains($url, '?') ? '&' : '?') . $queryParams;
+        $url = $baseUrl . '?' . $queryParams;
 
         Log::info('🔗 Redirecting to Mayar for downgrade', [
             'url' => $url,
