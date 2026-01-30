@@ -1,15 +1,15 @@
 @extends('layouts.admin')
 
-@section('title', 'Subscription Management')
+@section('title', __('admin.sub_list.title'))
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="fw-bold py-3 mb-0">
-                <span class="text-muted fw-light">Subscription /</span> Subscription Management
+                <span class="text-muted fw-light">{{ __('admin.menu.subscription') }} /</span> {{ __('admin.sub_list.title') }}
             </h4>
             <a href="{{ route('admin.manual-subscriptions.create') }}" class="btn btn-primary">
-                <i class="ti ti-plus me-1"></i> Create Manual Subscription
+                <i class="ti ti-plus me-1"></i> {{ __('admin.sub_list.create_manual') }}
             </a>
         </div>
 
@@ -31,18 +31,18 @@
             <div class="card-header">
                 <div class="row align-items-center">
                     <div class="col-md-6">
-                        <h5 class="mb-0">All User Subscriptions</h5>
+                        <h5 class="mb-0">{{ __('admin.sub_list.all_subscriptions') }}</h5>
                     </div>
                     <div class="col-md-6">
                         <form method="GET" action="{{ route('admin.subscription-management.list') }}">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="ti ti-search"></i></span>
                                 <input type="text" class="form-control" name="search"
-                                    placeholder="Search by user name, email, or code..." value="{{ $search ?? '' }}">
-                                <button type="submit" class="btn btn-primary">Search</button>
+                                    placeholder="{{ __('admin.sub_list.search_placeholder') }}" value="{{ $search ?? '' }}">
+                                <button type="submit" class="btn btn-primary">{{ __('admin.common.search') }}</button>
                                 @if ($search)
                                     <a href="{{ route('admin.subscription-management.list') }}"
-                                        class="btn btn-outline-secondary">Clear</a>
+                                        class="btn btn-outline-secondary">{{ __('admin.common.clear') }}</a>
                                 @endif
                             </div>
                         </form>
@@ -54,14 +54,14 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Subscription Code</th>
-                            <th>User</th>
-                            <th>Plan</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Status</th>
-                            <th>Amount</th>
-                            <th>Actions</th>
+                            <th>{{ __('admin.sub_list.subscription_code') }}</th>
+                            <th>{{ __('admin.common.user') }}</th>
+                            <th>{{ __('admin.sub_list.plan') }}</th>
+                            <th>{{ __('admin.subscriptions.start_date') }}</th>
+                            <th>{{ __('admin.subscriptions.end_date') }}</th>
+                            <th>{{ __('admin.common.status') }}</th>
+                            <th>{{ __('admin.sub_list.amount') }}</th>
+                            <th>{{ __('admin.common.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -84,12 +84,12 @@
                                 <td>
                                     @if ($subscription->status === 'active')
                                         @if ($subscription->end_date->isFuture())
-                                            <span class="badge bg-success">Active</span>
+                                            <span class="badge bg-success">{{ __('admin.status.active') }}</span>
                                         @else
-                                            <span class="badge bg-warning">Expired</span>
+                                            <span class="badge bg-warning">{{ __('admin.status.expired') }}</span>
                                         @endif
                                     @elseif ($subscription->status === 'cancelled')
-                                        <span class="badge bg-danger">Cancelled</span>
+                                        <span class="badge bg-danger">{{ __('admin.status.cancelled') }}</span>
                                     @else
                                         <span class="badge bg-secondary">{{ ucfirst($subscription->status) }}</span>
                                     @endif
@@ -104,20 +104,20 @@
                                         <div class="dropdown-menu dropdown-menu-end">
                                             <a class="dropdown-item"
                                                 href="{{ route('admin.manual-subscriptions.show', $subscription->id) }}">
-                                                <i class="ti ti-eye me-2"></i> View Details
+                                                <i class="ti ti-eye me-2"></i> {{ __('admin.actions.view_details') }}
                                             </a>
                                             @if ($subscription->status === 'active')
                                                 <a class="dropdown-item"
                                                     href="{{ route('admin.manual-subscriptions.extend', $subscription->id) }}">
-                                                    <i class="ti ti-clock me-2"></i> Extend
+                                                    <i class="ti ti-clock me-2"></i> {{ __('admin.manual_subscription.extend') }}
                                                 </a>
                                                 <form
                                                     action="{{ route('admin.manual-subscriptions.cancel', $subscription->id) }}"
                                                     method="POST" class="d-inline">
                                                     @csrf
                                                     <button type="submit" class="dropdown-item text-warning"
-                                                        onclick="return confirm('Are you sure you want to cancel this subscription?')">
-                                                        <i class="ti ti-x me-2"></i> Cancel Subscription
+                                                        onclick="return confirm('{{ __('admin.manual_subscription.confirm_cancel') }}')">
+                                                        <i class="ti ti-x me-2"></i> {{ __('admin.manual_subscription.cancel_subscription') }}
                                                     </button>
                                                 </form>
                                             @endif
@@ -128,8 +128,8 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="dropdown-item text-danger"
-                                                    onclick="return confirm('Are you sure you want to delete this subscription? This action cannot be undone.')">
-                                                    <i class="ti ti-trash me-2"></i> Delete
+                                                    onclick="return confirm('{{ __('admin.manual_subscription.confirm_delete') }}')">
+                                                    <i class="ti ti-trash me-2"></i> {{ __('admin.actions.delete') }}
                                                 </button>
                                             </form>
                                         </div>
@@ -141,7 +141,7 @@
                                 <td colspan="8" class="text-center py-4">
                                     <div class="text-muted">
                                         <i class="ti ti-info-circle mb-2" style="font-size: 2rem;"></i>
-                                        <p>No subscriptions found.</p>
+                                        <p>{{ __('admin.manual_subscription.no_subscriptions') }}</p>
                                     </div>
                                 </td>
                             </tr>

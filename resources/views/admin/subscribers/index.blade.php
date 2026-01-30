@@ -2,6 +2,15 @@
 
 @section('title', __('admin.subscribers.title'))
 
+@push('styles')
+<style>
+    .nav-pills .nav-link.active {
+        color: #ffffff !important;
+        background-color: #ff4c61 !important;
+    }
+</style>
+@endpush
+
 @section('content')
 
     <!-- Success/Error Messages -->
@@ -31,12 +40,33 @@
     <!-- Filter Card -->
     <div class="card mb-4">
         <div class="card-header">
-            <h5 class="mb-0">
-                <i class="ti ti-filter me-2"></i>{{ __('admin.subscribers.filter_subscribers') }}
-            </h5>
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <h5 class="mb-0">
+                    <i class="ti ti-filter me-2"></i>{{ __('admin.subscribers.filter_subscribers') }}
+                </h5>
+                
+                <!-- Status Navigation Pills -->
+                <ul class="nav nav-pills" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link {{ $activeStatus === 'active' ? 'active' : '' }}" 
+                           href="{{ route('admin.active-subscribers.index', ['status' => 'active']) }}"
+                           style="{{ $activeStatus === 'active' ? 'color: #fff !important;' : '' }}">
+                            <i class="ti ti-check me-1"></i>{{ __('admin.subscribers.status_active') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ $activeStatus === 'expired' ? 'active' : '' }}" 
+                           href="{{ route('admin.active-subscribers.index', ['status' => 'expired']) }}"
+                           style="{{ $activeStatus === 'expired' ? 'color: #fff !important;' : '' }}">
+                            <i class="ti ti-clock-x me-1"></i>{{ __('admin.subscribers.status_expired') }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
         <div class="card-body">
             <form action="{{ route('admin.active-subscribers.index') }}" method="GET" id="filterForm">
+                <input type="hidden" name="status" value="{{ $activeStatus }}">
                 <div class="row g-3">
                     <!-- Search -->
                     <div class="col-md-3">
@@ -181,21 +211,27 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @if ($subscription->status === 'active')
+                                        @php
+                                            // Dynamic status check based on end_date
+                                            $isExpired = $subscription->end_date && $subscription->end_date < now();
+                                            $displayStatus = $isExpired ? 'expired' : $subscription->status;
+                                        @endphp
+                                        
+                                        @if ($displayStatus === 'active')
                                             <span class="badge bg-success">
                                                 <i class="ti ti-check ti-xs"></i> {{ __('admin.status.active') }}
                                             </span>
-                                        @elseif($subscription->status === 'pending')
+                                        @elseif($displayStatus === 'pending')
                                             <span class="badge bg-warning">
                                                 <i class="ti ti-clock ti-xs"></i> {{ __('admin.status.pending') }}
                                             </span>
-                                        @elseif($subscription->status === 'expired')
+                                        @elseif($displayStatus === 'expired')
                                             <span class="badge bg-danger">
                                                 <i class="ti ti-x ti-xs"></i> {{ __('admin.status.expired') }}
                                             </span>
                                         @else
                                             <span class="badge bg-secondary">
-                                                {{ ucfirst($subscription->status) }}
+                                                {{ ucfirst($displayStatus) }}
                                             </span>
                                         @endif
                                     </td>

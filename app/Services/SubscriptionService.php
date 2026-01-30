@@ -174,29 +174,24 @@ class SubscriptionService
             $isSameCategory = $currentPlan && 
                               $currentPlan->category_subscription === $newPlan->category_subscription;
 
+            // ALWAYS ACCUMULATE: Add new days to existing end_date regardless of category
+            $newEndDate = \Carbon\Carbon::parse($subscription->end_date)->addDays($totalDays);
+            $newTotalAmount = $subscription->total_amount + $totalAmount;
+            
             if ($isSameCategory) {
-                // SAME CATEGORY: Accumulate duration (add to existing end_date)
-                $newEndDate = \Carbon\Carbon::parse($subscription->end_date)->addDays($totalDays);
-                $newTotalAmount = $subscription->total_amount + $totalAmount;
-                
-                // Update subscription - keep the same plan
+                // SAME CATEGORY: Accumulate duration, keep the same plan
                 $this->subscriptionRepository->update($subscription, [
                     'end_date' => $newEndDate,
                     'status' => 'active',
                     'total_amount' => $newTotalAmount,
                 ]);
             } else {
-                // DIFFERENT CATEGORY: Replace duration (start from now, old days are lost)
-                $newStartDate = now();
-                $newEndDate = now()->addDays($totalDays);
-                
-                // Update subscription with new plan
+                // DIFFERENT CATEGORY: Accumulate duration, update to new plan
                 $this->subscriptionRepository->update($subscription, [
                     'subscription_plan_id' => $newPlan->id,
-                    'start_date' => $newStartDate,
                     'end_date' => $newEndDate,
                     'status' => 'active',
-                    'total_amount' => $totalAmount, // Reset amount to new plan's amount
+                    'total_amount' => $newTotalAmount,
                 ]);
             }
 

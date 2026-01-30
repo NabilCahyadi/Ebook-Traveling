@@ -1,6 +1,8 @@
 @extends('layouts_lp.app')
 @section('title', 'Pricing - MeatMap')
 
+@use('Illuminate\Support\Facades\Storage')
+
 @section('content')
     <style>
         .icon-wrapper {
@@ -549,7 +551,31 @@
                 <div class="style-4">
                     <div class="rectangle single-animation-wrap rounded mt-15" style="position: relative;">
                         @if ($bannerData)
-                            <img src="{{ asset($bannerData->image) }}" alt="Banner" class="img-fluid w-100 rounded"
+                            @php
+                                // Check if image exists in storage, otherwise use public path
+                                $imagePath = $bannerData->image;
+                                if ($imagePath) {
+                                    // If path starts with 'http', it's already a full URL
+                                    if (filter_var($imagePath, FILTER_VALIDATE_URL)) {
+                                        $bannerUrl = $imagePath;
+                                    } 
+                                    // If file exists in storage
+                                    elseif (Storage::disk('public')->exists($imagePath)) {
+                                        $bannerUrl = asset('storage/' . $imagePath);
+                                    }
+                                    // If path starts with 'storage/', use as is
+                                    elseif (str_starts_with($imagePath, 'storage/')) {
+                                        $bannerUrl = asset($imagePath);
+                                    }
+                                    // Fallback to public path
+                                    else {
+                                        $bannerUrl = asset($imagePath);
+                                    }
+                                } else {
+                                    $bannerUrl = asset('images/banner-placeholder.webp');
+                                }
+                            @endphp
+                            <img src="{{ $bannerUrl }}" alt="Banner" class="img-fluid w-100 rounded"
                                 id="pricing-banner-img" style="aspect-ratio: 2.5/1; object-fit: cover;">
 
                             <div id="pricing-banner-content" class="js-fade-in"

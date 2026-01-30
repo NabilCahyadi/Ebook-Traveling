@@ -72,19 +72,19 @@
 
     <!-- Tab Navigation -->
     <ul class="nav nav-tabs mb-4" role="tablist">
-        <li class="nav-item" role="presentation">
+        <li class="nav-item me-2" role="presentation">
             <a class="nav-link {{ $activeTab === 'home-slider' ? 'active' : '' }}" 
                href="{{ route('admin.banners.index', ['tab' => 'home-slider']) }}">
                 <i class="ti ti-photo me-1"></i> {{ __('admin.banners.home_slider') }}
             </a>
         </li>
-        <li class="nav-item" role="presentation">
+        <li class="nav-item me-2" role="presentation">
             <a class="nav-link {{ $activeTab === 'banner-pricing' ? 'active' : '' }}" 
                href="{{ route('admin.banners.index', ['tab' => 'banner-pricing']) }}">
                 <i class="ti ti-tag me-1"></i> {{ __('admin.banners.banner_pricing') }}
             </a>
         </li>
-        <li class="nav-item" role="presentation">
+        <li class="nav-item me-2" role="presentation">
             <a class="nav-link {{ $activeTab === 'default-background' ? 'active' : '' }}" 
                href="{{ route('admin.banners.index', ['tab' => 'default-background']) }}">
                 <i class="ti ti-photo-filled me-1"></i> {{ __('admin.banners.default_background') }}

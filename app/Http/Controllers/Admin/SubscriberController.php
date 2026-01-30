@@ -20,6 +20,9 @@ class SubscriberController extends Controller
      */
     public function index(Request $request)
     {
+        // Get active status filter (default: 'active')
+        $activeStatus = $request->input('status', 'active');
+        
         // Prepare filters from request
         $filters = [
             'role' => $request->input('role'),
@@ -27,6 +30,7 @@ class SubscriberController extends Controller
             'date_from' => $request->input('date_from'),
             'date_to' => $request->input('date_to'),
             'search' => $request->input('search'),
+            'status' => $activeStatus,
         ];
 
         // Get per page value from request (multiples of 5)
@@ -42,6 +46,6 @@ class SubscriberController extends Controller
         $roles = $this->subscriberService->getAllRoles();
         $subscriptionPlans = $this->subscriberService->getAllSubscriptionPlans();
 
-        return view('admin.subscribers.index', compact('subscriptions', 'roles', 'subscriptionPlans'));
+        return view('admin.subscribers.index', compact('subscriptions', 'roles', 'subscriptionPlans', 'activeStatus'));
     }
 }
