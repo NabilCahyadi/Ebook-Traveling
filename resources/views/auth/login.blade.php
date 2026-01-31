@@ -173,6 +173,7 @@
         top: 0;
         left: 0;
         z-index: 200;
+        height: 60px;
     }
 
     .nav-tab {
@@ -538,6 +539,7 @@
             position: fixed;
             top: 0;
             z-index: 50;
+            height: 60px;
         }
 
         .nav-tab {
@@ -545,12 +547,9 @@
         }
 
         .container#container {
-            margin-top: 60px;
-            min-height: 100vh;
+            margin: 60px 0 0 0;
+            min-height: calc(100vh - 60px);
             position: relative;
-            margin-left: 0;
-            margin-right: 0;
-            margin-bottom: 0;
             padding: 0;
             box-shadow: none !important;
             border: none;
@@ -564,7 +563,7 @@
             opacity: 1 !important;
             z-index: auto !important;
             padding: 0;
-            min-height: 100vh;
+            min-height: calc(100vh - 60px);
             animation: none !important;
             box-shadow: none !important;
             border: none !important;
@@ -576,7 +575,7 @@
             width: 100% !important;
             padding: 30px 20px;
             left: 0;
-            height: 100vh;
+            height: calc(100vh - 60px);
             display: none;
         }
 
@@ -663,8 +662,8 @@
         }
 
         .container#container {
-            margin-top: 60px;
-            min-height: 100vh;
+            margin: 60px 0 0 0;
+            min-height: calc(100vh - 60px);
             margin-left: 0;
             margin-right: 0;
             margin-bottom: 0;
@@ -753,8 +752,8 @@
 
         .container#container {
             box-shadow: none !important;
-            margin-top: 60px;
-            min-height: 100vh;
+            margin: 60px 0 0 0;
+            min-height: calc(100vh - 60px);
             margin-left: 0;
             margin-right: 0;
             margin-bottom: 0;
