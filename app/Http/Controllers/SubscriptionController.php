@@ -443,46 +443,66 @@ class SubscriptionController extends Controller
 
     public function redirectToPaymentLink(string $slug): RedirectResponse
     {
-        $user = auth()->user();
-        $plan = SubscriptionPlan::where('slug', $slug)->firstOrFail();
+        try {
+            $user = auth()->user();
+            $plan = SubscriptionPlan::where('slug', $slug)->firstOrFail();
 
-        // Simpan payment record
-        $paymentId = (string) Str::uuid();
-        DB::table('payments')->insert([
-            'id' => $paymentId,
-            'user_id' => $user->id,
-            'subscription_plan_id' => $plan->id, // UUID plan
-            'amount' => $plan->price,
-            'status' => 'pending',
-            'payment_method' => 'mayar',
-            'payment_type' => 'new', // ✅ Set payment_type untuk new subscription
-            'payment_code' => 'PAY-' . strtoupper(Str::random(8)),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        // ✅ PERBAIKAN: Gunakan MayarService untuk create payment link via API
-        // Ini memastikan return_url correct dan auto-fill parameters terintegrasi
-        $mayarService = new \App\Services\MayarService();
-        $response = $mayarService->createPaymentLinkViaMayarAPI($user, $plan, $paymentId);
-
-        if (!$response['success']) {
-            Log::error('Failed to create payment link', [
-                'payment_id' => $paymentId,
-                'plan' => $plan->slug,
-                'error' => $response['message']
+            Log::info('🆕 Subscribe redirect started', [
+                'user_id' => $user->id,
+                'user_name' => $user->name,
+                'plan_slug' => $slug,
+                'plan_id' => $plan->id,
             ]);
-            return redirect()->back()->with('error', 'Failed to create payment link. Please try again.');
+
+            // Simpan payment record
+            $paymentId = (string) Str::uuid();
+            DB::table('payments')->insert([
+                'id' => $paymentId,
+                'user_id' => $user->id,
+                'subscription_plan_id' => $plan->id,
+                'amount' => $plan->price,
+                'status' => 'pending',
+                'payment_method' => 'mayar',
+                'payment_type' => 'new',
+                'payment_code' => 'PAY-' . strtoupper(Str::random(8)),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            Log::info('💳 Payment record created', [
+                'payment_id' => $paymentId,
+                'user_id' => $user->id,
+                'plan_slug' => $slug,
+            ]);
+
+            // Build payment URL using the plan's mayar_payment_link (same as renew/upgrade/downgrade)
+            $baseUrl = rtrim($plan->mayar_payment_link, '?');
+            $params = [
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone ? preg_replace('/\D/', '', $user->phone) : '628123456789',
+                'external_id' => $paymentId,
+            ];
+
+            $paymentUrl = $baseUrl . '?' . http_build_query($params);
+
+            Log::info('✅ Redirecting to Mayar for new subscription', [
+                'payment_id' => $paymentId,
+                'payment_url' => $paymentUrl,
+                'user_name' => $user->name,
+                'user_email' => $user->email,
+            ]);
+
+            return redirect($paymentUrl);
+
+        } catch (\Exception $e) {
+            Log::error('❌ Exception in redirectToPaymentLink', [
+                'slug' => $slug,
+                'error_message' => $e->getMessage(),
+                'error_trace' => $e->getTraceAsString(),
+            ]);
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
-
-        $paymentUrl = $response['data']['payment_url'];
-
-        Log::info('Redirecting to Mayar payment', [
-            'payment_id' => $paymentId,
-            'url' => $paymentUrl
-        ]);
-
-        return redirect($paymentUrl);
     }
 
     public function paymentSuccess()

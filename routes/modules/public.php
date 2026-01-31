@@ -88,7 +88,7 @@ Route::middleware(['user.session'])->group(function () {
     // routes/web.php
     Route::post('/api/payment/mayar-callback', [SubscriptionController::class, 'mayarCallback'])
         ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
-    Route::get('/subscribe/{slug}', [SubscriptionController::class, 'redirectToPaymentLink'])
+    Route::match(['get', 'post'], '/subscribe/{slug}', [SubscriptionController::class, 'redirectToPaymentLink'])
         ->middleware('auth')
         ->name('subscribe.redirect');
 

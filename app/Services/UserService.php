@@ -454,7 +454,7 @@ class UserService
                 $q->where('slug', $request->city_slug);
             });
         }
-        $readingHistory = $readingHistoryQuery->latest('last_read_at')->get();
+        $readingHistory = $readingHistoryQuery->latest('last_read_at')->paginate(50)->appends(request()->query());
 
         // === FILTER UNTUK USER RATINGS ===
         $ratingsQuery = $user->ratings()->with('ebook.city');
@@ -468,7 +468,19 @@ class UserService
                 $q->where('slug', $request->city_slug);
             });
         }
-        $userRatings = $ratingsQuery->latest()->get();
+        $userRatings = $ratingsQuery->latest()->paginate(50)->appends(request()->query());
+
+        // === FILTER UNTUK WISHLIST ===
+        $wishlistQuery = $user->savedBooks();
+        if ($request->filled('search')) {
+            $wishlistQuery->where('title', 'like', '%' . $request->search . '%');
+        }
+        if ($request->filled('city_slug')) {
+            $wishlistQuery->whereHas('city', function ($q) use ($request) {
+                $q->where('slug', $request->city_slug);
+            });
+        }
+        $wishlistItems = $wishlistQuery->paginate(50)->appends(request()->query());
 
         // 4. Kompilasi semua data
         $data = [
@@ -476,15 +488,15 @@ class UserService
             'allEbooks' => $allEbooks,
             'cities' => $cities,
             'ordersCount' => $user->orders->count(),
-            'wishlistCount' => $user->savedBooks->count(),
-            'wishlistItems' => $user->savedBooks,
+            'wishlistCount' => $wishlistItems->total(),
+            'wishlistItems' => $wishlistItems,
             'orders' => $user->orders()->latest()->get(),
             'ebooks' => $allEbooks,
             'userReadings' => $user->readings()->with('ebook')->get()->keyBy('ebook_id'),
             'readingHistory' => $readingHistory,
             'userRatings' => $userRatings,
             'createdEbooks' => $user->createdEbooks()->with('categories')->get(),
-            
+
             // ✅ STATS UNTUK DASHBOARD (Line 772-785)
             'ebooksRead' => $user->readings()->distinct('ebook_id')->count('ebook_id'), // Total unique ebooks read
             'favoritesCount' => $user->savedBooks->count(), // Total wishlist/favorites

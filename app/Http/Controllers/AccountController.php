@@ -27,6 +27,26 @@ class AccountController extends Controller
      */
     public function index(Request $request)
     {
+        // ✅ CLEAN URL: Jika Mayar menambahkan params tapi dengan tanda '?' yang salah
+        // Contoh bad URL: /page-account?tab=dashboard?external_id=...&name=...
+        $rawQuery = $request->getQueryString();
+        $tabParam = $request->query('tab');
+
+        $hasExternalAsKey = $request->has('external_id');
+        $hasExternalInRaw = is_string($rawQuery) && strpos($rawQuery, 'external_id=') !== false;
+        $externalInsideTab = is_string($tabParam) && strpos($tabParam, '?external_id=') !== false;
+
+        if ($hasExternalAsKey || $hasExternalInRaw || $externalInsideTab) {
+            Log::info('🧹 [ACCOUNT] Cleaning Mayar redirect URL (robust check)', [
+                'original_url' => $request->fullUrl(),
+                'raw_query' => $rawQuery,
+                'tab_param' => $tabParam,
+            ]);
+
+            // Redirect ke URL yang clean: /page-account?tab=dashboard (tanpa parameter apapun dari Mayar)
+            return redirect()->route('page-account', ['tab' => 'dashboard']);
+        }
+
         // ✅ 1. AMBIL USER BARU DARI DATABASE
         $user = auth()->user()->fresh();
 

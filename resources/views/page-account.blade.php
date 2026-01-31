@@ -483,6 +483,34 @@
         }
     </style>
 
+    <style>
+        /* ✅ Styling Pagination Merah */
+        .pagination .page-link {
+            color: #FF4C61 !important;
+            background-color: #fff !important;
+            border-color: #ddd !important;
+        }
+
+        .pagination .page-link:hover {
+            color: #fff !important;
+            background-color: #FF4C61 !important;
+            border-color: #FF4C61 !important;
+        }
+
+        .pagination .page-item.active .page-link {
+            color: #fff !important;
+            background-color: #FF4C61 !important;
+            border-color: #FF4C61 !important;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: #ccc !important;
+            background-color: #f9f9f9 !important;
+            border-color: #ddd !important;
+            cursor: not-allowed !important;
+        }
+    </style>
+
     {{-- Popup Payment Success --}}
     @if (session('payment_success'))
         <div id="paymentSuccessModal" class="modal fade show" style="display: block; background: rgba(0,0,0,0.5);"
@@ -761,7 +789,7 @@
                                                     Unlock all ebooks and exclusive features with a premium subscription.
                                                 </p>
                                                 <a href="{{ route('pricing') }}#pricing-plans"
-                                                    class="btn btn-sm btn-outline-info">View
+                                                    class="custom-button custom-button--primary text-white px-4">View
                                                     Plans</a>
                                             </div>
                                         @endif
@@ -825,7 +853,7 @@
                                                 </div>
                                                 <div class="col-md-2">
                                                     <button type="submit" class="btn-read-now text-white px-4 py-2 mt-2">
-                                                        <i class="fi fi-rs-search me-2"></i>Search
+                                                        <i class="fi fi-rs-search me-2 mt-1"></i>Search
                                                     </button>
                                                 </div>
                                             </div>
@@ -905,6 +933,55 @@
                                                     </tbody>
                                                 </table>
                                             </div>
+
+                                            <!-- Pagination -->
+                                            @if ($wishlistItems->hasPages())
+                                                <nav aria-label="Wishlist pagination" class="mt-4 mb-4">
+                                                    <ul class="pagination justify-content-center">
+                                                        {{-- Previous Page Link --}}
+                                                        <li class="page-item {{ $wishlistItems->onFirstPage() ? 'disabled' : '' }}">
+                                                            @if ($wishlistItems->onFirstPage())
+                                                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                                                    <span aria-hidden="true">&laquo;</span>
+                                                                </a>
+                                                            @else
+                                                                <a class="page-link" href="{{ $wishlistItems->previousPageUrl() }}" aria-label="Previous">
+                                                                    <span aria-hidden="true">&laquo;</span>
+                                                                </a>
+                                                            @endif
+                                                        </li>
+
+                                                        {{-- Pagination Elements --}}
+                                                        @foreach ($wishlistItems->getUrlRange(1, $wishlistItems->lastPage()) as $page => $url)
+                                                            <li class="page-item {{ $page == $wishlistItems->currentPage() ? 'active' : '' }}">
+                                                                @if ($page == $wishlistItems->currentPage())
+                                                                    <a class="page-link" href="#">{{ $page }}</a>
+                                                                @else
+                                                                    <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                                                @endif
+                                                            </li>
+                                                        @endforeach
+
+                                                        {{-- Next Page Link --}}
+                                                        <li class="page-item {{ !$wishlistItems->hasMorePages() ? 'disabled' : '' }}">
+                                                            @if ($wishlistItems->hasMorePages())
+                                                                <a class="page-link" href="{{ $wishlistItems->nextPageUrl() }}" aria-label="Next">
+                                                                    <span aria-hidden="true">&raquo;</span>
+                                                                </a>
+                                                            @else
+                                                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                                                    <span aria-hidden="true">&raquo;</span>
+                                                                </a>
+                                                            @endif
+                                                        </li>
+                                                    </ul>
+                                                </nav>
+
+                                                <!-- Page Info -->
+                                                <div class="text-center text-muted small">
+                                                    Showing {{ $wishlistItems->firstItem() }} to {{ $wishlistItems->lastItem() }} of {{ $wishlistItems->total() }} wishlist items
+                                                </div>
+                                            @endif
                                         @else
                                             <div class="text-center py-4">
                                                 <i class="fi fi-rs-heart text-muted" style="font-size: 48px;"></i>
@@ -1185,7 +1262,7 @@
                                                             <p class="mb-0">
                                                                 <span class="badge bg-primary-subtle text-primary mb-1"
                                                                     style="border:1px solid #5A97FA; border-radius: 100px;">
-                                                                    <i class="fi fi-rs-arrow-up me-1"></i> Upgraded
+                                                                    Upgraded
                                                                 </span><br>
                                                                 Upgraded on
                                                                 <strong>{{ $sub->start_date->format('d M Y H:i') }}</strong><br>
@@ -1386,201 +1463,376 @@
                                         @if ($user->payments()->exists())
                                             <hr class="my-4">
                                             <h6 class="fw-bold mb-3">Payment History</h6>
-                                            <div class="table-responsive">
-                                                <table class="table table-hover align-middle">
-                                                    <thead class="table-light px-3">
-                                                        <tr>
-                                                            <th scope="col" class="ps-3 py-3">Date</th>
-                                                            <th scope="col" class="py-3">Plan</th>
-                                                            <th scope="col" class="py-3">Amount</th>
-                                                            <th scope="col" class="py-3 text-center">Status</th>
-                                                            <th scope="col" class="py-3">Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody class="px-3">
-                                                        @foreach ($user->payments()->with(['plan', 'subscription'])->latest()->get() as $payment)
-                                                            @php
-                                                                $sub = $payment->subscription;
-                                                                $now = now();
-                                                                $paymentType = $payment->payment_type ?? 'new';
-                                                                $durationDays = $payment->plan
-                                                                    ? $payment->plan->duration_days
-                                                                    : 0;
 
-                                                                // Determine status based on payment_type and subscription status
-                                                                $displayStatus = 'Unknown';
-                                                                $statusBadgeClass =
-                                                                    'bg-secondary-subtle text-secondary';
-                                                                $statusIcon = 'fi-rs-question';
+                                            <!-- FORM SEARCH & FILTER -->
+                                            <form method="GET" action="{{ route('page-account') }}" class="mb-4">
+                                                <input type="hidden" name="tab" value="subscription">
+                                                <div class="row g-3 align-items-end">
+                                                    <!-- Search by Plan Name -->
+                                                    <div class="col-md-4">
+                                                        <label for="payment_search" class="form-label">Search by Plan Name</label>
+                                                        <input type="text" class="form-control h-100" name="payment_search"
+                                                            id="payment_search" placeholder="e.g., Daily, Weekly"
+                                                            value="{{ request('payment_search') }}">
+                                                    </div>
 
-                                                                if ($sub) {
-                                                                    // Check if expired first
-                                                                    $hoursRemaining = $now->diffInHours(
-                                                                        $sub->end_date,
-                                                                        false,
-                                                                    );
+                                                    <!-- Filter by Status -->
+                                                    <div class="col-md-3">
+                                                        <label for="payment_status" class="form-label">Filter by Status</label>
+                                                        <select name="payment_status" id="payment_status"
+                                                            class="form-select form-select-md">
+                                                            <option value="">All Statuses</option>
+                                                            <option value="new" {{ request('payment_status') == 'new' ? 'selected' : '' }}>
+                                                                New Member
+                                                            </option>
+                                                            <option value="renewal" {{ request('payment_status') == 'renewal' ? 'selected' : '' }}>
+                                                                Renewal
+                                                            </option>
+                                                            <option value="upgrade" {{ request('payment_status') == 'upgrade' ? 'selected' : '' }}>
+                                                                Upgrade
+                                                            </option>
+                                                            <option value="downgrade" {{ request('payment_status') == 'downgrade' ? 'selected' : '' }}>
+                                                                Downgrade
+                                                            </option>
+                                                            <option value="pending" {{ request('payment_status') == 'pending' ? 'selected' : '' }}>
+                                                                Pending
+                                                            </option>
+                                                        </select>
+                                                    </div>
 
-                                                                    if ($hoursRemaining <= 0 && $sub->end_date < $now) {
-                                                                        // Expired
-                                                                        $displayStatus = 'Expired';
-                                                                        $statusBadgeClass =
-                                                                            'bg-danger-subtle text-danger';
-                                                                    } elseif (
-                                                                        $hoursRemaining > 0 &&
-                                                                        $hoursRemaining <= 12
-                                                                    ) {
-                                                                        // Soon Expired (< 12 hours)
-                                                                        $displayStatus = 'Soon Expired';
-                                                                        $statusBadgeClass =
-                                                                            'bg-warning-subtle text-warning';
-                                                                    } elseif ($paymentType === 'renewal') {
-                                                                        // Renewal
-                                                                        $displayStatus = 'Renewed';
-                                                                        $statusBadgeClass = 'bg-info-subtle text-info';
-                                                                    } elseif ($paymentType === 'upgrade') {
-                                                                        // Upgrade
-                                                                        $displayStatus = 'Upgraded';
-                                                                        $statusBadgeClass =
-                                                                            'bg-primary-subtle text-primary';
-                                                                    } elseif ($paymentType === 'downgrade') {
-                                                                        // Downgrade
-                                                                        $displayStatus = 'Downgraded';
-                                                                        $statusBadgeClass = 'text-white';
-                                                                    } else {
-                                                                        // Active (new subscription)
-                                                                        $displayStatus = 'Active';
-                                                                        $statusBadgeClass =
-                                                                            'bg-success-subtle text-success';
-                                                                    }
-                                                                }
-                                                            @endphp
+                                                    <!-- Sort by -->
+                                                    <div class="col-md-3">
+                                                        <label for="payment_sort" class="form-label">Sort by</label>
+                                                        <select name="payment_sort" id="payment_sort"
+                                                            class="form-select form-select-md">
+                                                            <option value="latest" {{ request('payment_sort', 'latest') == 'latest' ? 'selected' : '' }}>
+                                                                Latest
+                                                            </option>
+                                                            <option value="oldest" {{ request('payment_sort') == 'oldest' ? 'selected' : '' }}>
+                                                                Oldest
+                                                            </option>
+                                                            <option value="name_asc" {{ request('payment_sort') == 'name_asc' ? 'selected' : '' }}>
+                                                                Plan Name (A-Z)
+                                                            </option>
+                                                            <option value="name_desc" {{ request('payment_sort') == 'name_desc' ? 'selected' : '' }}>
+                                                                Plan Name (Z-A)
+                                                            </option>
+                                                            <option value="amount_asc" {{ request('payment_sort') == 'amount_asc' ? 'selected' : '' }}>
+                                                                Amount (Low to High)
+                                                            </option>
+                                                            <option value="amount_desc" {{ request('payment_sort') == 'amount_desc' ? 'selected' : '' }}>
+                                                                Amount (High to Low)
+                                                            </option>
+                                                        </select>
+                                                    </div>
+
+                                                    <!-- Search Button -->
+                                                    <div class="col-md-2">
+                                                        <button type="submit" class="btn-read-now text-white px-4 py-2 mt-2 w-100">
+                                                            Search
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </form>
+
+                                            <!-- Pagination Info -->
+                                            @php
+                                                $payments = $user->payments()->with(['plan', 'subscription'])->latest();
+
+                                                // Apply search filter
+                                                if (request('payment_search')) {
+                                                    $payments = $payments->whereHas('plan', function($query) {
+                                                        $query->where('name', 'like', '%' . request('payment_search') . '%');
+                                                    });
+                                                }
+
+                                                // Apply status filter
+                                                if (request('payment_status')) {
+                                                    $filterStatus = request('payment_status');
+                                                    if ($filterStatus === 'pending') {
+                                                        // Filter by payment status 'pending'
+                                                        $payments = $payments->where('status', 'pending');
+                                                    } else {
+                                                        // Filter by payment type (new, renewal, upgrade, downgrade)
+                                                        $payments = $payments->where('payment_type', $filterStatus);
+                                                    }
+                                                }
+
+                                                // Apply sorting
+                                                $sort = request('payment_sort', 'latest');
+                                                if ($sort === 'oldest') {
+                                                    $payments = $payments->oldest();
+                                                } elseif ($sort === 'name_asc') {
+                                                    $payments = $payments->join('subscription_plans', 'payments.subscription_plan_id', '=', 'subscription_plans.id')
+                                                        ->orderBy('subscription_plans.name', 'asc')
+                                                        ->select('payments.*');
+                                                } elseif ($sort === 'name_desc') {
+                                                    $payments = $payments->join('subscription_plans', 'payments.subscription_plan_id', '=', 'subscription_plans.id')
+                                                        ->orderBy('subscription_plans.name', 'desc')
+                                                        ->select('payments.*');
+                                                } elseif ($sort === 'amount_asc') {
+                                                    $payments = $payments->orderBy('amount', 'asc');
+                                                } elseif ($sort === 'amount_desc') {
+                                                    $payments = $payments->orderBy('amount', 'desc');
+                                                }
+
+                                                // Paginate results (10 per page)
+                                                $paymentsPaginated = $payments->paginate(10)->appends(request()->query());
+                                            @endphp
+
+                                            @if ($paymentsPaginated->count() > 0)
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover align-middle">
+                                                        <thead class="table-light px-3">
                                                             <tr>
-                                                                <td class="ps-3 py-3">
-                                                                    {{ $payment->created_at->format('d M Y') }}</td>
-                                                                <td class="py-3">
-                                                                    <div>
-                                                                        <strong>{{ $payment->plan?->name ?? '-' }}</strong><br>
-                                                                        <small>
-                                                                            @if ($sub)
-                                                                                @if ($paymentType === 'renewal')
-                                                                                    Extended by <strong class="text-success">+{{ $durationDays }} day{{ $durationDays > 1 ? 's' : '' }}</strong>
-                                                                                @elseif ($paymentType === 'upgrade')
-                                                                                    Extended by <strong class="text-success">+{{ $durationDays }} day{{ $durationDays > 1 ? 's' : '' }}</strong>
-                                                                                @elseif ($paymentType === 'downgrade')
-                                                                                    Duration <strong class="text-warning">{{ $durationDays }} day{{ $durationDays > 1 ? 's' : '' }}</strong>
+                                                                <th scope="col" class="ps-3 py-3">Date</th>
+                                                                <th scope="col" class="py-3">Plan</th>
+                                                                <th scope="col" class="py-3">Amount</th>
+                                                                <th scope="col" class="py-3 text-center">Status</th>
+                                                                <th scope="col" class="py-3">Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="px-3">
+                                                            @foreach ($paymentsPaginated as $payment)
+                                                                @php
+                                                                    $sub = $payment->subscription;
+                                                                    $now = now();
+                                                                    $paymentType = $payment->payment_type ?? 'new';
+                                                                    $durationDays = $payment->plan
+                                                                        ? $payment->plan->duration_days
+                                                                        : 0;
+
+                                                                    // Determine status based on payment_type and subscription status
+                                                                    $displayStatus = 'Unknown';
+                                                                    $statusBadgeClass =
+                                                                        'bg-secondary-subtle text-secondary';
+                                                                    $statusIcon = 'fi-rs-question';
+
+                                                                    if ($sub) {
+                                                                        // Check if expired first
+                                                                        $hoursRemaining = $now->diffInHours(
+                                                                            $sub->end_date,
+                                                                            false,
+                                                                        );
+
+                                                                        if ($hoursRemaining <= 0 && $sub->end_date < $now) {
+                                                                            // Expired
+                                                                            $displayStatus = 'Expired';
+                                                                            $statusBadgeClass =
+                                                                                'bg-danger-subtle text-danger';
+                                                                        } elseif (
+                                                                            $hoursRemaining > 0 &&
+                                                                            $hoursRemaining <= 12
+                                                                        ) {
+                                                                            // Soon Expired (< 12 hours)
+                                                                            $displayStatus = 'Soon Expired';
+                                                                            $statusBadgeClass =
+                                                                                'bg-warning-subtle text-warning';
+                                                                        } elseif ($paymentType === 'renewal') {
+                                                                            // Renewal
+                                                                            $displayStatus = 'Renewed';
+                                                                            $statusBadgeClass = 'bg-info-subtle text-info';
+                                                                        } elseif ($paymentType === 'upgrade') {
+                                                                            // Upgrade
+                                                                            $displayStatus = 'Upgraded';
+                                                                            $statusBadgeClass =
+                                                                                'bg-primary-subtle text-primary';
+                                                                        } elseif ($paymentType === 'downgrade') {
+                                                                            // Downgrade
+                                                                            $displayStatus = 'Downgraded';
+                                                                            $statusBadgeClass = 'text-white';
+                                                                        } else {
+                                                                            // Active (new subscription)
+                                                                            $displayStatus = 'Active';
+                                                                            $statusBadgeClass =
+                                                                                'bg-success-subtle text-success';
+                                                                        }
+                                                                    }
+                                                                @endphp
+                                                                <tr>
+                                                                    <td class="ps-3 py-3">
+                                                                        {{ $payment->created_at->format('d M Y') }}</td>
+                                                                    <td class="py-3">
+                                                                        <div>
+                                                                            <strong>{{ $payment->plan?->name ?? '-' }}</strong><br>
+                                                                            <small>
+                                                                                @if ($sub)
+                                                                                    @if ($paymentType === 'renewal')
+                                                                                        Extended by <strong class="text-success">+{{ $durationDays }} day{{ $durationDays > 1 ? 's' : '' }}</strong>
+                                                                                    @elseif ($paymentType === 'upgrade')
+                                                                                        Extended by <strong class="text-success">+{{ $durationDays }} day{{ $durationDays > 1 ? 's' : '' }}</strong>
+                                                                                    @elseif ($paymentType === 'downgrade')
+                                                                                        Duration <strong class="text-warning">{{ $durationDays }} day{{ $durationDays > 1 ? 's' : '' }}</strong>
+                                                                                    @else
+                                                                                        Duration <strong class="text-success">{{ $durationDays }} day{{ $durationDays > 1 ? 's' : '' }}</strong>
+                                                                                    @endif
                                                                                 @else
+                                                                                    {{-- For new subscription, show duration even without active subscription --}}
                                                                                     Duration <strong class="text-success">{{ $durationDays }} day{{ $durationDays > 1 ? 's' : '' }}</strong>
                                                                                 @endif
-                                                                            @else
-                                                                                —
-                                                                            @endif
-                                                                        </small>
-                                                                    </div>
-                                                                </td>
-                                                                <td class="py-3 fw-medium">Rp
-                                                                    {{ number_format((float) $payment->amount, 0, ',', '.') }}
-                                                                </td>
-                                                                <td class="py-3 text-center">
-                                                                    {{-- Status Display: Pending payments show "Pending + Operation Type", Paid show subscription status --}}
-                                                                    <div
-                                                                        class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
-                                                                        @if ($payment->status === 'pending')
-                                                                            {{-- PENDING PAYMENT: Show "Pending + Operation Type" --}}
-                                                                            <span
-                                                                                class="badge bg-warning-subtle text-warning rounded-pill px-2 py-1">
-                                                                                Pending
-                                                                            </span>
-                                                                            @if ($paymentType === 'renewal')
+                                                                            </small>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="py-3 fw-medium">Rp
+                                                                        {{ number_format((float) $payment->amount, 0, ',', '.') }}
+                                                                    </td>
+                                                                    <td class="py-3 text-center">
+                                                                        {{-- Status Display: Pending payments show "Pending + Operation Type", Paid show subscription status --}}
+                                                                        <div
+                                                                            class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
+                                                                            @if ($payment->status === 'pending')
+                                                                                {{-- PENDING PAYMENT: Show "Pending + Operation Type" --}}
                                                                                 <span
-                                                                                    class="badge bg-info-subtle text-info rounded-pill px-2 py-1">
-                                                                                    Renewed
+                                                                                    class="badge bg-warning-subtle text-warning rounded-pill px-2 py-1">
+                                                                                    Pending
                                                                                 </span>
-                                                                            @elseif ($paymentType === 'upgrade')
-                                                                                <span
-                                                                                    class="badge bg-primary-subtle text-primary rounded-pill px-2 py-1">
-                                                                                    Upgraded
-                                                                                </span>
-                                                                            @elseif ($paymentType === 'downgrade')
-                                                                                <span
-                                                                                    class="badge bg-primary-subtle text-warning rounded-pill px-2 py-1">
-                                                                                    Downgraded
-                                                                                </span>
-                                                                            @endif
-                                                                        @else
-                                                                            {{-- PAID PAYMENT: Show Paid + Subscription Status (or Paid + Operation Type) --}}
-                                                                            @if ($paymentType === 'renewal')
-                                                                                <span
-                                                                                    class="badge bg-success-subtle text-success rounded-pill px-2 py-1">
-                                                                                    Paid
-                                                                                </span>
-                                                                                <span
-                                                                                    class="badge bg-info-subtle text-info rounded-pill px-2 py-1">
-                                                                                    Renewed
-                                                                                </span>
-                                                                            @elseif ($paymentType === 'upgrade')
-                                                                                <span
-                                                                                    class="badge bg-success-subtle text-success rounded-pill px-2 py-1">
-                                                                                    Paid
-                                                                                </span>
-                                                                                <span
-                                                                                    class="badge bg-primary-subtle text-primary rounded-pill px-2 py-1">
-                                                                                    Upgraded
-                                                                                </span>
-                                                                            @elseif ($paymentType === 'downgrade')
-                                                                                <span
-                                                                                    class="badge bg-success-subtle text-success rounded-pill px-2 py-1">
-                                                                                    Paid
-                                                                                </span>
-                                                                                <span
-                                                                                    class="badge text-danger rounded-pill px-2 py-1">
-                                                                                    Downgraded
-                                                                                </span>
-                                                                            @else
-                                                                                {{-- For 'new' subscription, show subscription status if available --}}
-                                                                                <span
-                                                                                    class="badge bg-success-subtle text-success rounded-pill px-2 py-1">
-                                                                                    Paid
-                                                                                </span>
-
-                                                                                @if ($sub)
+                                                                                @if ($paymentType === 'renewal')
                                                                                     <span
-                                                                                        class="badge {{ $statusBadgeClass }} rounded-pill px-2 py-1">
-                                                                                        {{ $displayStatus }}
+                                                                                        class="badge bg-info-subtle text-info rounded-pill px-2 py-1">
+                                                                                        Renewed
                                                                                     </span>
-                                                                                @elseif($payment->status === 'success')
+                                                                                @elseif ($paymentType === 'upgrade')
                                                                                     <span
-                                                                                        class="badge bg-secondary-subtle text-secondary rounded-pill px-2 py-1">
-                                                                                        No Sub
+                                                                                        class="badge bg-primary-subtle text-primary rounded-pill px-2 py-1">
+                                                                                        Upgraded
+                                                                                    </span>
+                                                                                @elseif ($paymentType === 'downgrade')
+                                                                                    <span
+                                                                                        class="badge bg-primary-subtle text-warning rounded-pill px-2 py-1">
+                                                                                        Downgraded
                                                                                     </span>
                                                                                 @endif
+                                                                            @else
+                                                                                {{-- PAID PAYMENT: Show Paid + Subscription Status (or Paid + Operation Type) --}}
+                                                                                @if ($paymentType === 'renewal')
+                                                                                    <span
+                                                                                        class="badge bg-success-subtle text-success rounded-pill px-2 py-1">
+                                                                                        Paid
+                                                                                    </span>
+                                                                                    <span
+                                                                                        class="badge bg-info-subtle text-info rounded-pill px-2 py-1">
+                                                                                        Renewed
+                                                                                    </span>
+                                                                                @elseif ($paymentType === 'upgrade')
+                                                                                    <span
+                                                                                        class="badge bg-success-subtle text-success rounded-pill px-2 py-1">
+                                                                                        Paid
+                                                                                    </span>
+                                                                                    <span
+                                                                                        class="badge bg-primary-subtle text-primary rounded-pill px-2 py-1">
+                                                                                        Upgraded
+                                                                                    </span>
+                                                                                @elseif ($paymentType === 'downgrade')
+                                                                                    <span
+                                                                                        class="badge bg-success-subtle text-success rounded-pill px-2 py-1">
+                                                                                        Paid
+                                                                                    </span>
+                                                                                    <span
+                                                                                        class="badge text-danger rounded-pill px-2 py-1">
+                                                                                        Downgraded
+                                                                                    </span>
+                                                                                @else
+                                                                                    {{-- For 'new' subscription, show subscription status if available --}}
+                                                                                    <span
+                                                                                        class="badge bg-success-subtle text-success rounded-pill px-2 py-1">
+                                                                                        Paid
+                                                                                    </span>
+
+                                                                                    @if ($sub)
+                                                                                        <span
+                                                                                            class="badge {{ $statusBadgeClass }} rounded-pill px-2 py-1">
+                                                                                            {{ $displayStatus }}
+                                                                                        </span>
+                                                                                    @elseif($payment->status === 'success')
+                                                                                        <span
+                                                                                            class="badge bg-primary-subtle text-primary rounded-pill px-2 py-1">
+                                                                                            New Member
+                                                                                        </span>
+                                                                                    @endif
+                                                                                @endif
                                                                             @endif
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        @if ($payment->status === 'success')
+                                                                            <a href="{{ route('user.invoice.download', $payment) }}"
+                                                                                download
+                                                                                class="btn btn-sm"
+                                                                                title="Download Invoice">
+                                                                                <i class="bi bi-printer mt-1"></i>
+                                                                            </a>
+                                                                        @elseif ($payment->status === 'pending' && $payment->plan)
+                                                                            {{-- Pending: Show link to payment gateway --}}
+                                                                            <a href="{{ $payment->plan->mayar_payment_link }}"
+                                                                                target="_blank" class="btn btn-sm"
+                                                                                title="Continue Payment">
+                                                                                <i class="bi bi-eye mt-1"></i>
+                                                                            </a>
+                                                                        @else
+                                                                            <span class="text-muted small mt-1">—</span>
                                                                         @endif
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    @if ($payment->status === 'success')
-                                                                        <a href="{{ route('user.invoice.download', $payment) }}"
-                                                                            download
-                                                                            class="btn btn-sm"
-                                                                            title="Download Invoice">
-                                                                            <i class="bi bi-printer mt-1"></i>
-                                                                        </a>
-                                                                    @elseif ($payment->status === 'pending' && $payment->plan)
-                                                                        {{-- Pending: Show link to payment gateway --}}
-                                                                        <a href="{{ $payment->plan->mayar_payment_link }}"
-                                                                            target="_blank" class="btn btn-sm"
-                                                                            title="Continue Payment">
-                                                                            <i class="bi bi-eye mt-1"></i>
-                                                                        </a>
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                                <!-- Pagination -->
+                                                @if ($paymentsPaginated->hasPages())
+                                                    <nav aria-label="Page navigation example" class="mt-4 mb-4">
+                                                        <ul class="pagination justify-content-center">
+                                                            {{-- Previous Page Link --}}
+                                                            <li class="page-item {{ $paymentsPaginated->onFirstPage() ? 'disabled' : '' }}">
+                                                                @if ($paymentsPaginated->onFirstPage())
+                                                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                                                        <span aria-hidden="true">&laquo;</span>
+                                                                    </a>
+                                                                @else
+                                                                    <a class="page-link" href="{{ $paymentsPaginated->previousPageUrl() }}" aria-label="Previous">
+                                                                        <span aria-hidden="true">&laquo;</span>
+                                                                    </a>
+                                                                @endif
+                                                            </li>
+
+                                                            {{-- Pagination Elements --}}
+                                                            @foreach ($paymentsPaginated->getUrlRange(1, $paymentsPaginated->lastPage()) as $page => $url)
+                                                                <li class="page-item {{ $page == $paymentsPaginated->currentPage() ? 'active' : '' }}">
+                                                                    @if ($page == $paymentsPaginated->currentPage())
+                                                                        <a class="page-link" href="#">{{ $page }}</a>
                                                                     @else
-                                                                        <span class="text-muted small mt-1">—</span>
+                                                                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
                                                                     @endif
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                                                </li>
+                                                            @endforeach
+
+                                                            {{-- Next Page Link --}}
+                                                            <li class="page-item {{ !$paymentsPaginated->hasMorePages() ? 'disabled' : '' }}">
+                                                                @if ($paymentsPaginated->hasMorePages())
+                                                                    <a class="page-link" href="{{ $paymentsPaginated->nextPageUrl() }}" aria-label="Next">
+                                                                        <span aria-hidden="true">&raquo;</span>
+                                                                    </a>
+                                                                @else
+                                                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                                                        <span aria-hidden="true">&raquo;</span>
+                                                                    </a>
+                                                                @endif
+                                                            </li>
+                                                        </ul>
+                                                    </nav>
+
+                                                    <!-- Page Info -->
+                                                    <div class="text-center text-muted small">
+                                                        Showing {{ $paymentsPaginated->firstItem() }} to {{ $paymentsPaginated->lastItem() }} of {{ $paymentsPaginated->total() }} payments
+                                                    </div>
+                                                @endif
+                                            @else
+                                                <div class="text-center py-5">
+                                                    <i class="fi fi-rs-search text-muted" style="font-size: 48px;"></i>
+                                                    <h5 class="mt-3">No payments found</h5>
+                                                    <p class="text-muted">Try adjusting your filters or search terms.</p>
+                                                </div>
+                                            @endif
                                         @endif
                                     </div>
                                 </div>
@@ -1882,7 +2134,7 @@
                                                     <!-- <label for="submit-search" class="form-label d-block invisible">&nbsp;</label> -->
                                                     <button type="submit" id="submit-search"
                                                         class="btn-read-now text-white px-4 py-2 mt-2">
-                                                        <i class="fi fi-rs-search me-2"></i>Search
+                                                        <i class="fi fi-rs-search me-2 mt-1"></i>Search
                                                     </button>
                                                 </div>
                                             </div>
@@ -2091,7 +2343,7 @@
                                                 </div>
                                                 <div class="col-md-2">
                                                     <button type="submit" class="btn-read-now text-white px-4 py-2 mt-2">
-                                                        <i class="fi fi-rs-search me-2"></i>Search
+                                                        <i class="fi fi-rs-search me-2 mt-1"></i>Search
                                                     </button>
                                                 </div>
                                             </div>
@@ -2183,6 +2435,55 @@
                                                     </tbody>
                                                 </table>
                                             </div>
+
+                                            <!-- Pagination -->
+                                            @if ($readingHistory->hasPages())
+                                                <nav aria-label="Reading history pagination" class="mt-4 mb-4">
+                                                    <ul class="pagination justify-content-center">
+                                                        {{-- Previous Page Link --}}
+                                                        <li class="page-item {{ $readingHistory->onFirstPage() ? 'disabled' : '' }}">
+                                                            @if ($readingHistory->onFirstPage())
+                                                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                                                    <span aria-hidden="true">&laquo;</span>
+                                                                </a>
+                                                            @else
+                                                                <a class="page-link" href="{{ $readingHistory->previousPageUrl() }}" aria-label="Previous">
+                                                                    <span aria-hidden="true">&laquo;</span>
+                                                                </a>
+                                                            @endif
+                                                        </li>
+
+                                                        {{-- Pagination Elements --}}
+                                                        @foreach ($readingHistory->getUrlRange(1, $readingHistory->lastPage()) as $page => $url)
+                                                            <li class="page-item {{ $page == $readingHistory->currentPage() ? 'active' : '' }}">
+                                                                @if ($page == $readingHistory->currentPage())
+                                                                    <a class="page-link" href="#">{{ $page }}</a>
+                                                                @else
+                                                                    <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                                                @endif
+                                                            </li>
+                                                        @endforeach
+
+                                                        {{-- Next Page Link --}}
+                                                        <li class="page-item {{ !$readingHistory->hasMorePages() ? 'disabled' : '' }}">
+                                                            @if ($readingHistory->hasMorePages())
+                                                                <a class="page-link" href="{{ $readingHistory->nextPageUrl() }}" aria-label="Next">
+                                                                    <span aria-hidden="true">&raquo;</span>
+                                                                </a>
+                                                            @else
+                                                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                                                    <span aria-hidden="true">&raquo;</span>
+                                                                </a>
+                                                            @endif
+                                                        </li>
+                                                    </ul>
+                                                </nav>
+
+                                                <!-- Page Info -->
+                                                <div class="text-center text-muted small">
+                                                    Showing {{ $readingHistory->firstItem() }} to {{ $readingHistory->lastItem() }} of {{ $readingHistory->total() }} readings
+                                                </div>
+                                            @endif
                                         @else
                                             <div class="text-center py-5">
                                                 <i class="fi fi-rs-history text-muted" style="font-size: 64px;"></i>
@@ -2234,7 +2535,7 @@
                                                 </div>
                                                 <div class="col-md-2">
                                                     <button type="submit" class="btn-read-now text-white px-4 py-2 mt-2">
-                                                        <i class="fi fi-rs-search me-2"></i>Search
+                                                        <i class="fi fi-rs-search me-2 mt-1"></i>Search
                                                     </button>
                                                 </div>
                                             </div>
@@ -2357,6 +2658,55 @@
                                                     ])
                                                 @endforeach
                                             </div>
+
+                                            <!-- Pagination -->
+                                            @if ($userRatings->hasPages())
+                                                <nav aria-label="Reviews pagination" class="mt-4 mb-4">
+                                                    <ul class="pagination justify-content-center">
+                                                        {{-- Previous Page Link --}}
+                                                        <li class="page-item {{ $userRatings->onFirstPage() ? 'disabled' : '' }}">
+                                                            @if ($userRatings->onFirstPage())
+                                                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                                                    <span aria-hidden="true">&laquo;</span>
+                                                                </a>
+                                                            @else
+                                                                <a class="page-link" href="{{ $userRatings->previousPageUrl() }}" aria-label="Previous">
+                                                                    <span aria-hidden="true">&laquo;</span>
+                                                                </a>
+                                                            @endif
+                                                        </li>
+
+                                                        {{-- Pagination Elements --}}
+                                                        @foreach ($userRatings->getUrlRange(1, $userRatings->lastPage()) as $page => $url)
+                                                            <li class="page-item {{ $page == $userRatings->currentPage() ? 'active' : '' }}">
+                                                                @if ($page == $userRatings->currentPage())
+                                                                    <a class="page-link" href="#">{{ $page }}</a>
+                                                                @else
+                                                                    <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                                                @endif
+                                                            </li>
+                                                        @endforeach
+
+                                                        {{-- Next Page Link --}}
+                                                        <li class="page-item {{ !$userRatings->hasMorePages() ? 'disabled' : '' }}">
+                                                            @if ($userRatings->hasMorePages())
+                                                                <a class="page-link" href="{{ $userRatings->nextPageUrl() }}" aria-label="Next">
+                                                                    <span aria-hidden="true">&raquo;</span>
+                                                                </a>
+                                                            @else
+                                                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                                                    <span aria-hidden="true">&raquo;</span>
+                                                                </a>
+                                                            @endif
+                                                        </li>
+                                                    </ul>
+                                                </nav>
+
+                                                <!-- Page Info -->
+                                                <div class="text-center text-muted small">
+                                                    Showing {{ $userRatings->firstItem() }} to {{ $userRatings->lastItem() }} of {{ $userRatings->total() }} reviews
+                                                </div>
+                                            @endif
                                         @else
                                             <div class="text-center py-5">
                                                 <i class="fi fi-rs-star text-muted"

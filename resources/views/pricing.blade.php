@@ -558,7 +558,7 @@
                                     // If path starts with 'http', it's already a full URL
                                     if (filter_var($imagePath, FILTER_VALIDATE_URL)) {
                                         $bannerUrl = $imagePath;
-                                    } 
+                                    }
                                     // If file exists in storage
                                     elseif (Storage::disk('public')->exists($imagePath)) {
                                         $bannerUrl = asset('storage/' . $imagePath);
@@ -705,21 +705,14 @@
                                                             <span class="text-muted small d-block text-center py-2">Same tier</span>
                                                         @endif
                                                     @else
-                                                        @if (str_contains($plan->mayar_payment_link, 'mayar.shop'))
-                                                            {{-- SIMULASI: pakai link langsung, isi manual saat testing --}}
-                                                            <a href="{{ $plan->mayar_payment_link }}"
-                                                                class="btn text-white pricing-button--primary rounded-pill py-3 w-100 mb-1 text-center"
-                                                                target="_blank">
+                                                        {{-- NEW SUBSCRIPTION: Pakai form POST agar konsisten dengan renew/upgrade/downgrade --}}
+                                                        <form action="{{ route('subscribe.redirect', $plan->slug) }}" method="POST" class="w-100">
+                                                            @csrf
+                                                            <button type="submit"
+                                                                class="btn text-white pricing-button--primary rounded-pill py-3 w-100 mb-1 w-100">
                                                                 {{ $plan->button_text }}
-                                                            </a>
-                                                        @else
-                                                            {{-- LIVE: redirect via controller agar kirim data user --}}
-                                                            <a href="{{ route('subscribe.redirect', $plan->slug) }}"
-                                                                class="btn text-white pricing-button--primary rounded-pill py-3 w-100 mb-1 text-center"
-                                                                style="text-decoration: none; color: inherit;">
-                                                                {{ $plan->button_text }}
-                                                            </a>
-                                                        @endif
+                                                            </button>
+                                                        </form>
                                                     @endif
 
                                                     @php

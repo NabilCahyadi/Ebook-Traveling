@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\BlogService;
 use App\Models\City;
+use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class BlogController extends Controller
 {
@@ -87,7 +89,75 @@ class BlogController extends Controller
             ->orderBy('order_index')
             ->orderBy('name')
             ->get();
-        $this->blogService->incrementViewCount($blog->id);
+
+        // ✅ VIEW TRACKING: Count only 1 view per 1 hour per session
+        $now = now();
+        $sessionKey = 'blog_view_' . $blog->id;
+        $lastViewTime = session($sessionKey) ? Carbon::parse(session($sessionKey)) : null;
+
+        Log::info("📝 [BLOG VIEW TRACKING] Started", [
+            'blog_id' => $blog->id,
+            'blog_title' => $blog->title,
+            'session_key' => $sessionKey,
+            'last_view_time' => $lastViewTime ? $lastViewTime->toDateTimeString() : null,
+            'now' => $now->toDateTimeString(),
+            'current_view_count' => $blog->view_count,
+            'session_id' => session()->getId(),
+        ]);
+
+        // Jika belum ada di session atau sudah lebih dari 60 menit
+        $shouldIncrement = false;
+        $minutesElapsed = 0;
+
+        if ($lastViewTime === null) {
+            $shouldIncrement = true;
+            Log::info("📝 [BLOG VIEW TRACKING] Reason: First view - no session data found");
+        } else {
+            $minutesElapsed = $now->diffInMinutes($lastViewTime);
+            if ($minutesElapsed >= 60) {
+                $shouldIncrement = true;
+                Log::info("📝 [BLOG VIEW TRACKING] Reason: 1 hour passed - can count again", [
+                    'minutes_elapsed' => $minutesElapsed,
+                ]);
+            } else {
+                Log::info("📝 [BLOG VIEW TRACKING] Reason: Within 1 hour - skip counting", [
+                    'minutes_elapsed' => $minutesElapsed,
+                    'minutes_remaining' => (60 - $minutesElapsed),
+                ]);
+            }
+        }
+
+        if ($shouldIncrement) {
+            try {
+                // Increment view_count di database
+                $blog->increment('view_count');
+
+                // Refresh untuk mendapatkan nilai terbaru
+                $blog->refresh();
+
+                Log::info("✅ [BLOG VIEW TRACKING] View count incremented", [
+                    'blog_id' => $blog->id,
+                    'blog_title' => $blog->title,
+                    'new_view_count' => $blog->view_count,
+                    'session_key' => $sessionKey,
+                ]);
+
+                // Simpan waktu view sekarang ke session (berlaku 1 jam)
+                session()->put($sessionKey, $now);
+                session()->save(); // Force save session
+
+                Log::info("💾 [BLOG VIEW TRACKING] Session updated", [
+                    'session_key' => $sessionKey,
+                    'saved_time' => $now->toDateTimeString(),
+                ]);
+            } catch (\Exception $e) {
+                Log::error("❌ [BLOG VIEW TRACKING] Error during increment", [
+                    'blog_id' => $blog->id,
+                    'error_message' => $e->getMessage(),
+                    'error_trace' => $e->getTraceAsString(),
+                ]);
+            }
+        }
 
         return view('blog-detail', compact('blog', 'citiesHeader'));
     }
