@@ -525,8 +525,8 @@
     /* Small Tablet (600px - 768px) */
     @media screen and (max-width: 768px) {
         body {
-            margin-top: 0;
-            padding-top: 60px;
+            margin: 0;
+            padding: 0;
             height: auto;
         }
 
@@ -545,9 +545,12 @@
         }
 
         .container#container {
+            margin-top: 60px;
             min-height: 100vh;
             position: relative;
-            margin: 0 auto;
+            margin-left: 0;
+            margin-right: 0;
+            margin-bottom: 0;
             padding: 0;
             box-shadow: none !important;
             border: none;
@@ -560,7 +563,7 @@
             transform: none !important;
             opacity: 1 !important;
             z-index: auto !important;
-            padding: 20px 0;
+            padding: 0;
             min-height: 100vh;
             animation: none !important;
             box-shadow: none !important;
@@ -571,7 +574,7 @@
         .sign-up-container {
             position: relative;
             width: 100% !important;
-            padding: 20px 20px;
+            padding: 30px 20px;
             left: 0;
             height: 100vh;
             display: none;
@@ -650,8 +653,8 @@
     /* Mobile Small (360px - 600px) */
     @media screen and (max-width: 600px) {
         body {
-            margin-top: 0;
-            padding-top: 60px;
+            margin: 0;
+            padding: 0;
             height: auto;
         }
 
@@ -660,8 +663,11 @@
         }
 
         .container#container {
+            margin-top: 60px;
             min-height: 100vh;
-            margin: 0;
+            margin-left: 0;
+            margin-right: 0;
+            margin-bottom: 0;
             padding: 0;
             box-shadow: none !important;
         }
@@ -734,8 +740,8 @@
     /* Extra Small Mobile (320px - 360px) */
     @media screen and (max-width: 360px) {
         body {
-            margin-top: 0;
-            padding-top: 60px;
+            margin: 0;
+            padding: 0;
             height: auto;
         }
 
@@ -747,8 +753,11 @@
 
         .container#container {
             box-shadow: none !important;
+            margin-top: 60px;
             min-height: 100vh;
-            margin: 0;
+            margin-left: 0;
+            margin-right: 0;
+            margin-bottom: 0;
         }
 
         .form-container form h1 {
