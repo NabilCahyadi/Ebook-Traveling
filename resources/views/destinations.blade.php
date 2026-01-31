@@ -331,13 +331,17 @@
         </div>
         <div class="row mt-5">
             @forelse ($allCities as $index => $city)
+            @php
+            $cityImageUrl = getImageUrl($city->image, 'images/placeholder-destination.jpg');
+            @endphp
             <div class="col-lg-3 col-md-4 col-sm-6">
                 {{-- Bungkus seluruh card dengan tag <a> --}}
                 <a href="{{ route('destination.show', $city->slug) }}" class="text-decoration-none destination-link">
                     <div class="destination-card position-relative overflow-hidden" style="height: 250px; border-radius: 12px; background-color: #f0f0f0;">
                         <!-- Gambar sebagai background dengan fallback -->
                         <div class="destination-thumb destination-card-item"
-                             data-image="{{ asset($city->image) }}"
+                             data-image="{{ $cityImageUrl }}"
+                             data-fallback="{{ asset('images/placeholder-destination.jpg') }}"
                              style="height: 100%; background-size: cover; background-position: center; background-color: #f0f0f0;">
                         </div>
 
@@ -368,7 +372,8 @@
         function setBackgroundImage(element, imageUrl) {
             // Jika image path kosong, langsung gunakan placeholder
             if (!imageUrl || imageUrl.trim() === '' || imageUrl.includes('null')) {
-                element.style.backgroundImage = `url('${placeholderImage}')`;
+                const fallbackUrl = element.getAttribute('data-fallback') || placeholderImage;
+                element.style.backgroundImage = `url('${fallbackUrl}')`;
                 return;
             }
 
@@ -379,7 +384,9 @@
             };
             img.onerror = function() {
                 // Jika image gagal diload, gunakan placeholder
-                element.style.backgroundImage = `url('${placeholderImage}')`;
+                const fallbackUrl = element.getAttribute('data-fallback') || placeholderImage;
+                element.style.backgroundImage = `url('${fallbackUrl}')`;
+                console.warn('Image fallback digunakan untuk destination:', imageUrl);
             };
             img.src = imageUrl;
         }

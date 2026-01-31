@@ -169,3 +169,39 @@ if (!function_exists('formatPhoneNumber')) {
         return $phone;
     }
 }
+
+if (!function_exists('getImageUrl')) {
+    /**
+     * Get image URL dengan fallback support.
+     * Handles both external URLs dan local storage paths.
+     * 
+     * @param string $imagePath Path gambar dari database atau external URL
+     * @param string $fallback Path default jika gambar tidak ditemukan
+     * @return string Full image URL
+     */
+    function getImageUrl($imagePath, $fallback = 'images/slider-1.webp')
+    {
+        // Jika path kosong, gunakan fallback
+        if (empty($imagePath)) {
+            return asset($fallback);
+        }
+
+        // Cek apakah URL eksternal
+        if (filter_var($imagePath, FILTER_VALIDATE_URL)) {
+            return $imagePath;
+        }
+
+        // Cek apakah sudah memiliki http:// atau https://
+        if (\Illuminate\Support\Str::startsWith($imagePath, ['http://', 'https://'])) {
+            return $imagePath;
+        }
+
+        // Bersihkan path (hapus leading slash dan slashes di awal)
+        $cleanPath = ltrim($imagePath, '/');
+
+        // Untuk local storage path, gunakan asset() yang sudah handle storage
+        // Asset helper akan otomatis menambahkan URL base yang sesuai
+        return asset('storage/' . $cleanPath);
+    }
+}
+

@@ -628,7 +628,7 @@
                                 <li class="nav-item">
                                     <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab', 'dashboard') == 'dashboard' ? 'active bg-light-subtle' : 'text-body' }}"
                                         href="{{ route('page-account') }}?tab=dashboard">
-                                        <i class="fi fi-rs-settings-sliders me-3 fs-5"></i>
+                                        <i class="fi fi-rs-settings-sliders me-3 fs-5 mt-1"></i>
                                         <span>
                                             @if (auth()->check() && auth()->user()->hasActiveSubscription())
                                                 Dashboard Member
@@ -656,7 +656,7 @@
                                             data-target="contentMenu" href="#"
                                             onclick="toggleMenu(event, 'contentMenu')">
                                             <span class="d-flex align-items-center">
-                                                <i class="fi fi-rs-book me-3 fs-5 text-primary"></i>
+                                                <i class="fi fi-rs-book me-3 fs-5 text-primary mt-1"></i>
                                                 <span>Reading Area</span>
                                             </span>
                                             <i class="fi fi-rs-angle-small-down fs-4 transition-transform"></i>
@@ -666,20 +666,20 @@
                                             <li class="nav-item">
                                                 <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'library' ? 'active bg-light-subtle' : 'text-muted' }}"
                                                     href="{{ route('page-account') }}?tab=library">
-                                                    <span><i class="bi bi-collection mr-10"></i>My Library</span>
+                                                    <span><i class="bi bi-collection mr-10 mt-1"></i>My Library</span>
                                                 </a>
                                             </li>
                                             <li class="nav-item">
                                                 <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'reading-history' ? 'active bg-light-subtle' : 'text-muted' }}"
                                                     href="{{ route('page-account') }}?tab=reading-history">
-                                                    <span><i class="bi-clock-history mr-10"></i>Reading History</span>
+                                                    <span><i class="bi-clock-history mr-10 mt-1"></i>Reading History</span>
                                                 </a>
                                             </li>
                                             @if (auth()->user()->hasActiveSubscription())
                                                 <li class="nav-item">
                                                     <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'reviews' ? 'active bg-light-subtle' : 'text-muted' }}"
                                                         href="{{ route('page-account') }}?tab=reviews">
-                                                        <span><i class="fi fi-rs-star mr-10"></i>My Reviews</span>
+                                                        <span><i class="fi fi-rs-star mr-10 mt-1"></i>My Reviews</span>
                                                     </a>
                                                 </li>
                                             @endif
@@ -709,13 +709,13 @@
                                             <li class="nav-item">
                                                 <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'subscription' ? 'active bg-light-subtle' : 'text-muted' }}"
                                                     href="{{ route('page-account') }}?tab=subscription">
-                                                    <span><i class="fi fi-rs-crown mr-10"></i>My Subscription</span>
+                                                    <span><i class="fi fi-rs-crown mr-10 mt-1"></i>My Subscription</span>
                                                 </a>
                                             </li>
                                             <li class="nav-item">
                                                 <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'help' ? 'active bg-light-subtle' : 'text-muted' }}"
                                                     href="{{ route('page-account') }}?tab=help">
-                                                    <span><i class="fi fi-rs-interactive mr-10"></i>Help Center</span>
+                                                    <span><i class="fi fi-rs-interactive mr-10 mt-1"></i>Help Center</span>
                                                 </a>
                                             </li>
                                         @else
@@ -723,9 +723,6 @@
                                                 <a class="nav-link d-flex align-items-center px-3 py-2 {{ request('tab') == 'payment' ? 'active bg-light-subtle' : 'text-muted' }}"
                                                     href="{{ route('page-account') }}?tab=payment">
                                                     <span><i class="fi fi-rs-credit-card mr-10"></i>Payment History</span>
-                                                    <!-- @if ($ordersCount > 0)
-    <span class="badge bg-success rounded-pill ms-auto">{{ $ordersCount }}</span>
-    @endif -->
                                                 </a>
                                             </li>
                                         @endif
@@ -736,7 +733,7 @@
                                 <li class="nav-item border-top">
                                     <a class="nav-link d-flex align-items-center px-3 py-2 text-danger" href="#"
                                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                        <i class="fi fi-rs-sign-out me-3 fs-5"></i>
+                                        <i class="fi fi-rs-sign-out me-3 fs-5 mt-1"></i>
                                         <span>Logout</span>
                                     </a>
                                     <form id="logout-form" action="{{ route('user.logout') }}" method="POST"

@@ -346,7 +346,7 @@
                 <div class="header-nav d-none d-lg-flex">
                     <div class="main-categori-wrap d-none d-lg-block">
                         <a class="categories-button-active" href="#">
-                            <span class="fi fi-rs-apps"></span>Category
+                            <span class="fi fi-rs-apps mt-1"></span>Category
                             <i class="fi fi-rs-angle-down"></i>
                         </a>
                         <div id="categories-dropdown-inner" class="categories-dropdown-wrap categories-dropdown-active-large font-heading">

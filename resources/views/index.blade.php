@@ -644,30 +644,20 @@ $collections = collect();
             <div class="home-slide-cover mt-30">
                 <div class="hero-slider-1 style-4 dot-style-1 dot-style-1-position-1 temp-hidden">
                     @foreach($homeSliders as $slider)
-                    {{-- FALLBACK SOLUTION --}}
                     @php
-                    // Ambil path gambar dari database
-                    $imagePath = ltrim($slider->image, '/');
-
-                    // Cek apakah file ada di public folder
-                    $imageExists = file_exists(public_path($imagePath));
-
-                    // Jika tidak ada, gunakan fallback
-                    if (!$imageExists) {
+                    // Gunakan helper function untuk mendapatkan image URL dengan fallback otomatis
                     $fallbackImages = [
-                    'images/slider-1.webp',
-                    'images/slider-2.webp',
-                    'images/slider-3.webp'
+                        'images/slider-1.webp',
+                        'images/slider-2.webp',
+                        'images/slider-3.webp'
                     ];
-                    $imagePath = $fallbackImages[$loop->index % count($fallbackImages)];
-                    }
-
-                    // Pastikan gambar benar-benar ada (fallback akhir)
-                    if (!file_exists(public_path($imagePath))) {
-                    $imagePath = 'images/slider-1.webp';
-                    }
+                    $fallbackImage = $fallbackImages[$loop->index % count($fallbackImages)];
+                    $imageUrl = getImageUrl($slider->image, $fallbackImage);
                     @endphp
-                    <div class="single-hero-slider single-animation-wrap" style="background-image: url({{ asset($imagePath) }})">
+                    <div class="single-hero-slider single-animation-wrap" 
+                         style="background-image: url({{ $imageUrl }})" 
+                         data-fallback="{{ asset($fallbackImage) }}" 
+                         onerror="this.style.backgroundImage = 'url(' + this.getAttribute('data-fallback') + ')'">
                         <a href="{{ $slider->target_url ?? '#' }}" style="display: block; height: 100%; text-decoration: none;">
                             <div class="slider-content">
                                 <h1 class="slider-title mb-40">
@@ -1128,6 +1118,41 @@ $collections = collect();
                     });
                 }, 0);
             }
+
+            // 2. Handle image fallback untuk slider items
+            // Cek apakah background image berhasil diload, jika tidak ganti dengan fallback
+            const handleImageFallback = () => {
+                const sliderItems = document.querySelectorAll('.single-hero-slider');
+                
+                sliderItems.forEach(item => {
+                    const bgImageUrl = window.getComputedStyle(item).backgroundImage;
+                    const fallbackUrl = item.getAttribute('data-fallback');
+
+                    if (bgImageUrl && bgImageUrl !== 'none' && fallbackUrl) {
+                        // Extract URL dari background-image CSS property
+                        const urlMatch = bgImageUrl.match(/url\(['"]?(.+?)['"]?\)/);
+                        if (urlMatch && urlMatch[1]) {
+                            const imageUrl = urlMatch[1];
+                            const img = new Image();
+
+                            img.onload = function() {
+                                // Image berhasil diload, tidak perlu fallback
+                            };
+
+                            img.onerror = function() {
+                                // Image gagal diload, gunakan fallback
+                                item.style.backgroundImage = 'url(' + fallbackUrl + ')';
+                                console.warn('Image fallback digunakan untuk slider item:', imageUrl);
+                            };
+
+                            img.src = imageUrl;
+                        }
+                    }
+                });
+            };
+
+            // Jalankan setelah slider library sudah siap (tunggu slider diinisialisasi)
+            setTimeout(handleImageFallback, 500);
         });
     </script>
     <script>

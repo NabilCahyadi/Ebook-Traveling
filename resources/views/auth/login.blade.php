@@ -3,6 +3,12 @@
 @section('title', 'Login')
 
 @section('content')
+<!-- Navigation Tabs for Mobile -->
+<div class="mobile-nav-tabs">
+    <button class="nav-tab active" data-form="signin">Sign In</button>
+    <button class="nav-tab" data-form="signup">Sign Up</button>
+</div>
+
 <div class="container" id="container">
     <!-- Sign Up Form -->
     <div class="form-container sign-up-container">
@@ -154,6 +160,41 @@
         border: 1px solid #bee5eb;
     }
 
+    /* Mobile Navigation Tabs */
+    .mobile-nav-tabs {
+        display: none;
+        flex-direction: row;
+        background-color: #ffffff;
+        border-bottom: 2px solid #f0f0f0;
+        gap: 0;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .nav-tab {
+        flex: 1;
+        padding: 15px 0;
+        border: none;
+        background-color: transparent;
+        color: #666;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-bottom: 3px solid transparent;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .nav-tab:hover {
+        color: #FF4C61;
+    }
+
+    .nav-tab.active {
+        color: #FF4C61;
+        border-bottom-color: #FF4C61;
+    }
+
     /* Checkbox styles */
     .checkbox-label {
         display: flex;
@@ -178,12 +219,9 @@
         position: absolute;
         top: 50%;
         left: 0;
-        /* Pusatkan checkbox secara vertikal */
         transform: translateY(-50%);
         height: 18px;
-        /* Diperbesar sedikit */
         width: 18px;
-        /* Diperbesar sedikit */
         background-color: #fff;
         border: 1px solid #ccc;
         border-radius: 3px;
@@ -209,10 +247,8 @@
     }
 
     .checkbox-label .checkmark:after {
-        /* Posisikan centang di tengah */
         left: 6px;
         top: 2px;
-        /* Buat ukuran centang lebih kecil agar tidak terpotong */
         width: 5px;
         height: 10px;
         border: solid white;
@@ -227,16 +263,20 @@
         align-items: center;
         font-size: 13px;
         margin: 10px 0;
+        gap: 10px;
+        flex-wrap: wrap;
     }
 
     .remember-forgot .checkbox-label {
-        /* Pastikan label di remember-forgot tidak ada margin bawahnya */
         margin-bottom: 0;
+        flex: 1;
+        min-width: 120px;
     }
 
     .remember-forgot a {
         color: #FF4C61;
         text-decoration: none;
+        white-space: nowrap;
     }
 
     .remember-forgot a:hover {
@@ -249,50 +289,58 @@
         text-align: left;
     }
 
-    /* Responsive adjustments for 67% zoom */
-    @media screen and (max-width: 1400px) {
-        #container {
-            transform: scale(0.85);
-            transform-origin: center center;
-        }
-    }
-
-    @media screen and (max-width: 1200px) {
-        #container {
-            transform: scale(0.75);
-            transform-origin: center center;
-        }
-    }
-
-    @media screen and (max-width: 992px) {
-        #container {
-            transform: scale(1);
-            transform-origin: center center;
-            width: 90% !important;
-            max-width: 800px !important;
-        }
-    }
-
-    /* Alternative: Adjust container size directly */
+    /* Desktop Layout - Full Side by Side */
     .container#container {
         width: 100%;
         max-width: 1100px;
         min-height: 600px;
-        margin: 50px auto;
+        margin: 20px auto;
         position: relative;
+        display: flex;
+        padding: 0 15px;
+        box-sizing: border-box;
     }
 
-    /* Ensure forms are properly sized */
     .form-container {
         position: absolute;
         top: 0;
         height: 100%;
         transition: all 0.6s ease-in-out;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .form-container form {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .form-container form h1 {
+        font-size: 28px;
+        margin: 0 0 20px 0;
+    }
+
+    .form-container form input {
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
+        border: 1px solid #e0e0e0;
+        border-radius: 5px;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
+
+    .form-container form button {
+        margin-top: 15px;
+        width: 100%;
+        padding: 12px;
+        border-radius: 5px;
     }
 
     .sign-in-container {
         left: 0;
-        padding: 0 30px 0 30px;
+        padding: 40px;
         width: 50%;
         z-index: 2;
     }
@@ -303,7 +351,7 @@
 
     .sign-up-container {
         left: 0;
-        padding: 0 30px 0 30px;
+        padding: 40px;
         width: 50%;
         opacity: 0;
         z-index: 1;
@@ -317,21 +365,16 @@
     }
 
     @keyframes show {
-
-        0%,
-        49.99% {
+        0%, 49.99% {
             opacity: 0;
             z-index: 1;
         }
-
-        50%,
-        100% {
+        50%, 100% {
             opacity: 1;
             z-index: 5;
         }
     }
 
-    /* Overlay adjustments */
     .overlay-container {
         position: absolute;
         top: 0;
@@ -373,13 +416,23 @@
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        padding: 0 40px;
+        padding: 40px 20px;
         text-align: center;
         top: 0;
         height: 100%;
         width: 50%;
         transform: translateX(0);
         transition: transform 0.6s ease-in-out;
+    }
+
+    .overlay-panel h1 {
+        font-size: 32px;
+        margin: 0 0 15px 0;
+    }
+
+    .overlay-panel p {
+        margin: 10px 0;
+        font-size: 14px;
     }
 
     .overlay-left {
@@ -397,6 +450,297 @@
 
     .container.right-panel-active .overlay-right {
         transform: translateX(20%);
+    }
+
+    .ghost {
+        background-color: transparent;
+        border-color: #FFFFFF;
+        color: #FFFFFF;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: bold;
+        padding: 12px 45px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        transition: transform 0.3s ease;
+        border: 2px solid #FFFFFF;
+        border-radius: 5px;
+    }
+
+    .ghost:hover {
+        transform: scale(1.05);
+    }
+
+    .social-container {
+        margin: 20px 0;
+    }
+
+    .social {
+        border: 1px solid #e0e0e0;
+        border-radius: 50%;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 5px;
+        height: 40px;
+        width: 40px;
+        transition: background-color 0.3s;
+    }
+
+    .social:hover {
+        background-color: #f0f0f0;
+    }
+
+    /* Tablet Responsive (768px - 1024px) */
+    @media screen and (max-width: 1024px) {
+        .container#container {
+            min-height: 550px;
+        }
+
+        .sign-in-container,
+        .sign-up-container {
+            padding: 30px;
+        }
+
+        .overlay-panel {
+            padding: 30px 15px;
+        }
+
+        .overlay-panel h1 {
+            font-size: 26px;
+        }
+
+        .form-container form h1 {
+            font-size: 24px;
+        }
+
+        .form-container form input {
+            padding: 10px;
+            font-size: 13px;
+        }
+    }
+
+    /* Small Tablet (600px - 768px) */
+    @media screen and (max-width: 768px) {
+        .mobile-nav-tabs {
+            display: flex;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .nav-tab {
+            padding: 15px 0;
+        }
+
+        .container#container {
+            min-height: auto;
+            position: relative;
+            margin: 0 auto;
+            padding: 0;
+            box-shadow: none !important;
+            border: none;
+        }
+
+        .form-container {
+            position: relative;
+            width: 100% !important;
+            left: 0 !important;
+            transform: none !important;
+            opacity: 1 !important;
+            z-index: auto !important;
+            padding: 30px 20px;
+            min-height: auto;
+            animation: none !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+
+        .sign-in-container,
+        .sign-up-container {
+            position: relative;
+            width: 100% !important;
+            padding: 0;
+            left: 0;
+            height: auto;
+            display: none;
+        }
+
+        .sign-in-container {
+            display: block;
+            z-index: 2;
+        }
+
+        .container.right-panel-active .sign-in-container {
+            display: none;
+            transform: none;
+        }
+
+        .container.right-panel-active .sign-up-container {
+            display: block;
+            transform: none;
+            opacity: 1;
+            z-index: 2;
+            animation: none;
+        }
+
+        .sign-up-container {
+            display: none;
+        }
+
+        .overlay-container {
+            display: none;
+        }
+
+        .form-container form h1 {
+            font-size: 22px;
+            margin: 0 0 15px 0;
+        }
+
+        .form-container form input {
+            padding: 11px;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        .form-container form button {
+            margin-top: 15px;
+            padding: 12px;
+            font-size: 14px;
+        }
+
+        .remember-forgot {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .remember-forgot .checkbox-label {
+            min-width: auto;
+            margin-bottom: 10px;
+        }
+
+        .remember-forgot a {
+            align-self: flex-start;
+        }
+
+        .checkbox-label {
+            font-size: 13px;
+        }
+
+        .social-container {
+            margin: 15px 0;
+        }
+
+        .text-sm {
+            font-size: 13px !important;
+        }
+    }
+
+    /* Mobile Small (360px - 600px) */
+    @media screen and (max-width: 600px) {
+        .mobile-nav-tabs {
+            display: flex;
+        }
+
+        .container#container {
+            margin: 10px 5px;
+            padding: 0 10px;
+            box-shadow: none !important;
+        }
+
+        .form-container {
+            padding: 20px 15px;
+            box-shadow: none !important;
+            border: none !important;
+        }
+
+        .form-container form h1 {
+            font-size: 20px;
+            margin: 0 0 12px 0;
+        }
+
+        .form-container form span {
+            font-size: 12px;
+            margin: 8px 0;
+        }
+
+        .form-container form input {
+            padding: 10px;
+            font-size: 13px;
+            margin: 8px 0;
+        }
+
+        .form-container form button {
+            margin-top: 12px;
+            padding: 11px;
+            font-size: 13px;
+        }
+
+        .alert-message {
+            padding: 10px;
+            font-size: 12px;
+            margin: 8px 0;
+        }
+
+        .checkbox-label {
+            font-size: 12px;
+            padding-left: 26px;
+        }
+
+        .checkmark {
+            height: 16px;
+            width: 16px;
+        }
+
+        .remember-forgot {
+            font-size: 12px;
+            margin: 8px 0;
+        }
+
+        .social-container {
+            margin: 12px 0;
+        }
+
+        .social {
+            height: 36px;
+            width: 36px;
+            margin: 0 4px;
+        }
+
+        .social svg {
+            width: 14px;
+            height: 14px;
+        }
+    }
+
+    /* Extra Small Mobile (320px - 360px) */
+    @media screen and (max-width: 360px) {
+        .form-container {
+            padding: 15px 10px;
+            box-shadow: none !important;
+            border: none !important;
+        }
+
+        .container#container {
+            box-shadow: none !important;
+        }
+
+        .form-container form h1 {
+            font-size: 18px;
+        }
+
+        .form-container form input {
+            padding: 9px;
+            font-size: 12px;
+        }
+
+        .form-container form button {
+            padding: 10px;
+            font-size: 12px;
+        }
     }
 </style>
 @endpush
@@ -420,11 +764,53 @@
 
         signUpButton.addEventListener('click', () => {
             container.classList.add("right-panel-active");
+            updateMobileNavTabs('signup');
         });
 
         signInButton.addEventListener('click', () => {
             container.classList.remove("right-panel-active");
+            updateMobileNavTabs('signin');
         });
+
+        // Mobile Navigation Tabs Handler
+        const navTabs = document.querySelectorAll('.nav-tab');
+        navTabs.forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                const formType = this.getAttribute('data-form');
+                
+                // Update active tab
+                navTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                // Toggle form visibility
+                if (formType === 'signup') {
+                    container.classList.add("right-panel-active");
+                } else {
+                    container.classList.remove("right-panel-active");
+                }
+            });
+        });
+
+        // Function to update active tab based on form shown
+        function updateMobileNavTabs(formType) {
+            if (window.innerWidth <= 768) {
+                const navTabs = document.querySelectorAll('.nav-tab');
+                navTabs.forEach(tab => tab.classList.remove('active'));
+                
+                if (formType === 'signup') {
+                    document.querySelector('[data-form="signup"]').classList.add('active');
+                } else {
+                    document.querySelector('[data-form="signin"]').classList.add('active');
+                }
+            }
+        }
+
+        // Check initial form on load for mobile
+        if (window.innerWidth <= 768) {
+            const isSignUp = container.classList.contains('right-panel-active');
+            updateMobileNavTabs(isSignUp ? 'signup' : 'signin');
+        }
     });
 </script>
 @endpush
