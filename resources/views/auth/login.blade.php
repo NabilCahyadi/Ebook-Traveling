@@ -165,7 +165,7 @@
         display: none;
         flex-direction: row;
         background-color: #ffffff;
-        border-bottom: 2px solid #f0f0f0;
+        border-bottom: none;
         gap: 0;
         width: 100%;
         box-sizing: border-box;
@@ -185,7 +185,6 @@
         font-weight: 500;
         cursor: pointer;
         transition: all 0.3s ease;
-        border-bottom: 3px solid transparent;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
@@ -196,7 +195,6 @@
 
     .nav-tab.active {
         color: #FF4C61;
-        border-bottom-color: #FF4C61;
     }
 
     /* Checkbox styles */
@@ -529,6 +527,7 @@
         body {
             margin-top: 60px;
             padding-top: 0;
+            height: auto;
         }
 
         .mobile-nav-tabs {
@@ -546,7 +545,7 @@
         }
 
         .container#container {
-            min-height: auto;
+            min-height: 100vh;
             position: relative;
             margin: 0 auto;
             padding: 0;
@@ -562,7 +561,7 @@
             opacity: 1 !important;
             z-index: auto !important;
             padding: 30px 20px;
-            min-height: auto;
+            min-height: 100vh;
             animation: none !important;
             box-shadow: none !important;
             border: none !important;
@@ -574,7 +573,7 @@
             width: 100% !important;
             padding: 0;
             left: 0;
-            height: auto;
+            height: 100vh;
             display: none;
         }
 
@@ -653,6 +652,7 @@
         body {
             margin-top: 60px;
             padding-top: 0;
+            height: auto;
         }
 
         .mobile-nav-tabs {
@@ -660,6 +660,7 @@
         }
 
         .container#container {
+            min-height: 100vh;
             margin: 10px 5px;
             padding: 0 10px;
             box-shadow: none !important;
@@ -735,6 +736,7 @@
         body {
             margin-top: 60px;
             padding-top: 0;
+            height: auto;
         }
 
         .form-container {
@@ -745,6 +747,7 @@
 
         .container#container {
             box-shadow: none !important;
+            min-height: 100vh;
         }
 
         .form-container form h1 {
