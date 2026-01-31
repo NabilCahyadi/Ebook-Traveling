@@ -169,6 +169,10 @@
         gap: 0;
         width: 100%;
         box-sizing: border-box;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 200;
     }
 
     .nav-tab {
@@ -522,12 +526,17 @@
 
     /* Small Tablet (600px - 768px) */
     @media screen and (max-width: 768px) {
+        body {
+            margin-top: 60px;
+            padding-top: 0;
+        }
+
         .mobile-nav-tabs {
             display: flex;
             width: 100%;
             margin: 0;
             padding: 0;
-            position: sticky;
+            position: fixed;
             top: 0;
             z-index: 50;
         }
@@ -641,6 +650,11 @@
 
     /* Mobile Small (360px - 600px) */
     @media screen and (max-width: 600px) {
+        body {
+            margin-top: 60px;
+            padding-top: 0;
+        }
+
         .mobile-nav-tabs {
             display: flex;
         }
@@ -718,6 +732,11 @@
 
     /* Extra Small Mobile (320px - 360px) */
     @media screen and (max-width: 360px) {
+        body {
+            margin-top: 60px;
+            padding-top: 0;
+        }
+
         .form-container {
             padding: 15px 10px;
             box-shadow: none !important;
