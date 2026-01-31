@@ -86,206 +86,7 @@
             min-height: 3em;
         }
     </style>
-
-    <!-- Responsive Dashboard Menu Styles -->
     <style>
-        /* Desktop Layout - Sidebar Navigation */
-        .dashboard-menu {
-            position: sticky;
-            top: 80px;
-        }
-
-        .dashboard-menu .nav-link {
-            border-left: 3px solid transparent;
-            transition: all 0.3s ease;
-            color: #333;
-            font-size: 14px;
-        }
-
-        .dashboard-menu .nav-link:hover {
-            background-color: #f8f9fa;
-            border-left-color: #FF4C61;
-        }
-
-        .dashboard-menu .nav-link.active {
-            background-color: #f5f5f5;
-            color: #FF4C61;
-            border-left-color: #FF4C61;
-            font-weight: 600;
-        }
-
-        /* Mobile & Tablet Responsive Styles (max-width: 768px) */
-        @media (max-width: 768px) {
-            /* Convert sidebar to horizontal tabs */
-            .col-md-3 {
-                width: 100%;
-                margin-bottom: 20px;
-            }
-
-            .dashboard-menu {
-                position: static !important;
-                top: auto !important;
-                overflow-x: auto;
-                overflow-y: hidden;
-            }
-
-            .dashboard-menu .nav {
-                flex-direction: row;
-                flex-wrap: nowrap;
-                border-bottom: 2px solid #e9ecef;
-                padding: 0;
-            }
-
-            .dashboard-menu .nav-item {
-                flex-shrink: 0;
-                min-width: auto;
-            }
-
-            .dashboard-menu .nav-link {
-                border-left: none;
-                border-bottom: 3px solid transparent;
-                padding: 12px 15px !important;
-                font-size: 12px;
-                white-space: nowrap;
-                transition: all 0.3s ease;
-            }
-
-            .dashboard-menu .nav-link:hover {
-                background-color: transparent;
-                border-bottom-color: #FF4C61;
-                border-left-color: transparent;
-            }
-
-            .dashboard-menu .nav-link.active {
-                background-color: transparent;
-                border-bottom-color: #FF4C61;
-                border-left-color: transparent;
-                color: #FF4C61;
-            }
-
-            .dashboard-menu .nav-link i {
-                margin-right: 5px;
-            }
-
-            .dashboard-menu .nav-link span {
-                display: none;
-            }
-
-            .dashboard-menu .nav-link i.fi-rs-angle-small-down {
-                display: none;
-            }
-
-            /* Hide submenu on mobile by default */
-            .dashboard-menu .js-submenu {
-                display: none !important;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100vh;
-                background: white;
-                z-index: 1050;
-                flex-direction: column;
-                padding: 60px 20px 20px;
-                overflow-y: auto;
-                border: none;
-                margin: 0;
-            }
-
-            .dashboard-menu .js-submenu.active {
-                display: flex !important;
-            }
-
-            .dashboard-menu .js-submenu .nav-item {
-                width: 100%;
-                min-width: 100%;
-            }
-
-            .dashboard-menu .js-submenu .nav-link {
-                border-bottom: none;
-                border-left: 3px solid transparent;
-                padding: 15px 20px !important;
-                font-size: 14px;
-                color: #333;
-            }
-
-            .dashboard-menu .js-submenu .nav-link:hover {
-                border-bottom-color: transparent;
-                border-left-color: #FF4C61;
-            }
-
-            .dashboard-menu .js-submenu .nav-link.active {
-                border-bottom-color: transparent;
-                border-left-color: #FF4C61;
-            }
-
-            /* Back button untuk submenu */
-            .submenu-back-btn {
-                display: block;
-                padding: 15px 20px;
-                border-bottom: 1px solid #e9ecef;
-                margin-bottom: 10px;
-                background: transparent;
-                border: none;
-                font-size: 16px;
-                cursor: pointer;
-                width: 100%;
-                text-align: left;
-                color: #333;
-            }
-
-            .submenu-back-btn:hover {
-                background-color: #f8f9fa;
-            }
-
-            /* Adjust content area */
-            .col-md-9 {
-                width: 100%;
-            }
-
-            /* Adjust page header for mobile */
-            .page-header .archive-header {
-                text-align: center;
-            }
-
-            .page-header .col-xl-3 {
-                width: 100%;
-            }
-        }
-
-        /* Small Mobile (max-width: 576px) */
-        @media (max-width: 576px) {
-            .dashboard-menu .nav-link {
-                padding: 12px 10px !important;
-                font-size: 11px;
-            }
-
-            .dashboard-menu .nav {
-                padding: 0;
-            }
-
-            .submenu-back-btn {
-                padding: 12px 15px;
-                font-size: 14px;
-            }
-
-            .dashboard-menu .js-submenu {
-                padding: 50px 15px 15px;
-            }
-        }
-
-        /* Tablet & Medium Devices (max-width: 1024px) */
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .dashboard-menu {
-                top: 100px;
-            }
-
-            .dashboard-menu .nav-link {
-                font-size: 13px;
-                padding: 10px 12px !important;
-            }
-        }
-    </style>
         /* Kustomisasi Koleksi E-book */
 
         /* Poin 1: Style untuk deskripsi koleksi */
@@ -3182,67 +2983,19 @@
             e.preventDefault();
             const target = document.getElementById(targetId);
             const btn = e.currentTarget;
-            
-            // Handle mobile view
-            const isMobile = window.innerWidth <= 768;
-            
-            if (isMobile) {
-                // Mobile: Show submenu as fullscreen modal
-                target.classList.add('active');
-                document.body.style.overflow = 'hidden';
-                
-                // Create/update back button
-                if (!target.querySelector('.submenu-back-btn')) {
-                    const backBtn = document.createElement('button');
-                    backBtn.className = 'submenu-back-btn';
-                    backBtn.innerHTML = '<i class="fi fi-rs-angle-small-left me-2"></i>Back';
-                    backBtn.onclick = (e) => closeSubmenu(target);
-                    target.insertBefore(backBtn, target.firstChild);
-                }
-            } else {
-                // Desktop: Toggle submenu normally
-                btn.classList.toggle('rotated');
-                target.style.display = target.style.display === 'block' ? 'none' : 'block';
-            }
+            btn.classList.toggle('rotated');
+            target.style.display = target.style.display === 'block' ? 'none' : 'block';
         }
 
-        function closeSubmenu(submenu) {
-            submenu.classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-
-        // Auto-open active menu and handle window resize
+        // Auto-buka menu aktif
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.js-submenu').forEach(menu => {
                 if (menu.querySelector('.active')) {
                     const btn = menu.previousElementSibling;
-                    if (btn && window.innerWidth > 768) {
+                    if (btn) {
                         btn.classList.add('rotated');
                         menu.style.display = 'block';
                     }
-                }
-            });
-
-            // Add click handler to submenu items to close submenu on mobile
-            document.querySelectorAll('.js-submenu .nav-link').forEach(link => {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth <= 768) {
-                        const submenu = this.closest('.js-submenu');
-                        if (submenu) {
-                            closeSubmenu(submenu);
-                        }
-                    }
-                });
-            });
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', function() {
-            const isMobile = window.innerWidth <= 768;
-            document.querySelectorAll('.js-submenu').forEach(menu => {
-                if (!isMobile && menu.classList.contains('active')) {
-                    menu.classList.remove('active');
-                    document.body.style.overflow = 'auto';
                 }
             });
         });
