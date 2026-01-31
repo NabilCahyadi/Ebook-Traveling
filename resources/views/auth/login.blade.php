@@ -295,7 +295,7 @@
     .container#container {
         width: 100%;
         max-width: 1100px;
-        min-height: 600px;
+        min-height: 700px;
         margin: 20px auto;
         position: relative;
         display: flex;
@@ -496,7 +496,7 @@
     /* Tablet Responsive (768px - 1024px) */
     @media screen and (max-width: 1024px) {
         .container#container {
-            min-height: 550px;
+            min-height: 650px;
         }
 
         .sign-in-container,
