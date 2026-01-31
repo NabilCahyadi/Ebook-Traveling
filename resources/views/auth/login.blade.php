@@ -525,8 +525,8 @@
     /* Small Tablet (600px - 768px) */
     @media screen and (max-width: 768px) {
         body {
-            margin-top: 60px;
-            padding-top: 0;
+            margin-top: 0;
+            padding-top: 60px;
             height: auto;
         }
 
@@ -560,7 +560,7 @@
             transform: none !important;
             opacity: 1 !important;
             z-index: auto !important;
-            padding: 30px 20px;
+            padding: 20px 0;
             min-height: 100vh;
             animation: none !important;
             box-shadow: none !important;
@@ -571,7 +571,7 @@
         .sign-up-container {
             position: relative;
             width: 100% !important;
-            padding: 0;
+            padding: 20px 20px;
             left: 0;
             height: 100vh;
             display: none;
@@ -650,8 +650,8 @@
     /* Mobile Small (360px - 600px) */
     @media screen and (max-width: 600px) {
         body {
-            margin-top: 60px;
-            padding-top: 0;
+            margin-top: 0;
+            padding-top: 60px;
             height: auto;
         }
 
@@ -661,8 +661,8 @@
 
         .container#container {
             min-height: 100vh;
-            margin: 10px 5px;
-            padding: 0 10px;
+            margin: 0;
+            padding: 0;
             box-shadow: none !important;
         }
 
@@ -734,8 +734,8 @@
     /* Extra Small Mobile (320px - 360px) */
     @media screen and (max-width: 360px) {
         body {
-            margin-top: 60px;
-            padding-top: 0;
+            margin-top: 0;
+            padding-top: 60px;
             height: auto;
         }
 
@@ -748,6 +748,7 @@
         .container#container {
             box-shadow: none !important;
             min-height: 100vh;
+            margin: 0;
         }
 
         .form-container form h1 {
