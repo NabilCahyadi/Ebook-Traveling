@@ -654,9 +654,9 @@ $collections = collect();
                     $fallbackImage = $fallbackImages[$loop->index % count($fallbackImages)];
                     $imageUrl = getImageUrl($slider->image, $fallbackImage);
                     @endphp
-                    <div class="single-hero-slider single-animation-wrap" 
-                         style="background-image: url({{ $imageUrl }})" 
-                         data-fallback="{{ asset($fallbackImage) }}" 
+                    <div class="single-hero-slider single-animation-wrap"
+                         style="background-image: url({{ $imageUrl }})"
+                         data-fallback="{{ asset($fallbackImage) }}"
                          onerror="this.style.backgroundImage = 'url(' + this.getAttribute('data-fallback') + ')'">
                         <a href="{{ $slider->target_url ?? '#' }}" style="display: block; height: 100%; text-decoration: none;">
                             <div class="slider-content">
@@ -782,7 +782,7 @@ $collections = collect();
                                      alt="{{ $city->name }}"
                                      style="width: 100%; height: 100%; object-fit: cover;"
                                      class="top-city-image"
-                                     onerror="this.src = '/images/placeholder-destination.jpg';" />
+                                     onerror="this.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVuZ9lTW27C7P5lsWCrDACZEj4FmOAYQDk5w&s';" />
                             </a>
                         </figure>
                         <h6>
@@ -1123,7 +1123,7 @@ $collections = collect();
             // Cek apakah background image berhasil diload, jika tidak ganti dengan fallback
             const handleImageFallback = () => {
                 const sliderItems = document.querySelectorAll('.single-hero-slider');
-                
+
                 sliderItems.forEach(item => {
                     const bgImageUrl = window.getComputedStyle(item).backgroundImage;
                     const fallbackUrl = item.getAttribute('data-fallback');
