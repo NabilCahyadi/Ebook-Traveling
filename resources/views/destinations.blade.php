@@ -298,7 +298,7 @@
             </div>
             @empty
             <!-- Ini adalah fallback jika tidak ada kota populer -->
-            <div class="item" style="background-image: url('/images/placeholder-destination.jpg');">
+            <div class="item" style="background-image: url('https://www.shutterstock.com/image-vector/simple-image-placeholder-picture-minimalist-600nw-2679706831.jpg');">
                 <div class="content">
                     <h2 class="name">Discover Your Journey</h2>
                     <p class="description">Popular destinations will be shown here.</p>
@@ -341,7 +341,7 @@
                         <!-- Gambar sebagai background dengan fallback -->
                         <div class="destination-thumb destination-card-item"
                              data-image="{{ $cityImageUrl }}"
-                             data-fallback="{{ asset('images/placeholder-destination.jpg') }}"
+                             data-fallback="https://www.shutterstock.com/image-vector/simple-image-placeholder-picture-minimalist-600nw-2679706831.jpg"
                              style="height: 100%; background-size: cover; background-position: center; background-color: #f0f0f0;">
                         </div>
 
@@ -366,7 +366,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const placeholderImage = '/images/placeholder-destination.jpg';
+        const placeholderImage = 'https://www.shutterstock.com/image-vector/simple-image-placeholder-picture-minimalist-600nw-2679706831.jpg';
 
         // Function untuk validate image dan set background
         function setBackgroundImage(element, imageUrl) {

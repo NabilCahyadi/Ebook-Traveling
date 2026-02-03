@@ -302,9 +302,9 @@
                     @php
                     $heroImageUrl = getImageUrl($city->image, 'images/placeholder-destination.jpg');
                     @endphp
-                    <div class="city-hero-card rounded-3 overflow-hidden shadow-sm destination-hero-image" 
-                         data-image="{{ $heroImageUrl }}" 
-                         data-fallback="{{ asset('images/placeholder-destination.jpg') }}"
+                    <div class="city-hero-card rounded-3 overflow-hidden shadow-sm destination-hero-image"
+                         data-image="{{ $heroImageUrl }}"
+                         data-fallback="https://www.shutterstock.com/image-vector/simple-image-placeholder-picture-minimalist-600nw-2679706831.jpg"
                          style="position: relative; height: 450px; background-color: #f0f0f0;">
                         <!-- Overlay gelap lembut -->
                         <div class="city-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent 60%);"></div>
@@ -456,7 +456,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const placeholderImage = '/images/placeholder-destination.jpg';
+        const placeholderImage = 'https://www.shutterstock.com/image-vector/simple-image-placeholder-picture-minimalist-600nw-2679706831.jpg';
 
         // Function untuk validate dan set background image
         function setBackgroundImageHero(element, imageUrl) {
