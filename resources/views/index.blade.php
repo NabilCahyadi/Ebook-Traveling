@@ -776,13 +776,13 @@ $collections = collect();
                 <div class="carausel-10-columns" id="carausel-10-columns">
                     @foreach($topCities as $index => $city)
                     <div class="card-2 bg-12 wow animate__animated animate__fadeInUp top-city-card" data-wow-delay="{{ ($index + 1) * 0.1 }}s" data-city-image="{{ asset($city->image) }}">
-                        <figure class="img-hover-scale overflow-hidden" style="width: 100px; height: 120px; margin: 0 auto 10px; border-radius: 8px; background-color: #f0f0f0;">
+                        <figure class="img-hover-scale overflow-hidden" style="width: 100px; height: 120px; margin: 0 15px 20px; border-radius: 8px;">
                             <a href="/destinations/{{ $city->slug }}">
                                 <img src="{{ asset($city->image) }}"
                                      alt="{{ $city->name }}"
                                      style="width: 100%; height: 100%; object-fit: cover;"
                                      class="top-city-image"
-                                     onerror="this.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVuZ9lTW27C7P5lsWCrDACZEj4FmOAYQDk5w&s';" />
+                                     onerror="this.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTL-ERzrBww4nzVoovPa9UeUEsVIMpUY4E_yQ&s';" />
                             </a>
                         </figure>
                         <h6>
