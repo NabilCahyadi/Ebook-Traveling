@@ -200,6 +200,7 @@ class BlogController extends Controller
             'meta_title' => 'nullable|string|max:500',
             'meta_description' => 'nullable|string|max:1000',
             'meta_keywords' => 'nullable|string|max:500',
+            'tags' => 'nullable|string',
         ], [
             'title.required' => 'Judul blog wajib diisi.',
             'title.max' => 'Judul blog maksimal 255 karakter.',

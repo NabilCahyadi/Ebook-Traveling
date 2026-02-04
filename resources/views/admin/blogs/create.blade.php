@@ -9,7 +9,7 @@
         .ck-editor__editable {
             min-height: 500px;
         }
-        
+
         /* Author Autocomplete Suggestions */
         #author_suggestions {
             background-color: #fff;
@@ -39,14 +39,14 @@
         #author_suggestions .list-group-item.text-danger {
             cursor: default;
         }
-        
+
         /* Category Badges */
         #selected-categories .category-badge {
             display: inline-block;
             margin-right: 0.5rem;
             margin-bottom: 0.5rem;
         }
-        
+
         #selected-categories .category-badge .remove-category:hover {
             color: #d32f2f;
         }
@@ -113,10 +113,10 @@
                             <!-- Tags Input -->
                             <div class="mb-3">
                                 <label class="form-label" for="tags">{{ __('admin.blogs.tags') }} <span class="text-muted">({{ __('admin.common.optional') }})</span></label>
-                                <input type="text" 
-                                    class="form-control @error('tags') is-invalid @enderror" 
-                                    id="tags" 
-                                    name="tags" 
+                                <input type="text"
+                                    class="form-control @error('tags') is-invalid @enderror"
+                                    id="tags"
+                                    name="tags"
                                     value="{{ old('tags') }}"
                                     placeholder="{{ __('admin.blogs.tags_placeholder') }}"
                                     data-role="tagsinput">
@@ -137,19 +137,19 @@
                         <div class="card-body">
                             <div class="mb-3">
                                 <label class="form-label" for="author_search">{{ __('admin.blogs.author') }} <span class="text-muted">({{ __('admin.common.optional') }})</span></label>
-                                <input type="text" 
-                                    class="form-control @error('author_id') is-invalid @enderror" 
-                                    id="author_search" 
+                                <input type="text"
+                                    class="form-control @error('author_id') is-invalid @enderror"
+                                    id="author_search"
                                     placeholder="{{ __('admin.blogs.search_author_placeholder') }}"
                                     autocomplete="off">
                                 <input type="hidden" name="author_id" id="author_id" value="{{ old('author_id') }}">
-                                
+
                                 <!-- Autocomplete dropdown -->
                                 <div id="author_suggestions" class="list-group position-absolute w-100" style="z-index: 1000; display: none; max-height: 250px; overflow-y: auto;"></div>
-                                
+
                                 <!-- Selected author display -->
                                 <div id="selected_author" class="mt-2"></div>
-                                
+
                                 @error('author_id')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
@@ -158,7 +158,7 @@
                                     {!! __('admin.blogs.leave_empty_for_team') !!}
                                 </div>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label class="form-label" for="status">{{ __('admin.blogs.status') }} <span class="text-danger">*</span></label>
                                 <select class="form-select @error('status') is-invalid @enderror" id="status"
@@ -181,8 +181,8 @@
                             <!-- Scheduled Publishing Date/Time -->
                             <div class="mb-3" id="scheduledDateContainer" style="display: none;">
                                 <label class="form-label" for="published_at"><i class="ti ti-calendar-time me-1"></i> Publish Date & Time <span class="text-danger" id="published_at_required">*</span></label>
-                                <input type="datetime-local" class="form-control @error('published_at') is-invalid @enderror" 
-                                    id="published_at" name="published_at" 
+                                <input type="datetime-local" class="form-control @error('published_at') is-invalid @enderror"
+                                    id="published_at" name="published_at"
                                     value="{{ old('published_at') }}"
                                     min="{{ now()->format('Y-m-d\TH:i') }}">
                                 @error('published_at')
@@ -214,7 +214,7 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            
+
                             <!-- Preview Frame 1200x630 -->
                             <div id="imagePreview" class="mt-3" style="display: none;">
                                 <!-- <label class="form-label">Preview (1200 × 630)</label> -->
@@ -236,7 +236,7 @@
                                     <i class="bx bx-x me-1"></i> {{ __('admin.ebooks.remove') }}
                                 </button>
                             </div>
-                            
+
                             <!-- Hidden input untuk menyimpan hasil kompres -->
                             <input type="hidden" name="featured_image_compressed" id="compressedImageData">
                         </div>
@@ -249,7 +249,7 @@
                         <div class="card-body">
                             <div class="mb-3">
                                 <label class="form-label" for="category_selector">{{ __('admin.blogs.blog_category') }}</label>
-                                <select class="form-select @error('categories') is-invalid @enderror" 
+                                <select class="form-select @error('categories') is-invalid @enderror"
                                     id="category_selector">
                                     <option value="">{{ __('admin.blogs.select_category') }}</option>
                                     @foreach($categories as $category)
@@ -258,12 +258,12 @@
                                         </option>
                                     @endforeach
                                 </select>
-                                
+
                                 <!-- Selected Categories Display -->
                                 <div id="selected-categories" class="mt-2">
                                     <!-- Badges will appear here -->
                                 </div>
-                                
+
                                 @error('categories')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
@@ -288,10 +288,10 @@
                             <div class="row">
                                 <div class="col-md-12 mb-3">
                                     <label class="form-label" for="meta_title">{{ __('admin.blogs.meta_title') }}</label>
-                                    <input type="text" 
-                                        class="form-control @error('meta_title') is-invalid @enderror" 
-                                        id="meta_title" 
-                                        name="meta_title" 
+                                    <input type="text"
+                                        class="form-control @error('meta_title') is-invalid @enderror"
+                                        id="meta_title"
+                                        name="meta_title"
                                         value="{{ old('meta_title') }}"
                                         maxlength="500"
                                         placeholder="{{ __('admin.blogs.meta_title_placeholder') }}">
@@ -302,13 +302,13 @@
                                         <span id="meta_title_count">0</span>/500 {{ __('admin.blogs.meta_title_count') }}
                                     </div>
                                 </div>
-                                
+
                                 <div class="col-md-12 mb-3">
                                     <label class="form-label" for="meta_description">{{ __('admin.blogs.meta_description') }}</label>
-                                    <textarea 
-                                        class="form-control @error('meta_description') is-invalid @enderror" 
-                                        id="meta_description" 
-                                        name="meta_description" 
+                                    <textarea
+                                        class="form-control @error('meta_description') is-invalid @enderror"
+                                        id="meta_description"
+                                        name="meta_description"
                                         rows="3"
                                         maxlength="1000"
                                         placeholder="{{ __('admin.blogs.meta_description_placeholder') }}">{{ old('meta_description') }}</textarea>
@@ -319,13 +319,13 @@
                                         <span id="meta_description_count">0</span>/1000 {{ __('admin.blogs.meta_description_count') }}
                                     </div>
                                 </div>
-                                
+
                                 <div class="col-md-12 mb-3">
                                     <label class="form-label" for="meta_keywords">{{ __('admin.blogs.meta_keywords') }}</label>
-                                    <input type="text" 
-                                        class="form-control @error('meta_keywords') is-invalid @enderror" 
-                                        id="meta_keywords" 
-                                        name="meta_keywords" 
+                                    <input type="text"
+                                        class="form-control @error('meta_keywords') is-invalid @enderror"
+                                        id="meta_keywords"
+                                        name="meta_keywords"
                                         value="{{ old('meta_keywords') }}"
                                         maxlength="500"
                                         placeholder="{{ __('admin.blogs.meta_keywords_placeholder') }}">
@@ -337,7 +337,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="alert alert-info mb-0">
                                 <i class="bx bx-info-circle me-2"></i>
                                 <strong>{{ __('admin.blogs.seo_tips') }}</strong>
@@ -365,9 +365,9 @@
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <label class="form-label">{{ __('admin.blogs.search') }}</label>
-                                    <input type="text" 
-                                        class="form-control" 
-                                        id="ebook_search" 
+                                    <input type="text"
+                                        class="form-control"
+                                        id="ebook_search"
                                         placeholder="{{ __('admin.blogs.search_ebooks') }}">
                                 </div>
                                 <div class="col-md-4">
@@ -389,7 +389,7 @@
                                     </select>
                                 </div>
                             </div>
-                            
+
                             <!-- Ebooks Table -->
                             <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
                                 <table class="table table-hover">
@@ -408,21 +408,21 @@
                                     <tbody id="ebooks_table_body">
                                         @if($ebooks->count() > 0)
                                             @foreach($ebooks as $ebook)
-                                                <tr class="ebook-row" 
-                                                    data-city="{{ $ebook->city_id ?? '' }}" 
+                                                <tr class="ebook-row"
+                                                    data-city="{{ $ebook->city_id ?? '' }}"
                                                     data-category="{{ $ebook->categories->pluck('id')->join(',') }}"
                                                     data-title="{{ strtolower($ebook->title) }}"
                                                     style="cursor: pointer;">
                                                     <td onclick="event.stopPropagation();">
-                                                        <input class="form-check-input ebook-checkbox" 
-                                                            type="checkbox" 
-                                                            name="related_ebooks[]" 
+                                                        <input class="form-check-input ebook-checkbox"
+                                                            type="checkbox"
+                                                            name="related_ebooks[]"
                                                             value="{{ $ebook->id }}"
                                                             {{ in_array($ebook->id, old('related_ebooks', [])) ? 'checked' : '' }}>
                                                     </td>
                                                     <td>
-                                                        <img src="{{ $ebook->cover_image_url }}" 
-                                                            alt="{{ $ebook->title }}" 
+                                                        <img src="{{ $ebook->cover_image_url }}"
+                                                            alt="{{ $ebook->title }}"
                                                             class="img-thumbnail"
                                                             style="width: 70px; height: 100px; object-fit: cover;"
                                                             onerror="this.src='{{ asset('images/no-cover.png') }}'">
@@ -457,7 +457,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            
+
                             @error('related_ebooks')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
@@ -478,53 +478,53 @@
                 const cityFilter = document.getElementById('city_filter').value;
                 const categoryFilter = document.getElementById('category_filter').value;
                 const rows = document.querySelectorAll('.ebook-row');
-                
+
                 rows.forEach(row => {
                     const title = row.dataset.title;
                     const city = row.dataset.city;
                     const categories = row.dataset.category.split(',');
-                    
+
                     let showRow = true;
-                    
+
                     // Search filter
                     if (searchText && !title.includes(searchText)) {
                         showRow = false;
                     }
-                    
+
                     // City filter
                     if (cityFilter && city !== cityFilter) {
                         showRow = false;
                     }
-                    
+
                     // Category filter - check if any category matches
                     if (categoryFilter && !categories.includes(categoryFilter)) {
                         showRow = false;
                     }
-                    
+
                     row.style.display = showRow ? '' : 'none';
                 });
-                
+
                 updateSelectedCount();
             }
-            
+
             // Update selected count
             function updateSelectedCount() {
                 const visibleChecked = document.querySelectorAll('.ebook-row:not([style*="display: none"]) .ebook-checkbox:checked');
                 document.getElementById('selected_count').textContent = visibleChecked.length;
             }
-            
+
             // Select all functionality
             document.getElementById('select_all').addEventListener('change', function() {
                 const visibleCheckboxes = document.querySelectorAll('.ebook-row:not([style*="display: none"]) .ebook-checkbox');
                 visibleCheckboxes.forEach(cb => cb.checked = this.checked);
                 updateSelectedCount();
             });
-            
+
             // Individual checkbox change
             document.querySelectorAll('.ebook-checkbox').forEach(cb => {
                 cb.addEventListener('change', updateSelectedCount);
             });
-            
+
             // Click row to toggle checkbox
             document.querySelectorAll('.ebook-row').forEach(row => {
                 row.addEventListener('click', function(e) {
@@ -536,12 +536,12 @@
                     }
                 });
             });
-            
+
             // Attach filter event listeners
             document.getElementById('ebook_search').addEventListener('keyup', filterEbooks);
             document.getElementById('city_filter').addEventListener('change', filterEbooks);
             document.getElementById('category_filter').addEventListener('change', filterEbooks);
-            
+
             // Initial count
             updateSelectedCount();
         </script>
@@ -695,28 +695,28 @@
             /* ======================================================
                FEATURED IMAGE — AUTO CROP 1200x630 (CENTER)
             ====================================================== */
-            
+
             const featuredImageInput = document.getElementById('featured_image');
             const imagePreview = document.getElementById('imagePreview');
             const previewImage = document.getElementById('previewImage');
             const compressedImageData = document.getElementById('compressedImageData');
-            
+
             featuredImageInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (!file) return;
-                
+
                 if (!file.type.startsWith('image/')) {
                     alert('File harus berupa gambar');
                     featuredImageInput.value = '';
                     return;
                 }
-                
+
                 if (file.size > 5 * 1024 * 1024) {
                     alert('Maksimal 5MB');
                     featuredImageInput.value = '';
                     return;
                 }
-                
+
                 const reader = new FileReader();
                 reader.onload = function(evt) {
                     const img = new Image();
@@ -727,19 +727,19 @@
                 };
                 reader.readAsDataURL(file);
             });
-            
+
             function cropAndCompress(image) {
-                
+
                 const TARGET_W = 1200;
                 const TARGET_H = 630;
                 const TARGET_RATIO = TARGET_W / TARGET_H;
-                
+
                 const srcW = image.width;
                 const srcH = image.height;
                 const srcRatio = srcW / srcH;
-                
+
                 let cropW, cropH, offsetX, offsetY;
-                
+
                 // CENTER CROP
                 if (srcRatio > TARGET_RATIO) {
                     cropH = srcH;
@@ -752,15 +752,15 @@
                     offsetX = 0;
                     offsetY = (srcH - cropH) / 2;
                 }
-                
+
                 const canvas = document.createElement('canvas');
                 canvas.width = TARGET_W;
                 canvas.height = TARGET_H;
-                
+
                 const ctx = canvas.getContext('2d');
                 ctx.imageSmoothingEnabled = true;
                 ctx.imageSmoothingQuality = 'high';
-                
+
                 ctx.drawImage(
                     image,
                     offsetX,
@@ -772,7 +772,7 @@
                     TARGET_W,
                     TARGET_H
                 );
-                
+
                 canvas.toBlob(blob => {
                     const reader = new FileReader();
                     reader.onloadend = () => {
@@ -783,7 +783,7 @@
                     reader.readAsDataURL(blob);
                 }, 'image/jpeg', 0.85);
             }
-            
+
             window.resetImagePreview = function() {
                 featuredImageInput.value = '';
                 compressedImageData.value = '';
@@ -808,7 +808,7 @@
                 if (authorId.val()) {
                     return;
                 }
-                
+
                 if (allAuthors.length > 0) {
                     displayAuthors(allAuthors);
                 } else {
@@ -819,9 +819,9 @@
             // Search on input
             authorSearch.on('input', function() {
                 const query = $(this).val().trim();
-                
+
                 clearTimeout(searchTimeout);
-                
+
                 if (query.length === 0) {
                     loadAllAuthors();
                 } else {
@@ -830,10 +830,10 @@
                     }, 300);
                 }
             });
-            
+
             function searchAuthorsFromServer(query) {
                 authorSuggestions.html('<div class="list-group-item text-muted"><i class="bx bx-loader-alt bx-spin me-1"></i> Searching...</div>').show();
-                
+
                 $.ajax({
                     url: '{{ route('admin.blogs.search-authors') }}',
                     method: 'GET',
@@ -851,7 +851,7 @@
 
             function loadAllAuthors() {
                 authorSuggestions.html('<div class="list-group-item text-muted"><i class="bx bx-loader-alt bx-spin me-1"></i> Loading authors...</div>').show();
-                
+
                 $.ajax({
                     url: '{{ route('admin.blogs.search-authors') }}',
                     method: 'GET',
@@ -870,7 +870,7 @@
 
             function displayAuthors(authors) {
                 authorSuggestions.empty();
-                
+
                 if (authors.length === 0) {
                     authorSuggestions.append(
                         '<div class="list-group-item text-muted">No authors found</div>'
@@ -892,7 +892,7 @@
                         authorSuggestions.append(item);
                     });
                 }
-                
+
                 authorSuggestions.show();
             }
 
@@ -900,7 +900,7 @@
                 authorId.val(author.id);
                 authorSearch.val('');
                 authorSuggestions.hide().empty();
-                
+
                 selectedAuthorDiv.html(`
                     <div class="alert alert-info d-flex justify-content-between align-items-center py-2 mb-0">
                         <div>
@@ -941,25 +941,25 @@
                     authorSuggestions.hide();
                 }
             });
-            
+
             // SEO Character Counters
             $('#meta_title').on('input', function() {
                 $('#meta_title_count').text($(this).val().length);
             });
-            
+
             $('#meta_description').on('input', function() {
                 $('#meta_description_count').text($(this).val().length);
             });
-            
+
             $('#meta_keywords').on('input', function() {
                 $('#meta_keywords_count').text($(this).val().length);
             });
-            
+
             // Initialize counters on page load
             $('#meta_title_count').text($('#meta_title').val().length);
             $('#meta_description_count').text($('#meta_description').val().length);
             $('#meta_keywords_count').text($('#meta_keywords').val().length);
-            
+
             // Category Selection Handler
             const selectedCategories = new Map();
             const categorySelector = $('#category_selector');
@@ -982,7 +982,7 @@
             categorySelector.on('change', function() {
                 const selectedValue = $(this).val();
                 const selectedText = $(this).find('option:selected').data('name');
-                
+
                 if (selectedValue && !selectedCategories.has(selectedValue)) {
                     selectedCategories.set(selectedValue, selectedText);
                     renderCategories();
@@ -1003,7 +1003,7 @@
                     `);
                     selectedContainer.append(badge);
                 });
-                
+
                 // Bind remove handlers
                 $('.remove-category').on('click', function() {
                     const id = $(this).data('id');
@@ -1017,7 +1017,7 @@
             const scheduledContainer = document.getElementById('scheduledDateContainer');
             const publishedAtInput = document.getElementById('published_at');
             const publishedAtRequired = document.getElementById('published_at_required');
-            
+
             function toggleScheduledDate() {
                 if (statusSelect.value === 'scheduled') {
                     scheduledContainer.style.display = 'block';
@@ -1030,7 +1030,7 @@
                     publishedAtInput.value = ''; // Clear the value when not scheduled
                 }
             }
-            
+
             statusSelect.addEventListener('change', toggleScheduledDate);
             // Run on page load
             toggleScheduledDate();
@@ -1052,10 +1052,11 @@
                 }
             });
 
-            // Convert tagify format to simple array for form submission
+            // Convert tagify format to comma-separated string for form submission
             document.querySelector('form').addEventListener('submit', function(e) {
                 const tags = tagify.value.map(tag => tag.value);
-                tagsInput.value = JSON.stringify(tags);
+                // Send as comma-separated string (which BlogService expects)
+                tagsInput.value = tags.join(',');
             });
         </script>
     @endpush

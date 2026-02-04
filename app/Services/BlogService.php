@@ -187,11 +187,34 @@ class BlogService
             $data['slug'] = $slug;
         }
 
-        // Process tags
+        // Process tags - ensure it's saved as indexed array ["tag1", "tag2", ...]
         if (isset($data['tags'])) {
+            $cleanTags = [];
+
             if (is_string($data['tags'])) {
-                $data['tags'] = array_filter(array_map('trim', explode(',', $data['tags'])));
+                // Convert comma-separated string to array
+                $tagsArray = array_filter(array_map('trim', explode(',', $data['tags'])));
+                foreach ($tagsArray as $tag) {
+                    $cleanTag = $this->extractCleanTagValue($tag);
+                    if ($cleanTag) {
+                        $cleanTags[] = $cleanTag;
+                    }
+                }
+            } elseif (is_array($data['tags'])) {
+                foreach ($data['tags'] as $tag) {
+                    if (is_string($tag)) {
+                        $cleanTag = $this->extractCleanTagValue($tag);
+                        if ($cleanTag) {
+                            $cleanTags[] = $cleanTag;
+                        }
+                    } elseif (is_array($tag) && isset($tag['value'])) {
+                        $cleanTags[] = $tag['value'];
+                    }
+                }
             }
+
+            // Re-index array to ensure it's a proper indexed array
+            $data['tags'] = array_values(array_filter($cleanTags));
         } else {
             $data['tags'] = [];
         }
@@ -200,25 +223,25 @@ class BlogService
         if (isset($data['featured_image_compressed']) && $data['featured_image_compressed']) {
             // Handle base64 compressed image
             $base64Image = $data['featured_image_compressed'];
-            
+
             // Extract base64 data
             if (preg_match('/^data:image\/(\w+);base64,/', $base64Image, $type)) {
                 $base64Image = substr($base64Image, strpos($base64Image, ',') + 1);
                 $type = strtolower($type[1]); // jpg, png, gif, webp
-                
+
                 // Decode base64
                 $imageData = base64_decode($base64Image);
-                
+
                 if ($imageData === false) {
                     throw new \Exception('Failed to decode base64 image');
                 }
-                
+
                 // Generate filename
                 $filename = time() . '_' . Str::random(10) . '.' . $type;
-                
+
                 // Save to storage
                 Storage::disk('public')->put('blogs/' . $filename, $imageData);
-                
+
                 // Delete old image if updating
                 if ($id) {
                     $blog = $this->getBlogById($id);
@@ -226,10 +249,10 @@ class BlogService
                         Storage::disk('public')->delete($blog->featured_image);
                     }
                 }
-                
+
                 $data['featured_image'] = 'blogs/' . $filename;
             }
-            
+
             // Remove the compressed data from array
             unset($data['featured_image_compressed']);
         } elseif (isset($data['featured_image']) && $data['featured_image']) {
@@ -316,5 +339,48 @@ class BlogService
         }
 
         return $blogs;
+    }
+
+    /**
+     * Extract clean tag value from various formats
+     * Handles: plain string, JSON object {"value":"tag"}, strings with brackets like "[{...}]"
+     */
+    private function extractCleanTagValue($tag)
+    {
+        if (!is_string($tag)) {
+            return null;
+        }
+
+        $tag = trim($tag);
+
+        if (empty($tag)) {
+            return null;
+        }
+
+        // Remove leading/trailing brackets that might be there from corrupted data
+        // e.g., "[{\"value\":\"tes\"}" or "{\"value\":\"tes\"}]"
+        $tag = ltrim($tag, '[');
+        $tag = rtrim($tag, ']');
+        $tag = trim($tag);
+
+        // Check if it's a JSON object string like '{"value":"tagname"}'
+        if (strpos($tag, '{') === 0 && strpos($tag, '"value"') !== false) {
+            $decoded = json_decode($tag, true);
+            if (is_array($decoded) && isset($decoded['value'])) {
+                return trim($decoded['value']);
+            }
+        }
+
+        // Check if tag contains JSON-like characters that shouldn't be there
+        if (strpos($tag, '{') !== false || strpos($tag, '}') !== false || strpos($tag, '"value"') !== false) {
+            // Try to extract value using regex
+            if (preg_match('/"value"\s*:\s*"([^"]+)"/', $tag, $matches)) {
+                return trim($matches[1]);
+            }
+            return null; // Skip corrupted tags
+        }
+
+        // Return clean tag
+        return $tag;
     }
 }
