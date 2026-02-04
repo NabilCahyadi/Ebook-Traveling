@@ -286,8 +286,7 @@
                                             </h5>
                                             <div class="entry-meta font-xs color-grey mt-10 pb-10">
                                                 <div>
-                                                    <span
-                                                        class="post-on mr-10">{{ $blog->published_at->format('d F Y') }}</span>
+                                                    <span class="post-on mr-10">{{ $blog->published_at->format('d F Y') }}</span>
                                                     <span class="post-on has-dot">
                                                         @php($views = $blog->view_count)
 

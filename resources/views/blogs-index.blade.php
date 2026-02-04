@@ -233,7 +233,7 @@
                                 <p class="post-exerpt mb-40">{{ $blog->excerpt ?? Str::limit(strip_tags($blog->content), 150) }}</p>
                                 <div class="entry-meta meta-1 font-xs color-grey mt-10 pb-10">
                                     <div>
-                                        <span class="post-on">{{ \Carbon\Carbon::parse($blog->published_at)->diffInHours() < 24 ? $blog->published_at->diffForHumans() : $blog->published_at->format('d M Y') }}</span>
+                                        <span class="post-on">{{ $blog->published_at->format('d F Y') }}</span>
                                         <span class="hit-count has-dot">
                                             @php
                                             $views = $blog->view_count;

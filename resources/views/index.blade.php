@@ -1002,8 +1002,7 @@ $collections = collect();
                             </h4>
                             <div class="entry-meta font-xs color-grey mt-10 pb-10">
                                 <div>
-                                    <!-- <span class="post-on mr-10">{{ $blog->published_at->format('d F Y') }}</span> -->
-                                    <span class="post-on mr-10">{{ \Carbon\Carbon::parse($blog->published_at)->diffInHours() < 24 ? $blog->published_at->diffForHumans() : $blog->published_at->format('d M Y') }}</span>
+                                    <span class="post-on mr-10">{{ $blog->published_at->format('d F Y') }}</span>
                                     <span class="post-on has-dot">
                                         @php
                                         $views = $blog->view_count;
