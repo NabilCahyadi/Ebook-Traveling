@@ -317,6 +317,36 @@ class ManualSubscriptionController extends Controller
     }
 
     /**
+     * Search subscription plans for autocomplete (AJAX)
+     */
+    public function searchPlans(Request $request)
+    {
+        $search = $request->get('q', '');
+
+        if (strlen($search) < 1) {
+            // Return all active plans if search is empty
+            $plans = \App\Models\SubscriptionPlan::where('is_active', true)
+                ->orderBy('name')
+                ->limit(20)
+                ->get(['id', 'name', 'duration_days', 'price', 'category_subscription']);
+
+            return response()->json($plans);
+        }
+
+        // Search plans by name or category
+        $plans = \App\Models\SubscriptionPlan::where('is_active', true)
+            ->where(function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('category_subscription', 'like', "%{$search}%");
+            })
+            ->orderBy('name')
+            ->limit(20)
+            ->get(['id', 'name', 'duration_days', 'price', 'category_subscription']);
+
+        return response()->json($plans);
+    }
+
+    /**
      * Export subscriptions to Excel.
      */
     public function export(Request $request)

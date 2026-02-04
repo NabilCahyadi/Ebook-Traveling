@@ -5,7 +5,8 @@
 @section('styles')
     <style>
         /* FIXED HERE */
-        #user-suggestions {
+        #user-suggestions,
+        #plan-suggestions {
             background-color: #ffffff !important;
             border-radius: 8px;
             margin-top: 4px;
@@ -15,7 +16,8 @@
         }
 
         /* FIXED HERE – FORCE NON-TRANSPARENT */
-        #user-suggestions .list-group-item.list-group-item {
+        #user-suggestions .list-group-item.list-group-item,
+        #plan-suggestions .list-group-item.list-group-item {
             background-color: #ffffff !important;
             border: none;
             border-bottom: 1px solid #f0f2f5;
@@ -26,28 +28,33 @@
             backdrop-filter: none !important;
         }
 
-        #user-suggestions .list-group-item:last-child {
+        #user-suggestions .list-group-item:last-child,
+        #plan-suggestions .list-group-item:last-child {
             border-bottom: none;
         }
 
         /* Hover Effect */
-        #user-suggestions .list-group-item:hover {
+        #user-suggestions .list-group-item:hover,
+        #plan-suggestions .list-group-item:hover {
             background-color: #f0f3ff !important;
             transform: translateX(4px);
         }
 
-        #user-suggestions .list-group-item:first-child {
+        #user-suggestions .list-group-item:first-child,
+        #plan-suggestions .list-group-item:first-child {
             border-top-left-radius: 8px;
             border-top-right-radius: 8px;
         }
 
-        #user-suggestions .list-group-item:last-child {
+        #user-suggestions .list-group-item:last-child,
+        #plan-suggestions .list-group-item:last-child {
             border-bottom-left-radius: 8px;
             border-bottom-right-radius: 8px;
         }
 
         /* Search input focus */
-        #user-search:focus {
+        #user-search:focus,
+        #plan-search:focus {
             border-color: #696cff;
             box-shadow: 0 0 0 0.2rem rgba(105, 108, 255, 0.25);
         }
@@ -107,23 +114,33 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label" for="subscription_plan_id">{{ __('admin.manual_subscription.subscription_plan') }} <span
+                            <label class="form-label" for="plan_search">{{ __('admin.manual_subscription.subscription_plan') }} <span
                                     class="text-danger">*</span></label>
-                            <select class="form-select @error('subscription_plan_id') is-invalid @enderror"
-                                id="subscription_plan_id" name="subscription_plan_id" required>
-                                <option value="">{{ __('admin.manual_subscription.choose_plan') }}</option>
-                                @foreach ($plans as $plan)
-                                    <option value="{{ $plan->id }}" data-duration="{{ $plan->duration_days }}"
-                                        data-price="{{ $plan->price }}"
-                                        {{ old('subscription_plan_id') == $plan->id ? 'selected' : '' }}>
-                                        {{ $plan->name }} - {{ $plan->duration_days }} days (Rp
-                                        {{ number_format($plan->price, 0, ',', '.') }})
-                                    </option>
-                                @endforeach
-                            </select>
+
+                            <input type="hidden" id="subscription_plan_id" name="subscription_plan_id" value="{{ old('subscription_plan_id') }}">
+
+                            <div class="position-relative">
+                                <input type="text" class="form-control @error('subscription_plan_id') is-invalid @enderror"
+                                    id="plan_search" placeholder="{{ __('admin.manual_subscription.search_plan') }}"
+                                    autocomplete="off" value="{{ old('plan_search') }}">
+
+                                <div id="plan-loading" class="position-absolute top-50 end-0 translate-middle-y me-3"
+                                    style="display: none;">
+                                    <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+
+                                <!-- Suggestions -->
+                                <div id="plan-suggestions" class="list-group w-100 shadow-lg"
+                                    style="display: none; max-height: 300px; overflow-y: auto;"></div>
+                            </div>
+
                             @error('subscription_plan_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
+
+                            <div class="form-text">{{ __('admin.manual_subscription.plan_search_hint') }}</div>
                         </div>
 
                         <div class="mb-3">
@@ -220,11 +237,19 @@
             const userIdInput = document.getElementById('user_id');
             const suggestionsDiv = document.getElementById('user-suggestions');
             const loadingIndicator = document.getElementById('search-loading');
-            const planSelect = document.getElementById('subscription_plan_id');
+
+            const planSearchInput = document.getElementById('plan_search');
+            const planIdInput = document.getElementById('subscription_plan_id');
+            const planSuggestionsDiv = document.getElementById('plan-suggestions');
+            const planLoadingIndicator = document.getElementById('plan-loading');
 
             let searchTimeout;
+            let planSearchTimeout;
             let selectedUserId = null;
+            let selectedPlanId = null;
+            let selectedPlanData = null;
 
+            // USER SEARCH FUNCTIONALITY
             userSearchInput.addEventListener('input', function() {
                 const query = this.value.trim();
                 clearTimeout(searchTimeout);
@@ -303,22 +328,104 @@
                 document.getElementById('preview-user').textContent = `${user.name} (${user.email})`;
             }
 
+            // PLAN SEARCH FUNCTIONALITY
+            planSearchInput.addEventListener('focus', function() {
+                // Load all plans on focus if no search query
+                if (this.value.trim() === '') {
+                    searchPlans('');
+                }
+            });
+
+            planSearchInput.addEventListener('input', function() {
+                const query = this.value.trim();
+                clearTimeout(planSearchTimeout);
+
+                planLoadingIndicator.style.display = 'block';
+
+                planSearchTimeout = setTimeout(() => {
+                    searchPlans(query);
+                }, 300);
+            });
+
+            function searchPlans(query) {
+                fetch(`{{ route('admin.manual-subscriptions.search-plans') }}?q=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(plans => {
+                        planLoadingIndicator.style.display = 'none';
+                        displayPlanSuggestions(plans);
+                    })
+                    .catch(() => {
+                        planLoadingIndicator.style.display = 'none';
+                        planSuggestionsDiv.innerHTML =
+                            '<div class="list-group-item text-danger">{{ __('admin.messages.error_loading') }}</div>';
+                        planSuggestionsDiv.style.display = 'block';
+                    });
+            }
+
+            function displayPlanSuggestions(plans) {
+                planSuggestionsDiv.innerHTML = '';
+
+                if (plans.length === 0) {
+                    planSuggestionsDiv.innerHTML = '<div class="list-group-item text-muted">No plans found</div>';
+                    planSuggestionsDiv.style.display = 'block';
+                    return;
+                }
+
+                plans.forEach(plan => {
+                    const item = document.createElement('a');
+                    item.href = '#';
+                    item.className = 'list-group-item list-group-item-action';
+                    item.innerHTML = `
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="flex-grow-1">
+                        <div class="fw-medium">${plan.name}</div>
+                        <small class="text-muted">${plan.duration_days} days • ${plan.category_subscription ? plan.category_subscription.charAt(0).toUpperCase() + plan.category_subscription.slice(1) : 'N/A'}</small>
+                    </div>
+                    <div class="text-end">
+                        <div class="fw-semibold text-success">Rp ${new Intl.NumberFormat('id-ID').format(plan.price)}</div>
+                    </div>
+                </div>
+            `;
+
+                    item.addEventListener('click', e => {
+                        e.preventDefault();
+                        selectPlan(plan);
+                    });
+
+                    planSuggestionsDiv.appendChild(item);
+                });
+
+                planSuggestionsDiv.style.display = 'block';
+            }
+
+            function selectPlan(plan) {
+                selectedPlanId = plan.id;
+                selectedPlanData = plan;
+                planIdInput.value = plan.id;
+                planSearchInput.value = `${plan.name} - ${plan.duration_days} days (Rp ${new Intl.NumberFormat('id-ID').format(plan.price)})`;
+                planSuggestionsDiv.style.display = 'none';
+
+                updateSubscriptionSummary();
+            }
+
+            // Close dropdowns when clicking outside
             document.addEventListener('click', function(e) {
                 if (!userSearchInput.contains(e.target) && !suggestionsDiv.contains(e.target)) {
                     suggestionsDiv.style.display = 'none';
                 }
+                if (!planSearchInput.contains(e.target) && !planSuggestionsDiv.contains(e.target)) {
+                    planSuggestionsDiv.style.display = 'none';
+                }
             });
 
             function updateSubscriptionSummary() {
-                const planSelect = document.getElementById('subscription_plan_id');
                 const quantityInput = document.getElementById('quantity');
-                const selectedOption = planSelect.options[planSelect.selectedIndex];
 
-                if (selectedOption.value && quantityInput.value) {
-                    const duration = parseInt(selectedOption.dataset.duration);
-                    const price = parseFloat(selectedOption.dataset.price);
+                if (selectedPlanData && quantityInput.value) {
+                    const duration = parseInt(selectedPlanData.duration_days);
+                    const price = parseFloat(selectedPlanData.price);
                     const quantity = parseInt(quantityInput.value);
-                    const planName = selectedOption.text.split(' - ')[0];
+                    const planName = selectedPlanData.name;
 
                     const totalDuration = duration * quantity;
                     const totalAmount = price * quantity;
@@ -353,7 +460,6 @@
                 }
             }
 
-            planSelect.addEventListener('change', updateSubscriptionSummary);
             document.getElementById('quantity').addEventListener('input', updateSubscriptionSummary);
 
         });
