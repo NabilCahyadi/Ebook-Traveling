@@ -227,8 +227,8 @@
                             </div>
                             @endif
                             <div class="entry-content-2 pl-50">
-                                <h3 class="post-title mb-20">
-                                    <a href="{{ route('blogs.show', $blog->slug) }}">{{ $blog->title }}</a>
+                                <h3 class="post-title mb-10 mt-10">
+                                    <a href="{{ route('blogs.show', $blog->slug) }}">{{ Str::limit($blog->title, 60) }}</a>
                                 </h3>
                                 <p class="post-exerpt mb-40">{{ $blog->excerpt ?? Str::limit(strip_tags($blog->content), 150) }}</p>
                                 <div class="entry-meta meta-1 font-xs color-grey mt-10 pb-10">
