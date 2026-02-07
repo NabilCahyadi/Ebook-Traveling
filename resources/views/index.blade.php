@@ -522,6 +522,18 @@ $collections = collect();
         font-size: 0.75em;
         line-height: 1.2;
     }
+
+    /* Style untuk excerpt blog */
+    .post-excerpt {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.5;
+        font-size: 0.85rem;
+        min-height: 2.5em;
+    }
 </style>
 <style>
     .single-hero-slider {
@@ -765,11 +777,11 @@ $collections = collect();
         <div class="container wow animate__animated animate__fadeIn">
             <div class="section-title style-2 section-title style-2 d-flex justify-content-between align-items-center">
                 <div class="title">
-                    <h3 class="d-block d-md-none" style="font-size: 0.80rem !important; line-height: 1.2 !important; margin-top:5px;">Top 10 City Guides</h3>
-                    <h3 class="d-none d-md-block" style="font-size: 1.5rem !important; line-height: 1.3 !important;">Top 10 City Guides</h3>
+                    <h3 class="d-block d-md-none" style="font-size: 0.80rem !important; line-height: 1.2 !important; margin-top:5px;">{{ __('messages.top_city_guides') }}</h3>
+                    <h3 class="d-none d-md-block" style="font-size: 1.5rem !important; line-height: 1.3 !important;">{{ __('messages.top_city_guides') }}</h3>
                 </div>
-                <a href="/destinations" class="show-all d-block d-md-none text-end" style="font-size: 0.70rem !important; margin-top:5px;">View All</a>
-                <a href="/destinations" class="show-all d-none d-md-inline text-end">View All</a>
+                <a href="/destinations" class="show-all d-block d-md-none text-end" style="font-size: 0.70rem !important; margin-top:5px;">{{ __('messages.view_all') }}</a>
+                <a href="/destinations" class="show-all d-none d-md-inline text-end">{{ __('messages.view_all') }}</a>
             </div>
             <div class="slider-arrow slider-arrow-2 flex carausel-10-columns-arrow"></div>
             <div class="carausel-10-columns-cover position-relative">
@@ -803,11 +815,11 @@ $collections = collect();
             <div class="row">
                 <div class="section-title style-2 section-title style-2 d-flex justify-content-between align-items-center">
                     <div class="title">
-                        <h3 class="d-block d-md-none" style="font-size: 0.80rem !important; line-height: 1.2 !important; margin-top:5px;">Subscription Plans</h3>
-                        <h3 class="d-none d-md-block" style="font-size: 1.5rem !important; line-height: 1.3 !important;">Subscription Plans</h3>
+                        <h3 class="d-block d-md-none" style="font-size: 0.80rem !important; line-height: 1.2 !important; margin-top:5px;">{{ __('messages.subscription_plans') }}</h3>
+                        <h3 class="d-none d-md-block" style="font-size: 1.5rem !important; line-height: 1.3 !important;">{{ __('messages.subscription_plans') }}</h3>
                     </div>
-                    <a href="{{ route('pricing') }}#pricing-plans" class="show-all d-block d-md-none text-end" style="font-size: 0.70rem !important; margin-top:5px;">View All</a>
-                    <a href="{{ route('pricing') }}#pricing-plans" class="show-all d-none d-md-inline text-end">View All</a>
+                    <a href="{{ route('pricing') }}#pricing-plans" class="show-all d-block d-md-none text-end" style="font-size: 0.70rem !important; margin-top:5px;">{{ __('messages.view_all') }}</a>
+                    <a href="{{ route('pricing') }}#pricing-plans" class="show-all d-none d-md-inline text-end">{{ __('messages.view_all') }}</a>
                 </div>
 
                 @php
@@ -853,8 +865,8 @@ $collections = collect();
             <div class="section-title style-2 wow animate__animated animate__fadeIn section-title style-2 d-flex justify-content-between align-items-center">
                 <h3 class="d-block d-md-none" style="font-size: 0.80rem !important; line-height: 1.2 !important; margin-top:5px;">{{ $collection->name }}</h3>
                 <h3 class="d-none d-md-block" style="font-size: 1.5rem !important; line-height: 1.3 !important;">{{ $collection->name }}</h3>
-                <a href="/collections/{{ $collection->slug }}" class="show-all d-block d-md-none text-end" style="font-size: 0.70rem !important; margin-top:5px;">View All</a>
-                <a href="/collections/{{ $collection->slug }}" class="show-all d-none d-md-inline text-end">View All</a>
+                <a href="/collections/{{ $collection->slug }}" class="show-all d-block d-md-none text-end" style="font-size: 0.70rem !important; margin-top:5px;">{{ __('messages.view_all') }}</a>
+                <a href="/collections/{{ $collection->slug }}" class="show-all d-none d-md-inline text-end">{{ __('messages.view_all') }}</a>
             </div>
             <button class="scroll-btn scroll-left"><i class="fi fi-rs-angle-left"></i></button>
             <button class="scroll-btn scroll-right"><i class="fi fi-rs-angle-right"></i></button>
@@ -948,12 +960,12 @@ $collections = collect();
                                             {{-- LOGIKA HANYA PADA TOMBOL AKSI --}}
                                             @if(auth()->check() && auth()->user()->hasActiveSubscription())
                                             <a href="{{ route('user.ebook.read', $ebook->slug) }}" class="action-btn btn-read-now">
-                                                <span>Read Now</span>
+                                                <span>{{ __('messages.read_now') }}</span>
                                             </a>
                                             @else
                                             <a href="{{ route('pricing') }}#pricing-plans" class="action-btn btn-subscribe-now">
                                                 <i class="fi fi-rs-lock mt-1"></i>
-                                                <span>Subscribe to Read</span>
+                                                <span>{{ __('messages.subscribe_to_read') }}</span>
                                             </a>
                                             @endif
                                     </div>
@@ -963,7 +975,7 @@ $collections = collect();
                             @endforeach
                             @else
                             <div class="col-12 text-center py-5">
-                                <p class="text-muted">No ebooks available in this collection yet.</p>
+                                <p class="text-muted">{{ __('messages.no_ebooks_in_collection') }}</p>
                             </div>
                             @endif
 
@@ -980,11 +992,11 @@ $collections = collect();
         <div class="container mb-30">
             <div class="section-title style-2 section-title style-2 d-flex justify-content-between align-items-center">
                 <div class="title">
-                    <h3 class="d-block d-md-none" style="font-size: 0.80rem !important; line-height: 1.2 !important;">Latest Blog</h3>
-                    <h3 class="d-none d-md-block" style="font-size: 1.5rem !important; line-height: 1.3 !important;">Latest Blog</h3>
+                    <h3 class="d-block d-md-none" style="font-size: 0.80rem !important; line-height: 1.2 !important;">{{ __('messages.latest_blog') }}</h3>
+                    <h3 class="d-none d-md-block" style="font-size: 1.5rem !important; line-height: 1.3 !important;">{{ __('messages.latest_blog') }}</h3>
                 </div>
-                <a href="{{ route('blogs.index') }}" class="show-all d-block d-md-none text-end" style="font-size: 0.70rem !important; margin-top:5px;">View All</a>
-                <a href="{{ route('blogs.index') }}" class="show-all d-none d-md-inline text-end">View All</a>
+                <a href="{{ route('blogs.index') }}" class="show-all d-block d-md-none text-end" style="font-size: 0.70rem !important; margin-top:5px;">{{ __('messages.view_all') }}</a>
+                <a href="{{ route('blogs.index') }}" class="show-all d-none d-md-inline text-end">{{ __('messages.view_all') }}</a>
             </div>
             <div class="loop-grid">
                 <div class="row">
@@ -1016,7 +1028,7 @@ $collections = collect();
                                         $formattedViews = $views;
                                         }
                                         @endphp
-                                        {{ $formattedViews }} Views
+                                        {{ $formattedViews }} {{ __('messages.views') }}
                                     </span>
                                     {{-- Jika Anda menambah kolom read_time (dalam menit) --}}
                                     {{--<span class="hit-count has-dot">{{ $blog->read_time }} mins read</span>--}}
@@ -1026,7 +1038,7 @@ $collections = collect();
                     </article>
                     @empty
                     <div class="col-12 text-center py-5">
-                        <p class="text-muted">No blog posts available yet.</p>
+                        <p class="text-muted">{{ __('messages.no_blog_posts') }}</p>
                     </div>
                     @endforelse
                 </div>

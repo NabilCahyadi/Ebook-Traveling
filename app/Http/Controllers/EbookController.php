@@ -152,6 +152,14 @@ class EbookController extends Controller
                 ->exists();
         }
 
+        // Cek apakah user yang login sudah pernah membaca ebook ini
+        $hasRead = false;
+        if (auth()->check()) {
+            $hasRead = \App\Models\UserReading::where('user_id', auth()->id())
+                ->where('ebook_id', $ebook->id)
+                ->exists();
+        }
+
         $isSaved = false;
         if (auth()->check()) {
             $isSaved = auth()->user()->savedBooks()
@@ -164,7 +172,7 @@ class EbookController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('ebooks-detail', compact('ebook', 'ratings', 'ratingDistribution', 'hasReviewed', 'isSaved', 'citiesHeader'));
+        return view('ebooks-detail', compact('ebook', 'ratings', 'ratingDistribution', 'hasReviewed', 'hasRead', 'isSaved', 'citiesHeader'));
     }
 
     public function toggleSaved(Request $request, string $id)

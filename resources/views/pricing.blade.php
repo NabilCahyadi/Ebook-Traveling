@@ -330,7 +330,18 @@
         .pricing-card .card-price-description {
             font-size: 1rem;
             color: var(--text-muted);
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-card .card-duration {
+            font-size: 0.95rem;
+            color: #FF4C61;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
         }
 
         .pricing-card .desc-plan {
@@ -646,6 +657,10 @@
                                             <p class="card-title">{{ $plan->name }}</p>
                                             <h2>Rp {{ number_format($plan->price, 0, ',', '.') }}</h2>
                                             <p class="card-price-description">{{ $plan->price_description }}</p>
+                                            <p class="card-duration">
+                                                <i class="fi fi-rs-calendar-clock me-1"></i>
+                                                {{ $plan->duration_days }} Days Access
+                                            </p>
                                             <p class="desc-plan">{{ Str::limit($plan->description, 75) }}</p>
 
                                             <div class="pricing-button-container">

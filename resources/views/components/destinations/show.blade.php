@@ -266,6 +266,9 @@
     .city-hero-card {
         border-radius: 12px !important;
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
     }
 
     @media (max-width: 768px) {
@@ -463,16 +466,25 @@
             if (!imageUrl || imageUrl.trim() === '' || imageUrl.includes('null')) {
                 const fallbackUrl = element.getAttribute('data-fallback') || placeholderImage;
                 element.style.backgroundImage = `url('${fallbackUrl}')`;
+                element.style.backgroundSize = 'cover';
+                element.style.backgroundPosition = 'center';
+                element.style.backgroundRepeat = 'no-repeat';
                 return;
             }
 
             const img = new Image();
             img.onload = function() {
                 element.style.backgroundImage = `url('${imageUrl}')`;
+                element.style.backgroundSize = 'cover';
+                element.style.backgroundPosition = 'center';
+                element.style.backgroundRepeat = 'no-repeat';
             };
             img.onerror = function() {
                 const fallbackUrl = element.getAttribute('data-fallback') || placeholderImage;
                 element.style.backgroundImage = `url('${fallbackUrl}')`;
+                element.style.backgroundSize = 'cover';
+                element.style.backgroundPosition = 'center';
+                element.style.backgroundRepeat = 'no-repeat';
                 console.warn('Image fallback digunakan untuk hero destination:', imageUrl);
             };
             img.src = imageUrl;

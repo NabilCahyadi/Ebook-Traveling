@@ -50,7 +50,7 @@ class DatabaseSeeder extends Seeder
 
     /**
      * Seed the application's database.
-     * 
+     *
      * WARNING: This seeder includes DEVELOPMENT/FAKE data.
      * For production, use: php artisan db:seed --class=ProductionSeeder
      */
@@ -68,7 +68,7 @@ class DatabaseSeeder extends Seeder
             CollectionSeeder::class,            // Membuat koleksi (best-seller, featured, dll)
             SubscriptionPlanSeeder::class,      // Membuat paket berlangganan (basic, premium)
             SubscriptionPromoSeeder::class,     // Membuat promo subscription
-            
+
             // ================================================
             // 2. PERMISSIONS & SYSTEM SETTINGS
             // Folder: database/seeders/Production/Core/
@@ -76,7 +76,7 @@ class DatabaseSeeder extends Seeder
             PanelAccessPermissionSeeder::class, // Panel access permissions untuk creators & admins
             AdminPermissionsSeeder::class,      // Membuat permissions untuk admin panel (new system)
             SystemSettingSeeder::class,         // Membuat system settings
-            
+
             // ================================================
             // 3. DATA PENGGUNA (Bergantung pada RoleSeeder)
             // Folder: database/seeders/Production/Core/ & Development/

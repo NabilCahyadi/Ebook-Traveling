@@ -819,7 +819,7 @@
                             <!-- WISHLIST TAB -->
                             <div class="tab-pane fade {{ request('tab') == 'wishlist' ? 'active show' : '' }}"
                                 id="wishlist" role="tabpanel">
-                                <div class="card border-0 shadow-sm">
+                                <div>
                                     <div class="card-header bg-white border-0 py-3">
                                         <h5 class="mb-0 fw-bold text-dark">Your Wishlist</h5>
                                     </div>
@@ -858,7 +858,13 @@
 
                                         @if ($wishlistItems->count() > 0)
                                             <div class="table-responsive">
-                                                <table class="table align-middle">
+                                                <style>
+                                                    #wishlist-table th,
+                                                    #wishlist-table td {
+                                                        border: none !important;
+                                                    }
+                                                </style>
+                                                <table class="table align-middle" id="wishlist-table">
                                                     <thead>
                                                         <tr>
                                                             <th style="width: 80px;">Cover</th>
@@ -901,9 +907,24 @@
                                                                 <!--  KATEGORI -->
                                                                 <td>
                                                                     @if ($ebook->categories && $ebook->categories->count() > 0)
-                                                                        @foreach ($ebook->categories as $category)
-                                                                            <span
-                                                                                class="badge bg-light text-dark border me-1">{{ $category->name }}</span>
+                                                                        @php
+                                                                            $categoryColors = [
+                                                                                ['bg' => '#cfe2ff', 'color' => '#084298', 'border' => '#0d6efd'], // Blue
+                                                                                ['bg' => '#d1e7dd', 'color' => '#0f5132', 'border' => '#198754'], // Green
+                                                                                ['bg' => '#fff3cd', 'color' => '#856404', 'border' => '#ffc107'], // Yellow
+                                                                                ['bg' => '#f8d7da', 'color' => '#842029', 'border' => '#dc3545'], // Red
+                                                                                ['bg' => '#cff4fc', 'color' => '#055160', 'border' => '#0dcaf0'], // Cyan
+                                                                                ['bg' => '#e2d9f3', 'color' => '#59359a', 'border' => '#6f42c1'], // Purple
+                                                                                ['bg' => '#ffe5d0', 'color' => '#984c0c', 'border' => '#fd7e14'], // Orange
+                                                                                ['bg' => '#d3d3d4', 'color' => '#41464b', 'border' => '#6c757d'], // Gray
+                                                                            ];
+                                                                        @endphp
+                                                                        @foreach ($ebook->categories as $index => $category)
+                                                                            @php
+                                                                                $colorIndex = $index % count($categoryColors);
+                                                                                $color = $categoryColors[$colorIndex];
+                                                                            @endphp
+                                                                            <span class="badge rounded-pill px-2 py-1 me-1" style="background-color: {{ $color['bg'] }}; color: {{ $color['color'] }}; border: 1px solid {{ $color['border'] }};">{{ $category->name }}</span>
                                                                         @endforeach
                                                                     @else
                                                                         <span class="text-muted">—</span>
@@ -1146,7 +1167,7 @@
                             <!-- MY SUBSCRIPTION TAB -->
                             <div class="tab-pane fade {{ request('tab') == 'subscription' ? 'active show' : '' }}"
                                 id="subscription" role="tabpanel">
-                                <div class="card border-0 shadow-sm">
+                                <div>
                                     <div
                                         class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
                                         <h5 class="mb-0 fw-bold text-dark">My Subscription</h5>
@@ -1375,7 +1396,7 @@
                                                                                 {{ $upgradePlan->duration_days }} days
                                                                                 access
                                                                             </p>
-                                                                            <p class="h5 text-success mb-3">Rp
+                                                                            <p class="h5 mb-3" style="color: #FF4C61;">Rp
                                                                                 {{ number_format($upgradePlan->price, 0, ',', '.') }}
                                                                             </p>
                                                                             <form
@@ -1579,7 +1600,13 @@
 
                                             @if ($paymentsPaginated->count() > 0)
                                                 <div class="table-responsive">
-                                                    <table class="table table-hover align-middle">
+                                                    <style>
+                                                        #payment-history-table th,
+                                                        #payment-history-table td {
+                                                            border: none !important;
+                                                        }
+                                                    </style>
+                                                    <table class="table table-hover align-middle" id="payment-history-table">
                                                         <thead class="table-light px-3">
                                                             <tr>
                                                                 <th scope="col" class="ps-3 py-3">Date</th>
@@ -1652,12 +1679,12 @@
                                                                     <td class="py-3">
                                                                         <div>
                                                                             <strong>{{ $payment->plan?->name ?? '-' }}</strong><br>
-                                                                            <small>
+                                                                            <small class="text-muted">
                                                                                 @if ($sub)
                                                                                     @if ($paymentType === 'renewal')
                                                                                         Extended by <strong class="text-success">+{{ $durationDays }} day{{ $durationDays > 1 ? 's' : '' }}</strong>
                                                                                     @elseif ($paymentType === 'upgrade')
-                                                                                        Extended by <strong class="text-success">+{{ $durationDays }} day{{ $durationDays > 1 ? 's' : '' }}</strong>
+                                                                                        Extended by <strong class="text-primary">+{{ $durationDays }} day{{ $durationDays > 1 ? 's' : '' }}</strong>
                                                                                     @elseif ($paymentType === 'downgrade')
                                                                                         Duration <strong class="text-warning">{{ $durationDays }} day{{ $durationDays > 1 ? 's' : '' }}</strong>
                                                                                     @else
@@ -1680,22 +1707,22 @@
                                                                             @if ($payment->status === 'pending')
                                                                                 {{-- PENDING PAYMENT: Show "Pending + Operation Type" --}}
                                                                                 <span
-                                                                                    class="badge bg-warning-subtle text-warning rounded-pill px-2 py-1">
+                                                                                    class="badge rounded-pill px-2 py-1" style="background-color: #fff3cd; color: #856404; border: 1px solid #ffc107;">
                                                                                     Pending
                                                                                 </span>
                                                                                 @if ($paymentType === 'renewal')
                                                                                     <span
-                                                                                        class="badge bg-info-subtle text-info rounded-pill px-2 py-1">
+                                                                                        class="badge rounded-pill px-2 py-1" style="background-color: #cff4fc; color: #055160; border: 1px solid #0dcaf0;">
                                                                                         Renewed
                                                                                     </span>
                                                                                 @elseif ($paymentType === 'upgrade')
                                                                                     <span
-                                                                                        class="badge bg-primary-subtle text-primary rounded-pill px-2 py-1">
+                                                                                        class="badge rounded-pill px-2 py-1" style="background-color: #cfe2ff; color: #084298; border: 1px solid #0d6efd;">
                                                                                         Upgraded
                                                                                     </span>
                                                                                 @elseif ($paymentType === 'downgrade')
                                                                                     <span
-                                                                                        class="badge bg-primary-subtle text-warning rounded-pill px-2 py-1">
+                                                                                        class="badge rounded-pill px-2 py-1" style="background-color: #ffe5d0; color: #984c0c; border: 1px solid #fd7e14;">
                                                                                         Downgraded
                                                                                     </span>
                                                                                 @endif
@@ -1703,46 +1730,58 @@
                                                                                 {{-- PAID PAYMENT: Show Paid + Subscription Status (or Paid + Operation Type) --}}
                                                                                 @if ($paymentType === 'renewal')
                                                                                     <span
-                                                                                        class="badge bg-success-subtle text-success rounded-pill px-2 py-1">
+                                                                                        class="badge rounded-pill px-2 py-1" style="background-color: #d1e7dd; color: #0f5132; border: 1px solid #198754;">
                                                                                         Paid
                                                                                     </span>
                                                                                     <span
-                                                                                        class="badge bg-info-subtle text-info rounded-pill px-2 py-1">
+                                                                                        class="badge rounded-pill px-2 py-1" style="background-color: #cff4fc; color: #055160; border: 1px solid #0dcaf0;">
                                                                                         Renewed
                                                                                     </span>
                                                                                 @elseif ($paymentType === 'upgrade')
                                                                                     <span
-                                                                                        class="badge bg-success-subtle text-success rounded-pill px-2 py-1">
+                                                                                        class="badge rounded-pill px-2 py-1" style="background-color: #d1e7dd; color: #0f5132; border: 1px solid #198754;">
                                                                                         Paid
                                                                                     </span>
                                                                                     <span
-                                                                                        class="badge bg-primary-subtle text-primary rounded-pill px-2 py-1">
+                                                                                        class="badge rounded-pill px-2 py-1" style="background-color: #cfe2ff; color: #084298; border: 1px solid #0d6efd;">
                                                                                         Upgraded
                                                                                     </span>
                                                                                 @elseif ($paymentType === 'downgrade')
                                                                                     <span
-                                                                                        class="badge bg-success-subtle text-success rounded-pill px-2 py-1">
+                                                                                        class="badge rounded-pill px-2 py-1" style="background-color: #d1e7dd; color: #0f5132; border: 1px solid #198754;">
                                                                                         Paid
                                                                                     </span>
                                                                                     <span
-                                                                                        class="badge text-danger rounded-pill px-2 py-1">
+                                                                                        class="badge rounded-pill px-2 py-1" style="background-color: #ffe5d0; color: #984c0c; border: 1px solid #fd7e14;">
                                                                                         Downgraded
                                                                                     </span>
                                                                                 @else
                                                                                     {{-- For 'new' subscription, show subscription status if available --}}
                                                                                     <span
-                                                                                        class="badge bg-success-subtle text-success rounded-pill px-2 py-1">
+                                                                                        class="badge rounded-pill px-2 py-1" style="background-color: #d1e7dd; color: #0f5132; border: 1px solid #198754;">
                                                                                         Paid
                                                                                     </span>
 
                                                                                     @if ($sub)
+                                                                                        @php
+                                                                                            // Define badge styles based on status
+                                                                                            $badgeStyles = [
+                                                                                                'Expired' => 'background-color: #f8d7da; color: #842029; border: 1px solid #dc3545;',
+                                                                                                'Soon Expired' => 'background-color: #fff3cd; color: #856404; border: 1px solid #ffc107;',
+                                                                                                'Renewed' => 'background-color: #cff4fc; color: #055160; border: 1px solid #0dcaf0;',
+                                                                                                'Upgraded' => 'background-color: #cfe2ff; color: #084298; border: 1px solid #0d6efd;',
+                                                                                                'Downgraded' => 'background-color: #ffe5d0; color: #984c0c; border: 1px solid #fd7e14;',
+                                                                                                'Active' => 'background-color: #d1e7dd; color: #0f5132; border: 1px solid #198754;',
+                                                                                            ];
+                                                                                            $currentBadgeStyle = $badgeStyles[$displayStatus] ?? 'background-color: #e2e3e5; color: #41464b; border: 1px solid #6c757d;';
+                                                                                        @endphp
                                                                                         <span
-                                                                                            class="badge {{ $statusBadgeClass }} rounded-pill px-2 py-1">
+                                                                                            class="badge rounded-pill px-2 py-1" style="{{ $currentBadgeStyle }}">
                                                                                             {{ $displayStatus }}
                                                                                         </span>
                                                                                     @elseif($payment->status === 'success')
                                                                                         <span
-                                                                                            class="badge bg-primary-subtle text-primary rounded-pill px-2 py-1">
+                                                                                            class="badge rounded-pill px-2 py-1" style="background-color: #cfe2ff; color: #084298; border: 1px solid #0d6efd;">
                                                                                             New Member
                                                                                         </span>
                                                                                     @endif
@@ -1911,7 +1950,7 @@
                             <!-- PAYMENT HISTORY TAB untuk NOT MEMBER -->
                             <div class="tab-pane fade {{ request('tab') == 'payment' ? 'active show' : '' }}"
                                 id="payment" role="tabpanel">
-                                <div class="card border-0 shadow-sm">
+                                <div>
                                     <div class="card-header bg-white border-0 py-3">
                                         <h5 class="mb-0 fw-bold text-dark">Payment History</h5>
                                     </div>
@@ -2236,13 +2275,13 @@
                                                                 @endphp
                                                                 @if ($progress > 0)
                                                                     <div class="progress mb-2" style="height: 6px;">
-                                                                        <div class="progress-bar bg-success"
+                                                                        <div class="progress-bar"
                                                                             role="progressbar"
-                                                                            style="width: {{ $progress }}%">
+                                                                            style="width: {{ $progress }}%; background-color: #FF4C61;">
                                                                         </div>
                                                                     </div>
                                                                     <small
-                                                                        class="text-success">{{ number_format($progress, 0) }}%
+                                                                        style="color: #FF4C61;">{{ number_format($progress, 0) }}%
                                                                         Complete</small>
                                                                 @endif
 
@@ -2307,7 +2346,7 @@
                             <!-- READING HISTORY TAB -->
                             <div class="tab-pane fade {{ request('tab') == 'reading-history' ? 'active show' : '' }}"
                                 id="reading-history" role="tabpanel">
-                                <div class="card border-0 shadow-sm">
+                                <div>
                                     <!-- Card Header with Title -->
                                     <div class="card-header bg-white border-0 py-3">
                                         <h5 class="mb-0 fw-bold text-dark">Reading History</h5>
@@ -2349,7 +2388,13 @@
                                         <!-- Content -->
                                         @if ($readingHistory->count() > 0)
                                             <div class="table-responsive">
-                                                <table class="table align-middle">
+                                                <style>
+                                                    #reading-history-table th,
+                                                    #reading-history-table td {
+                                                        border: none !important;
+                                                    }
+                                                </style>
+                                                <table class="table align-middle" id="reading-history-table">
                                                     <thead>
                                                         <tr>
                                                             <th style="width: 80px;">Cover</th>
@@ -2499,7 +2544,7 @@
                             <!-- MY REVIEWS TAB -->
                             <div class="tab-pane fade {{ request('tab') == 'reviews' ? 'active show' : '' }}"
                                 id="reviews" role="tabpanel">
-                                <div class="card border-0 shadow-sm">
+                                <div>
                                     <!-- Card Header with Title -->
                                     <div class="card-header bg-white border-0">
                                         <h5 class="mb-0 fw-bold text-dark">My Reviews</h5>
@@ -2582,8 +2627,8 @@
                                                                                 <!-- RATING -->
                                                                                 <div class="rating">
                                                                                     @for ($i = 1; $i <= 5; $i++)
-                                                                                        <i class="fi fi-rs-star{{ $i <= $rating->rating ? ' text-danger' : ' text-muted' }}"
-                                                                                            style="color: {{ $i <= $rating->rating ? '#FF416C' : '#ccc' }};"></i>
+                                                                                        <i class="bi bi-star-fill"
+                                                                                            style="color: {{ $i <= $rating->rating ? '#fbbf24' : '#d1d5db' }}; font-size: 0.9rem;"></i>
                                                                                     @endfor
                                                                                 </div>
                                                                             </div>

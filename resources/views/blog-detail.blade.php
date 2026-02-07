@@ -122,16 +122,16 @@
     <style>
         /* Untuk memperbesar gambar utama di halaman detail blog */
         .single-thumbnail {
-            height: 500px;
             width: 100%;
             border-radius: 15px;
             overflow: hidden;
+            margin-bottom: 20px;
         }
 
         .single-thumbnail img {
-            width: 800px;
-            height: 100%;
-            object-position: right;
+            width: 100%;
+            height: auto;
+            object-fit: cover;
         }
 
         .main-content-wrapper {
@@ -143,6 +143,35 @@
 
         .ebook-title-link:hover {
             color: #FF416C !important;
+        }
+
+        /* Style untuk excerpt di blog detail */
+        .single-excerpt {
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .blog-excerpt-text {
+            font-style: italic;
+            font-size: 1.1rem;
+            color: #6c757d;
+            line-height: 1.8;
+            border-left: 4px solid #FF4C61;
+            padding: 20px 25px;
+            background-color: #f8f9fa;
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* Pastikan semua konten sejajar */
+        .single-page {
+            max-width: 100%;
+        }
+
+        .single-header,
+        .single-thumbnail,
+        .single-excerpt,
+        .single-content {
+            width: 100%;
         }
     </style>
     <main class="main">
@@ -164,72 +193,67 @@
                             <div class="col-lg-9">
                                 <div class="single-page pt-50 pr-30">
                                     <div class="single-header style-2">
-                                        <div class="row">
-                                            <div class="col-xl-10 col-lg-12 m-auto">
-                                                <h6 class="mb-10" style="color: #FF4C61;">{{ $blog->category }}</h6>
-                                                <h2 class="mb-10">{{ $blog->title }}</h2>
-                                                <div class="single-header-meta">
-                                                    <div class="entry-meta meta-1 font-xs mt-15 mb-15">
-                                                        <a class="author-avatar fs-4" href="#">
-                                                            <i class="bi bi-person-circle mr-10"></i>
-                                                        </a>
-                                                        <span class="post-by">By <a href="">MeatMap Team</a></span>
-                                                        <span class="post-on has-dot">{{ $blog->published_at->format('d F Y') }}</span>
-                                                        <span class="post-on has-dot">
-                                                            @php
-                                                                $views = $blog->view_count;
-                                                                if ($views >= 1000000000) {
-                                                                    // 1 Miliar
-                                                                    $formattedViews =
-                                                                        number_format($views / 1000000000, 1) . 'B';
-                                                                } elseif ($views >= 1000000) {
-                                                                    // 1 Juta
-                                                                    $formattedViews =
-                                                                        number_format($views / 1000000, 1) . 'M';
-                                                                } elseif ($views >= 1000) {
-                                                                    // 1 Ribu
-                                                                    $formattedViews =
-                                                                        number_format($views / 1000, 1) . 'k';
-                                                                } else {
-                                                                    $formattedViews = $views;
-                                                                }
-                                                            @endphp
-                                                            {{ $formattedViews }} Views
-                                                        </span>
-                                                    </div>
-                                                </div>
+                                        <h6 class="mb-10" style="color: #FF4C61;">{{ $blog->category }}</h6>
+                                        <h2 class="mb-10">{{ $blog->title }}</h2>
+                                        <div class="single-header-meta">
+                                            <div class="entry-meta meta-1 font-xs mt-15 mb-15">
+                                                <a class="author-avatar fs-4" href="#">
+                                                    <i class="bi bi-person-circle mr-10"></i>
+                                                </a>
+                                                <span class="post-by">By <a href="">MeatMap Team</a></span>
+                                                <span class="post-on has-dot">{{ $blog->published_at->format('d F Y') }}</span>
+                                                <span class="post-on has-dot">
+                                                    @php
+                                                        $views = $blog->view_count;
+                                                        if ($views >= 1000000000) {
+                                                            // 1 Miliar
+                                                            $formattedViews =
+                                                                number_format($views / 1000000000, 1) . 'B';
+                                                        } elseif ($views >= 1000000) {
+                                                            // 1 Juta
+                                                            $formattedViews =
+                                                                number_format($views / 1000000, 1) . 'M';
+                                                        } elseif ($views >= 1000) {
+                                                            // 1 Ribu
+                                                            $formattedViews =
+                                                                number_format($views / 1000, 1) . 'k';
+                                                        } else {
+                                                            $formattedViews = $views;
+                                                        }
+                                                    @endphp
+                                                    {{ $formattedViews }} Views
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
                                     <figure class="single-thumbnail">
-                                        <div class="col-xl-10 col-lg-12 m-auto">
-                                            @php
-                                                // Check if image is external URL or local storage
-                                                $imageUrl = $blog->featured_image_url;
-                                            @endphp
-                                            <img src="{{ $imageUrl }}" alt="{{ $blog->title }}" />
-                                        </div>
+                                        @php
+                                            // Check if image is external URL or local storage
+                                            $imageUrl = $blog->featured_image_url;
+                                        @endphp
+                                        <img src="{{ $imageUrl }}" alt="{{ $blog->title }}" />
                                     </figure>
+                                    @if($blog->excerpt)
+                                    <div class="single-excerpt">
+                                        <p class="blog-excerpt-text">{{ $blog->excerpt }}</p>
+                                    </div>
+                                    @endif
                                     <div class="single-content">
-                                        <div class="row">
-                                            <div class="col-xl-10 col-lg-12 m-auto">
-                                                <p>{!! $blog->content !!}</p>
-                                                <!--Entry bottom / tags-->
-                                                @if (isset($blog) && $blog->tags && count($blog->tags) > 0)
-                                                    <div class="entry-bottom mt-50 mb-30">
-                                                        <div class="d-flex flex-wrap align-items-center">
-                                                            @foreach ($blog->tags as $tag)
-                                                                <a href="{{ route('blogs.by.tag', ['tag' => $tag]) }}"
-                                                                    rel="tag"
-                                                                    class="hover-up btn btn-sm btn-rounded me-2 mb-2">
-                                                                    {{ $tag }}
-                                                                </a>
-                                                            @endforeach
-                                                        </div>
-                                                    </div>
-                                                @endif
+                                        <p>{!! $blog->content !!}</p>
+                                        <!--Entry bottom / tags-->
+                                        @if (isset($blog) && $blog->tags && count($blog->tags) > 0)
+                                            <div class="entry-bottom mt-50 mb-30">
+                                                <div class="d-flex flex-wrap align-items-center">
+                                                    @foreach ($blog->tags as $tag)
+                                                        <a href="{{ route('blogs.by.tag', ['tag' => $tag]) }}"
+                                                            rel="tag"
+                                                            class="hover-up btn btn-sm btn-rounded me-2 mb-2">
+                                                            {{ $tag }}
+                                                        </a>
+                                                    @endforeach
+                                                </div>
                                             </div>
-                                        </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

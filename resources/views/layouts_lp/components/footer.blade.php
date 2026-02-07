@@ -30,34 +30,52 @@
                     <div class="widget-about font-md mb-md-3 mb-lg-3 mb-xl-0">
                         <div class="logo mb-30">
                             <a href="/" class="mb-15">
-                                <img src="/images/logo_horizontall.png" alt="logo" style="width: 180px; height: auto;">
+                                <img src="/images/logo_horizontall.png" alt="logo"
+                                    style="width: 180px; height: auto;">
                             </a>
-                            <p class="font-lg text-heading">{{ $siteSettings['tagline'] ?? 'Tagline tidak tersedia' }}</p>
+                            <p class="font-lg text-heading">{{ $siteSettings['tagline'] ?? 'Tagline tidak tersedia' }}
+                            </p>
                         </div>
                         <ul class="contact-infor">
-                            <li><strong>Address : </strong> <span>{{ $siteSettings['address'] ?? 'Alamat tidak tersedia' }}</span></li>
-                            <li><strong>Call Us : </strong><span>{{ formatPhoneNumber($siteSettings['phone'] ?? '') ?: 'Nomor telepon tidak tersedia' }}</span></li>
-                            <li><strong>Email : </strong><span>{{ $siteSettings['email'] ?? 'Email tidak tersedia' }}</span></li>
-                            <li><strong>Hours : </strong><span>{{ $siteSettings['hours'] ?? 'Jam operasional tidak tersedia' }}</span></li>
+                            {{-- <li>
+                                <strong>Address : </strong>
+                                <span>{{ $siteSettings['address'] ?? 'Alamat tidak tersedia' }}</span>
+                            </li> --}}
+                            <!-- Google Maps Embed -->
+                            <div class="footer-map mt-20" style="border-radius: 10px; overflow: hidden;">
+                                <iframe
+                                    src="https://www.google.com/maps?q={{ urlencode($siteSettings['address'] ?? 'Indonesia') }}&output=embed"
+                                    width="100%" height="200" style="border:0; border-radius: 10px;"
+                                    allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                                </iframe>
+                            </div>
+                            <li><strong>Call Us :
+                                </strong><span>{{ formatPhoneNumber($siteSettings['phone'] ?? '') ?: 'Nomor telepon tidak tersedia' }}</span>
+                            </li>
+                            <li><strong>Email :
+                                </strong><span>{{ $siteSettings['email'] ?? 'Email tidak tersedia' }}</span></li>
+                            <li><strong>Hours :
+                                </strong><span>{{ $siteSettings['hours'] ?? 'Jam operasional tidak tersedia' }}</span>
+                            </li>
                         </ul>
                     </div>
                 </div>
                 <div class="footer-link-widget col">
                     <h4 class="widget-title">Company</h4>
                     <ul class="footer-list mb-sm-5 mb-md-0">
-                        <li><a href="{{route('about-us')}}">About Us</a></li>
-                        <li><a href="{{route('terms-conditions')}}">Terms &amp; Conditions</a></li>
-                        <li><a href="{{route('contact')}}">Contact Us</a></li>
-                        <li><a href="{{route('help-center')}}">Support Center</a></li>
+                        <li><a href="{{ route('about-us') }}">About Us</a></li>
+                        <li><a href="{{ route('terms-conditions') }}">Terms &amp; Conditions</a></li>
+                        <li><a href="{{ route('contact') }}">Contact Us</a></li>
+                        <li><a href="{{ route('help-center') }}">Support Center</a></li>
                     </ul>
                 </div>
                 <div class="footer-link-widget col">
                     <h4 class="widget-title">More</h4>
                     <ul class="footer-list mb-sm-5 mb-md-0">
-                        <li><a href="{{route('privacy-policy')}}">Privacy Policy</a></li>
-                        <li><a href="{{route('shopping-policy')}}">Shopping Policy</a></li>
-                        <li><a href="{{route('payment-policy')}}">Payment Policy</a></li>
-                        <li><a href="{{route('faq')}}">FAQs</a></li>
+                        <li><a href="{{ route('privacy-policy') }}">Privacy Policy</a></li>
+                        <li><a href="{{ route('shopping-policy') }}">Shopping Policy</a></li>
+                        <li><a href="{{ route('payment-policy') }}">Payment Policy</a></li>
+                        <li><a href="{{ route('faq') }}">FAQs</a></li>
                     </ul>
                 </div>
             </div>
@@ -69,21 +87,23 @@
                 <div class="footer-bottom"></div>
             </div>
             <div class="col-xl-6 col-lg-6 col-md-6">
-                <p class="font-sm mb-0">&copy; <span id="year"></span> <strong class="fw-bold">MeatMap</strong> — {{ $siteSettings['short_tagline'] ?? 'Short Tagline is Empty' }}<br /><!--All rights reserved --> </p>
+                <p class="font-sm mb-0">&copy; <span id="year"></span> <strong class="fw-bold">MeatMap</strong> —
+                    {{ $siteSettings['short_tagline'] ?? 'Short Tagline is Empty' }}<br /><!--All rights reserved -->
+                </p>
             </div>
             <div class="col-xl-6 col-lg-6 col-md-6 text-end d-none d-md-block">
                 <div class="mobile-social-icon">
                     <h6>Follow Us</h6>
                     @forelse ($footerContacts as $contact)
-                    <a href="{{ $contact->link }}" target="_blank" title="{{ $contact->title }}">
-                        <i class="{{ $contact->icon_class }}"></i>
-                    </a>
+                        <a href="{{ $contact->link }}" target="_blank" title="{{ $contact->title }}">
+                            <i class="{{ $contact->icon_class }}"></i>
+                        </a>
                     @empty
-                    <!-- Opsional: Tampilkan link statis jika tidak ada data di database -->
-                    <a href="#"><i class="bi bi-facebook"></i></a>
-                    <a href="#"><i class="bi bi-whatsapp"></i></a>
-                    <a href="#"><i class="bi bi-tiktok"></i></a>
-                    <a href="#"><i class="bi bi-youtube"></i></a>
+                        <!-- Opsional: Tampilkan link statis jika tidak ada data di database -->
+                        <a href="#"><i class="bi bi-facebook"></i></a>
+                        <a href="#"><i class="bi bi-whatsapp"></i></a>
+                        <a href="#"><i class="bi bi-tiktok"></i></a>
+                        <a href="#"><i class="bi bi-youtube"></i></a>
                     @endforelse
                 </div>
             </div>

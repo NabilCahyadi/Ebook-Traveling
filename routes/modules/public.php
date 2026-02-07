@@ -19,6 +19,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\LanguageController;
 use App\Models\SubscriptionPlan;
 
 
@@ -34,6 +35,8 @@ Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap')
 
 // Homepage
 Route::middleware(['user.session'])->group(function () {
+    // Language Switch Route - harus di dalam middleware untuk session berjalan
+    Route::get('/language/{locale}', [LanguageController::class, 'switch'])->name('language.switch');
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
     // Destinations Page

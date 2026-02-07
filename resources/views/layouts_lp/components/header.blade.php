@@ -217,8 +217,8 @@
                     <div class="header-info">
                         <ul>
 
-                            <li><a href="{{route('about-us')}}">About Us</a></li>
-                            <li><a href="{{route('contact')}}">Customer Service</a></li>
+                            <li><a href="{{route('about-us')}}">{{ __('messages.about_us') }}</a></li>
+                            <li><a href="{{route('contact')}}">{{ __('messages.customer_service') }}</a></li>
                             <!-- <li><a href="#">E-book</a></li> -->
                         </ul>
                     </div>
@@ -226,29 +226,24 @@
                 <div class="col-xl-7 col-lg-6">
                     <div class="header-info header-info-right">
                         <ul>
-                            <li>Need help ? Visit<strong>‎ <a href="{{route('help-center')}}" class="text-brand">Help Center</a></strong></li>
-                            <!-- <li>
-                                <a class="language-dropdown-active" href="#">English <i class="fi fi-rs-angle-small-down"></i></a>
-                                <ul class="language-dropdown">
+                            <li>{{ __('messages.need_help') }}<strong>‎ <a href="{{route('help-center')}}" class="text-brand">{{ __('messages.help_center') }}</a></strong></li>
+                            <li>
+                                <a class="language-dropdown-active" href="#">
+                                    {{ app()->getLocale() == 'id' ? __('messages.indonesian') : __('messages.english') }}
+                                </a>
+                                <ul class="language-dropdown" style="min-width: 100px; padding: 5px 5px 5px 5px; margin-right: 1rem;">
                                     <li>
-                                        <a href="#">Indonesian</a>
+                                        <a href="{{ route('language.switch', 'en') }}" class="{{ app()->getLocale() == 'en' ? 'active' : '' }}" style="white-space: nowrap;  display: block;">
+                                            {{ __('messages.english') }}
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('language.switch', 'id') }}" class="{{ app()->getLocale() == 'id' ? 'active' : '' }}" style="white-space: nowrap;  display: block;">
+                                            {{ __('messages.indonesian') }}
+                                        </a>
                                     </li>
                                 </ul>
-                            </li> -->
-                            <!-- <li>
-                                <a class="language-dropdown-active" href="#">USD <i class="fi fi-rs-angle-small-down"></i></a>
-                                <ul class="language-dropdown">
-                                    <li>
-                                        <a href="#"><img src="assets-nest/nest-fe/imgs/theme/flag-fr.png" alt="" />INR</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"><img src="assets-nest/nest-fe/imgs/theme/flag-dt.png" alt="" />MBP</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"><img src="assets-nest/nest-fe/imgs/theme/flag-ru.png" alt="" />EU</a>
-                                    </li>
-                                </ul>
-                            </li> -->
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -266,7 +261,7 @@
                         <input
                             type="text"
                             id="search-input-desktop"
-                            placeholder="Search by E-book Title or Author..."
+                            placeholder="{{ __('messages.search_placeholder') }}"
                             value="{{ request('q') }}"
                             style="height:40px; margin-left:7px; padding:0px 15px; font-size:14px; border-radius: 5px; border: 1px solid #ECECEC;" />
                     </div>
@@ -274,7 +269,7 @@
                         <div class="header-action-2">
                             <div class="search-location">
                                 <select class="select-active" onchange="window.location.href='/filter-by-city/'+this.value">
-                                    <option value="">Your Location</option>
+                                    <option value="">{{ __('messages.your_location') }}</option>
                                     @foreach($citiesHeader as $city)
                                     <option value="{{ $city->slug }}">{{ $city->name }}</option>
                                     @endforeach
@@ -289,16 +284,16 @@
                                 <div class="cart-dropdown-wrap cart-dropdown-hm2 account-dropdown">
                                     <ul>
                                         <li>
-                                            <a href="{{ route('page-account') }}?tab=account-detail"><i class="fi fi-rs-user mr-10"></i>Account</a>
+                                            <a href="{{ route('page-account') }}?tab=account-detail"><i class="fi fi-rs-user mr-10"></i>{{ __('messages.account') }}</a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('page-account') }}?tab=wishlist"><i class="fi fi-rs-heart mr-10"></i>Wishlist</a>
+                                            <a href="{{ route('page-account') }}?tab=wishlist"><i class="fi fi-rs-heart mr-10"></i>{{ __('messages.wishlist') }}</a>
                                         </li>
                                         {{-- MENU READING AREA (Hanya untuk user login + premium) --}}
                                         @if(auth()->check() && auth()->user()->hasActiveSubscription())
                                         <li>
                                             <a href="{{ route('page-account') }}?tab=library">
-                                                <i class="fi fi-rs-book mr-10"></i>Reading Area
+                                                <i class="fi fi-rs-book mr-10"></i>{{ __('messages.reading_area') }}
                                             </a>
                                         </li>
                                         @endif
@@ -309,7 +304,7 @@
                                             </form>
                                             <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                                 <i class="fi fi-rs-sign-out mr-5"></i>
-                                                Sign out
+                                                {{ __('messages.sign_out') }}
                                             </a>
                                             <!-- Pastikan form logout ada di halaman ini -->
                                             <form id="logout-form" action="{{ route('user.logout') }}" method="POST" class="d-none">
@@ -322,12 +317,12 @@
                             @else
                             <div class="header-action-icon-2">
                                 <a href="{{ route('login') }}" class="btn-simple" style="padding: 8px 20px; background: transparent; color: #FF4C61; border-radius: 25px; text-decoration: none; font-size: 14px; border: 1.5px solid #FF4C61; transition: all 0.3s ease;">
-                                    Sign In
+                                    {{ __('messages.sign_in') }}
                                 </a>
                             </div>
                             <div class="header-action-icon-2">
                                 <a href="{{ route('login') }}?form=register" class="btn-simple" style="padding: 8px 20px; background: #FF4C61; color: white; border-radius: 25px; text-decoration: none; font-size: 14px; border: 1.5px solid #FF4C61; transition: all 0.3s ease;">
-                                    Sign Up
+                                    {{ __('messages.sign_up') }}
                                 </a>
                             </div>
                             @endif
@@ -346,7 +341,7 @@
                 <div class="header-nav d-none d-lg-flex">
                     <div class="main-categori-wrap d-none d-lg-block">
                         <a class="categories-button-active" href="#">
-                            <span class="fi fi-rs-apps mt-1"></span>Category
+                            <span class="fi fi-rs-apps mt-1"></span>{{ __('messages.category') }}
                             <i class="fi fi-rs-angle-down"></i>
                         </a>
                         <div id="categories-dropdown-inner" class="categories-dropdown-wrap categories-dropdown-active-large font-heading">
@@ -364,7 +359,7 @@
                                         </a>
                                     </li>
                                     @empty
-                                    <li><a href="#">No categories found</a></li>
+                                    <li><a href="#">{{ __('messages.no_categories') }}</a></li>
                                     @endforelse
                                 </ul>
                             </div>
@@ -386,23 +381,23 @@
                                 @endphp
 
                                 <li class="{{ request()->routeIs('home') ? 'active' : '' }}">
-                                    <a href="/">Home</a>
+                                    <a href="/">{{ __('messages.home') }}</a>
                                 </li>
 
                                 <li class="{{ request()->routeIs('destinations*') ? 'active' : '' }}">
-                                    <a href="{{ route('destinations') }}">Destinations</a>
+                                    <a href="{{ route('destinations') }}">{{ __('messages.destinations') }}</a>
                                 </li>
 
                                 <li class="{{ request()->routeIs('blogs.*') ? 'active' : '' }}">
-                                    <a href="{{ route('blogs.index') }}">Blog</a>
+                                    <a href="{{ route('blogs.index') }}">{{ __('messages.blog') }}</a>
                                 </li>
 
                                 <li class="{{ request()->routeIs('pricing') ? 'active' : '' }}">
-                                    <a href="{{ route('pricing') }}">Pricing</a>
+                                    <a href="{{ route('pricing') }}">{{ __('messages.pricing') }}</a>
                                 </li>
 
                                 <!-- <li class="{{ request()->routeIs('promo') ? 'active' : '' }}">
-                                    <a href="{{ route('promo') }}">Promo</a>
+                                    <a href="{{ route('promo') }}">{{ __('messages.promo') }}</a>
                                 </li> -->
                             </ul>
                         </nav>

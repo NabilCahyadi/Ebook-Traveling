@@ -4,6 +4,31 @@
 
 @section('content')
     <style>
+        /* Star Rating Input Styling */
+        .star-rating-input {
+            display: inline-flex;
+            flex-wrap: nowrap;
+            gap: 2px;
+            margin-top: 8px;
+            white-space: nowrap;
+        }
+
+        .star-rating-input .star-icon {
+            font-size: 16px;
+            color: #d1d5db;
+            cursor: pointer;
+            transition: color 0.2s ease, transform 0.2s ease;
+            display: inline-block;
+        }
+
+        .star-rating-input .star-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .star-rating-input .star-icon.active {
+            color: #fbbf24;
+        }
+
         /* Sticky Sidebar Styling */
         .sticky-sidebar {
             position: relative;
@@ -583,7 +608,7 @@
                                                         <button id="favorite-btn-{{ $ebook->id }}"
                                                             class="favorite-btn {{ $isSaved ? 'saved' : '' }}"
                                                             data-ebook-id="{{ $ebook->id }}"
-                                                            title="{{ $isSaved ? 'Remove from saved' : 'Save this book' }}">
+                                                            title="{{ $isSaved ? 'UnFavorite ' : 'Favorite' }}">
                                                             <i
                                                                 class="bi {{ $isSaved ? 'bi-heart-fill' : 'bi-heart' }}"></i>
                                                         </button>
@@ -698,7 +723,13 @@
 
                                         {{-- GUNAKAN STRUKTUR INI --}}
                                         <div class="d-flex align-items-center mb-15">
-                                            <span class="me-3" style="width: 50px;">5 star</span>
+                                            <span class="me-3" style="width: 70px; font-size: 0.7rem; white-space: nowrap;">
+                                                <i class="bi bi-star-fill" style="color: #fbbf24;"></i>
+                                                <i class="bi bi-star-fill" style="color: #fbbf24;"></i>
+                                                <i class="bi bi-star-fill" style="color: #fbbf24;"></i>
+                                                <i class="bi bi-star-fill" style="color: #fbbf24;"></i>
+                                                <i class="bi bi-star-fill" style="color: #fbbf24;"></i>
+                                            </span>
                                             <div class="progress flex-grow-1">
                                                 <div class="progress-bar" role="progressbar"
                                                     style="width: {{ $ebook->total_reviews > 0 ? ($ratingDistribution[5] / $ebook->total_reviews) * 100 : 0 }}%"
@@ -709,7 +740,12 @@
                                             </div>
                                         </div>
                                         <div class="d-flex align-items-center mb-15">
-                                            <span class="me-3" style="width: 50px;">4 star</span>
+                                            <span class="me-3" style="width: 70px; font-size: 0.7rem; white-space: nowrap;">
+                                                <i class="bi bi-star-fill" style="color: #fbbf24;"></i>
+                                                <i class="bi bi-star-fill" style="color: #fbbf24;"></i>
+                                                <i class="bi bi-star-fill" style="color: #fbbf24;"></i>
+                                                <i class="bi bi-star-fill" style="color: #fbbf24;"></i>
+                                            </span>
                                             <div class="progress flex-grow-1">
                                                 <div class="progress-bar" role="progressbar"
                                                     style="width: {{ $ebook->total_reviews > 0 ? ($ratingDistribution[4] / $ebook->total_reviews) * 100 : 0 }}%"
@@ -720,7 +756,11 @@
                                             </div>
                                         </div>
                                         <div class="d-flex align-items-center mb-15">
-                                            <span class="me-3" style="width: 50px;">3 star</span>
+                                            <span class="me-3" style="width: 70px; font-size: 0.7rem; white-space: nowrap;">
+                                                <i class="bi bi-star-fill" style="color: #fbbf24;"></i>
+                                                <i class="bi bi-star-fill" style="color: #fbbf24;"></i>
+                                                <i class="bi bi-star-fill" style="color: #fbbf24;"></i>
+                                            </span>
                                             <div class="progress flex-grow-1">
                                                 <div class="progress-bar" role="progressbar"
                                                     style="width: {{ $ebook->total_reviews > 0 ? ($ratingDistribution[3] / $ebook->total_reviews) * 100 : 0 }}%"
@@ -731,7 +771,10 @@
                                             </div>
                                         </div>
                                         <div class="d-flex align-items-center mb-15">
-                                            <span class="me-3" style="width: 50px;">2 star</span>
+                                            <span class="me-3" style="width: 70px; font-size: 0.7rem; white-space: nowrap;">
+                                                <i class="bi bi-star-fill" style="color: #fbbf24;"></i>
+                                                <i class="bi bi-star-fill" style="color: #fbbf24;"></i>
+                                            </span>
                                             <div class="progress flex-grow-1">
                                                 <div class="progress-bar" role="progressbar"
                                                     style="width: {{ $ebook->total_reviews > 0 ? ($ratingDistribution[2] / $ebook->total_reviews) * 100 : 0 }}%"
@@ -742,7 +785,9 @@
                                             </div>
                                         </div>
                                         <div class="d-flex align-items-center mb-30">
-                                            <span class="me-3" style="width: 50px;">1 star</span>
+                                            <span class="me-3" style="width: 70px; font-size: 0.7rem; white-space: nowrap;">
+                                                <i class="bi bi-star-fill" style="color: #fbbf24;"></i>
+                                            </span>
                                             <div class="progress flex-grow-1">
                                                 <div class="progress-bar" role="progressbar"
                                                     style="width: {{ $ebook->total_reviews > 0 ? ($ratingDistribution[1] / $ebook->total_reviews) * 100 : 0 }}%"
@@ -767,45 +812,63 @@
                                 {{-- Jika login, CEK: Apakah user sudah premium? --}}
                                 @if (auth()->user()->hasActiveSubscription())
 
-                                    {{-- Jika premium, CEK: Apakah sudah pernah review? --}}
-                                    @if (!$hasReviewed)
-                                        {{-- BELUM REVIEW: Tampilkan form --}}
-                                        <form class="form-contact comment_form" action="{{ route('ratings.store') }}"
-                                            method="POST">
-                                            @csrf
-                                            <input type="hidden" name="ebook_id" value="{{ $ebook->id }}">
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    <div class="form-group">
-                                                        <textarea class="form-control w-100" name="review_text" id="comment" cols="30" rows="9"
-                                                            placeholder="Write Comment" required></textarea>
+                                    {{-- CEK: Apakah user sudah pernah membaca ebook ini? --}}
+                                    @if ($hasRead)
+
+                                        {{-- Jika sudah baca, CEK: Apakah sudah pernah review? --}}
+                                        @if (!$hasReviewed)
+                                            {{-- BELUM REVIEW: Tampilkan form --}}
+                                            <form class="form-contact comment_form" action="{{ route('ratings.store') }}"
+                                                method="POST">
+                                                @csrf
+                                                <input type="hidden" name="ebook_id" value="{{ $ebook->id }}">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group">
+                                                            {{-- <label>Rating</label> --}}
+                                                            <input type="hidden" name="rating" id="rating-input" value="5">
+                                                            <div class="star-rating-input">
+                                                                <i class="bi bi-star-fill star-icon" data-rating="1"></i>
+                                                                <i class="bi bi-star-fill star-icon" data-rating="2"></i>
+                                                                <i class="bi bi-star-fill star-icon" data-rating="3"></i>
+                                                                <i class="bi bi-star-fill star-icon" data-rating="4"></i>
+                                                                <i class="bi bi-star-fill star-icon" data-rating="5"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <div class="form-group">
+                                                            <textarea class="form-control w-100" name="review_text" id="comment" cols="30" rows="9"
+                                                                placeholder="Write Comment" required></textarea>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-12">
-                                                    <div class="form-group">
-                                                        <label>Rating</label>
-                                                        <select name="rating" class="form-control">
-                                                            <option value="5">5 - Excellent</option>
-                                                            <option value="4">4 - Very Good</option>
-                                                            <option value="3">3 - Average</option>
-                                                            <option value="2">2 - Poor</option>
-                                                            <option value="1">1 - Terrible</option>
-                                                        </select>
-                                                    </div>
+                                                <div class="form-group">
+                                                    <button type="submit"
+                                                        class="button button-contactForm btn-submit-review">Post
+                                                        Review</button>
                                                 </div>
+                                            </form>
+                                        @else
+                                            {{-- SUDAH REVIEW: Tampilkan pesan --}}
+                                            <div class="alert alert-success">
+                                                <p>You have already submitted a review for this ebook.</p>
                                             </div>
-                                            <div class="form-group">
-                                                <button type="submit"
-                                                    class="button button-contactForm btn-submit-review">Submit
-                                                    Review</button>
-                                            </div>
-                                        </form>
+                                        @endif
+
                                     @else
-                                        {{-- SUDAH REVIEW: Tampilkan pesan --}}
-                                        <div class="alert alert-success">
-                                            <p>You have already submitted a review for this ebook.</p>
+                                        {{-- BELUM BACA: Tampilkan pesan untuk baca dulu --}}
+                                        <div class="alert d-flex align-items-center" role="alert" style="background-color: #f0f7ff; border: 1px solid #d0e3f7; color: #3d5a80;">
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="mb-1" style="font-weight: 600; color: #3d5a80;">Read First to Review</h6>
+                                                <p class="mb-3" style="color: #5a7a9a;">You need to read this ebook before you can leave a review.</p>
+                                                <a href="{{ route('user.ebook.read', $ebook->slug) }}" class="custom-button custom-button--primary px-4 me-2">
+                                                    Start Reading
+                                                </a>
+                                            </div>
                                         </div>
                                     @endif
+
                                 @else
                                     {{-- BELUM PREMIUM: Tampilkan pesan untuk upgrade --}}
                                     <div class="alert alert-warning">
@@ -877,8 +940,7 @@
                                                 </div>
                                             </div>
                                             <div class="product-content-wrap">
-                                                <h2 style="margin-top:15px;"><a
-                                                        href="{{ route('ebooks.show', $ebook->slug) }}">{{ Str::limit($ebook->title, 40) }}</a>
+                                                <h2 style="margin-top:15px;"><a href="{{ route('ebooks.show', $ebook->slug) }}">{{ Str::limit($ebook->title, 40) }}</a>
                                                 </h2>
 
                                                 <div class="product-author" style="margin-bottom:-4px;">
@@ -928,8 +990,12 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="product-description">
-                                                    {{ Str::limit(strip_tags($ebook->short_description ?? $ebook->description), 75) }}
+                                                @php
+                                                    $descText = strip_tags($ebook->short_description ?? $ebook->description);
+                                                    $descLength = strlen(Str::limit($descText, 75));
+                                                @endphp
+                                                <div class="product-description" style="{{ $descLength <= 37 ? 'margin-bottom: 30px;' : '' }}">
+                                                    {{ Str::limit($descText, 75) }}
                                                 </div>
 
                                                 {{-- LOGIKA HANYA PADA TOMBOL AKSI --}}
@@ -997,6 +1063,62 @@
             });
         });
     </script>
+
+    <script>
+        // Star Rating Input Handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const starContainer = document.querySelector('.star-rating-input');
+            if (!starContainer) return;
+
+            const stars = starContainer.querySelectorAll('.star-icon');
+            const ratingInput = document.getElementById('rating-input');
+
+            // Set default rating to 5 (all stars active)
+            updateStars(5);
+
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    const rating = parseInt(this.dataset.rating);
+                    ratingInput.value = rating;
+                    updateStars(rating);
+                });
+
+                // Hover effect
+                star.addEventListener('mouseenter', function() {
+                    const hoverRating = parseInt(this.dataset.rating);
+                    highlightStars(hoverRating);
+                });
+            });
+
+            // Reset to selected rating when mouse leaves
+            starContainer.addEventListener('mouseleave', function() {
+                updateStars(parseInt(ratingInput.value));
+            });
+
+            function updateStars(rating) {
+                stars.forEach(star => {
+                    const starRating = parseInt(star.dataset.rating);
+                    if (starRating <= rating) {
+                        star.classList.add('active');
+                    } else {
+                        star.classList.remove('active');
+                    }
+                });
+            }
+
+            function highlightStars(rating) {
+                stars.forEach(star => {
+                    const starRating = parseInt(star.dataset.rating);
+                    if (starRating <= rating) {
+                        star.classList.add('active');
+                    } else {
+                        star.classList.remove('active');
+                    }
+                });
+            }
+        });
+    </script>
+
     <!-- <script>
         $(document).ready(function() {
             $('.btn-favorite').on('click', function(e) {

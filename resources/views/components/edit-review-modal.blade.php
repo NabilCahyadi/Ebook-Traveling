@@ -31,6 +31,28 @@
     .btn-edit-review:active {
         transform: translateY(0) !important;
     }
+
+    /* Star Rating for Edit Modal */
+    .star-rating-edit {
+        display: flex;
+        gap: 6px;
+        margin-top: 8px;
+    }
+
+    .star-rating-edit .star-icon-edit {
+        font-size: 1.4rem;
+        color: #d1d5db;
+        cursor: pointer;
+        transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    .star-rating-edit .star-icon-edit:hover {
+        transform: scale(1.1);
+    }
+
+    .star-rating-edit .star-icon-edit.active {
+        color: #fbbf24;
+    }
 </style>
 <div class="modal fade" id="editReviewModal-{{ $rating->id }}" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
@@ -51,13 +73,14 @@
                     <!-- Rating -->
                     <div class="mb-3">
                         <label class="form-label fw-medium">Your Rating</label>
-                        <select name="rating" class="form-select">
-                            <option value="5" {{ $rating->rating == 5 ? 'selected' : '' }}>5 - Excellent</option>
-                            <option value="4" {{ $rating->rating == 4 ? 'selected' : '' }}>4 - Very Good</option>
-                            <option value="3" {{ $rating->rating == 3 ? 'selected' : '' }}>3 - Average</option>
-                            <option value="2" {{ $rating->rating == 2 ? 'selected' : '' }}>2 - Poor</option>
-                            <option value="1" {{ $rating->rating == 1 ? 'selected' : '' }}>1 - Terrible</option>
-                        </select>
+                        <input type="hidden" name="rating" id="edit-rating-input-{{ $rating->id }}" value="{{ $rating->rating }}">
+                        <div class="star-rating-edit" data-rating-id="{{ $rating->id }}">
+                            <i class="bi bi-star-fill star-icon-edit {{ $rating->rating >= 1 ? 'active' : '' }}" data-rating="1"></i>
+                            <i class="bi bi-star-fill star-icon-edit {{ $rating->rating >= 2 ? 'active' : '' }}" data-rating="2"></i>
+                            <i class="bi bi-star-fill star-icon-edit {{ $rating->rating >= 3 ? 'active' : '' }}" data-rating="3"></i>
+                            <i class="bi bi-star-fill star-icon-edit {{ $rating->rating >= 4 ? 'active' : '' }}" data-rating="4"></i>
+                            <i class="bi bi-star-fill star-icon-edit {{ $rating->rating >= 5 ? 'active' : '' }}" data-rating="5"></i>
+                        </div>
                     </div>
 
                     <!-- Review Text -->
@@ -80,3 +103,46 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Star Rating Handler for Edit Modal (runs when modal opens)
+    document.addEventListener('DOMContentLoaded', function() {
+        const starContainers = document.querySelectorAll('.star-rating-edit');
+
+        starContainers.forEach(container => {
+            const ratingId = container.dataset.ratingId;
+            const stars = container.querySelectorAll('.star-icon-edit');
+            const ratingInput = document.getElementById('edit-rating-input-' + ratingId);
+
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    const rating = parseInt(this.dataset.rating);
+                    ratingInput.value = rating;
+                    updateEditStars(stars, rating);
+                });
+
+                // Hover effect
+                star.addEventListener('mouseenter', function() {
+                    const hoverRating = parseInt(this.dataset.rating);
+                    updateEditStars(stars, hoverRating);
+                });
+            });
+
+            // Reset to selected rating when mouse leaves
+            container.addEventListener('mouseleave', function() {
+                updateEditStars(stars, parseInt(ratingInput.value));
+            });
+        });
+
+        function updateEditStars(stars, rating) {
+            stars.forEach(star => {
+                const starRating = parseInt(star.dataset.rating);
+                if (starRating <= rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+    });
+</script>
