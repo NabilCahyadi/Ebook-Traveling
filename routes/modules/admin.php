@@ -267,6 +267,7 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     Route::middleware(['admin.permission:subscriptions.create'])->group(function () {
         // AJAX endpoints - harus di atas {manual_subscription} route
         Route::get('manual-subscriptions/search-users', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'searchUsers'])->name('manual-subscriptions.search-users');
+        Route::get('manual-subscriptions/search-plans', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'searchPlans'])->name('manual-subscriptions.search-plans');
         Route::get('manual-subscriptions/create', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'create'])->name('manual-subscriptions.create');
         Route::post('manual-subscriptions', [\App\Http\Controllers\Admin\ManualSubscriptionController::class, 'store'])->name('manual-subscriptions.store');
     });
