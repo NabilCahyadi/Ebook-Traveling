@@ -240,6 +240,70 @@ class PricingBenefitController extends Controller
     }
 
     /**
+     * Check if sort_order is available (for AJAX validation).
+     */
+    public function checkOrder($order, Request $request)
+    {
+        $excludeId = $request->get('exclude_id');
+        $locale = app()->getLocale();
+        
+        $query = PricingBenefit::where('sort_order', $order);
+        
+        if ($excludeId) {
+            $query->where('id', '!=', $excludeId);
+        }
+        
+        $existingBenefit = $query->first();
+        
+        if ($existingBenefit) {
+            $availableNumbers = $this->getAvailableNumbers($excludeId);
+            
+            $messages = [
+                'id' => [
+                    'used' => 'Urutan tampilan :order sudah digunakan oleh ":title"',
+                    'smallest' => 'Angka terkecil tersedia',
+                    'largest' => 'Angka terbesar tersedia'
+                ],
+                'en' => [
+                    'used' => 'Display order :order is already used by ":title"',
+                    'smallest' => 'Smallest available numbers',
+                    'largest' => 'Largest available numbers'
+                ]
+            ];
+            
+            $msg = $messages[$locale] ?? $messages['en'];
+            
+            $message = str_replace([':order', ':title'], [$order, $existingBenefit->title], $msg['used']);
+            
+            $suggestions = [];
+            if (!empty($availableNumbers['smallest'])) {
+                $suggestions['smallest'] = [
+                    'label' => $msg['smallest'],
+                    'numbers' => $availableNumbers['smallest']
+                ];
+            }
+            if (!empty($availableNumbers['largest'])) {
+                $suggestions['largest'] = [
+                    'label' => $msg['largest'],
+                    'numbers' => $availableNumbers['largest']
+                ];
+            }
+            
+            return response()->json([
+                'available' => false,
+                'message' => $message,
+                'suggestions' => $suggestions,
+                'used_by' => $existingBenefit->title
+            ]);
+        }
+        
+        return response()->json([
+            'available' => true,
+            'message' => $locale === 'id' ? 'Urutan tampilan tersedia' : 'Display order available'
+        ]);
+    }
+
+    /**
      * Get available sort_order numbers.
      */
     private function getAvailableNumbers($excludeId = null)

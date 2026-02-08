@@ -196,21 +196,14 @@ class LandingPageContentController extends Controller
     public function index()
     {
         $topCitiesSection = \App\Models\LandingPageSection::where('section_type', 'top_cities')->first();
-        $latestBlogsSection = \App\Models\LandingPageSection::where('section_type', 'latest_blogs')->first();
 
         $topCitiesCount = $topCitiesSection && isset($topCitiesSection->config['selected_cities']) 
             ? count($topCitiesSection->config['selected_cities']) 
             : 0;
 
-        $latestBlogsCount = $latestBlogsSection && isset($latestBlogsSection->config['selected_blogs']) 
-            ? count($latestBlogsSection->config['selected_blogs']) 
-            : 0;
-
         return view('admin.landing-page-content.index', compact(
             'topCitiesSection',
-            'latestBlogsSection',
-            'topCitiesCount',
-            'latestBlogsCount'
+            'topCitiesCount'
         ));
     }
 }

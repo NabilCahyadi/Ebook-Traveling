@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Tambah Benefit Baru')
+@section('title', __('admin.pricing_benefits.create_title'))
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -8,9 +8,9 @@
         <div class="mb-4">
             <h4 class="fw-bold py-3 mb-2">
                 <span class="text-muted fw-light">
-                    <a href="{{ route('admin.about-us.index') }}" class="text-muted">Website Management / About Us</a> /
+                    <a href="{{ route('admin.about-us.index') }}" class="text-muted">{{ __('admin.menu.website_management') }} / {{ __('admin.pricing_benefits.page_title') }}</a> /
                 </span>
-                Tambah Baru
+                {{ __('admin.dashboard.add_new') }}
             </h4>
         </div>
 
@@ -19,7 +19,7 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0">Form Tambah Benefit</h5>
+                        <h5 class="mb-0">{{ __('admin.pricing_benefits.create_form') }}</h5>
                     </div>
                     <div class="card-body">
                         <form action="{{ route('admin.about-us.store') }}" method="POST">
@@ -27,7 +27,7 @@
 
                             <!-- Icon Input -->
                             <div class="mb-3">
-                                <label for="icon" class="form-label">Icon Class <span class="text-danger">*</span></label>
+                                <label for="icon" class="form-label">{{ __('admin.pricing_benefits.icon_class') }} <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="ti ti-icons"></i></span>
                                     <input type="text" 
@@ -39,35 +39,35 @@
                                            required
                                            readonly>
                                     <button class="btn btn-outline-primary" type="button" id="openIconPicker">
-                                        <i class="ti ti-search"></i> Pilih Icon
+                                        <i class="ti ti-search"></i> {{ __('admin.pricing_benefits.choose_icon') }}
                                     </button>
                                 </div>
                                 @error('icon')
                                     <div class="text-danger mt-1">{{ $message }}</div>
                                 @enderror
                                 <small class="text-muted">
-                                    Klik tombol "Pilih Icon" untuk memilih dari daftar Bootstrap Icons
+                                    {{ __('admin.pricing_benefits.icon_click_info') }}
                                 </small>
                             </div>
 
                             <!-- Icon Preview -->
                             <div class="mb-3">
-                                <label class="form-label">Preview Icon</label>
+                                <label class="form-label">{{ __('admin.pricing_benefits.icon_preview') }}</label>
                                 <div class="icon-preview-box" id="iconPreview">
                                     <i class="ti ti-photo text-muted"></i>
-                                    <small class="d-block text-muted mt-2">Ketik icon class untuk melihat preview</small>
+                                    <small class="d-block text-muted mt-2">{{ __('admin.pricing_benefits.preview_placeholder') }}</small>
                                 </div>
                             </div>
 
                             <!-- Title Input -->
                             <div class="mb-3">
-                                <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+                                <label for="title" class="form-label">{{ __('admin.pricing_benefits.title_label') }} <span class="text-danger">*</span></label>
                                 <input type="text" 
                                        class="form-control @error('title') is-invalid @enderror" 
                                        id="title" 
                                        name="title" 
                                        value="{{ old('title') }}" 
-                                       placeholder="Masukkan judul benefit"
+                                       placeholder="{{ __('admin.pricing_benefits.title_placeholder') }}"
                                        required>
                                 @error('title')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -76,12 +76,12 @@
 
                             <!-- Description Textarea -->
                             <div class="mb-3">
-                                <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
+                                <label for="description" class="form-label">{{ __('admin.pricing_benefits.description_label') }} <span class="text-danger">*</span></label>
                                 <textarea class="form-control @error('description') is-invalid @enderror" 
                                           id="description" 
                                           name="description" 
                                           rows="4" 
-                                          placeholder="Masukkan deskripsi benefit"
+                                          placeholder="{{ __('admin.pricing_benefits.description_placeholder') }}"
                                           required>{{ old('description') }}</textarea>
                                 @error('description')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -90,7 +90,7 @@
 
                             <!-- Status Switch -->
                             <div class="mb-3">
-                                <label for="status" class="form-label">Status</label>
+                                <label for="status" class="form-label">{{ __('admin.pricing_benefits.status_label') }}</label>
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" 
                                            type="checkbox" 
@@ -99,33 +99,35 @@
                                            value="active" 
                                            {{ old('status', 'active') === 'active' ? 'checked' : '' }}>
                                     <label class="form-check-label" for="status">
-                                        Aktif (ditampilkan di halaman pricing)
-                                    </label>
+                                        {{ __('admin.pricing_benefits.status_active') }}
+                                    </label>    
                                 </div>
                             </div>
 
                             <!-- Sort Order Input -->
                             <div class="mb-4">
-                                <label for="sort_order" class="form-label">Urutan Tampilan</label>
+                                <label for="sort_order" class="form-label">{{ __('admin.pricing_benefits.display_order') }} <span class="text-danger">*</span></label>
                                 <input type="number" 
                                        class="form-control @error('sort_order') is-invalid @enderror" 
                                        id="sort_order" 
                                        name="sort_order" 
-                                       value="{{ old('sort_order', 0) }}" 
-                                       min="0">
+                                       value="{{ old('sort_order', '') }}" 
+                                       min="0"
+                                       required>
                                 @error('sort_order')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                <small class="text-muted">Semakin kecil angka, semakin awal ditampilkan. 0 untuk otomatis di akhir.</small>
+                                <div id="order_feedback" class="mt-1"></div>
+                                <small class="text-muted">{{ __('admin.pricing_benefits.order_help') }}</small>
                             </div>
 
                             <!-- Form Actions -->
                             <div class="d-flex justify-content-between">
                                 <a href="{{ route('admin.about-us.index') }}" class="btn btn-label-secondary">
-                                    <i class="ti ti-arrow-left me-1"></i> Kembali
+                                    <i class="ti ti-arrow-left me-1"></i> {{ __('admin.pricing_benefits.back') }}
                                 </a>
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="ti ti-device-floppy me-1"></i> Simpan Benefit
+                                    <i class="ti ti-device-floppy me-1"></i> {{ __('admin.pricing_benefits.save') }}
                                 </button>
                             </div>
                         </form>
@@ -138,16 +140,16 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title mb-3">
-                            <i class="ti ti-help me-2"></i> Panduan Bootstrap Icons
+                            <i class="ti ti-help me-2"></i> {{ __('admin.pricing_benefits.guide_title') }}
                         </h5>
                         
                         <div class="alert alert-info mb-3">
                             <i class="ti ti-info-circle me-2"></i>
-                            <small><strong>Hanya gunakan Bootstrap Icons!</strong> Icon library lain tidak tersedia di halaman pricing.</small>
+                            <small><strong>{{ __('admin.pricing_benefits.guide_info') }}</strong></small>
                         </div>
 
                         <div class="mb-3">
-                            <p class="small text-muted mb-2">Format: <code>bi bi-[nama]</code></p>
+                            <p class="small text-muted mb-2">{!! __('admin.pricing_benefits.format') !!}</p>
                             <div class="d-flex flex-wrap gap-2">
                                 <span class="badge bg-label-primary icon-example" data-icon="bi bi-globe-americas">
                                     <i class="bi bi-globe-americas"></i> globe-americas
@@ -187,7 +189,7 @@
                                 </span>
                             </div>
                             <a href="https://icons.getbootstrap.com/" target="_blank" class="btn btn-sm btn-label-primary mt-3 w-100">
-                                <i class="ti ti-external-link me-1"></i> Lihat Semua Bootstrap Icons (2000+)
+                                <i class="ti ti-external-link me-1"></i> {{ __('admin.pricing_benefits.view_all_icons') }}
                             </a>
                         </div>
                     </div>
@@ -197,13 +199,13 @@
                 <div class="card mt-3">
                     <div class="card-body">
                         <h5 class="card-title mb-3">
-                            <i class="ti ti-bulb me-2"></i> Tips
+                            <i class="ti ti-bulb me-2"></i> {{ __('admin.pricing_benefits.tips_title') }}
                         </h5>
                         <ul class="small mb-0 ps-3">
-                            <li class="mb-2">Gunakan judul yang singkat dan jelas (max 5 kata)</li>
-                            <li class="mb-2">Deskripsi sebaiknya 1-2 kalimat saja</li>
-                            <li class="mb-2">Pilih icon yang sesuai dengan benefit</li>
-                            <li>Maksimal 6 benefit untuk tampilan terbaik</li>
+                            <li class="mb-2">{{ __('admin.pricing_benefits.tip_short_title') }}</li>
+                            <li class="mb-2">{{ __('admin.pricing_benefits.tip_short_description') }}</li>
+                            <li class="mb-2">{{ __('admin.pricing_benefits.tip_suitable_icon') }}</li>
+                            <li>{{ __('admin.pricing_benefits.tip_max_benefits') }}</li>
                         </ul>
                     </div>
                 </div>
@@ -216,12 +218,12 @@
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Pilih Bootstrap Icon</h5>
+                    <h5 class="modal-title">{{ __('admin.pricing_benefits.modal_title') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <input type="text" class="form-control" id="iconSearch" placeholder="Cari icon... (contoh: heart, star, globe)">
+                        <input type="text" class="form-control" id="iconSearch" placeholder="{{ __('admin.pricing_benefits.search_icon') }}">
                     </div>
                     <div class="row g-2" id="iconGrid">
                         <!-- Icons will be loaded here -->
@@ -274,7 +276,7 @@
             }
 
             if (iconsToShow.length === 0) {
-                iconGrid.html('<div class="col-12 text-center py-5"><p class="text-muted">Tidak ada icon yang cocok dengan "' + filter + '"</p></div>');
+                iconGrid.html('<div class="col-12 text-center py-5"><p class="text-muted">{{ __('admin.pricing_benefits.no_icon_found') }} "' + filter + '"</p></div>');
                 return;
             }
 
@@ -284,7 +286,7 @@
                     <div class="col-12 mb-3">
                         <div class="alert alert-info mb-0">
                             <i class="ti ti-info-circle me-2"></i>
-                            Menampilkan <strong>${iconsToShow.length} icon populer</strong>. Ketik di search box untuk mencari dari <strong>2000+ icons</strong> yang tersedia.
+                            {!! str_replace([':count'], ['${iconsToShow.length}'], __('admin.pricing_benefits.icon_popular_info')) !!}
                         </div>
                     </div>
                 `);
@@ -293,7 +295,7 @@
                     <div class="col-12 mb-3">
                         <div class="alert alert-success mb-0">
                             <i class="ti ti-check-circle me-2"></i>
-                            Ditemukan <strong>${iconsToShow.length} icon</strong> yang cocok dengan "<strong>${filter}</strong>"
+                            {!! str_replace([':count', ':query'], ['${iconsToShow.length}', '${filter}'], __('admin.pricing_benefits.icon_found_info')) !!}
                         </div>
                     </div>
                 `);
@@ -345,7 +347,7 @@
             } else {
                 previewBox.html(`
                     <i class="ti ti-photo text-muted"></i>
-                    <small class="d-block text-muted mt-2">Ketik icon class untuk melihat preview</small>
+                    <small class="d-block text-muted mt-2">{{ __('admin.pricing_benefits.preview_placeholder') }}</small>
                 `);
             }
         });
@@ -365,6 +367,95 @@
         if ($('#icon').val()) {
             $('#icon').trigger('input');
         }
+
+        // Sort Order validation with Ajax
+        let orderCheckTimeout;
+        const locale = '{{ app()->getLocale() }}';
+        const messages = {
+            id: {
+                checking: '{{ __('admin.pricing_benefits.checking') }}',
+                available: '{{ __('admin.pricing_benefits.order_available') }}',
+                suggestion: '{{ __('admin.pricing_benefits.suggestion') }}'
+            },
+            en: {
+                checking: '{{ __('admin.pricing_benefits.checking') }}',
+                available: '{{ __('admin.pricing_benefits.order_available') }}',
+                suggestion: '{{ __('admin.pricing_benefits.suggestion') }}'
+            }
+        };
+        
+        $('#sort_order').on('input', function() {
+            const order = $(this).val();
+            const feedback = $('#order_feedback');
+            
+            if (!order || order == '0' || order == '') {
+                feedback.html('');
+                $(this).removeClass('is-invalid is-valid');
+                return;
+            }
+            
+            clearTimeout(orderCheckTimeout);
+            
+            // Show checking message
+            feedback.html(`<small class="text-muted"><i class="ti ti-loader ti-spin me-1"></i> ${messages[locale].checking}</small>`);
+            $(this).removeClass('is-invalid is-valid');
+            
+            orderCheckTimeout = setTimeout(() => {
+                $.ajax({
+                    url: '{{ route("admin.about-us.check-order", ":order") }}'.replace(':order', order),
+                    method: 'GET',
+                    success: function(response) {
+                        if (response.available) {
+                            feedback.html(`<small class="text-success"><i class="ti ti-check me-1"></i> ${messages[locale].available}</small>`);
+                            $('#sort_order').removeClass('is-invalid').addClass('is-valid');
+                        } else {
+                            let suggestionHtml = `<div class="alert alert-danger mt-2 mb-0"><i class="ti ti-alert-circle me-2"></i> ${response.message}`;
+                            
+                            if (response.suggestions) {
+                                suggestionHtml += `<div class="mt-2"><strong>${messages[locale].suggestion}:</strong><ul class="mb-0 mt-1">`;
+                                
+                                if (response.suggestions.smallest) {
+                                    suggestionHtml += `<li><strong>${response.suggestions.smallest.label}:</strong> `;
+                                    response.suggestions.smallest.numbers.forEach((num, index) => {
+                                        suggestionHtml += `<a href="javascript:void(0)" class="badge bg-label-success suggestion-number" data-number="${num}">${num}</a> `;
+                                    });
+                                    suggestionHtml += `</li>`;
+                                }
+                                
+                                if (response.suggestions.largest) {
+                                    suggestionHtml += `<li><strong>${response.suggestions.largest.label}:</strong> `;
+                                    response.suggestions.largest.numbers.forEach((num, index) => {
+                                        suggestionHtml += `<a href="javascript:void(0)" class="badge bg-label-primary suggestion-number" data-number="${num}">${num}</a> `;
+                                    });
+                                    suggestionHtml += `</li>`;
+                                }
+                                
+                                suggestionHtml += `</ul></div>`;
+                            }
+                            
+                            suggestionHtml += `</div>`;
+                            feedback.html(suggestionHtml);
+                            $('#sort_order').removeClass('is-valid').addClass('is-invalid');
+                        }
+                    },
+                    error: function() {
+                        feedback.html('<small class="text-danger"><i class="ti ti-x me-1"></i> {{ __('admin.pricing_benefits.error_checking_order') }}</small>');
+                        $('#sort_order').removeClass('is-valid');
+                    }
+                });
+            }, 500);
+        });
+        
+        // Click suggestion number to use it
+        $(document).on('click', '.suggestion-number', function() {
+            const number = $(this).data('number');
+            $('#sort_order').val(number).trigger('input');
+            
+            // Scroll to input
+            $('html, body').animate({
+                scrollTop: $('#sort_order').offset().top - 100
+            }, 300);
+        });
     });
 </script>
 
@@ -406,6 +497,33 @@
 
     .cursor-pointer {
         cursor: pointer;
+    }
+
+    .suggestion-number {
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        display: inline-block;
+        margin: 2px;
+    }
+
+    .suggestion-number:hover {
+        transform: scale(1.1);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    #order_feedback .alert {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    #order_feedback .alert ul {
+        padding-left: 1.25rem;
+        margin-bottom: 0 !important;
+    }
+
+    #order_feedback .alert li {
+        margin-top: 0.5rem;
     }
 </style>
 @endpush

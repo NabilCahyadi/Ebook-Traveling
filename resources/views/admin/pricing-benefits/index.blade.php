@@ -1,20 +1,20 @@
 @extends('layouts.admin')
 
-@section('title', 'Pricing Benefits Management')
+@section('title', __('admin.pricing_benefits.title'))
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <!-- Success/Error Messages -->
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>Success!</strong> {{ session('success') }}
+                <strong>{{ __('admin.pricing_benefits.success_alert') }}</strong> {{ session('success') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
         @if (session('error'))
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Error!</strong> {{ session('error') }}
+                <strong>{{ __('admin.pricing_benefits.error_alert') }}</strong> {{ session('error') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
@@ -23,13 +23,13 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h4 class="fw-bold py-3 mb-2">
-                    <span class="text-muted fw-light">Website Management /</span> About Us
+                    <span class="text-muted fw-light">{{ __('admin.menu.website_management') }} /</span> {{ __('admin.pricing_benefits.page_title') }}
                 </h4>
-                <p class="text-muted">Kelola konten "Why Choose Our MeatMap Guides?"</p>
+                <p class="text-muted">{{ __('admin.pricing_benefits.subtitle') }}</p>
             </div>
             <div>
                 <a href="{{ route('admin.about-us.create') }}" class="btn btn-primary">
-                    <i class="ti ti-plus me-1"></i> Tambah Benefit Baru
+                    <i class="ti ti-plus me-1"></i> {{ __('admin.pricing_benefits.add_new') }}
                 </a>
             </div>
         </div>
@@ -37,13 +37,13 @@
         <!-- Benefits List -->
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">List Benefits</h5>
-                <small class="text-muted">Total: {{ $benefits->count() }} benefits</small>
+                <h5 class="mb-0">{{ __('admin.pricing_benefits.list_benefits') }}</h5>
+                <small class="text-muted">{{ __('admin.pricing_benefits.total_benefits', ['count' => $benefits->count()]) }}</small>
             </div>
             <div class="card-body">
                 <div class="alert alert-info">
                     <i class="ti ti-info-circle me-2"></i>
-                    <strong>Tips:</strong> Drag & drop untuk mengatur urutan tampilan benefit
+                    <strong>{{ __('admin.pricing_benefits.tips_title') }}:</strong> {{ __('admin.pricing_benefits.tips_drag_drop') }}
                 </div>
 
                 <div class="table-responsive">
@@ -51,12 +51,12 @@
                         <thead>
                             <tr>
                                 <th width="3%"></th>
-                                <th width="5%">Order</th>
-                                <th width="10%">Icon</th>
-                                <th width="20%">Title</th>
-                                <th width="37%">Description</th>
-                                <th width="10%" class="text-center">Status</th>
-                                <th width="15%" class="text-center">Actions</th>
+                                <th width="5%">{{ __('admin.pricing_benefits.order') }}</th>
+                                <th width="10%">{{ __('admin.pricing_benefits.icon') }}</th>
+                                <th width="20%">{{ __('admin.pricing_benefits.title_column') }}</th>
+                                <th width="37%">{{ __('admin.pricing_benefits.description') }}</th>
+                                <th width="10%" class="text-center">{{ __('admin.pricing_benefits.status') }}</th>
+                                <th width="15%" class="text-center">{{ __('admin.pricing_benefits.actions') }}</th>
                             </tr>
                         </thead>
                         <tbody id="sortable-benefits">
@@ -95,7 +95,7 @@
                                             <ul class="dropdown-menu dropdown-menu-end">
                                                 <li>
                                                     <a class="dropdown-item" href="{{ route('admin.about-us.edit', $benefit->id) }}">
-                                                        <i class="ti ti-edit me-2"></i> Edit
+                                                        <i class="ti ti-edit me-2"></i> {{ __('admin.pricing_benefits.edit') }}
                                                     </a>
                                                 </li>
                                                 <li>
@@ -108,7 +108,7 @@
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="button" class="dropdown-item text-danger delete-btn">
-                                                            <i class="ti ti-trash me-2"></i> Delete
+                                                            <i class="ti ti-trash me-2"></i> {{ __('admin.pricing_benefits.delete') }}
                                                         </button>
                                                     </form>
                                                 </li>
@@ -118,11 +118,11 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center py-5">
+                                    <td colspan="7" class="text-center py-5">
                                         <div class="mb-3">
                                             <i class="ti ti-clipboard-off" style="font-size: 3rem; color: #ddd;"></i>
                                         </div>
-                                        <p class="text-muted mb-0">Belum ada benefit yang ditambahkan</p>
+                                        <p class="text-muted mb-0">{{ __('admin.pricing_benefits.no_benefits') }}</p>
                                     </td>
                                 </tr>
                             @endforelse
@@ -214,7 +214,7 @@
                     }
                 },
                 error: function(xhr) {
-                    toastr.error('Gagal mengupdate urutan');
+                    toastr.error('{{ __('admin.pricing_benefits.update_order_failed') }}');
                 }
             });
         }
@@ -244,14 +244,14 @@
                         // Revert on error
                         checkbox.prop('checked', !newStatus);
                         checkbox.prop('disabled', false);
-                        alert('Gagal mengubah status');
+                        alert('{{ __('admin.pricing_benefits.toggle_status_failed') }}');
                     }
                 },
                 error: function(xhr) {
                     // Revert on error
                     checkbox.prop('checked', !newStatus);
                     checkbox.prop('disabled', false);
-                    alert('Gagal mengubah status: ' + (xhr.responseJSON?.message || 'Server error'));
+                    alert('{{ __('admin.pricing_benefits.toggle_status_failed') }}: ' + (xhr.responseJSON?.message || 'Server error'));
                 }
             });
         });
@@ -262,14 +262,14 @@
             const form = $(this).closest('form');
             
             Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: "Benefit akan dihapus!",
+                title: '{{ __('admin.pricing_benefits.delete_confirm_title') }}',
+                text: "{{ __('admin.pricing_benefits.delete_confirm_text') }}",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal'
+                confirmButtonText: '{{ __('admin.pricing_benefits.delete_confirm_button') }}',
+                cancelButtonText: '{{ __('admin.pricing_benefits.cancel') }}'
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();

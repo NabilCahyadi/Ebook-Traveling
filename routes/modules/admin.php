@@ -520,8 +520,6 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
             Route::get('/', [\App\Http\Controllers\Admin\LandingPageContentController::class, 'index'])->name('index');
             Route::get('/top-cities', [\App\Http\Controllers\Admin\LandingPageContentController::class, 'editTopCities'])->name('top-cities');
             Route::put('/top-cities', [\App\Http\Controllers\Admin\LandingPageContentController::class, 'updateTopCities'])->name('top-cities.update');
-            Route::get('/latest-blogs', [\App\Http\Controllers\Admin\LandingPageContentController::class, 'editLatestBlogs'])->name('latest-blogs');
-            Route::put('/latest-blogs', [\App\Http\Controllers\Admin\LandingPageContentController::class, 'updateLatestBlogs'])->name('latest-blogs.update');
         });
     });
 
@@ -540,6 +538,7 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.session', 'auth:admin
     Route::middleware(['admin.permission:website.about-us.edit'])->group(function () {
         Route::post('about-us/{id}/toggle-status', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'toggleStatus'])->name('about-us.toggle-status');
         Route::post('about-us/update-order', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'updateOrder'])->name('about-us.update-order');
+        Route::get('about-us/check-order/{order}', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'checkOrder'])->name('about-us.check-order');
         Route::get('about-us/{about_us}/edit', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'edit'])->name('about-us.edit');
         Route::put('about-us/{about_us}', [\App\Http\Controllers\Admin\PricingBenefitController::class, 'update'])->name('about-us.update');
     });

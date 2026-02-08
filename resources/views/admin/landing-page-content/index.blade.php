@@ -66,54 +66,34 @@
                 </div>
             </div>
 
-            <!-- Latest Blogs Card -->
+            <!-- Ebook Collection Card -->
             <div class="col-md-6 mb-4">
                 <div class="card h-100">
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <h5 class="mb-0">
-                            <i class="ti ti-article text-danger me-2"></i>
-                            Latest Blogs
+                            <i class="ti ti-folders text-danger me-2"></i>
+                            Ebook Collection
                         </h5>
-                        @if($latestBlogsSection && $latestBlogsSection->is_visible)
-                            <span class="badge bg-success">Aktif</span>
-                        @else
-                            <span class="badge bg-secondary">Nonaktif</span>
-                        @endif
+                        <span class="badge bg-success">Aktif</span>
                     </div>
                     <div class="card-body">
                         <p class="text-muted mb-3">
-                            Section untuk menampilkan blog terbaru di landing page
+                            Kelola koleksi ebook yang ditampilkan di landing page
                         </p>
                         
                         <div class="mb-3">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="text-muted">Blog Terpilih:</span>
-                                <strong class="text-danger">{{ $latestBlogsCount }} blog</strong>
-                            </div>
-                            <div class="progress" style="height: 8px;">
-                                <div class="progress-bar bg-danger" role="progressbar" 
-                                     style="width: {{ ($latestBlogsCount / 12) * 100 }}%"
-                                     aria-valuenow="{{ $latestBlogsCount }}" 
-                                     aria-valuemin="0" 
-                                     aria-valuemax="12">
-                                </div>
-                            </div>
-                            <small class="text-muted">Maksimal: 12 blog</small>
-                        </div>
-
-                        @if($latestBlogsSection && isset($latestBlogsSection->config['selected_blogs']))
-                            <div class="alert alert-info mb-3">
+                            <div class="alert alert-info">
                                 <i class="ti ti-info-circle me-2"></i>
                                 <small>
-                                    Terakhir diupdate: {{ $latestBlogsSection->updated_at->format('d M Y H:i') }}
+                                    Gunakan menu Website Management untuk mengelola koleksi ebook
                                 </small>
                             </div>
-                        @endif
+                        </div>
 
-                        <a href="{{ route('admin.landing-page-content.latest-blogs') }}" 
+                        <a href="{{ route('admin.collections.index') }}" 
                            class="btn btn-danger w-100">
-                            <i class="ti ti-edit me-2"></i>
-                            Kelola Konten
+                            <i class="ti ti-folders me-2"></i>
+                            Kelola Koleksi
                         </a>
                     </div>
                 </div>
@@ -132,12 +112,8 @@
                         <strong>Top 10 Cities:</strong> Pilih dan atur urutan kota yang akan ditampilkan di landing page. 
                         Maksimal 10 kota dapat dipilih.
                     </li>
-                    <li class="mb-2">
-                        <strong>Latest Blogs:</strong> Pilih blog yang akan ditampilkan sebagai konten terbaru. 
-                        Anda dapat memilih hingga 12 blog dan mengatur urutannya.
-                    </li>
                     <li>
-                        <strong>Drag & Drop:</strong> Gunakan fitur drag & drop untuk mengatur urutan tampilan dengan mudah.
+                        <strong>Ebook Collection:</strong> Kelola koleksi ebook yang ditampilkan di landing page melalui menu Website Management.
                     </li>
                 </ul>
             </div>
