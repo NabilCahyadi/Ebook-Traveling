@@ -51,20 +51,17 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3">
+                        <!-- <div class="mb-3">
                             <label for="type" class="form-label">{{ __('admin.admins.admin_type') }} <span class="text-danger">*</span></label>
-                            <select class="form-select @error('type') is-invalid @enderror" id="type" name="type" required>
-                                <option value="">{{ __('admin.admins.select_type') }}</option>
-                                <option value="admin" {{ old('type') === 'admin' ? 'selected' : '' }}>{{ __('admin.admins.admin') }}</option>
-                                <option value="superadmin" {{ old('type') === 'superadmin' ? 'selected' : '' }}>{{ __('admin.admins.super_admin') }}</option>
-                            </select>
+                            <input type="text" class="form-control" id="type" value="Admin" readonly>
+                            <input type="hidden" name="type" value="admin">
                             <small class="form-text text-muted">
-                                {{ __('admin.admins.superadmin_full_access') }}
+                                Admin has access to manage content and users
                             </small>
                             @error('type')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div>
+                        </div> -->
 
                         <div class="mb-3">
                             <label for="status" class="form-label">{{ __('admin.admins.status') }} <span class="text-danger">*</span></label>
@@ -122,15 +119,15 @@
                         </li>
                         <li class="mb-2">
                             <i class="ti ti-point-filled me-2"></i>
-                            <strong>{{ __('admin.admins.super_admin') }}:</strong> {{ __('admin.admins.info_superadmin') }}
+                            {{ __('admin.admins.info_password') }}
                         </li>
                         <li class="mb-2">
                             <i class="ti ti-point-filled me-2"></i>
-                            {{ __('admin.admins.info_password') }}
+                            {{ __('admin.admins.info_email') }}
                         </li>
                         <li>
                             <i class="ti ti-point-filled me-2"></i>
-                            {{ __('admin.admins.info_email') }}
+                            Only regular Admin can be created. Super Admin cannot be added.
                         </li>
                     </ul>
                 </div>

@@ -69,10 +69,12 @@ class AdminController extends Controller
             'email' => 'required|email|unique:admins,email',
             'password' => 'required|string|min:8|confirmed',
             'phone' => 'nullable|string|max:20',
-            'type' => ['required', Rule::in([Admin::TYPE_ADMIN, Admin::TYPE_SUPERADMIN])],
+            'type' => ['required', Rule::in([Admin::TYPE_ADMIN])],
             'status' => 'required|in:active,inactive',
         ]);
 
+        // Force type to admin only
+        $validated['type'] = Admin::TYPE_ADMIN;
         $validated['password'] = Hash::make($validated['password']);
 
         $admin = Admin::create($validated);
@@ -117,6 +119,16 @@ class AdminController extends Controller
             'type' => ['required', Rule::in([Admin::TYPE_ADMIN, Admin::TYPE_SUPERADMIN])],
             'status' => 'required|in:active,inactive',
         ]);
+
+        // Prevent changing type to superadmin if currently not superadmin
+        if ($admin->type !== Admin::TYPE_SUPERADMIN && $validated['type'] === Admin::TYPE_SUPERADMIN) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Cannot change admin type to Super Admin.');
+        }
+
+        // Keep the original type (don't allow type changes)
+        $validated['type'] = $admin->type;
 
         if ($request->filled('password')) {
             $validated['password'] = Hash::make($validated['password']);

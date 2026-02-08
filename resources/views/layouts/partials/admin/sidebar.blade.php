@@ -409,15 +409,6 @@
                             </a>
                         </li>
                     @endif
-                    <!-- Collection Ebook -->
-                    @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.collections.view', 'website.collections.create', 'website.collections.edit', 'website.collections.delete']))
-                        <li class="menu-item {{ Request::is('admin/collections*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.collections.index') }}" class="menu-link">
-                                <i class="menu-icon tf-icons ti ti-folders"></i>
-                                <div data-i18n="Collection Ebook">{{ __('admin.menu.collection_ebook') }}</div>
-                            </a>
-                        </li>
-                    @endif
                     <!-- Contact Info -->
                     @if(auth('admin')->user()->isSuperAdmin() || auth('admin')->user()->hasAnyPermission(['website.contact-info.view', 'website.contact-info.create', 'website.contact-info.edit', 'website.contact-info.delete']))
                         <li class="menu-item {{ Request::is('admin/contact-info*') ? 'active' : '' }}">

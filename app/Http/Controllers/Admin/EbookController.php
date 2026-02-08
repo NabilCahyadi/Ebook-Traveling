@@ -51,7 +51,10 @@ class EbookController extends Controller
     {
         $categories = \App\Models\Category::all();
         $cities = \App\Models\City::all();
-        $creators = \App\Models\User::where('user_type', 'creator')->get();
+        // Get users with 'creator' role from user_roles table
+        $creators = \App\Models\User::whereHas('roles', function($query) {
+            $query->where('slug', 'creator');
+        })->get();
         return view('admin.ebooks.create', compact('categories', 'cities', 'creators'));
     }
 
@@ -439,8 +442,10 @@ class EbookController extends Controller
     {
         $query = $request->get('q', '');
         
-        // Build base query
-        $creatorsQuery = \App\Models\User::where('user_type', 'creator');
+        // Build base query - get users with 'creator' role from user_roles table
+        $creatorsQuery = \App\Models\User::whereHas('roles', function($q) {
+            $q->where('slug', 'creator');
+        });
         
         // Add search filter if query is provided
         if (strlen($query) >= 1) {

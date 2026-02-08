@@ -52,20 +52,25 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3">
+                        <!-- <div class="mb-3">
                             <label for="type" class="form-label">{{ __('admin.admins.admin_type') }} <span class="text-danger">*</span></label>
-                            <select class="form-select @error('type') is-invalid @enderror" id="type" name="type" required>
-                                <option value="">{{ __('admin.admins.select_type') }}</option>
-                                <option value="admin" {{ old('type', $admin->type) === 'admin' ? 'selected' : '' }}>{{ __('admin.admins.admin') }}</option>
-                                <option value="superadmin" {{ old('type', $admin->type) === 'superadmin' ? 'selected' : '' }}>{{ __('admin.admins.super_admin') }}</option>
-                            </select>
-                            <small class="form-text text-muted">
-                                {{ __('admin.admins.superadmin_full_access') }}
-                            </small>
+                            @if($admin->type === 'superadmin')
+                                <input type="text" class="form-control" id="type" value="Super Admin" readonly>
+                                <input type="hidden" name="type" value="superadmin">
+                                <small class="form-text text-muted">
+                                    Super Admin type cannot be changed
+                                </small>
+                            @else
+                                <input type="text" class="form-control" id="type" value="Admin" readonly>
+                                <input type="hidden" name="type" value="admin">
+                                <small class="form-text text-muted">
+                                    Admin type cannot be changed to Super Admin
+                                </small>
+                            @endif
                             @error('type')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div>
+                        </div> -->
 
                         <div class="mb-3">
                             <label for="status" class="form-label">{{ __('admin.admins.status') }} <span class="text-danger">*</span></label>
